@@ -16,6 +16,7 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
+if (params.fasta) { ch_fasta = file(params.fasta) } else { exit 1, 'Fasta reference genome not specified!' }
 
 /*
 ========================================================================================
@@ -54,11 +55,14 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check' addParams( opti
 def multiqc_options   = modules['multiqc']
 multiqc_options.args += params.multiqc_title ? Utils.joinModuleArgs(["--title \"$params.multiqc_title\""]) : ''
 
-//
 // MODULE: Installed directly from nf-core/modules
 //
-include { FASTQC  } from '../modules/nf-core/modules/fastqc/main'  addParams( options: modules['fastqc'] )
-include { MULTIQC } from '../modules/nf-core/modules/multiqc/main' addParams( options: multiqc_options   )
+include { FASTQC  }     from '../modules/nf-core/modules/fastqc/main'       addParams( options: modules['fastqc']   )
+include { CUTADAPT }    from '../modules/nf-core/modules/cutadapt/main'     addParams( options: modules['cutadapt']   )
+include { BWA_MEM }      from '../modules/nf-core/modules/bwa/mem/main'      addParams( options: modules['bwa_mem']   )
+include { BWA_INDEX }    from '../modules/nf-core/modules/bwa/index/main'    addParams( options: modules['bwa_index']   )
+include { SAMTOOLS_FAIDX }    from '../modules/nf-core/modules/samtools/faidx/main'    addParams( options: modules['samtools_faidx']   )
+include { MULTIQC }     from '../modules/nf-core/modules/multiqc/main'      addParams( options: multiqc_options     )
 
 /*
 ========================================================================================
@@ -87,6 +91,33 @@ workflow CIRCLESEQ {
         INPUT_CHECK.out.reads
     )
     ch_software_versions = ch_software_versions.mix(FASTQC.out.version.first().ifEmpty(null))
+
+    //
+    // MODULE: Run cutadapt
+    //
+    CUTADAPT (
+        INPUT_CHECK.out.reads
+    )
+
+    //
+    // MODULE: Run bwa index
+    //
+    BWA_INDEX (
+        ch_fasta
+    )
+
+    //
+    // MODULE: Run samtools faidx
+    //
+    SAMTOOLS_FAIDX (
+        ch_fasta
+    )
+
+    BWA_MEM (
+        CUTADAPT.out.reads,
+        BWA_INDEX.out.index
+    )
+
 
     //
     // MODULE: Pipeline reporting
