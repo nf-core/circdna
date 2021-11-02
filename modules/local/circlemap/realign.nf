@@ -73,6 +73,7 @@ process CIRCLEMAP_REALIGN {
         -qbam $qname \\
         -sbam $sbam \\
         -fasta $fasta \\
+        --threads $task.cpus \\
         -o ${prefix}_circularDNA_coordinates.bed
 
     # echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' > ${software}.version.txt
