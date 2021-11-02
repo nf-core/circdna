@@ -1,5 +1,5 @@
 // Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
+include { initOptions; saveFiles; getSoftwareName } from './../functions'
 
 // TODO nf-core: If in doubt look at other nf-core/modules to see how we are doing things! :)
 //               https://github.com/nf-core/modules/tree/master/software
@@ -32,7 +32,7 @@ process CIRCLEMAP_REALIGN {
     //               Software MUST be pinned to channel (i.e. "bioconda"), version (i.e. "1.10").
     //               For Conda, the build (i.e. "h9402c20_2") must be EXCLUDED to support installation on different operating systems.
     // TODO nf-core: See section in main README for further information regarding finding and adding container addresses to the section below.
-    conda (params.enable_conda ? "bioconda::circle-map=1.1.4" : null)
+    conda (params.enable_conda ? "bioconda::circle-map=1.1.4 anaconda::biopython=1.77" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/circle-map:1.1.4--pyh864c0ab_1"
     } else {
@@ -46,13 +46,14 @@ process CIRCLEMAP_REALIGN {
     //               https://github.com/nf-core/modules/blob/master/software/bwa/index/main.nf
     // TODO nf-core: Where applicable please provide/convert compressed files as input/output
     //               e.g. "*.fastq.gz" and NOT "*.fastq", "*.bam" and NOT "*.sam" etc.
-    tuple val(meta), path(bam)
+    tuple val(meta), path(sbam), path(sbai), path(qname), path(re_bam), path(re_bai)
+    path fasta
 
     output:
     // TODO nf-core: Named file extensions MUST be emitted for ALL output channels
-    tuple val(meta), path("*.bam"), emit: bam
+    tuple val(meta), path("*_circularDNA_coordinates.bed"), emit: bed
     // TODO nf-core: List additional required output channels/values here
-    path "*.version.txt"          , emit: version
+    // path "*.version.txt"          , emit: version
 
     script:
     def software = getSoftwareName(task.process)
@@ -66,14 +67,14 @@ process CIRCLEMAP_REALIGN {
     // TODO nf-core: Please replace the example samtools command below with your module's command
     // TODO nf-core: Please indent the command appropriately (4 spaces!!) to help with readability ;)
     """
-    samtools \\
-        sort \\
-        $options.args \\
-        -@ $task.cpus \\
-        -o ${prefix}.bam \\
-        -T $prefix \\
-        $bam
+    Circle-Map \\
+        Realign \\
+        -i $re_bam \\
+        -qbam $qname \\
+        -sbam $sbam \\
+        -fasta $fasta \\
+        -o ${prefix}_circularDNA_coordinates.bed
 
-    echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' > ${software}.version.txt
+    # echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' > ${software}.version.txt
     """
 }
