@@ -1,0 +1,3 @@
+sample,fastq_1,fastq_2
+S1,"test-data/data/TEST_S1_R1.fastq.gz","test-data/data/TEST_S1_R2.fastq.gz"
+S3,"test-data/data/TEST_S3_R1.fastq.gz","test-data/data/TEST_S3_R2.fastq.gz"
