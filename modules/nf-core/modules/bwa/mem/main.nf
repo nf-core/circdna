@@ -23,7 +23,9 @@ process BWA_MEM {
     path  index
 
     output:
-    tuple val(meta), path("*.bam"), emit: bam
+    // tuple val(meta), path("*.bam"), emit: bam
+    tuple val(meta), path("*.qname_sorted.bam"), emit: qname_bam
+    tuple val(meta), path("*.sorted.bam"), emit: sorted_bam
     path  "versions.yml"          , emit: versions
 
     script:
@@ -38,7 +40,12 @@ process BWA_MEM {
         -t $task.cpus \\
         \$INDEX \\
         $reads \\
-        | samtools view $options.args2 -@ $task.cpus -bhS -o ${prefix}.bam -
+        > ${prefix}.sam
+    samtools sort -@ $task.cpus -n -o ${prefix}.qname_sorted.bam ${prefix}.sam
+    samtools sort -@ $task.cpus -o ${prefix}.sorted.bam ${prefix}.sam
+
+    # samtools index -@ $task.cpus ${prefix}.sorted.bam
+    rm ${prefix}.sam
 
     cat <<-END_VERSIONS > versions.yml
     ${getProcessName(task.process)}:
