@@ -62,7 +62,12 @@ include { CUTADAPT }    from '../modules/nf-core/modules/cutadapt/main'     addP
 include { BWA_MEM }      from '../modules/nf-core/modules/bwa/mem/main'      addParams( options: modules['bwa_mem']   )
 include { BWA_INDEX }    from '../modules/nf-core/modules/bwa/index/main'    addParams( options: modules['bwa_index']   )
 include { SAMTOOLS_FAIDX }    from '../modules/nf-core/modules/samtools/faidx/main'    addParams( options: modules['samtools_faidx']   )
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_BWA }    from '../modules/nf-core/modules/samtools/index/main'    addParams( options: modules['samtools_index_bwa']   )
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_RE }    from '../modules/nf-core/modules/samtools/index/main'    addParams( options: modules['samtools_index_re']   )
+include { SAMTOOLS_SORT as SAMTOOLS_SORT_RE }    from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort_re']   )
 include { MULTIQC }     from '../modules/nf-core/modules/multiqc/main'      addParams( options: multiqc_options     )
+include { CIRCLEMAP_READEXTRACTOR }     from '../modules/local/circlemap/readextractor.nf'      addParams( options: modules['circlemap_readextractor']     )
+include { CIRCLEMAP_REALIGN }     from '../modules/local/circlemap/realign.nf'      addParams( options: modules['circlemap_realign']     )
 
 /*
 ========================================================================================
@@ -118,6 +123,45 @@ workflow CIRCLESEQ {
         BWA_INDEX.out.index
     )
 
+    SAMTOOLS_INDEX_BWA (
+        BWA_MEM.out.sorted_bam
+    )
+
+
+    //
+    // MODULE: Run circlemap readextractor
+    //
+    CIRCLEMAP_READEXTRACTOR (
+        BWA_MEM.out.qname_bam
+    )
+
+    SAMTOOLS_SORT_RE (
+        CIRCLEMAP_READEXTRACTOR.out.bam
+    )
+
+    SAMTOOLS_INDEX_RE (
+        SAMTOOLS_SORT_RE.out.bam
+    )
+
+
+    //
+    // MODULE: Run circlemap realign
+    //
+    ch_bwa_mem_bam = BWA_MEM.out.sorted_bam
+    ch_bwa_mem_bai = SAMTOOLS_INDEX_BWA.out.bai
+    ch_bwa_mem_qname_bam = BWA_MEM.out.qname_bam
+    ch_re_sorted_bam = SAMTOOLS_SORT_RE.out.bam
+    ch_re_sorted_bai = SAMTOOLS_INDEX_RE.out.bai
+
+
+
+    CIRCLEMAP_REALIGN (
+        ch_bwa_mem_bam.join(ch_bwa_mem_bai).
+            join(ch_bwa_mem_qname_bam).
+            join(ch_re_sorted_bam).
+            join(ch_re_sorted_bai),
+        ch_fasta
+    )
 
     //
     // MODULE: Pipeline reporting
