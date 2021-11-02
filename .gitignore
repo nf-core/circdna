@@ -1,0 +1,4 @@
+.nextflow.log*
+work
+results
+.nextflow
