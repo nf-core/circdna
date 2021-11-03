@@ -53,7 +53,7 @@ process CIRCLEMAP_REALIGN {
     // TODO nf-core: Named file extensions MUST be emitted for ALL output channels
     tuple val(meta), path("*_circularDNA_coordinates.bed"), emit: bed
     // TODO nf-core: List additional required output channels/values here
-    // path "*.version.txt"          , emit: version
+    path "*.version.txt"          , emit: version
 
     script:
     def software = getSoftwareName(task.process)
@@ -76,6 +76,9 @@ process CIRCLEMAP_REALIGN {
         --threads $task.cpus \\
         -o ${prefix}_circularDNA_coordinates.bed
 
+
+
+    echo \$(Circle-Map --help 2<&1) | grep -o "version=[0-9].[0-9].[0-9]" > ${software}.version.txt
     # echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' > ${software}.version.txt
     """
 }
