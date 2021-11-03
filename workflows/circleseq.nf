@@ -68,6 +68,11 @@ include { SAMTOOLS_SORT as SAMTOOLS_SORT_RE }    from '../modules/nf-core/module
 include { MULTIQC }     from '../modules/nf-core/modules/multiqc/main'      addParams( options: multiqc_options     )
 include { CIRCLEMAP_READEXTRACTOR }     from '../modules/local/circlemap/readextractor.nf'      addParams( options: modules['circlemap_readextractor']     )
 include { CIRCLEMAP_REALIGN }     from '../modules/local/circlemap/realign.nf'      addParams( options: modules['circlemap_realign']     )
+include { SAMBLASTER }     from '../modules/local/samblaster.nf'      addParams( options: modules['samblaster']     )
+include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_CONC }     from '../modules/local/samtools/view.nf'      addParams( options: modules['samtools_view_conc']     )
+include { BEDTOOLS_BAM2BED }     from '../modules/local/bedtools/bam2bed.nf'      addParams( options: modules['bedtools_bam2bed']     )
+include { CIRCLEFINDER }     from '../modules/local/circlefinder.nf'      addParams( options: modules['circlefinder']     )
+
 
 /*
 ========================================================================================
@@ -123,10 +128,32 @@ workflow CIRCLESEQ {
         BWA_INDEX.out.index
     )
 
+    SAMBLASTER (
+        BWA_MEM.out.qname_bam
+    )
+
+
     SAMTOOLS_INDEX_BWA (
         BWA_MEM.out.sorted_bam
     )
 
+
+    // SAMTOOLS_VIEW_CONC (
+    //     BWA_MEM.out.sorted_bam,
+    //     SAMTOOLS_INDEX_BWA.out.bai
+    // )
+
+    ch_bwa_sorted_bam = BWA_MEM.out.sorted_bam
+    ch_bwa_sorted_bai = SAMTOOLS_INDEX_BWA.out.bai
+    ch_sb_split_bam = SAMBLASTER.out.split_bam
+    BEDTOOLS_BAM2BED (
+        ch_bwa_sorted_bam.join(ch_sb_split_bam).
+            join(ch_bwa_sorted_bai)
+    )
+
+    CIRCLEFINDER (
+        BEDTOOLS_BAM2BED.out.split_conc_txt
+    )
 
     //
     // MODULE: Run circlemap readextractor
@@ -155,13 +182,13 @@ workflow CIRCLESEQ {
 
 
 
-    CIRCLEMAP_REALIGN (
-        ch_bwa_mem_bam.join(ch_bwa_mem_bai).
-            join(ch_bwa_mem_qname_bam).
-            join(ch_re_sorted_bam).
-            join(ch_re_sorted_bai),
-        ch_fasta
-    )
+//    CIRCLEMAP_REALIGN (
+//        ch_bwa_mem_bam.join(ch_bwa_mem_bai).
+//            join(ch_bwa_mem_qname_bam).
+//            join(ch_re_sorted_bam).
+//            join(ch_re_sorted_bai),
+//        ch_fasta
+//    )
 
     //
     // MODULE: Pipeline reporting
