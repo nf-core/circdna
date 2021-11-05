@@ -49,11 +49,9 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 4. Start running your own analysis!
 
-    <!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
-
-    ```console
-    nextflow run nf-core/circleseq -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --genome GRCh37
-    ```
+```console
+    nextflow run nf-core/circleseq -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --fasta genome.fa
+```
 
 ## Documentation
 
