@@ -78,16 +78,12 @@ process SAMBLASTER {
         -s ${prefix}.split.sam \\
         > /dev/null
 
-        # -d ${prefix}.disc.sam \\
-
-#     samtools view \\
-#         -@ $task.cpus \\
-#         -o ${prefix}.disc.bam \\
-#         -bS ${prefix}.disc.sam 
     samtools view \\
         -@ $task.cpus \\
         -o ${prefix}.split.bam \\
         -bS ${prefix}.split.sam 
+
+    rm ${prefix}.split.sam 
 
     echo \$(samblaster --version 2>&1) > ${software}.version.txt
     """
