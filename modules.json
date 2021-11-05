@@ -26,6 +26,9 @@
             },
             "samtools/sort": {
                 "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
+            },
+            "trimgalore": {
+                "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
             }
         }
     }
