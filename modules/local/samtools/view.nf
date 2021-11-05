@@ -65,12 +65,10 @@ process SAMTOOLS_VIEW {
     // TODO nf-core: If the tool supports multi-threading then you MUST provide the appropriate parameter
     //               using the Nextflow "task" variable e.g. "--threads $task.cpus"
     // TODO nf-core: Please replace the example samtools command below with your module's command
-    // TODO nf-core: Please indent the command appropriately (4 spaces!!) to help with readability ;)
     """
     samtools \\
         view \\
         $options.args \\
-        -hf 0x2 \\
         -@ $task.cpus \\
         -o ${prefix}.concordant.bam \\
         $bam

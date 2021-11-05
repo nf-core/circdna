@@ -79,7 +79,6 @@ include { CIRCLEMAP_REPEATS         }   from '../modules/local/circlemap/repeats
 
 // CIRCLE_FINDER
 include { SAMBLASTER }     from '../modules/local/samblaster.nf'      addParams( options: modules['samblaster']     )
-include { SAMTOOLS_VIEW }     from '../modules/local/samtools/view.nf'      addParams( options: modules['samtools_view']     )
 include { BEDTOOLS_SORTEDBAM2BED }     from '../modules/local/bedtools/sortedbam2bed.nf'      addParams( options: modules['bedtools_sortedbam2bed']     )
 include { BEDTOOLS_SPLITBAM2BED }     from '../modules/local/bedtools/splitbam2bed.nf'      addParams( options: modules['bedtools_splitbam2bed']     )
 include { CIRCLEFINDER }     from '../modules/local/circlefinder.nf'      addParams( options: modules['circlefinder']     )
