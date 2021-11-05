@@ -187,7 +187,7 @@ workflow CIRCLESEQ {
     // SUBWORKFLOW: RUN CIRCLE-MAP REALIGN or REPEATS PIPELINE
     //
 
-    if (params.circle_identifier == "circle_map_realign" |
+    if (params.circle_identifier == "circle_map_realign" ||
             params.circle_identifier == "circle_map_repeats") {
         CIRCLEMAP_READEXTRACTOR (
             BWA_MEM.out.qname_bam
