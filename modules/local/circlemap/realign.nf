@@ -32,7 +32,7 @@ process CIRCLEMAP_REALIGN {
     //               Software MUST be pinned to channel (i.e. "bioconda"), version (i.e. "1.10").
     //               For Conda, the build (i.e. "h9402c20_2") must be EXCLUDED to support installation on different operating systems.
     // TODO nf-core: See section in main README for further information regarding finding and adding container addresses to the section below.
-    conda (params.enable_conda ? "bioconda::circle-map=1.1.4 anaconda::biopython=1.77" : null)
+    conda (params.enable_conda ? "bioconda::circle-map=1.1.4 conda-forge::biopython=1.77" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/circle-map:1.1.4--pyh864c0ab_1"
     } else {
@@ -69,6 +69,7 @@ process CIRCLEMAP_REALIGN {
     """
     Circle-Map \\
         Realign \\
+        $options.args \\
         -i $re_bam \\
         -qbam $qname \\
         -sbam $sbam \\
@@ -79,6 +80,5 @@ process CIRCLEMAP_REALIGN {
 
 
     echo \$(Circle-Map --help 2<&1) | grep -o "version=[0-9].[0-9].[0-9]" > ${software}.version.txt
-    # echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' > ${software}.version.txt
     """
 }
