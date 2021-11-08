@@ -51,7 +51,7 @@ process CIRCLEMAP_REALIGN {
 
     output:
     // TODO nf-core: Named file extensions MUST be emitted for ALL output channels
-    tuple val(meta), path("*_circularDNA_coordinates.bed"), emit: bed
+    tuple val(meta), path("*.bed"), emit: bed
     // TODO nf-core: List additional required output channels/values here
     path "*.version.txt"          , emit: version
 
