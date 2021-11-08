@@ -70,7 +70,9 @@ include { BWA_MEM   }   from '../modules/nf-core/modules/bwa/mem/main'      addP
 include { SAMTOOLS_FAIDX                        }   from '../modules/nf-core/modules/samtools/faidx/main'   addParams( options: modules['samtools_faidx']   )
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_BWA  }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_bwa']   )
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_RE   }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_re']   )
+include { SAMTOOLS_SORT as SAMTOOLS_SORT_QNAME  }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort_qname']   )
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_RE     }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort_re']   )
+
 
 // CIRCLE-MAP
 include { CIRCLEMAP_READEXTRACTOR   }   from '../modules/local/circlemap/readextractor.nf'  addParams( options: modules['circlemap_readextractor']  )
@@ -78,10 +80,10 @@ include { CIRCLEMAP_REALIGN         }   from '../modules/local/circlemap/realign
 include { CIRCLEMAP_REPEATS         }   from '../modules/local/circlemap/repeats.nf'        addParams( options: modules['circlemap_repeats']        )
 
 // CIRCLE_FINDER
-include { SAMBLASTER }     from '../modules/local/samblaster.nf'      addParams( options: modules['samblaster']     )
-include { BEDTOOLS_SORTEDBAM2BED }     from '../modules/local/bedtools/sortedbam2bed.nf'      addParams( options: modules['bedtools_sortedbam2bed']     )
-include { BEDTOOLS_SPLITBAM2BED }     from '../modules/local/bedtools/splitbam2bed.nf'      addParams( options: modules['bedtools_splitbam2bed']     )
-include { CIRCLEFINDER }     from '../modules/local/circlefinder.nf'      addParams( options: modules['circlefinder']     )
+include { SAMBLASTER                }     from '../modules/local/samblaster.nf'                 addParams( options: modules['samblaster']               )
+include { BEDTOOLS_SORTEDBAM2BED    }     from '../modules/local/bedtools/sortedbam2bed.nf'     addParams( options: modules['bedtools_sortedbam2bed']   )
+include { BEDTOOLS_SPLITBAM2BED     }     from '../modules/local/bedtools/splitbam2bed.nf'      addParams( options: modules['bedtools_splitbam2bed']    )
+include { CIRCLEFINDER              }     from '../modules/local/circlefinder.nf'               addParams( options: modules['circlefinder']             )
 
 // MULTIQC
 include { MULTIQC }     from '../modules/nf-core/modules/multiqc/main'      addParams( options: multiqc_options     )
@@ -154,6 +156,11 @@ workflow CIRCLESEQ {
         ch_trimmed_reads,
         BWA_INDEX.out.index
     )
+    
+    SAMTOOLS_SORT_QNAME (
+        BWA_MEM.out.sorted_bam
+    )
+
 
     SAMTOOLS_INDEX_BWA (
         BWA_MEM.out.sorted_bam
@@ -164,7 +171,7 @@ workflow CIRCLESEQ {
     //
     if (params.circle_identifier == "circle_finder") {
         SAMBLASTER (
-            BWA_MEM.out.qname_bam
+            SAMTOOLS_SORT_QNAME.out.bam
         )
         ch_bwa_sorted_bam = BWA_MEM.out.sorted_bam
         ch_bwa_sorted_bai = SAMTOOLS_INDEX_BWA.out.bai
@@ -188,9 +195,9 @@ workflow CIRCLESEQ {
     //
 
     if (params.circle_identifier == "circle_map_realign" ||
-            params.circle_identifier == "circle_map_repeats") {
+            params.circle_identifreier == "circle_map_repeats") {
         CIRCLEMAP_READEXTRACTOR (
-            BWA_MEM.out.qname_bam
+            SAMTOOLS_SORT_QNAME.out.bam
         )
 
         SAMTOOLS_SORT_RE (
@@ -205,7 +212,7 @@ workflow CIRCLESEQ {
         // DEFINE CHANNELS FOR REALIGN AND REPEATS
         ch_bwa_mem_bam = BWA_MEM.out.sorted_bam
         ch_bwa_mem_bai = SAMTOOLS_INDEX_BWA.out.bai
-        ch_bwa_mem_qname_bam = BWA_MEM.out.qname_bam
+        ch_qname_sorted_bam = SAMTOOLS_SORT_QNAME.out.bam
         ch_re_sorted_bam = SAMTOOLS_SORT_RE.out.bam
         ch_re_sorted_bai = SAMTOOLS_INDEX_RE.out.bai
 
@@ -227,7 +234,7 @@ workflow CIRCLESEQ {
         if (params.circle_identifier == "circle_map_realign") {
             CIRCLEMAP_REALIGN (
                 ch_bwa_mem_bam.join(ch_bwa_mem_bai).
-                    join(ch_bwa_mem_qname_bam).
+                    join(ch_qname_sorted_bam).
                     join(ch_re_sorted_bam).
                     join(ch_re_sorted_bai),
                 ch_fasta
