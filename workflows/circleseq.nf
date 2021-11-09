@@ -201,7 +201,7 @@ workflow CIRCLESEQ {
         )
 
         SAMTOOLS_SORT_RE (
-            CIRCLEMAP_READEXTRACTOR.out.bam
+            CIRCLEMAP_READEXTRACTOR.out.circ_bam
         )
 
         SAMTOOLS_INDEX_RE (
@@ -210,11 +210,12 @@ workflow CIRCLESEQ {
 
 
         // DEFINE CHANNELS FOR REALIGN AND REPEATS
-        ch_bwa_mem_bam = BWA_MEM.out.sorted_bam
-        ch_bwa_mem_bai = SAMTOOLS_INDEX_BWA.out.bai
+        ch_bam_sorted = BWA_MEM.out.sorted_bam
+        ch_bam_sorted_bai = SAMTOOLS_INDEX_BWA.out.bai
         ch_qname_sorted_bam = SAMTOOLS_SORT_QNAME.out.bam
         ch_re_sorted_bam = SAMTOOLS_SORT_RE.out.bam
         ch_re_sorted_bai = SAMTOOLS_INDEX_RE.out.bai
+        ch_fasta_index = SAMTOOLS_FAIDX.out.fai
 
         // 
         // MODULE: RUN CIRCLE_MAP REPEATS
@@ -233,11 +234,12 @@ workflow CIRCLESEQ {
         //
         if (params.circle_identifier == "circle_map_realign") {
             CIRCLEMAP_REALIGN (
-                ch_bwa_mem_bam.join(ch_bwa_mem_bai).
+                ch_re_sorted_bam.join(ch_re_sorted_bai).
                     join(ch_qname_sorted_bam).
-                    join(ch_re_sorted_bam).
-                    join(ch_re_sorted_bai),
-                ch_fasta
+                    join(ch_bam_sorted).
+                    join(ch_bam_sorted_bai),
+                ch_fasta,
+                ch_fasta_index
             )
         }
     }
