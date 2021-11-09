@@ -50,7 +50,7 @@ process CIRCLEMAP_READEXTRACTOR {
 
     output:
     // TODO nf-core: Named file extensions MUST be emitted for ALL output channels
-    tuple val(meta), path("*_circular_read_candidates.bam"), emit: bam
+    tuple val(meta), path("*.circular_read_candidates.bam"), emit: circ_bam
     // TODO nf-core: List additional required output channels/values here
     path "*.version.txt"          , emit: version
 
@@ -67,7 +67,7 @@ process CIRCLEMAP_READEXTRACTOR {
     // TODO nf-core: Please indent the command appropriately (4 spaces!!) to help with readability ;)
     """
     Circle-Map ReadExtractor -i $qname_bam \\
-        -o ${prefix}_circular_read_candidates.bam
+        -o ${prefix}.circular_read_candidates.bam
     echo \$(Circle-Map --help 2<&1) | grep -o "version=[0-9].[0-9].[0-9]" > ${software}.version.txt
     """
 }
