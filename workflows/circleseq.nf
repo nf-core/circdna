@@ -243,7 +243,6 @@ workflow CIRCLESEQ {
             )
         }
     }
-
     //
     // MODULE: Pipeline reporting
     //
