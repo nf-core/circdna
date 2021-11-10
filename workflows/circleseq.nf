@@ -85,6 +85,9 @@ include { BEDTOOLS_SORTEDBAM2BED    }     from '../modules/local/bedtools/sorted
 include { BEDTOOLS_SPLITBAM2BED     }     from '../modules/local/bedtools/splitbam2bed.nf'      addParams( options: modules['bedtools_splitbam2bed']    )
 include { CIRCLEFINDER              }     from '../modules/local/circlefinder.nf'               addParams( options: modules['circlefinder']             )
 
+// CIRCexplorer2
+include { CIRCEXPLORER2_PARSE       }     from '../modules/local/circexplorer2/parse.nf'               addParams( options: modules['circexplorer2_parse']             )
+
 // MULTIQC
 include { MULTIQC }     from '../modules/nf-core/modules/multiqc/main'      addParams( options: multiqc_options     )
 
@@ -195,7 +198,7 @@ workflow CIRCLESEQ {
     //
 
     if (params.circle_identifier == "circle_map_realign" ||
-            params.circle_identifreier == "circle_map_repeats") {
+            params.circle_identifier == "circle_map_repeats") {
         CIRCLEMAP_READEXTRACTOR (
             SAMTOOLS_SORT_QNAME.out.bam
         )
@@ -243,6 +246,14 @@ workflow CIRCLESEQ {
             )
         }
     }
+
+
+    if (params.circle_identifier == "circexplorer2") {
+        CIRCEXPLORER2_PARSE (
+            BWA_MEM.out.sorted_bam
+        )
+    }
+
     //
     // MODULE: Pipeline reporting
     //
