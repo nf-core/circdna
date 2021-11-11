@@ -141,7 +141,7 @@
                 }
             }
         },
-        "circdna_identifier": {
+        "circdna_identifier_options": {
             "title": "Circular DNA identifier options",
             "type": "object",
             "fa_icon": "fas fa-circle-notch",
@@ -362,7 +362,10 @@
             "$ref": "#/definitions/max_job_request_options"
         },
         {
-            "$ref": "#/definitions/generic_options"
+            "$ref": "#/definitions/process_skipping_options"
+        },
+        {
+            "$ref": "#/definitions/circdna_identifier_options"
         }
     ]
 }
