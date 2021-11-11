@@ -19,6 +19,13 @@ parser.add_argument('-d', '--directory', metavar='',
                                   default = "./")
 parser.add_argument('-o', '--output', metavar='',
                                   help="Output bed file with coverage information")
+parser.add_argument('-o', '--output', metavar='',
+                                  help="Output bed file with coverage information")
+parser.add_argument('-o', '--output', metavar='',
+                                  help="Output bed file with coverage information")
+parser.add_argument('-o', '--output', metavar='',
+                                  help="Output bed file with coverage information")
+
 
 parser.parse_args()
 args = parser.parse_args(sys.argv[1:])
