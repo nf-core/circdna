@@ -149,14 +149,15 @@
             "properties": {
                 "circle_identifier": {
                     "type": "string",
-                    "description": "Specifies the circular DNA identification algorithm to use - available 'circle-map', 'circle_finder', and 'circexplorer2'.",
+                    "description": "Specifies the circular DNA identification algorithm to use - available 'circle_map_realign', 'circle_map_repeats', 'circle_finder', and 'circexplorer2'.",
                     "fa_icon": "far fa-circle",
                     "enum": [
-                        "circle-map",
+                        "circle_map_realign",
+                        "circle_map_repeats",
                         "circle_finder",
                         "circexplorer2"
                     ],
-                    "default": "circle-map"
+                    "default": "circle_map_realign"
                 },
                 "coverage_bases": {
                     "type": "integer",
