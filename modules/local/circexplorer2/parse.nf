@@ -60,10 +60,11 @@ process CIRCEXPLORER2_PARSE {
     // TODO nf-core: It MUST be possible to pass additional parameters to the tool as a command-line string via the "$options.args" variable
     // TODO nf-core: If the tool supports multi-threading then you MUST provide the appropriate parameter
     //               using the Nextflow "task" variable e.g. "--threads $task.cpus"
-    // TODO nf-core: Please replace the example samtools command below with your module's command
-    // TODO nf-core: Please indent the command appropriately (4 spaces!!) to help with readability ;)
     """
-    CIRCexplorer2 parse $options.args $bam -b ${prefix}.back_spliced_junction.bed > ${prefix}_CIRCexplorer2_parse.log
+    CIRCexplorer2 parse $options.args $bam -b ${prefix}.temp.bed > ${prefix}_CIRCexplorer2_parse.log
+    cat ${prefix}.temp.bed | tr "/" "\" > ${prefix}.circexplorer_circdna.bed
+    rm ${prefix}.temp.bed
+    
 
     echo \$(CIRCexplorer2 --version) > ${software}.version.txt
     """
