@@ -156,10 +156,9 @@
                         "circle_finder",
                         "circexplorer2"
                     ]
-
                 }
             }
-        }
+        },
         "institutional_config_options": {
             "title": "Institutional config options",
             "type": "object",
