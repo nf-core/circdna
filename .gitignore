@@ -1,4 +1,6 @@
-.nextflow.log*
-work
-results
-.nextflow
+.nextflow*
+work/
+data/
+results/
+.DS_Store
+*.code-workspace
