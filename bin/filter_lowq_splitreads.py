@@ -2,10 +2,9 @@
 import pysam as ps
 import sys
 import argparse
-import os
  
 parser = argparse.ArgumentParser()
- 
+
 parser.add_argument('-i', '--input', metavar='',
                                   help="Input bam file")
 parser.add_argument('-o', '--output', metavar='',
@@ -19,7 +18,7 @@ bam = ps.AlignmentFile("%s" % args.input,"rb")
 filtered = ps.AlignmentFile("%s"% args.output, "wb", template=bam)
 
 quality_score = args.quality
- 
+
 for read in bam:
     if read.mapq < quality_score:
         continue

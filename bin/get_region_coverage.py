@@ -19,15 +19,12 @@ parser.add_argument('-d', '--directory', metavar='',
                                   default = "./")
 parser.add_argument('-o', '--output', metavar='',
                                   help="Output bed file with coverage information")
- 
 
 parser.parse_args()
 args = parser.parse_args(sys.argv[1:])
 sorted_bam = args.input
 directory = os.path.dirname(args.input)
 bam_file = os.path.basename(args.input)
-
-# input_file, input_file_extension = os.path.splitext(os.path.basename(i))
 
 coverage_object = coverage(bam_file, bt.BedTool(args.bed),300,20,150, directory)
 bed_coverage = coverage_object.compute_coverage(coverage_object.get_wg_coverage())
