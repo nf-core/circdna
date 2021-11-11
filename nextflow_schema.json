@@ -369,6 +369,9 @@
         },
         {
             "$ref": "#/definitions/read_trimming_options"
+        },
+        {
+            "$ref": "#/definitions/generic_options"
         }
     ]
 }
