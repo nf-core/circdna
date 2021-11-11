@@ -41,10 +41,8 @@ process BWA_MEM {
         \$INDEX \\
         $reads \\
         > ${prefix}.sam
-    # samtools sort -@ $task.cpus -n -o ${prefix}.qname_sorted.bam ${prefix}.sam
     samtools sort -@ $task.cpus -o ${prefix}.sorted.bam ${prefix}.sam
 
-    # samtools index -@ $task.cpus ${prefix}.sorted.bam
     rm ${prefix}.sam
 
     cat <<-END_VERSIONS > versions.yml
