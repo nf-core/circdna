@@ -366,6 +366,9 @@
         },
         {
             "$ref": "#/definitions/circdna_identifier_options"
+        },
+        {
+            "$ref": "#/definitions/read_trimming_options"
         }
     ]
 }
