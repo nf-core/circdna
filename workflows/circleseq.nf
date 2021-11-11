@@ -18,7 +18,8 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 if (params.fasta) { ch_fasta = file(params.fasta) } else { exit 1, 'Fasta reference genome not specified!' }
 
-if (params.circle_identifier != "circle-map" &
+if (params.circle_identifier != "circle_map_realign" &
+    params.circle_identifier != "circle_map_repeats" &
     params.circle_identifier != "circle_finder" &
     params.circle_identifier != "circexplorer2") {exit 1, 'Circle Identifier Software/Algorithm not specified!' } 
 
