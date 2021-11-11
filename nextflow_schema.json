@@ -155,8 +155,40 @@
                         "circle-map",
                         "circle_finder",
                         "circexplorer2"
-                    ]
+                    ],
+                    "default": "circle-map"
+                },
+                "coverage_bases": {
+                    "type": "integer",
+                    "description": "Number of bases to extend for computing the coverage ratio",
+                    "fa_icon": "fas fa-ruler-horizontal",
+                    "default": "200"
+                },
+                "coverage_mapq": {
+                    "type": "integer",
+                    "description": "Minimum mapping quality threshold for coverage computation",
+                    "fa_icon": "fas fa-check-circle",
+                    "default": "20"
+                },
+                "coverage_extension": {
+                    "type": "integer",
+                    "description": "Number of bases inside the circular DNA breakpoint coordinates to compute the coverage ratio",
+                    "fa_icon": "fas fa-ruler-combined",
+                    "default": "100"
+                },
+                "circdna_filter_mapq": {
+                    "type": "integer",
+                    "description": "Filter Split reads below the mapping quality threshold",
+                    "fa_icon": "fas fa-filter",
+                    "default": "20"
+                },
+                "circdna_filter_nSplit": {
+                    "type": "integer",
+                    "description": "Number of split reads required that support the circular DNA junction",
+                    "fa_icon": "fas fa-ruler-combined",
+                    "default": "2"
                 }
+
             }
         },
         "institutional_config_options": {
