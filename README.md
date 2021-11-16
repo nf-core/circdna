@@ -30,10 +30,10 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 1. Concatenate FastQ's of replicates 
 2. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-3. Trim Adapters and low quality bases ([`Trim Galore`] (https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/))
-4. Map reads using BWA-MEM ([`BWA`] (https://github.com/lh3/bwa))
+3. Trim Adapters and low quality bases ([`Trim Galore`](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/))
+4. Map reads using BWA-MEM ([`BWA`](https://github.com/lh3/bwa))
 5. Extract partially mapped and discordant reads ([`Circle-Map`](https://github.com/iprada/Circle-Map))
-6. Identification of Circular DNAs using ([`Circle-Map`](https://github.com/iprada/Circle-Map)), CIRCexplorer2 ([`CIRCexplorer2`](https://circexplorer2.readthedocs.io/en/latest/)), or Circle_finder ([`Circle_finder`] (https://github.com/pk7zuva/Circle_finder))
+6. Identification of Circular DNAs using ([`Circle-Map`](https://github.com/iprada/Circle-Map)), CIRCexplorer2 ([`CIRCexplorer2`](https://circexplorer2.readthedocs.io/en/latest/)), or Circle_finder ([`Circle_finder`](https://github.com/pk7zuva/Circle_finder))
 7. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
 ## Quick Start
