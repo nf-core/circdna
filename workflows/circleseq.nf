@@ -81,6 +81,7 @@ include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_BWA  }   from '../modules/nf-core/mod
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_RE   }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_re']   )
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_QNAME  }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort_qname']   )
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_RE     }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort_re']   )
+include { SAMTOOLS_SORT                         }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort']   )
 
 
 // CIRCLE-MAP
@@ -125,28 +126,7 @@ workflow CIRCLESEQ {
         ch_input
     )
 
-    //
-    // MODULE: Run FastQC
-    //
 
-    if ( ! params.skip_qc ) {
-        FASTQC_RAW (
-            INPUT_CHECK.out.reads
-        )
-        ch_software_versions = ch_software_versions.mix(FASTQC_RAW.out.version.first().ifEmpty(null))
-    }
-
-    //
-    // MODULE: Run trimgalore
-    //
-    if ( ! params.skip_trimming ) {
-        TRIMGALORE (
-            INPUT_CHECK.out.reads
-        ) 
-        ch_trimmed_reads = TRIMGALORE.out.reads
-    } else {
-        ch_trimmed_reads = INPUT_CHECK.out.reads
-    }
 
     //
     // MODULE: Run bwa index
@@ -162,21 +142,60 @@ workflow CIRCLESEQ {
         ch_fasta
     )
 
-    //
-    // MODULE: BWA MEM ALIGNMENT
-    BWA_MEM (
-        ch_trimmed_reads,
-        BWA_INDEX.out.index
-    )
     
+    // Check file format
+    if (params.input_format == "FASTQ") {
+        //
+        // MODULE: Run FastQC
+        //
+        if ( ! params.skip_qc ) {
+            FASTQC_RAW (
+                INPUT_CHECK.out.reads
+            )
+            ch_software_versions = ch_software_versions.mix(FASTQC_RAW.out.version.first().ifEmpty(null))
+        }
+
+        //
+        // MODULE: Run trimgalore
+        //
+        if ( ! params.skip_trimming ) {
+            TRIMGALORE (
+                INPUT_CHECK.out.reads
+            ) 
+            ch_trimmed_reads = TRIMGALORE.out.reads
+        } else {
+            ch_trimmed_reads = INPUT_CHECK.out.reads
+        }
+        INPUT_CHECK.out.reads.view()
+        //
+        // MODULE: BWA MEM ALIGNMENT
+        //
+        BWA_MEM (
+            ch_trimmed_reads,
+            BWA_INDEX.out.index
+        )
+        BWA_MEM.out.sorted_bam.view()
+        SAMTOOLS_INDEX_BWA (
+            BWA_MEM.out.sorted_bam
+        )
+        ch_bwa_sorted_bam = BWA_MEM.out.sorted_bam
+    } else if (params.input_format == "BAM") {
+        ch_bam = INPUT_CHECK.out.reads
+        INPUT_CHECK.out.reads.view()
+        SAMTOOLS_SORT (
+            ch_bam
+        )
+        SAMTOOLS_INDEX_BWA (
+            SAMTOOLS_SORT.out.bam
+        )
+        ch_bwa_sorted_bam = SAMTOOLS_SORT.out.bam
+    } 
+
     SAMTOOLS_SORT_QNAME (
-        BWA_MEM.out.sorted_bam
+        ch_bwa_sorted_bam
     )
 
 
-    SAMTOOLS_INDEX_BWA (
-        BWA_MEM.out.sorted_bam
-    )
 
     //
     // SUBWORKFLOW - RUN CIRCLE_FINDER PIPELINE
@@ -185,14 +204,14 @@ workflow CIRCLESEQ {
         SAMBLASTER (
             SAMTOOLS_SORT_QNAME.out.bam
         )
-        ch_bwa_sorted_bam = BWA_MEM.out.sorted_bam
-        ch_bwa_sorted_bai = SAMTOOLS_INDEX_BWA.out.bai
+        ch_bwa_sorted_bam_cf = BWA_MEM.out.sorted_bam
+        ch_bwa_sorted_bai_cf = SAMTOOLS_INDEX_BWA.out.bai
 
         BEDTOOLS_SPLITBAM2BED (
             SAMBLASTER.out.split_bam
         )
         BEDTOOLS_SORTEDBAM2BED (
-            ch_bwa_sorted_bam.join(ch_bwa_sorted_bai)
+            ch_bwa_sorted_bam_cf.join(ch_bwa_sorted_bai_cf)
         )
 
         ch_b2b_sorted = BEDTOOLS_SORTEDBAM2BED.out.conc_txt
@@ -222,7 +241,7 @@ workflow CIRCLESEQ {
 
 
         // DEFINE CHANNELS FOR REALIGN AND REPEATS
-        ch_bam_sorted = BWA_MEM.out.sorted_bam
+        ch_bam_sorted = ch_bwa_sorted_bam
         ch_bam_sorted_bai = SAMTOOLS_INDEX_BWA.out.bai
         ch_qname_sorted_bam = SAMTOOLS_SORT_QNAME.out.bam
         ch_re_sorted_bam = SAMTOOLS_SORT_RE.out.bam
@@ -289,8 +308,12 @@ workflow CIRCLESEQ {
     ch_multiqc_files = ch_multiqc_files.mix(ch_multiqc_custom_config.collect().ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(GET_SOFTWARE_VERSIONS.out.yaml.collect())
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW.out.zip.collect{it[1]}.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(TRIMGALORE.out.zip.collect{it[1]}.ifEmpty([]))
+    if (params.input_format == "FASTQ" & !params.skip_qc) {
+        ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW.out.zip.collect{it[1]}.ifEmpty([]))
+        if (!params.skip_trimming) {
+            ch_multiqc_files = ch_multiqc_files.mix(TRIMGALORE.out.zip.collect{it[1]}.ifEmpty([]))
+        }
+    }
 
     MULTIQC (
         ch_multiqc_files.collect()
