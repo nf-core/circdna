@@ -1,8 +1,8 @@
-# ![nf-core/circleseq](docs/images/nf-core-circleseq_logo.png)
+# ![nf-core/circdna](docs/images/nf-core-circdna_logo.png)
 
-[![GitHub Actions CI Status](https://github.com/nf-core/circleseq/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/circleseq/actions?query=workflow%3A%22nf-core+CI%22)
-[![GitHub Actions Linting Status](https://github.com/nf-core/circleseq/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/circleseq/actions?query=workflow%3A%22nf-core+linting%22)
-[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/circleseq/results)
+[![GitHub Actions CI Status](https://github.com/nf-core/circdna/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/circdna/actions?query=workflow%3A%22nf-core+CI%22)
+[![GitHub Actions Linting Status](https://github.com/nf-core/circdna/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/circdna/actions?query=workflow%3A%22nf-core+linting%22)
+[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/circdna/results)
 [![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A521.04.0-23aa62.svg?labelColor=000000)](https://www.nextflow.io/)
@@ -10,26 +10,31 @@
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
 
-[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23circleseq-4A154B?labelColor=000000&logo=slack)](https://nfcore.slack.com/channels/circleseq)
+[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23circdna-4A154B?labelColor=000000&logo=slack)](https://nfcore.slack.com/channels/circdna)
 [![Follow on Twitter](http://img.shields.io/badge/twitter-%40nf__core-1DA1F2?labelColor=000000&logo=twitter)](https://twitter.com/nf_core)
 [![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?labelColor=000000&logo=youtube)](https://www.youtube.com/c/nf-core)
 
 ## Introduction
 
 <!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
-**nf-core/circleseq** is a bioinformatics best-practice analysis pipeline for Pipeline for the identification of circular DNAs.
+**nf-core/circdna** is a bioinformatics best-practice analysis pipeline for Pipeline for the identification of circular DNAs.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
 <!-- TODO nf-core: Add full-sized test dataset and amend the paragraph below if applicable -->
-On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/circleseq/results).
+On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/circdna/results).
 
 ## Pipeline summary
 
 <!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
 
-1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+1. Concatenate FastQ's of replicates 
+2. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
+3. Trim Adapters and low quality bases ([`Trim Galore`] (https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/))
+4. Map reads using BWA-MEM ([`BWA`] (https://github.com/lh3/bwa))
+5. Extract partially mapped and discordant reads ([`Circle-Map`](https://github.com/iprada/Circle-Map))
+6. Identification of Circular DNAs using ([`Circle-Map`](https://github.com/iprada/Circle-Map)), CIRCexplorer2 ([`CIRCexplorer2`](https://circexplorer2.readthedocs.io/en/latest/)), or Circle_finder ([`Circle_finder`] (https://github.com/pk7zuva/Circle_finder))
+7. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
 ## Quick Start
 
@@ -40,7 +45,7 @@ On release, automated continuous integration tests run the pipeline on a full-si
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
     ```console
-    nextflow run nf-core/circleseq -profile test,<docker/singularity/podman/shifter/charliecloud/conda/institute>
+    nextflow run nf-core/circdna -profile test,<docker/singularity/podman/shifter/charliecloud/conda/institute>
     ```
 
     > * Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
@@ -50,16 +55,16 @@ On release, automated continuous integration tests run the pipeline on a full-si
 4. Start running your own analysis!
 
 ```console
-    nextflow run nf-core/circleseq -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --fasta genome.fa
+    nextflow run nf-core/circdna -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --fasta genome.fa
 ```
 
 ## Documentation
 
-The nf-core/circleseq pipeline comes with documentation about the pipeline [usage](https://nf-co.re/circleseq/usage), [parameters](https://nf-co.re/circleseq/parameters) and [output](https://nf-co.re/circleseq/output).
+The nf-core/circdna pipeline comes with documentation about the pipeline [usage](https://nf-co.re/circdna/usage), [parameters](https://nf-co.re/circdna/parameters) and [output](https://nf-co.re/circdna/output).
 
 ## Credits
 
-nf-core/circleseq was originally written by Daniel Schreyer.
+nf-core/circdna was originally written by Daniel Schreyer.
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
@@ -69,12 +74,12 @@ We thank the following people for their extensive assistance in the development 
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
-For further information or help, don't hesitate to get in touch on the [Slack `#circleseq` channel](https://nfcore.slack.com/channels/circleseq) (you can join with [this invite](https://nf-co.re/join/slack)).
+For further information or help, don't hesitate to get in touch on the [Slack `#circdna` channel](https://nfcore.slack.com/channels/circdna) (you can join with [this invite](https://nf-co.re/join/slack)).
 
 ## Citations
 
 <!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
-<!-- If you use  nf-core/circleseq for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
+<!-- If you use  nf-core/circdna for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
 
 <!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
