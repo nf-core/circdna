@@ -64,6 +64,9 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check' addParams( opti
 def multiqc_options   = modules['multiqc']
 multiqc_options.args += params.multiqc_title ? Utils.joinModuleArgs(["--title \"$params.multiqc_title\""]) : ''
 
+// CONCATENATE FASTQ
+include { CAT_FASTQ }     from '../modules/nf-core/modules/cat/fastq/main'       addParams( options: modules['cat_fastq']   )
+
 // QUALITY CONTROL
 include { FASTQC as FASTQC_RAW  }     from '../modules/nf-core/modules/fastqc/main'       addParams( options: modules['fastqc']   )
 include { FASTQC as FASTQC_TRIM }     from '../modules/nf-core/modules/fastqc/main'       addParams( options: modules['fastqc']   )
@@ -106,6 +109,10 @@ def trimgalore_options    = modules['trimgalore']
 trimgalore_options.args  += params.trim_nextseq > 0 ? Utils.joinModuleArgs(["--nextseq ${params.trim_nextseq}"]) : ''
 if (params.save_trimmed)  { trimgalore_options.publish_files.put('fq.gz','') }
 
+// CONCATENATE FASTQ OPTIONS
+def cat_fastq_options          = modules['cat_fastq']
+if (!params.save_merged_fastq) { cat_fastq_options['publish_files'] = false }
+
 /*
 ========================================================================================
     RUN MAIN WORKFLOW
@@ -119,12 +126,6 @@ workflow CIRCLESEQ {
 
     ch_software_versions = Channel.empty()
 
-    //
-    // SUBWORKFLOW: Read in samplesheet, validate and stage input files
-    //
-    INPUT_CHECK (
-        ch_input
-    )
 
 
 
@@ -146,11 +147,41 @@ workflow CIRCLESEQ {
     // Check file format
     if (params.input_format == "FASTQ") {
         //
+        // SUBWORKFLOW: Read in samplesheet, validate and stage input files
+        //
+        INPUT_CHECK (
+            ch_input
+        )
+        .reads
+        .map {
+            meta, fastq ->
+                meta.id = meta.id.split('_')[0..-2].join('_')
+                [ meta, fastq ] }
+        .groupTuple(by: [0])
+        .branch {
+            meta, fastq ->
+                single  : fastq.size() == 1
+                    return [ meta, fastq.flatten() ]
+                multiple: fastq.size() > 1
+                    return [ meta, fastq.flatten() ]
+        }
+        .set { ch_fastq }
+        // ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+
+        ch_fastq.multiple.view()
+        CAT_FASTQ (
+            ch_fastq.multiple
+        )
+        .reads
+        .mix(ch_fastq.single)
+        .set { ch_cat_fastq }
+
+        //
         // MODULE: Run FastQC
         //
         if ( ! params.skip_qc ) {
             FASTQC_RAW (
-                INPUT_CHECK.out.reads
+                ch_cat_fastq
             )
             ch_software_versions = ch_software_versions.mix(FASTQC_RAW.out.version.first().ifEmpty(null))
         }
@@ -160,7 +191,7 @@ workflow CIRCLESEQ {
         //
         if ( ! params.skip_trimming ) {
             TRIMGALORE (
-                INPUT_CHECK.out.reads
+                ch_cat_fastq
             ) 
             ch_trimmed_reads = TRIMGALORE.out.reads
         } else {
