@@ -43,6 +43,7 @@ process CIRCEXPLORER2_PARSE {
     // TODO nf-core: Where applicable please provide/convert compressed files as input/output
     //               e.g. "*.fastq.gz" and NOT "*.fastq", "*.bam" and NOT "*.sam" etc.
     tuple val(meta), path(bam)
+    tuple val(meta), path(bai)
 
     output:
     // TODO nf-core: Named file extensions MUST be emitted for ALL output channels
@@ -62,7 +63,7 @@ process CIRCEXPLORER2_PARSE {
     //               using the Nextflow "task" variable e.g. "--threads $task.cpus"
     """
     CIRCexplorer2 parse $options.args $bam -b ${prefix}.temp.bed > ${prefix}_CIRCexplorer2_parse.log
-    cat ${prefix}.temp.bed | tr "/" "\" > ${prefix}.circexplorer_circdna.bed
+    cat ${prefix}.temp.bed | tr "/" "\t" > ${prefix}.circexplorer_circdna.bed
     rm ${prefix}.temp.bed
     
 

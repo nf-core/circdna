@@ -211,20 +211,22 @@ workflow CIRCLESEQ {
         )
         ch_bwa_sorted_bam = BWA_MEM.out.sorted_bam
     } else if (params.input_format == "BAM") {
-        ch_bam = INPUT_CHECK.out.reads
-        INPUT_CHECK.out.reads.view()
-        SAMTOOLS_SORT (
-            ch_bam
+        INPUT_CHECK (
+            ch_input
         )
+        if (!params.bam_sorted){
+            SAMTOOLS_SORT (
+                INPUT_CHECK.out.reads
+            )
+            ch_bwa_sorted_bam = SAMTOOLS_SORT.out.bam
+        } else {
+            ch_bwa_sorted_bam = INPUT_CHECK.out.reads
+        }
         SAMTOOLS_INDEX_BWA (
-            SAMTOOLS_SORT.out.bam
+            ch_bwa_sorted_bam
         )
-        ch_bwa_sorted_bam = SAMTOOLS_SORT.out.bam
     } 
 
-    SAMTOOLS_SORT_QNAME (
-        ch_bwa_sorted_bam
-    )
 
 
 
@@ -232,6 +234,9 @@ workflow CIRCLESEQ {
     // SUBWORKFLOW - RUN CIRCLE_FINDER PIPELINE
     //
     if (params.circle_identifier == "circle_finder") {
+        SAMTOOLS_SORT_QNAME (
+            ch_bwa_sorted_bam
+        )
         SAMBLASTER (
             SAMTOOLS_SORT_QNAME.out.bam
         )
@@ -258,6 +263,9 @@ workflow CIRCLESEQ {
 
     if (params.circle_identifier == "circle_map_realign" ||
             params.circle_identifier == "circle_map_repeats") {
+        SAMTOOLS_SORT_QNAME (
+            ch_bwa_sorted_bam
+        )
         CIRCLEMAP_READEXTRACTOR (
             SAMTOOLS_SORT_QNAME.out.bam
         )
@@ -309,7 +317,7 @@ workflow CIRCLESEQ {
 
     if (params.circle_identifier == "circexplorer2") {
         CIRCEXPLORER2_PARSE (
-            BWA_MEM.out.sorted_bam
+            ch_bwa_sorted_bam, SAMTOOLS_INDEX_BWA.out.bai
         )
     }
 

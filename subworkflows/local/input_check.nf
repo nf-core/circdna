@@ -16,13 +16,13 @@ workflow INPUT_CHECK {
             .splitCsv ( header:true, sep:',' )
             .map { create_fastq_channels(it) }
             .set { reads }
-    }
-
-    if ( params.input_format == "BAM" ) {
+    } else if ( params.input_format == "BAM" ) {
         SAMPLESHEET_CHECK ( samplesheet )
             .splitCsv ( header:true, sep:',' )
             .map { create_bam_channels(it) }
             .set { reads }
+    } else {
+
     }
 
     emit:
