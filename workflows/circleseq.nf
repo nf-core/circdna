@@ -53,7 +53,8 @@ include { GET_SOFTWARE_VERSIONS } from '../modules/local/get_software_versions' 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK } from '../subworkflows/local/input_check' addParams( options: [:] )
+include { INPUT_CHECK           } from '../subworkflows/local/input_check'                  addParams( options: [:] )
+include { BAM_STATS_SAMTOOLS    } from '../subworkflows/nf-core/bam_stats_samtools/main'    addParams( options: modules['samtools_stats_options'] )
 
 /*
 ========================================================================================
@@ -78,6 +79,9 @@ include { TRIMGALORE }    from '../modules/nf-core/modules/trimgalore/main'     
 include { BWA_INDEX }   from '../modules/nf-core/modules/bwa/index/main'    addParams( options: modules['bwa_index'])
 include { BWA_MEM   }   from '../modules/nf-core/modules/bwa/mem/main'      addParams( options: modules['bwa_mem']  )
 
+// PICARD
+include { PICARD_MARKDUPLICATES   }   from '../modules/nf-core/modules/picard/markduplicates/main'      addParams( options: modules['picard_markduplicates']  )
+
 // SAMTOOLS SORT & INDEX
 include { SAMTOOLS_FAIDX                        }   from '../modules/nf-core/modules/samtools/faidx/main'   addParams( options: modules['samtools_faidx']   )
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_BWA  }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_bwa']   )
@@ -85,6 +89,9 @@ include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_RE   }   from '../modules/nf-core/mod
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_QNAME  }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort_qname']   )
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_RE     }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort_re']   )
 include { SAMTOOLS_SORT                         }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort']   )
+
+// SAMTOOLS STATISTICS
+include { SAMTOOLS_STATS                        }   from '../modules/nf-core/modules/samtools/stats/main'    addParams( options: modules['samtools_stats']   )
 
 
 // CIRCLE-MAP
@@ -143,6 +150,9 @@ workflow CIRCLESEQ {
         ch_fasta
     )
 
+    // Define channels of fastqc, trimgalore, bwa stats for multiqc
+    ch_fastqc_report     = Channel.empty()
+    ch_trimgalore_report = Channel.empty()
     
     // Check file format
     if (params.input_format == "FASTQ") {
@@ -168,7 +178,6 @@ workflow CIRCLESEQ {
         .set { ch_fastq }
         // ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
-        ch_fastq.multiple.view()
         CAT_FASTQ (
             ch_fastq.multiple
         )
@@ -184,6 +193,7 @@ workflow CIRCLESEQ {
                 ch_cat_fastq
             )
             ch_software_versions = ch_software_versions.mix(FASTQC_RAW.out.version.first().ifEmpty(null))
+            ch_fastqc_report = FASTQC_RAW.out.zip
         }
 
         //
@@ -193,11 +203,12 @@ workflow CIRCLESEQ {
             TRIMGALORE (
                 ch_cat_fastq
             ) 
-            ch_trimmed_reads = TRIMGALORE.out.reads
+            ch_trimmed_reads        = TRIMGALORE.out.reads
+            ch_trimgalore_report    = TRIMGALORE.out.zip
         } else {
             ch_trimmed_reads = INPUT_CHECK.out.reads
         }
-        INPUT_CHECK.out.reads.view()
+
         //
         // MODULE: BWA MEM ALIGNMENT
         //
@@ -205,12 +216,10 @@ workflow CIRCLESEQ {
             ch_trimmed_reads,
             BWA_INDEX.out.index
         )
-        BWA_MEM.out.sorted_bam.view()
-        SAMTOOLS_INDEX_BWA (
-            BWA_MEM.out.sorted_bam
-        )
         ch_bwa_sorted_bam = BWA_MEM.out.sorted_bam
+
     } else if (params.input_format == "BAM") {
+    // Use BAM Files as input
         INPUT_CHECK (
             ch_input
         )
@@ -222,11 +231,29 @@ workflow CIRCLESEQ {
         } else {
             ch_bwa_sorted_bam = INPUT_CHECK.out.reads
         }
-        SAMTOOLS_INDEX_BWA (
-            ch_bwa_sorted_bam
-        )
     } 
 
+    // SAMTOOLS INDEX SORTED BAM
+    SAMTOOLS_INDEX_BWA (
+        ch_bwa_sorted_bam
+    )
+
+    //
+    // MARK DUPLICATES USING PICARD
+    // Not working atm
+    // PICARD_MARKDUPLICATES (
+    //     ch_bwa_sorted_bam
+    // )
+    // ch_picard_bam = PICARD_MARKDUPLICATES.out.bam
+    // ch_picard_bai = PICARD_MARKDUPLICATES.out.bai
+
+    BAM_STATS_SAMTOOLS (
+        ch_bwa_sorted_bam.join(SAMTOOLS_INDEX_BWA.out.bai, by: [0])
+    )
+    ch_bam_stats    = BAM_STATS_SAMTOOLS.out.stats
+    ch_bam_flagstat = BAM_STATS_SAMTOOLS.out.flagstat
+    ch_bam_idxstats = BAM_STATS_SAMTOOLS.out.idxstats
+    ch_bam_stats_versions = BAM_STATS_SAMTOOLS.out.versions
 
 
 
@@ -345,17 +372,16 @@ workflow CIRCLESEQ {
     ch_multiqc_files = Channel.empty()
     ch_multiqc_files = ch_multiqc_files.mix(Channel.from(ch_multiqc_config))
     ch_multiqc_files = ch_multiqc_files.mix(ch_multiqc_custom_config.collect().ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_fastqc_report.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_trimgalore_report.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_bam_flagstat.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_bam_stats.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_bam_idxstats.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(GET_SOFTWARE_VERSIONS.out.yaml.collect())
-    if (params.input_format == "FASTQ" & !params.skip_qc) {
-        ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW.out.zip.collect{it[1]}.ifEmpty([]))
-        if (!params.skip_trimming) {
-            ch_multiqc_files = ch_multiqc_files.mix(TRIMGALORE.out.zip.collect{it[1]}.ifEmpty([]))
-        }
-    }
 
     MULTIQC (
-        ch_multiqc_files.collect()
+        ch_multiqc_files.collect() 
     )
     multiqc_report       = MULTIQC.out.report.toList()
     ch_software_versions = ch_software_versions.mix(MULTIQC.out.version.ifEmpty(null))

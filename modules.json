@@ -21,7 +21,16 @@
             "multiqc": {
                 "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
             },
+            "picard/markduplicates": {
+                "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
+            },
             "samtools/faidx": {
+                "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
+            },
+            "samtools/flagstat": {
+                "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
+            },
+            "samtools/idxstats": {
                 "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
             },
             "samtools/index": {
@@ -29,6 +38,9 @@
             },
             "samtools/sort": {
                 "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
+            },
+            "samtools/stats": {
+                "git_sha": "ac1e6df076195cec553a2079c9cebd94026a0d47"
             },
             "trimgalore": {
                 "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
