@@ -21,11 +21,22 @@ if (params.fasta) { ch_fasta = file(params.fasta) } else { exit 1, 'Fasta refere
 if (params.circle_identifier != "circle_map_realign" &
     params.circle_identifier != "circle_map_repeats" &
     params.circle_identifier != "circle_finder" &
-    params.circle_identifier != "circexplorer2") {exit 1, 'Circle Identifier Software/Algorithm not specified!' } 
+    params.circle_identifier != "circexplorer2" &
+    params.circle_identifier != "ampliconarchitect") {exit 1, 'Circle Identifier Software/Algorithm not specified!' } 
 
 if (params.fasta) { ch_fasta = file(params.fasta) } else { exit 1, 'Fasta reference genome not specified!' }
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
-if (params.fasta) { ch_fasta = file(params.fasta) } else { exit 1, 'Fasta reference genome not specified!' }
+
+// AMPLICON ARCHITECT INPUT
+if (params.circle_identifier == "ampliconarchitect") {}
+
+if (params.circle_identifier == "ampliconarchitect") {
+    if (!params.mosek_license_dir) { exit 1, "Mosek Missing" }
+    if (!params.aa_data_repo) { exit 1, "AmpliconArchitect Data Repository Missing" }
+    if (params.reference_build != "hg19" & params.reference_build != "GRCh38" & params.reference_build != "GRCh37"){
+        exit 1, "Reference Build not given! Please specify --reference_build 'hg19', 'GRCh38', or 'GRCh37'." 
+    }
+}
 
 /*
 ========================================================================================
@@ -108,6 +119,10 @@ include { CIRCLEFINDER              }     from '../modules/local/circlefinder.nf
 // CIRCexplorer2
 include { CIRCEXPLORER2_PARSE       }     from '../modules/local/circexplorer2/parse.nf'               addParams( options: modules['circexplorer2_parse']             )
 
+// AmpliconArchitect
+include { AMPLICONARCHITECT_PREPAREAA           }     from '../modules/local/ampliconarchitect/prepareaa.nf'            addParams( options: modules['ampliconarchitect_prepareaa']          )
+include { AMPLICONARCHITECT_AMPLICONARCHITECT   }     from '../modules/local/ampliconarchitect/ampliconarchitect.nf'    addParams( options: modules['ampliconarchitect_ampliconarchitect']  )
+
 // MULTIQC
 include { MULTIQC }     from '../modules/nf-core/modules/multiqc/main'      addParams( options: multiqc_options     )
 
@@ -135,20 +150,6 @@ workflow CIRCLESEQ {
 
 
 
-
-    //
-    // MODULE: Run bwa index
-    //
-    BWA_INDEX (
-        ch_fasta
-    )
-
-    //
-    // MODULE: Run samtools faidx
-    //
-    SAMTOOLS_FAIDX (
-        ch_fasta
-    )
 
     // Define channels of fastqc, trimgalore, bwa stats for multiqc
     ch_fastqc_report     = Channel.empty()
@@ -185,6 +186,11 @@ workflow CIRCLESEQ {
         .mix(ch_fastq.single)
         .set { ch_cat_fastq }
 
+        // SAMTOOLS INDEX SORTED BAM
+        SAMTOOLS_INDEX_BWA (
+            ch_bwa_sorted_bam
+        )
+
         //
         // MODULE: Run FastQC
         //
@@ -210,6 +216,20 @@ workflow CIRCLESEQ {
         }
 
         //
+        // MODULE: Run bwa index
+        //
+        BWA_INDEX (
+            ch_fasta
+        )
+
+        //
+        // MODULE: Run samtools faidx
+        //
+        SAMTOOLS_FAIDX (
+            ch_fasta
+        )
+
+        //
         // MODULE: BWA MEM ALIGNMENT
         //
         BWA_MEM (
@@ -230,13 +250,14 @@ workflow CIRCLESEQ {
             ch_bwa_sorted_bam = SAMTOOLS_SORT.out.bam
         } else {
             ch_bwa_sorted_bam = INPUT_CHECK.out.reads
+            // SAMTOOLS INDEX SORTED BAM
         }
+        SAMTOOLS_INDEX_BWA (
+            ch_bwa_sorted_bam
+        )
     } 
 
-    // SAMTOOLS INDEX SORTED BAM
-    SAMTOOLS_INDEX_BWA (
-        ch_bwa_sorted_bam
-    )
+
 
     //
     // MARK DUPLICATES USING PICARD
@@ -255,7 +276,16 @@ workflow CIRCLESEQ {
     ch_bam_idxstats = BAM_STATS_SAMTOOLS.out.idxstats
     ch_bam_stats_versions = BAM_STATS_SAMTOOLS.out.versions
 
-
+    if (params.circle_identifier == "ampliconarchitect") {
+        AMPLICONARCHITECT_PREPAREAA (
+            ch_bwa_sorted_bam, SAMTOOLS_INDEX_BWA.out.bai
+        )
+        AMPLICONARCHITECT_AMPLICONARCHITECT (
+            ch_bwa_sorted_bam, 
+            SAMTOOLS_INDEX_BWA.out.bai,
+            AMPLICONARCHITECT_PREPAREAA.out.bed
+        )
+    }
 
     //
     // SUBWORKFLOW - RUN CIRCLE_FINDER PIPELINE
