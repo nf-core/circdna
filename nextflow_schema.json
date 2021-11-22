@@ -155,7 +155,8 @@
                         "circle_map_realign",
                         "circle_map_repeats",
                         "circle_finder",
-                        "circexplorer2"
+                        "circexplorer2",
+                        "ampliconarchitect"
                     ],
                     "default": "circle_map_realign"
                 },
