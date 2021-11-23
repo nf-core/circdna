@@ -52,10 +52,9 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
     tuple val(meta), path(bed)
 
     output:
-    // TODO nf-core: Named file extensions MUST be emitted for ALL output channels
     tuple val(meta), path("*"), emit: bam
-    // TODO nf-core: List additional required output channels/values here
-    // path "*.version.txt"          , emit: version
+    path "*.version.txt"          , emit: version
+    path "*.log", emit: log
 
     script:
     def software = getSoftwareName(task.process)
@@ -71,8 +70,9 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
     """
     AA_DATA_REPO=${params.aa_data_repo}
     MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
-    AmpliconArchitect.py --bam $bam --bed $bed --ref "GRCh38" --out "./"
+    # output=${params.outdir}/ampliconarchitect
+    AmpliconArchitect.py --bam $bam --bed $bed --ref "GRCh38" --out "${prefix}"
 
-    #  echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' > ${software}.version.txt
+    AmpliconArchitect.py --version > ${software}.version.txt
     """
 }
