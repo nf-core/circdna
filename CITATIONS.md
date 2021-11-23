@@ -1,4 +1,4 @@
-# nf-core/circleseq: Citations
+# nf-core/circdna: Citations
 
 ## [nf-core](https://pubmed.ncbi.nlm.nih.gov/32055031/)
 

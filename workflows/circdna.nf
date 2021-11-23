@@ -144,7 +144,7 @@ if (!params.save_merged_fastq) { cat_fastq_options['publish_files'] = false }
 // Info required for completion email and summary
 def multiqc_report = []
 
-workflow CIRCLESEQ {
+workflow CIRCDNA {
 
     ch_software_versions = Channel.empty()
 
@@ -186,10 +186,6 @@ workflow CIRCLESEQ {
         .mix(ch_fastq.single)
         .set { ch_cat_fastq }
 
-        // SAMTOOLS INDEX SORTED BAM
-        SAMTOOLS_INDEX_BWA (
-            ch_bwa_sorted_bam
-        )
 
         //
         // MODULE: Run FastQC
@@ -237,6 +233,11 @@ workflow CIRCLESEQ {
             BWA_INDEX.out.index
         )
         ch_bwa_sorted_bam = BWA_MEM.out.sorted_bam
+
+        // SAMTOOLS INDEX SORTED BAM
+        SAMTOOLS_INDEX_BWA (
+            ch_bwa_sorted_bam
+        )
 
     } else if (params.input_format == "BAM") {
     // Use BAM Files as input

@@ -33,13 +33,13 @@ WorkflowMain.initialise(workflow, params, log)
 ========================================================================================
 */
 
-include { CIRCLESEQ } from './workflows/circleseq'
+include { CIRCDNA } from './workflows/circdna'
 
 //
 // WORKFLOW: Run main nf-core/circleseq analysis pipeline
 //
-workflow NFCORE_CIRCLESEQ {
-    CIRCLESEQ ()
+workflow NFCORE_CIRCDNA {
+    CIRCDNA ()
 }
 
 /*
@@ -53,7 +53,7 @@ workflow NFCORE_CIRCLESEQ {
 // See: https://github.com/nf-core/rnaseq/issues/619
 //
 workflow {
-    NFCORE_CIRCLESEQ ()
+    NFCORE_CIRCDNA ()
 }
 
 /*
