@@ -54,7 +54,9 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
     output:
     tuple val(meta), path("*"), emit: bam
     path "*.version.txt"          , emit: version
-    path "*.log", emit: log
+    tuple val(meta), path("*.log"), emit: log
+    tuple val(meta), path("*cycles.txt"), optional: true, emit: cycles
+    tuple val(meta), path("*graph.txt"), optional: true, emit: graph
 
     script:
     def software = getSoftwareName(task.process)
