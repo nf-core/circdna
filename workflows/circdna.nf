@@ -263,8 +263,8 @@ workflow CIRCDNA {
         SAMTOOLS_INDEX_BWA (
             ch_bwa_sorted_bam
         )
-        ch_bwa_sorted_bai       = SAMTOOLS_INDEX_BWA.out.bai
     } 
+    ch_bwa_sorted_bai       = SAMTOOLS_INDEX_BWA.out.bai
 
     // PICARD MARK_DUPLICATES 
     if (!params.skip_markduplicates) {
@@ -277,6 +277,11 @@ workflow CIRCDNA {
         ch_bam_flagstat           = MARK_DUPLICATES_PICARD.out.flagstat
         ch_bam_idxstats           = MARK_DUPLICATES_PICARD.out.idxstats
         ch_markduplicates_multiqc = MARK_DUPLICATES_PICARD.out.metrics
+    } else {
+        ch_bam_stats              = Channel.empty()
+        ch_bam_flagstat           = Channel.empty()
+        ch_bam_idxstats           = Channel.empty()
+        ch_markduplicates_multiqc = Channel.empty()
     }
     // blacklist_params = params.blacklist ? "-L $bed" : ''
 
@@ -297,12 +302,12 @@ workflow CIRCDNA {
 
     if (params.circle_identifier == "ampliconarchitect") {
         AMPLICONARCHITECT_PREPAREAA (
-            ch_bwa_sorted_bam, ch_bwa_sorted_bai
+            ch_bwa_sorted_bam.join(ch_bwa_sorted_bai)
         )
+        ch_prepareaa_bed = AMPLICONARCHITECT_PREPAREAA.out.bed
         AMPLICONARCHITECT_AMPLICONARCHITECT (
-            ch_bwa_sorted_bam, 
-            ch_bwa_sorted_bai,
-            AMPLICONARCHITECT_PREPAREAA.out.bed
+            ch_bwa_sorted_bam.join(ch_bwa_sorted_bai).
+                join(ch_prepareaa_bed)
         )
     }
 
@@ -362,10 +367,7 @@ workflow CIRCDNA {
         // 
         // MODULE: RUN CIRCLE_MAP REPEATS
         //
-
         if (params.circle_identifier == "circle_map_repeats") {
-            ch_sorted_bam = SAMTOOLS_SORT_RE.out.bam
-            ch_sorted_bai = SAMTOOLS_INDEX_RE.out.bai
             CIRCLEMAP_REPEATS (
                 ch_re_sorted_bam.join(ch_re_sorted_bai)
             )
@@ -389,7 +391,7 @@ workflow CIRCDNA {
 
     if (params.circle_identifier == "circexplorer2") {
         CIRCEXPLORER2_PARSE (
-            ch_bwa_sorted_bam, ch_bwa_sorted_bai
+            ch_bwa_sorted_bam.join(ch_bwa_sorted_bai)
         )
     }
 
