@@ -91,7 +91,7 @@ include { BWA_INDEX }   from '../modules/nf-core/modules/bwa/index/main'    addP
 include { BWA_MEM   }   from '../modules/nf-core/modules/bwa/mem/main'      addParams( options: modules['bwa_mem']  )
 
 // PICARD
-include { PICARD_MARKDUPLICATES   }   from '../modules/nf-core/modules/picard/markduplicates/main'      addParams( options: modules['picard_markduplicates']  )
+//include { PICARD_MARKDUPLICATES   }   from '../modules/nf-core/modules/picard/markduplicates/main'      addParams( options: modules['picard_markduplicates']  )
 include { MARK_DUPLICATES_PICARD     } from '../subworkflows/nf-core/mark_duplicates_picard'     addParams( markduplicates_options: modules['picard_markduplicates'], samtools_index_options: modules['picard_markduplicates_samtools'], samtools_stats_options:  modules['picard_markduplicates_samtools'] )
 
 
@@ -99,9 +99,11 @@ include { MARK_DUPLICATES_PICARD     } from '../subworkflows/nf-core/mark_duplic
 include { SAMTOOLS_FAIDX                        }   from '../modules/nf-core/modules/samtools/faidx/main'   addParams( options: modules['samtools_faidx']       )
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_BWA  }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_bwa']   )
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_RE   }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_re']    )
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FILTERED   }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_filtered']    )
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_QNAME  }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort_qname']  )
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_RE     }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort_re']     )
 include { SAMTOOLS_SORT                         }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort']        )
+include { SAMTOOLS_SORT as SAMTOOLS_SORT_FILTERED }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort_filtered']        )
 
 
 // FILTER BAM FILE USING SAMTOOLS VIEW
@@ -277,6 +279,19 @@ workflow CIRCDNA {
         ch_bam_flagstat           = MARK_DUPLICATES_PICARD.out.flagstat
         ch_bam_idxstats           = MARK_DUPLICATES_PICARD.out.idxstats
         ch_markduplicates_multiqc = MARK_DUPLICATES_PICARD.out.metrics
+        // FILTER BAM FILES USING SAMTOOLS VIEW
+        SAMTOOLS_VIEW_FILTER (
+            MARK_DUPLICATES_PICARD.out.bam, ch_fasta
+        )
+
+        SAMTOOLS_SORT_FILTERED (
+            SAMTOOLS_VIEW_FILTER.out.bam
+        )
+        ch_bwa_sorted_bam = SAMTOOLS_SORT_FILTERED.out.bam
+        SAMTOOLS_INDEX_FILTERED (
+            ch_bwa_sorted_bam
+        )
+        ch_bwa_sorted_bai = SAMTOOLS_INDEX_BWA.out.bai
     } else {
         ch_bam_stats              = Channel.empty()
         ch_bam_flagstat           = Channel.empty()
@@ -284,21 +299,6 @@ workflow CIRCDNA {
         ch_markduplicates_multiqc = Channel.empty()
     }
     // blacklist_params = params.blacklist ? "-L $bed" : ''
-
-    // FILTER BAM FILES USING SAMTOOLS VIEW
-    SAMTOOLS_VIEW_FILTER (
-        ch_bwa_sorted_bam, ch_fasta
-    )
-
-
-
-    // MARK DUPLICATES USING PICARD
-    // Not working atm
-    // PICARD_MARKDUPLICATES (
-    //     ch_bwa_sorted_bam
-    // )
-    // ch_picard_bam = PICARD_MARKDUPLICATES.out.bam
-    // ch_picard_bai = PICARD_MARKDUPLICATES.out.bai
 
     if (params.circle_identifier == "ampliconarchitect") {
         AMPLICONARCHITECT_PREPAREAA (
