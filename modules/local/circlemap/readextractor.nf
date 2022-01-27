@@ -33,7 +33,7 @@ process CIRCLEMAP_READEXTRACTOR {
     def software = getSoftwareName(task.process)
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
     """
-    Circle-Map ReadExtractor -i $qname_bam \\
+    circle_map.py ReadExtractor -i $qname_bam \\
         -o ${prefix}.circular_read_candidates.bam
     echo \$(Circle-Map --help 2<&1) | grep -o "version=[0-9].[0-9].[0-9]" > ${software}.version.txt
     """

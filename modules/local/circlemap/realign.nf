@@ -35,7 +35,7 @@ process CIRCLEMAP_REALIGN {
     def software = getSoftwareName(task.process)
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
     """
-    Circle-Map \\
+    circle_map.py \\
         Realign \\
         $options.args \\
         -i $re_bam \\

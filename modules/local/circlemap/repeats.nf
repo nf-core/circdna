@@ -29,7 +29,7 @@ process CIRCLEMAP_REPEATS {
     def software = getSoftwareName(task.process)
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
     """
-    Circle-Map \\
+    circle_map.py \\
         Repeats \\
         $options.args \\
         -i $bam \\
