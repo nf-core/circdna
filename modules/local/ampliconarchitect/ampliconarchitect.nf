@@ -57,7 +57,8 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
     AA_DATA_REPO=${params.aa_data_repo}
     MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
     # output=${params.outdir}/ampliconarchitect
-    AmpliconArchitect.py --bam $bam --bed $bed --ref "GRCh38" --out "${prefix}"
+    AmpliconArchitect.py $options.args \\
+        --bam $bam --bed $bed --ref "GRCh38" --out "${prefix}"
 
     AmpliconArchitect.py --version > ${software}.version.txt
     """

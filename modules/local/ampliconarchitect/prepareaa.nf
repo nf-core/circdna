@@ -37,6 +37,7 @@ process AMPLICONARCHITECT_PREPAREAA {
     PrepareAA.py \\
         -s ${meta.id} \\
         -t ${task.cpus} \\
+        $options.args \\
         --sorted_bam $bam \\
         --ref \$REF \\
         --cnvkit_dir \$cnvkit \\
