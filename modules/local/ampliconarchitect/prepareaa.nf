@@ -11,7 +11,7 @@ process AMPLICONARCHITECT_PREPAREAA {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
 
-    conda (params.enable_conda ? "conda-forge::python=3.8 bioconda::cnvkit=0.9.9 bioconda::canvas=1.35.1.1316 bioconda::freebayes=1.3.5" : null)
+    conda (params.enable_conda ? "conda-forge::python=3.8 bioconda::cnvkit=0.9.9 bioconda::canvas=1.35.1.1316 bioconda::freebayes=1.3.5 numpy matplotlib intervaltree" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/YOUR-TOOL-HERE"
     } else {
