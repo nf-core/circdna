@@ -37,7 +37,6 @@ def print_error(error, context="Line", context_str=""):
     sys.exit(1)
 
 
-# TODO nf-core: Update the check_samplesheet function
 def check_samplesheet(file_in, file_out, input_format):
     """
     This function checks that the samplesheet follows the following structure:
@@ -61,7 +60,6 @@ def check_samplesheet(file_in, file_out, input_format):
         if ( input_format == "FASTQ" ):
             ## Check header
             MIN_COLS = 2
-            # TODO nf-core: Update the column names for the input samplesheet
             HEADER = ["sample", "fastq_1", "fastq_2"]
             header = [x.strip('"') for x in fin.readline().strip().split(",")]
             if header[: len(HEADER)] != HEADER:
@@ -124,7 +122,6 @@ def check_samplesheet(file_in, file_out, input_format):
 
         elif input_format == "BAM":
             MIN_COLS = 2
-            # TODO nf-core: Update the column names for the input samplesheet
             HEADER = ["sample", "bam"]
             header = [x.strip('"') for x in fin.readline().strip().split(",")]
             if header[: len(HEADER)] != HEADER:
@@ -176,7 +173,7 @@ def check_samplesheet(file_in, file_out, input_format):
                         print_error("Samplesheet contains duplicate rows!", "Line", line)
                     else:
                         sample_mapping_dict[sample].append(sample_info)
-            
+
         else:
             print_error("INPUT_FORMAT needs to be either 'FASTQ' or 'BAM'")
             sys.exit(1)

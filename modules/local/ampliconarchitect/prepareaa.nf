@@ -11,7 +11,7 @@ process AMPLICONARCHITECT_PREPAREAA {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
 
-    conda (params.enable_conda ? "conda-forge::python=3.8 bioconda::cnvkit=0.9.9 bioconda::canvas=1.35.1.1316 bioconda::freebayes=1.3.5 numpy matplotlib intervaltree" : null)
+    conda (params.enable_conda ? "conda-forge::python=2.7 anaconda::numpy=1.15.4 conda-forge::matplotlib=2.2.5 conda-forge:intervaltree=3.1.0 bioconda::pysam=0.16.0.1 mosek::mosek=9.2.38 anaconda::scipy=1.1.0" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/YOUR-TOOL-HERE"
     } else {
@@ -20,16 +20,15 @@ process AMPLICONARCHITECT_PREPAREAA {
 
     input:
     tuple val(meta), path(bam), path(bai)
+    tuple val(meta), path(cns)
 
     output:
-    tuple val(meta), path("*.bed"), emit: bed
+    tuple val(meta), path("*CNV_SEEDS.bed"), emit: bed
 
     script:
     def software = getSoftwareName(task.process)
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
     """
-    cnvkit=\$(which cnvkit.py)
-    python3=\$(which python3)
     AA_DATA_REPO=${params.aa_data_repo}
     MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
     REF=${params.reference_build}
@@ -40,7 +39,6 @@ process AMPLICONARCHITECT_PREPAREAA {
         $options.args \\
         --sorted_bam $bam \\
         --ref \$REF \\
-        --cnvkit_dir \$cnvkit \\
-        --python3_path \$python3
+        --cnv_bed $cns
     """
 }

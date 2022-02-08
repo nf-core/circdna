@@ -22,7 +22,7 @@ if (params.circle_identifier != "circle_map_realign" &
     params.circle_identifier != "circle_map_repeats" &
     params.circle_identifier != "circle_finder" &
     params.circle_identifier != "circexplorer2" &
-    params.circle_identifier != "ampliconarchitect") {exit 1, 'Circle Identifier Software/Algorithm not specified!' } 
+    params.circle_identifier != "ampliconarchitect") {exit 1, 'Circle Identifier Software/Algorithm not specified!' }
 
 if (params.fasta) { ch_fasta = file(params.fasta) } else { exit 1, 'Fasta reference genome not specified!' }
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
@@ -34,7 +34,7 @@ if (params.circle_identifier == "ampliconarchitect") {
     if (!params.mosek_license_dir) { exit 1, "Mosek Missing" }
     if (!params.aa_data_repo) { exit 1, "AmpliconArchitect Data Repository Missing" }
     if (params.reference_build != "hg19" & params.reference_build != "GRCh38" & params.reference_build != "GRCh37"){
-        exit 1, "Reference Build not given! Please specify --reference_build 'hg19', 'GRCh38', or 'GRCh37'." 
+        exit 1, "Reference Build not given! Please specify --reference_build 'hg19', 'GRCh38', or 'GRCh37'."
     }
 }
 
@@ -129,6 +129,8 @@ include { CIRCLEFINDER              }     from '../modules/local/circlefinder.nf
 include { CIRCEXPLORER2_PARSE       }     from '../modules/local/circexplorer2/parse.nf'               addParams( options: modules['circexplorer2_parse']             )
 
 // AmpliconArchitect
+include { CNVKIT_BATCH           }     from '../modules/nf-core/modules/cnvkit/batch/main.nf'            addParams( options: modules['cnvkit_batch']          )
+include { CNVKIT_SEGMENT           }     from '../modules/local/cnvkit/segment.nf'            addParams( options: modules['cnvkit_batch']          )
 include { AMPLICONARCHITECT_PREPAREAA           }     from '../modules/local/ampliconarchitect/prepareaa.nf'            addParams( options: modules['ampliconarchitect_prepareaa']          )
 include { AMPLICONARCHITECT_AMPLICONARCHITECT   }     from '../modules/local/ampliconarchitect/ampliconarchitect.nf'    addParams( options: modules['ampliconarchitect_ampliconarchitect']  )
 
@@ -163,7 +165,7 @@ workflow CIRCDNA {
     // Define channels of fastqc, trimgalore, bwa stats for multiqc
     ch_fastqc_report     = Channel.empty()
     ch_trimgalore_report = Channel.empty()
-    
+
     // Check file format
     if (params.input_format == "FASTQ") {
         //
@@ -213,7 +215,7 @@ workflow CIRCDNA {
         if ( ! params.skip_trimming ) {
             TRIMGALORE (
                 ch_cat_fastq
-            ) 
+            )
             ch_trimmed_reads        = TRIMGALORE.out.reads
             ch_trimgalore_report    = TRIMGALORE.out.zip
         } else {
@@ -265,10 +267,10 @@ workflow CIRCDNA {
         SAMTOOLS_INDEX_BWA (
             ch_bwa_sorted_bam
         )
-    } 
+    }
     ch_bwa_sorted_bai       = SAMTOOLS_INDEX_BWA.out.bai
 
-    // PICARD MARK_DUPLICATES 
+    // PICARD MARK_DUPLICATES
     if (!params.skip_markduplicates) {
         MARK_DUPLICATES_PICARD (
             ch_bwa_sorted_bam
@@ -297,12 +299,24 @@ workflow CIRCDNA {
         ch_bam_idxstats           = Channel.empty()
         ch_markduplicates_multiqc = Channel.empty()
     }
-    // blacklist_params = params.blacklist ? "-L $bed" : ''
 
 
     if (params.circle_identifier == "ampliconarchitect") {
+        ch_cnvkit_targets = params.cnvkit_targets ? Channel.fromPath(params.cnvkit_targets) : Channel.empty()
+        ch_cnvkit_reference = params.cnvkit_reference ? Channel.fromPath(params.cnvkit_reference) : Channel.empty()
+
+        CNVKIT_BATCH (
+            ch_bwa_sorted_bam.join(ch_bwa_sorted_bai),
+            ch_fasta
+        )
+
+        CNVKIT_SEGMENT (
+            CNVKIT_BATCH.out.cnr
+        )
+
         AMPLICONARCHITECT_PREPAREAA (
-            ch_bwa_sorted_bam.join(ch_bwa_sorted_bai)
+            ch_bwa_sorted_bam.join(ch_bwa_sorted_bai),
+            CNVKIT_SEGMENT.out.cns
         )
         ch_prepareaa_bed = AMPLICONARCHITECT_PREPAREAA.out.bed
         AMPLICONARCHITECT_AMPLICONARCHITECT (
@@ -364,7 +378,7 @@ workflow CIRCDNA {
         ch_re_sorted_bai = SAMTOOLS_INDEX_RE.out.bai
         ch_fasta_index = SAMTOOLS_FAIDX.out.fai
 
-        // 
+        //
         // MODULE: RUN CIRCLE_MAP REPEATS
         //
         if (params.circle_identifier == "circle_map_repeats") {
@@ -428,7 +442,7 @@ workflow CIRCDNA {
     ch_multiqc_files = ch_multiqc_files.mix(GET_SOFTWARE_VERSIONS.out.yaml.collect())
 
     MULTIQC (
-        ch_multiqc_files.collect() 
+        ch_multiqc_files.collect()
     )
     multiqc_report       = MULTIQC.out.report.toList()
     ch_software_versions = ch_software_versions.mix(MULTIQC.out.version.ifEmpty(null))
