@@ -12,6 +12,9 @@
             "cat/fastq": {
                 "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
             },
+            "cnvkit/batch": {
+                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+            },
             "cutadapt": {
                 "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
             },
