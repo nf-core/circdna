@@ -12,8 +12,7 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
 
     // TODO nf-core: See section in main README for further information regarding finding and adding container addresses to the section below.
-    //conda (params.enable_conda ? "conda-forge::python=2.7 bioconda::pysam=0.16.0.1 flask=1.1.2 cython=0.29.22 numpy=1.15.4 scipy=1.1.3 conda-forge::matplotlib=2.2.5" : null)
-    conda (params.enable_conda ? "conda-forge::python=2.7 bioconda::pysam=0.17.0 flask=1.1.2 cython=0.29.15 numpy=1.16.5 scipy=1.2.1 conda-forge::matplotlib=2.2.5 mosek::mosek=8.0.60" : null)
+    conda (params.enable_conda ? "conda-forge::python=2.7 bioconda::pysam=0.17.0 anaconda::flask=1.1.2 anaconda::cython=0.29.14 anaconda::numpy=1.16.6 anaconda::scipy=1.2.1 conda-forge::matplotlib=2.2.5 mosek::mosek=8.0.60" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/YOUR-TOOL-HERE"
     } else {

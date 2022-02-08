@@ -1,0 +1,2 @@
+sample,fastq_1,fastq_2
+simulated,test-data/wgsim_circlemap/wgsim_circlemap_R1.fastq.gz,test-data/wgsim_circlemap/wgsim_circlemap_R2.fastq.gz
