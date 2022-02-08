@@ -24,12 +24,18 @@ if (params.circle_identifier != "circle_map_realign" &
     params.circle_identifier != "circexplorer2" &
     params.circle_identifier != "ampliconarchitect") {exit 1, 'Circle Identifier Software/Algorithm not specified!' }
 
-if (params.fasta) { ch_fasta = file(params.fasta) } else { exit 1, 'Fasta reference genome not specified!' }
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 
-// AMPLICON ARCHITECT INPUT
-if (params.circle_identifier == "ampliconarchitect") {}
+// Check if BWA Index is given
+if (params.bwa_index) {
+    ch_bwa_index = Channel.fromPath(params.bwa_index).collect()
+    bwa_index_exists = true
+    } else {
+        ch_bwa_index = Channel.empty()
+        bwa_index_exists = false
+    }
 
+// AMPLICON ARCHITECT INPUT
 if (params.circle_identifier == "ampliconarchitect") {
     if (!params.mosek_license_dir) { exit 1, "Mosek Missing" }
     if (!params.aa_data_repo) { exit 1, "AmpliconArchitect Data Repository Missing" }
@@ -37,6 +43,7 @@ if (params.circle_identifier == "ampliconarchitect") {
         exit 1, "Reference Build not given! Please specify --reference_build 'hg19', 'GRCh38', or 'GRCh37'."
     }
 }
+
 
 /*
 ========================================================================================
@@ -97,7 +104,7 @@ include { MARK_DUPLICATES_PICARD     } from '../subworkflows/nf-core/mark_duplic
 
 // SAMTOOLS SORT & INDEX
 include { SAMTOOLS_FAIDX                        }   from '../modules/nf-core/modules/samtools/faidx/main'   addParams( options: modules['samtools_faidx']       )
-include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_BWA  }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_bwa']   )
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_BAM  }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_bwa']   )
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_RE   }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_re']    )
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FILTERED   }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_re']    )
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_QNAME  }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort_qname']  )
@@ -134,8 +141,15 @@ include { CNVKIT_SEGMENT           }     from '../modules/local/cnvkit/segment.n
 include { AMPLICONARCHITECT_PREPAREAA           }     from '../modules/local/ampliconarchitect/prepareaa.nf'            addParams( options: modules['ampliconarchitect_prepareaa']          )
 include { AMPLICONARCHITECT_AMPLICONARCHITECT   }     from '../modules/local/ampliconarchitect/ampliconarchitect.nf'    addParams( options: modules['ampliconarchitect_ampliconarchitect']  )
 
+// Unicycler
+include { UNICYCLER           }     from '../modules/nf-core/modules/unicycler/main.nf'            addParams( options: modules['unicycler']          )
+include { SEQTK_SEQ           }     from '../modules/local/seqtk/seq.nf'                           addParams( options: modules['seqtk_seq']          )
+include { MINIMAP2_ALIGN      }     from '../modules/nf-core/modules/minimap2/align/main.nf'                           addParams( options: modules['minimap2_align']          )
+
+
 // MULTIQC
 include { MULTIQC }     from '../modules/nf-core/modules/multiqc/main'      addParams( options: multiqc_options     )
+
 
 // TRIMGALORE OPTIONS
 def trimgalore_options    = modules['trimgalore']
@@ -158,9 +172,6 @@ def multiqc_report = []
 workflow CIRCDNA {
 
     ch_software_versions = Channel.empty()
-
-
-
 
     // Define channels of fastqc, trimgalore, bwa stats for multiqc
     ch_fastqc_report     = Channel.empty()
@@ -225,9 +236,12 @@ workflow CIRCDNA {
         //
         // MODULE: Run bwa index
         //
-        BWA_INDEX (
-            ch_fasta
-        )
+        if (!bwa_index_exists) {
+            BWA_INDEX (
+                ch_fasta
+            )
+            ch_bwa_index = BWA_INDEX.out.index
+        }
 
         //
         // MODULE: Run samtools faidx
@@ -241,12 +255,12 @@ workflow CIRCDNA {
         //
         BWA_MEM (
             ch_trimmed_reads,
-            BWA_INDEX.out.index
+            ch_bwa_index
         )
         ch_bwa_sorted_bam = BWA_MEM.out.sorted_bam
 
         // SAMTOOLS INDEX SORTED BAM
-        SAMTOOLS_INDEX_BWA (
+        SAMTOOLS_INDEX_BAM(
             ch_bwa_sorted_bam
         )
 
@@ -264,11 +278,11 @@ workflow CIRCDNA {
             ch_bwa_sorted_bam = INPUT_CHECK.out.reads
             // SAMTOOLS INDEX SORTED BAM
         }
-        SAMTOOLS_INDEX_BWA (
+        SAMTOOLS_INDEX_BAM (
             ch_bwa_sorted_bam
         )
     }
-    ch_bwa_sorted_bai       = SAMTOOLS_INDEX_BWA.out.bai
+    ch_bwa_sorted_bai       = SAMTOOLS_INDEX_BAM.out.bai
 
     // PICARD MARK_DUPLICATES
     if (!params.skip_markduplicates) {
@@ -406,6 +420,20 @@ workflow CIRCDNA {
     if (params.circle_identifier == "circexplorer2") {
         CIRCEXPLORER2_PARSE (
             ch_bwa_sorted_bam.join(ch_bwa_sorted_bai)
+        )
+    }
+
+    ch_trimmed_reads.map{ meta, file -> [meta, file, []] }.set{ch_unicycler_input}
+    if (!params.skip_denovo_assembly && params.input_format == "FASTQ") {
+        UNICYCLER (
+            ch_unicycler_input
+        )
+        SEQTK_SEQ (
+            UNICYCLER.out.scaffolds
+        )
+        MINIMAP2_ALIGN (
+            ch_fasta,
+            SEQTK_SEQ.out.fastq
         )
     }
 
