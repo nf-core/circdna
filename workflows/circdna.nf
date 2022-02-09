@@ -22,7 +22,8 @@ if (params.circle_identifier != "circle_map_realign" &
     params.circle_identifier != "circle_map_repeats" &
     params.circle_identifier != "circle_finder" &
     params.circle_identifier != "circexplorer2" &
-    params.circle_identifier != "ampliconarchitect") {exit 1, 'Circle Identifier Software/Algorithm not specified!' }
+    params.circle_identifier != "ampliconarchitect" &
+    params.circle_identifier != "all" ) {exit 1, 'Circle Identifier Software/Algorithm not specified!' }
 
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 
@@ -43,7 +44,6 @@ if (params.circle_identifier == "ampliconarchitect") {
         exit 1, "Reference Build not given! Please specify --reference_build 'hg19', 'GRCh38', or 'GRCh37'."
     }
 }
-
 
 /*
 ========================================================================================
@@ -98,19 +98,20 @@ include { BWA_INDEX }   from '../modules/nf-core/modules/bwa/index/main'    addP
 include { BWA_MEM   }   from '../modules/nf-core/modules/bwa/mem/main'      addParams( options: modules['bwa_mem']  )
 
 // PICARD
-include { PICARD_MARKDUPLICATES   }   from '../modules/nf-core/modules/picard/markduplicates/main'      addParams( options: modules['picard_markduplicates']  )
-include { MARK_DUPLICATES_PICARD     } from '../subworkflows/nf-core/mark_duplicates_picard'     addParams( markduplicates_options: modules['picard_markduplicates'], samtools_index_options: modules['picard_markduplicates_samtools'], samtools_stats_options:  modules['picard_markduplicates_samtools'] )
+include { PICARD_MARKDUPLICATES     }   from '../modules/nf-core/modules/picard/markduplicates/main'      addParams( options: modules['picard_markduplicates']  )
+include { MARK_DUPLICATES_PICARD    } from '../subworkflows/nf-core/mark_duplicates_picard'     addParams( markduplicates_options: modules['picard_markduplicates'], samtools_index_options: modules['picard_markduplicates_samtools'], samtools_stats_options:  modules['picard_markduplicates_samtools'] )
 
 
 // SAMTOOLS SORT & INDEX
-include { SAMTOOLS_FAIDX                        }   from '../modules/nf-core/modules/samtools/faidx/main'   addParams( options: modules['samtools_faidx']       )
-include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_BAM  }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_bwa']   )
-include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_RE   }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_re']    )
-include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FILTERED   }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_re']    )
-include { SAMTOOLS_SORT as SAMTOOLS_SORT_QNAME  }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort_qname']  )
-include { SAMTOOLS_SORT as SAMTOOLS_SORT_RE     }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort_re']     )
-include { SAMTOOLS_SORT                         }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort']        )
-include { SAMTOOLS_SORT as SAMTOOLS_SORT_FILTERED }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort_filtered']        )
+include { SAMTOOLS_FAIDX                            }   from '../modules/nf-core/modules/samtools/faidx/main'   addParams( options: modules['samtools_faidx']       )
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_BAM      }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_bwa']   )
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_RE       }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_re']    )
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FILTERED }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_re']    )
+include { SAMTOOLS_SORT as SAMTOOLS_SORT_QNAME_CM   }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort_qname']  )
+include { SAMTOOLS_SORT as SAMTOOLS_SORT_QNAME_CF   }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort_qname']  )
+include { SAMTOOLS_SORT as SAMTOOLS_SORT_RE         }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort_re']     )
+include { SAMTOOLS_SORT                             }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort']        )
+include { SAMTOOLS_SORT as SAMTOOLS_SORT_FILTERED   }   from '../modules/nf-core/modules/samtools/sort/main'    addParams( options: modules['samtools_sort_filtered']        )
 
 
 // FILTER BAM FILE USING SAMTOOLS VIEW
@@ -136,8 +137,8 @@ include { CIRCLEFINDER              }     from '../modules/local/circlefinder.nf
 include { CIRCEXPLORER2_PARSE       }     from '../modules/local/circexplorer2/parse.nf'               addParams( options: modules['circexplorer2_parse']             )
 
 // AmpliconArchitect
-include { CNVKIT_BATCH           }     from '../modules/nf-core/modules/cnvkit/batch/main.nf'            addParams( options: modules['cnvkit_batch']          )
-include { CNVKIT_SEGMENT           }     from '../modules/local/cnvkit/segment.nf'            addParams( options: modules['cnvkit_batch']          )
+include { CNVKIT_BATCH                          }     from '../modules/nf-core/modules/cnvkit/batch/main.nf'            addParams( options: modules['cnvkit_batch']          )
+include { CNVKIT_SEGMENT                        }     from '../modules/local/cnvkit/segment.nf'            addParams( options: modules['cnvkit_batch']          )
 include { AMPLICONARCHITECT_PREPAREAA           }     from '../modules/local/ampliconarchitect/prepareaa.nf'            addParams( options: modules['ampliconarchitect_prepareaa']          )
 include { AMPLICONARCHITECT_AMPLICONARCHITECT   }     from '../modules/local/ampliconarchitect/ampliconarchitect.nf'    addParams( options: modules['ampliconarchitect_ampliconarchitect']  )
 
@@ -315,7 +316,7 @@ workflow CIRCDNA {
     }
 
 
-    if (params.circle_identifier == "ampliconarchitect") {
+    if (params.circle_identifier == "ampliconarchitect" || params.circle_identifier == "all") {
         ch_cnvkit_targets = params.cnvkit_targets ? Channel.fromPath(params.cnvkit_targets) : Channel.empty()
         ch_cnvkit_reference = params.cnvkit_reference ? Channel.fromPath(params.cnvkit_reference) : Channel.empty()
 
@@ -342,12 +343,12 @@ workflow CIRCDNA {
     //
     // SUBWORKFLOW - RUN CIRCLE_FINDER PIPELINE
     //
-    if (params.circle_identifier == "circle_finder") {
-        SAMTOOLS_SORT_QNAME (
+    if (params.circle_identifier == "circle_finder" || params.circle_identifier == "all") {
+        SAMTOOLS_SORT_QNAME_CF (
             ch_bwa_sorted_bam
         )
         SAMBLASTER (
-            SAMTOOLS_SORT_QNAME.out.bam
+            SAMTOOLS_SORT_QNAME_CF.out.bam
         )
 
         BEDTOOLS_SPLITBAM2BED (
@@ -360,7 +361,7 @@ workflow CIRCDNA {
         ch_b2b_sorted = BEDTOOLS_SORTEDBAM2BED.out.conc_txt
         ch_b2b_split = BEDTOOLS_SPLITBAM2BED.out.split_txt
         CIRCLEFINDER (
-            BEDTOOLS_BAM2BED.out.split_conc_txt
+            ch_b2b_split.join(ch_b2b_sorted)
         )
     }
 
@@ -369,12 +370,12 @@ workflow CIRCDNA {
     //
 
     if (params.circle_identifier == "circle_map_realign" ||
-            params.circle_identifier == "circle_map_repeats") {
-        SAMTOOLS_SORT_QNAME (
+            params.circle_identifier == "circle_map_repeats" || params.circle_identifier == "all") {
+        SAMTOOLS_SORT_QNAME_CM (
             ch_bwa_sorted_bam
         )
         CIRCLEMAP_READEXTRACTOR (
-            SAMTOOLS_SORT_QNAME.out.bam
+            SAMTOOLS_SORT_QNAME_CM.out.bam
         )
 
         SAMTOOLS_SORT_RE (
@@ -387,7 +388,7 @@ workflow CIRCDNA {
 
 
         // DEFINE CHANNELS FOR REALIGN AND REPEATS
-        ch_qname_sorted_bam = SAMTOOLS_SORT_QNAME.out.bam
+        ch_qname_sorted_bam = SAMTOOLS_SORT_QNAME_CM.out.bam
         ch_re_sorted_bam = SAMTOOLS_SORT_RE.out.bam
         ch_re_sorted_bai = SAMTOOLS_INDEX_RE.out.bai
         ch_fasta_index = SAMTOOLS_FAIDX.out.fai
@@ -395,7 +396,7 @@ workflow CIRCDNA {
         //
         // MODULE: RUN CIRCLE_MAP REPEATS
         //
-        if (params.circle_identifier == "circle_map_repeats") {
+        if (params.circle_identifier == "circle_map_repeats" || params.circle_identifier == "all") {
             CIRCLEMAP_REPEATS (
                 ch_re_sorted_bam.join(ch_re_sorted_bai)
             )
@@ -404,7 +405,7 @@ workflow CIRCDNA {
         //
         // MODULE: Run Circle-Map Realign
         //
-        if (params.circle_identifier == "circle_map_realign") {
+        if (params.circle_identifier == "circle_map_realign" || params.circle_identifier == "all") {
             CIRCLEMAP_REALIGN (
                 ch_re_sorted_bam.join(ch_re_sorted_bai).
                     join(ch_qname_sorted_bam).
@@ -417,23 +418,24 @@ workflow CIRCDNA {
     }
 
 
-    if (params.circle_identifier == "circexplorer2") {
+    if (params.circle_identifier == "circexplorer2" || params.circle_identifier == "all") {
         CIRCEXPLORER2_PARSE (
             ch_bwa_sorted_bam.join(ch_bwa_sorted_bai)
         )
     }
 
-    ch_trimmed_reads.map{ meta, file -> [meta, file, []] }.set{ch_unicycler_input}
     if (!params.skip_denovo_assembly && params.input_format == "FASTQ") {
+        ch_trimmed_reads.map{ meta, file -> [meta, file, []] }.set{ch_unicycler_input}
         UNICYCLER (
             ch_unicycler_input
         )
         SEQTK_SEQ (
             UNICYCLER.out.scaffolds
         )
+        SEQTK_SEQ.out.fastq_circular.view()
         MINIMAP2_ALIGN (
             ch_fasta,
-            SEQTK_SEQ.out.fastq
+            SEQTK_SEQ.out.fastq_circular
         )
     }
 

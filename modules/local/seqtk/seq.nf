@@ -26,7 +26,9 @@ process SEQTK_SEQ {
 
     output:
     // TODO nf-core: Named file extensions MUST be emitted for ALL output channels
-    tuple val(meta), path("*.unicycler.circular.fastq.gz"), emit: fastq, optional: true
+    tuple val(meta), path("*unicycler.fastq.gz"), emit: fastq
+    tuple val(meta), path("*unicycler.circular.fastq.gz"), emit: fastq_circular
+    // tuple val(meta), path("*.unicycler.circular.fastq.gz"), emit: fastq, optional: true
     // TODO nf-core: List additional required output channels/values here
 
     script:
@@ -40,10 +42,11 @@ process SEQTK_SEQ {
         $fasta > \\
         ${prefix}.unicycler.fastq
 
-    cat ${prefix}.unicycler.fastq | \\
-        grep -A3 "circular=true" | \\
+    grep -A3 "circular=true" ${prefix}.unicycler.fastq | \\
         grep -v "^--" | \\
         gzip --no-name > \\
         ${prefix}.unicycler.circular.fastq.gz
+
+    gzip -n ${prefix}.unicycler.fastq
     """
 }

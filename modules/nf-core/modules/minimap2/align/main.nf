@@ -17,12 +17,14 @@ process MINIMAP2_ALIGN {
         'quay.io/biocontainers/mulled-v2-66534bcbb7031a148b13e2ad42583020b9cd25c4:e1ea28074233d7265a5dc2111d6e55130dff5653-0' }"
 
     input:
-    tuple val(meta), path(reads)
     path reference
+    tuple val(meta), path(reads)
 
     output:
     tuple val(meta), path("*.bam"), emit: bam
+    tuple val(meta), path("*.paf"), emit: paf
     path "versions.yml" , emit: versions
+    path "*"
 
     when:
     task.ext.when == null || task.ext.when
@@ -38,9 +40,11 @@ process MINIMAP2_ALIGN {
         $reads \\
         > ${prefix}.unicycler.minimap2.sam
 
-    samtools sort -@ $task.cpus -o ${prefix}.unicycler.minimap2.bam ${prefix}.unicycler.minimap2.sam
-    rm ${prefix}.unicycler.minimap2.samrm ${prefix}.unicycler.minimap2.sam
 
+    samtools sort -@ $task.cpus -o ${prefix}.unicycler.minimap2.sorted.sam
+    paftools.js sam2paf ${prefix}.unicycler.minimap2.sorted.sam > ${prefix}.unicycler.minimap2.paf
+    samtools view -S -b ${prefix}.unicycler.minimap2.sorted.sam > ${prefix}.unicycler.minimap2.sorted.bam
+    # rm ${prefix}.unicycler.minimap2.sam ${prefix}.unicycler.minimap2.sorted.sam
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

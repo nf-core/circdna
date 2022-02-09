@@ -33,7 +33,6 @@ process CIRCLEMAP_REPEATS {
         Repeats \\
         $options.args \\
         -i $bam \\
-        --threads $task.cpus \\
         -o ${prefix}_circularDNA_repeats_coordinates.bed
 
     echo \$(Circle-Map --help 2<&1) | grep -o "version=[0-9].[0-9].[0-9]" > ${software}.version.txt
