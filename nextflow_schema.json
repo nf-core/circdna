@@ -21,8 +21,14 @@
                     "pattern": "^\\S+\\.csv$",
                     "schema": "assets/schema_input.json",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/circdna/usage#samplesheet-input).",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 (FASTQ Input) or 2 (BAM Input) columns, and a header row. See [usage docs](https://nf-co.re/circdna/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
+                },
+                "input_format": {
+                    "type": "string",
+                    "description": "Specify input format. Default *FASTQ*. Options 'FASTQ' or 'BAM'.",
+                    "help_text": "Set this parameter if you specified bam files in your samplesheet.",
+                    "fa_icon": "fas fa-pen-field"
                 },
                 "outdir": {
                     "type": "string",
@@ -65,6 +71,15 @@
                     "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
                     "fa_icon": "far fa-file-code"
                 },
+                "bwa_index": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.\\{alt,amb,ann,bwt,pac,sa\\}$",
+                    "description": "Path to BWA Index genome file.",
+                    "help_text": "This parameter is *optional*. If you don't have a BWA index available this will be generated for you automatically.",
+                    "fa_icon": "far fa-file-code"
+                },
                 "igenomes_base": {
                     "type": "string",
                     "format": "directory-path",
@@ -92,6 +107,16 @@
                     "type": "boolean",
                     "fa_icon": "fas fa-fast-forward",
                     "description": "Skip all QC steps except for MultiQC."
+                },
+                "skip_markduplicates": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-fast-forward",
+                    "description": "Skip Picard MarkDuplicates and duplicate filtering"
+                },
+                "keep_duplicates": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-delete-left",
+                    "description": "Keep read duplications marked by picard MarkDuplicates."
                 }
             }
         },
