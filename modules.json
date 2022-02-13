@@ -1,6 +1,6 @@
 {
-    "name": "nf-core/circleseq",
-    "homePage": "https://github.com/nf-core/circleseq",
+    "name": "nf-core/circdna",
+    "homePage": "https://github.com/nf-core/circdna",
     "repos": {
         "nf-core/modules": {
             "bwa/index": {

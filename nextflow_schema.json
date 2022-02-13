@@ -30,6 +30,12 @@
                     "help_text": "Set this parameter if you specified bam files in your samplesheet.",
                     "fa_icon": "fas fa-pen-field"
                 },
+                "bam_sorted": {
+                    "type": "string",
+                    "description": "Specify if bam file is sorted [false, true]. If false or not specified, bam file will be sorted!",
+                    "help_text": "Set this parameter if you specified bam files in your samplesheet.",
+                    "fa_icon": "fas fa-pen-field"
+                },
                 "outdir": {
                     "type": "string",
                     "description": "Path to the output directory where the results will be saved.",
@@ -163,6 +169,12 @@
                     "description": "Save the trimmed FastQ files in the results directory.",
                     "help_text": "By default, trimmed FastQ files will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
                     "fa_icon": "fas fa-save"
+                },
+                "save_merged_fastq": {
+                    "type": "boolean",
+                    "description": "Save the merged FastQ files in the results directory.",
+                    "help_text": "By default, merged FastQ files will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
+                    "fa_icon": "fas fa-save"
                 }
             }
         },
@@ -215,8 +227,45 @@
                     "description": "Number of split reads required that support the circular DNA junction",
                     "fa_icon": "fas fa-ruler-combined",
                     "default": "2"
+                },
+                "skip_unicycler": {
+                    "type": "boolean",
+                    "description": "Skip de novo assembly of circular DNA using unicycler.",
+                    "help_text": "Use this if you want to skip the de novo assembly of circular DNAs using Unicycler.",
+                    "fa_icon": "fas fa-fast-forward",
+                    "default": "false"
                 }
 
+
+            }
+        },
+        "amplicon_architect_options": {
+            "title": "Options to run AmpliconArchitect",
+            "type": "object",
+            "fa_icon": "fas fa-solid fa-circle-dashed",
+            "description": "Parameters used to run AmpliconArchitect. The software needs additional data files not included in ",
+            "properties": {
+                "aa_data_repo": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "mimetype": "text/plain",
+                    "fa_icon": "fas fa-folder",
+                    "description": "Path to the downloaded AA data repository. See AmpliconArchitect: https://github.com/virajbdeshpande/AmpliconArchitect"
+                },
+                "mosek_license_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "mimetype": "text/plain",
+                    "fa_icon": "fas fa-folder",
+                    "description": "Path to the directory containing the mosek license file 'mosek.lic'."
+                },
+                "reference_build": {
+                    "type": "string",
+                    "mimetype": "text/plain",
+                    "fa_icon": "fas fa-box-archive",
+                    "description": "When running AmpliconArchitect, specify reference build ['GRCh37', 'GRCh38]. This is *mandatory* to match fasta and AA reference build!",
+                    "default": "GRCh38"
+                }
             }
         },
         "institutional_config_options": {
@@ -426,6 +475,9 @@
         },
         {
             "$ref": "#/definitions/circdna_identifier_options"
+        },
+        {
+            "$ref": "#/definitions/amplicon_architect_options"
         },
         {
             "$ref": "#/definitions/read_trimming_options"

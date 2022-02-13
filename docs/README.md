@@ -1,6 +1,6 @@
-# nf-core/circleseq: Documentation
+# nf-core/circdna: Documentation
 
-The nf-core/circleseq documentation is split into the following pages:
+The nf-core/circdna documentation is split into the following pages:
 
 * [Usage](usage.md)
     * An overview of how the pipeline works, how to run it and a description of all of the different command-line flags.

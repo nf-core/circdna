@@ -424,7 +424,7 @@ workflow CIRCDNA {
         )
     }
 
-    if (!params.skip_denovo_assembly && params.input_format == "FASTQ") {
+    if (!params.skip_unicycler && params.input_format == "FASTQ") {
         ch_trimmed_reads.map{ meta, file -> [meta, file, []] }.set{ch_unicycler_input}
         UNICYCLER (
             ch_unicycler_input
