@@ -1,8 +1,8 @@
 //
-// This file holds several functions specific to the workflow/circleseq.nf in the nf-core/circleseq pipeline
+// This file holds several functions specific to the workflow/circdna.nf in the nf-core/circdna pipeline
 //
 
-class WorkflowCircleseq {
+class WorkflowCircdna {
 
     //
     // Check and validate parameters
