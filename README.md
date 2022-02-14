@@ -37,6 +37,7 @@ On release, automated continuous integration tests run the pipeline on a full-si
    1. [`Circle-Map ReadExtractor`](https://github.com/iprada/Circle-Map) -> [`Circle-Map Realign`](https://github.com/iprada/Circle-Map)
    2. [`CIRCexplorer2`](https://circexplorer2.readthedocs.io/en/latest/)
    3. [`Samblaster`](https://github.com/GregoryFaust/samblaster) -> [`Circle_finder`](https://github.com/pk7zuva/Circle_finder)
+   4. [`AmpliconArchitect`](https://github.com/virajbdeshpande/AmpliconArchitect)
 7. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
 ## Quick Start
