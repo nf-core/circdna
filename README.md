@@ -40,6 +40,9 @@ On release, automated continuous integration tests run the pipeline on a full-si
    4. [`AmpliconArchitect`](https://github.com/virajbdeshpande/AmpliconArchitect)
 7. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
+## Overview 
+# ![nf-core/circdna/metromap](docs/images/circdna_pipeline_metromap.png)
+
 ## Quick Start
 
 1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=21.04.0`)
