@@ -1,3 +1,2 @@
 sample,fastq_1,fastq_2
-TEST_S1,"test-data/data/TEST_S1_R1.fastq.gz","test-data/data/TEST_S1_R2.fastq.gz"
-TEST_S1,"test-data/data/TEST_S3_R1.fastq.gz","test-data/data/TEST_S3_R2.fastq.gz"
+TEST,"test-data/data/test_data_chr20_R1.fastq.gz","test-data/data/test_data_chr20_R2.fastq.gz"

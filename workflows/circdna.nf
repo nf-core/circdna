@@ -7,7 +7,7 @@
 def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
 
 // Validate input parameters
-WorkflowCircleseq.initialise(params, log)
+WorkflowCircdna.initialise(params, log)
 
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
@@ -81,7 +81,6 @@ include { BAM_STATS_SAMTOOLS    } from '../subworkflows/nf-core/bam_stats_samtoo
 */
 
 def multiqc_options   = modules['multiqc']
-multiqc_options.args += params.multiqc_title ? Utils.joinModuleArgs(["--title \"$params.multiqc_title\""]) : ''
 
 // CONCATENATE FASTQ
 include { CAT_FASTQ }     from '../modules/nf-core/modules/cat/fastq/main'       addParams( options: modules['cat_fastq']   )
@@ -116,7 +115,7 @@ include { SAMTOOLS_SORT as SAMTOOLS_SORT_FILTERED   }   from '../modules/nf-core
 
 // FILTER BAM FILE USING SAMTOOLS VIEW
 def samtools_view_filter_options     = modules['samtools_view_filter']
-samtools_view_filter_options.args   += params.keep_duplicates ? '' : Utils.joinModuleArgs(['-F 0x0400'])
+samtools_view_filter_options.args   += params.keep_duplicates ? '' : ' ' + '-F 0x0400'
 include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FILTER }   from '../modules/nf-core/modules/samtools/view/main'    addParams( options: samtools_view_filter_options )
 
 // SAMTOOLS STATISTICS
@@ -154,7 +153,7 @@ include { MULTIQC }     from '../modules/nf-core/modules/multiqc/main'      addP
 
 // TRIMGALORE OPTIONS
 def trimgalore_options    = modules['trimgalore']
-trimgalore_options.args  += params.trim_nextseq > 0 ? Utils.joinModuleArgs(["--nextseq ${params.trim_nextseq}"]) : ''
+trimgalore_options.args  += params.trim_nextseq > 0 ? ' ' + "--nextseq ${params.trim_nextseq}": ''
 if (params.save_trimmed)  { trimgalore_options.publish_files.put('fq.gz','') }
 
 // CONCATENATE FASTQ OPTIONS
@@ -457,7 +456,7 @@ workflow CIRCDNA {
     //
     // MODULE: MultiQC
     //
-    workflow_summary    = WorkflowCircleseq.paramsSummaryMultiqc(workflow, summary_params)
+    workflow_summary    = WorkflowCircdna.paramsSummaryMultiqc(workflow, summary_params)
     ch_workflow_summary = Channel.value(workflow_summary)
 
     ch_multiqc_files = Channel.empty()
