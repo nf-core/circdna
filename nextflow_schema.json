@@ -31,7 +31,7 @@
                     "fa_icon": "fas fa-pen-field"
                 },
                 "bam_sorted": {
-                    "type": "string",
+                    "type": "boolean",
                     "description": "Specify if bam file is sorted [false, true]. If false or not specified, bam file will be sorted!",
                     "help_text": "Set this parameter if you specified bam files in your samplesheet.",
                     "fa_icon": "fas fa-pen-field"
