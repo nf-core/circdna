@@ -47,9 +47,9 @@ process SAMBLASTER {
     samtools view \\
         -@ $task.cpus \\
         -o ${prefix}.split.bam \\
-        -bS ${prefix}.split.sam 
+        -bS ${prefix}.split.sam
 
-    rm ${prefix}.split.sam 
+    rm ${prefix}.split.sam
 
     echo \$(samblaster --version 2>&1) > ${software}.version.txt
     """

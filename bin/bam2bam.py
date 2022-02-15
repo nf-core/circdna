@@ -42,9 +42,9 @@ class bam2bam:
     queue = mp.Manager().Queue()
 
     def __init__(self, input_bam,output,qname_bam,genome_fasta,directory,mapq_cutoff,insert_size_mapq,std_extension,
-                 insert_size_sample_size,gap_open,gap_ext,n_hits,prob_cutoff,min_soft_clipped_length,
-                 interval_p_cut,ncores,locker,verbose,pid,edit_distance_frac,
-                 remap_splits,only_discordants,score,insert_size,manager):
+                insert_size_sample_size,gap_open,gap_ext,n_hits,prob_cutoff,min_soft_clipped_length,
+                interval_p_cut,ncores,locker,verbose,pid,edit_distance_frac,
+                remap_splits,only_discordants,score,insert_size,manager):
         #I/O
         self.edit_distance_frac = edit_distance_frac
         self.ecc_dna_str = input_bam
@@ -111,10 +111,10 @@ class bam2bam:
 
 
             if read == "DONE":
-               f.close()
-               print("breaking")
-               bam.close()
-               break
+                f.close()
+                print("breaking")
+                bam.close()
+                break
             else:
 
                 pysam_read = ps.AlignedSegment.fromstring(read,bam.header)
@@ -129,8 +129,8 @@ class bam2bam:
         """Warn the user that this is experimental"""
         print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S: You are using a beta version feature"))
         warnings.warn("The bam2bam feature on Circle-Map is experimental. The development of this feature is active, but"
-                      " have in mind that it might produce unintended results. Check https://github.com/iprada/Circle-Map"
-                      " for the development status.")
+                    " have in mind that it might produce unintended results. Check https://github.com/iprada/Circle-Map"
+                    " for the development status.")
 
 
 
@@ -187,8 +187,7 @@ class bam2bam:
 
 
                         realignment_interval_extended = get_realignment_intervals(candidate_mates,extension,self.interval_p,
-                                                                                  self.verbose)
-                        
+                                                                                self.verbose)
 
                         if realignment_interval_extended is None:
                             continue
@@ -199,8 +198,6 @@ class bam2bam:
                         for index,mate_interval in realignment_interval_extended.iterrows():
 
                             iteration += 1
-
-
 
                             #sample realignment intervals
                             #fasta file fetch is 1 based that why I do +1
@@ -218,12 +215,9 @@ class bam2bam:
                             minus_base_freqs = np.array([plus_base_freqs['T'],plus_base_freqs['A'],plus_base_freqs['G'],plus_base_freqs['C']])
                             plus_base_freqs = np.array([plus_base_freqs['A'],plus_base_freqs['T'],plus_base_freqs['C'],plus_base_freqs['G']])
 
-
                             #note that I am getting the reads of the interval. Not the reads of the mates
 
                             for read in ecc_dna.fetch(interval['chrom'],int(interval['start']),int(interval['end']),multiple_iterators=True):
-
-
                                 if is_soft_clipped(read):
 
                                     if read.mapq >= self.mapq_cutoff:
@@ -254,13 +248,13 @@ class bam2bam:
 
 
                                             if non_colinearity(int(read.cigar[0][0]),int(read.cigar[-1][0]),int(read.pos),
-                                                               int(mate_interval.start),int(mate_interval.end)) == True:
+                                                            int(mate_interval.start),int(mate_interval.end)) == True:
                                                 if sc_len >= self.min_sc_length:
                                                     edits_allowed = adaptative_myers_k(sc_len, self.edit_distance_frac)
                                                 #realignment
 
                                                     realignment_dict = realign(read,self.n_hits,plus_coding_interval,minus_coding_interval,
-                                                                               plus_base_freqs,minus_base_freqs,self.gap_open,self.gap_ext,self.verbose,edits_allowed)
+                                                                            plus_base_freqs,minus_base_freqs,self.gap_open,self.gap_ext,self.verbose,edits_allowed)
 
 
                                                     if realignment_dict == None:
@@ -291,8 +285,8 @@ class bam2bam:
                                                                     realignment_dict['alignments'][1][0][0]):
                                                                     # construct tag
                                                                     sa_tag = realignment_read_to_SA_string(realignment_dict,
-                                                                                                  prob, interval['chrom'],
-                                                                                                  soft_clip_start)
+                                                                                                prob, interval['chrom'],
+                                                                                                soft_clip_start)
 
 
                                                                     #read.tags += [('SA', sa_tag)]
@@ -306,9 +300,9 @@ class bam2bam:
                                                                     realignment_dict['alignments'][1][0][0]):
 
                                                                 sa_tag = realignment_read_to_SA_string(realignment_dict,
-                                                                                                       prob, interval[
-                                                                                                           'chrom'],
-                                                                                                       soft_clip_start)
+                                                                                                    prob, interval[
+                                                                                                        'chrom'],
+                                                                                                    soft_clip_start)
 
                                                                 read.tags += [('SA', sa_tag)]
 

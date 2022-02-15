@@ -38,9 +38,9 @@ class realignment:
     """Class for managing the realignment and eccDNA indetification of circle-map"""
 
     def __init__(self, input_bam,qname_bam,sorted_bam,genome_fasta,directory,mapq_cutoff,insert_size_mapq,std_extension,
-                 insert_size_sample_size,gap_open,gap_ext,n_hits,prob_cutoff,min_soft_clipped_length,overlap_frac,
-                 interval_p_cut, output_name,ncores,af,locker,split,ratio,verbose,pid,edit_distance_frac,
-                 remap_splits,only_discordants,splits,score,insert_size,discordant_filter):
+                insert_size_sample_size,gap_open,gap_ext,n_hits,prob_cutoff,min_soft_clipped_length,overlap_frac,
+                interval_p_cut, output_name,ncores,af,locker,split,ratio,verbose,pid,edit_distance_frac,
+                remap_splits,only_discordants,splits,score,insert_size,discordant_filter):
         #I/O
         self.edit_distance_frac = edit_distance_frac
         self.ecc_dna_str = input_bam
@@ -104,29 +104,29 @@ class realignment:
 
         print("Running realignment\n")
         print("Probabilistic realignment parameters:\n"
-              "\tAlignments to consider: %s \n"
-              "\tProbability cut-off to consider as mapped: %s \n"
-              "\tMinimum soft-clipped length to attemp realignment: %s \n"
-              "\tMinimum bwa mem mapping quality to consider: %s \n"
-              "\tGap open penalty: %s \n"
-              "\tGap extension penalty: %s \n"
-              % (self.n_hits, self.prob_cutoff,self.min_sc_length,self.mapq_cutoff,self.gap_open, self.gap_ext))
+            "\tAlignments to consider: %s \n"
+            "\tProbability cut-off to consider as mapped: %s \n"
+            "\tMinimum soft-clipped length to attemp realignment: %s \n"
+            "\tMinimum bwa mem mapping quality to consider: %s \n"
+            "\tGap open penalty: %s \n"
+            "\tGap extension penalty: %s \n"
+            % (self.n_hits, self.prob_cutoff,self.min_sc_length,self.mapq_cutoff,self.gap_open, self.gap_ext))
 
         print("Interval extension parameters:\n"
-              "\tInsert size mapping quality cut-off: %s \n"
-              "\tNumber of read to sample: %s \n"
-              "\tNumber of standard deviations to extend the realignment intervals: %s \n"
-              % (self.insert_size_mapq,self.insert_sample_size,self.std_extenstion))
+            "\tInsert size mapping quality cut-off: %s \n"
+            "\tNumber of read to sample: %s \n"
+            "\tNumber of standard deviations to extend the realignment intervals: %s \n"
+            % (self.insert_size_mapq,self.insert_sample_size,self.std_extenstion))
 
         print("eccDNA output options: \n"
-              "\tSplit read cut-off: %s \n"
-              "\tCoverage ratio cut-off: %s \n" % (self.split,self.ratio))
+            "\tSplit read cut-off: %s \n"
+            "\tCoverage ratio cut-off: %s \n" % (self.split,self.ratio))
 
 
         print("Interval processing options: \n"
-              "\tMerging fraction: %s \n"
-              "\tInterval probability cut-off: %s \n"
-              % (self.overlap_fraction,self.interval_p))
+            "\tMerging fraction: %s \n"
+            "\tInterval probability cut-off: %s \n"
+            % (self.overlap_fraction,self.interval_p))
 
 
 
@@ -196,12 +196,10 @@ class realignment:
 
 
                         realignment_interval_extended = get_realignment_intervals(candidate_mates,extension,self.interval_p,
-                                                                                  self.verbose)
-                        
+                                                                                self.verbose)
 
                         if realignment_interval_extended is None:
                             continue
-
 
                         iteration_results = []
                         iteration_discordants = []
@@ -209,8 +207,6 @@ class realignment:
                         for index,mate_interval in realignment_interval_extended.iterrows():
 
                             iteration += 1
-
-
 
                             #sample realignment intervals
                             #fasta file fetch is 1 based that why I do +1
@@ -286,7 +282,7 @@ class realignment:
 
 
                                             if non_colinearity(int(read.cigar[0][0]),int(read.cigar[-1][0]),int(read.pos),
-                                                               int(mate_interval.start),int(mate_interval.end)) == True:
+                                                                int(mate_interval.start),int(mate_interval.end)) == True:
 
 
                                                 if sc_len >= self.min_sc_length:
@@ -294,7 +290,7 @@ class realignment:
                                                 #realignment
 
                                                     realignment_dict = realign(read,self.n_hits,plus_coding_interval,minus_coding_interval,
-                                                                               plus_base_freqs,minus_base_freqs,self.gap_open,self.gap_ext,self.verbose,edits_allowed)
+                                                                            plus_base_freqs,minus_base_freqs,self.gap_open,self.gap_ext,self.verbose,edits_allowed)
 
 
                                                     if realignment_dict == None:
@@ -399,8 +395,8 @@ class realignment:
 
             # Write process output to disk
             output = iteration_merge(only_discordants,results,
-                                     self.overlap_fraction,self.split,self.score,
-                                     self.min_sc_length,sorted_bam,self.af,insert_metrics[0],insert_metrics[1],self.discordant_filter)
+                                    self.overlap_fraction,self.split,self.score,
+                                    self.min_sc_length,sorted_bam,self.af,insert_metrics[0],insert_metrics[1],self.discordant_filter)
 
             write_to_disk(output, self.output, self.lock, self.directory, self.pid)
 

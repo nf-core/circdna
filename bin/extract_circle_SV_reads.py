@@ -31,8 +31,8 @@ import warnings
 class readExtractor:
     """Class for managing the read extracting part of circle map"""
     def __init__(self,sorted_bam,output_bam,working_dir,mapq_cutoff,extract_discordant,extract_soft_clipped,extract_hard_clipped,
-                 verbose,parser
-                 ):
+                verbose,parser
+                ):
         #input-output
         self.sorted_bam = sorted_bam
         self.output_bam = output_bam
@@ -163,30 +163,30 @@ class readExtractor:
 
                                         #extract soft-clipped if the mapq is high enough
                                         write_clipped_read(circle_sv_reads, read1, read2, self.no_soft_clipped,
-                                                           self.no_hard_clipped, self.mapq_cutoff)
+                                                        self.no_hard_clipped, self.mapq_cutoff)
 
                                         write_clipped_read(circle_sv_reads, read2, read1, self.no_soft_clipped,
-                                                           self.no_hard_clipped, self.mapq_cutoff)
+                                                        self.no_hard_clipped, self.mapq_cutoff)
 
 
 
                                 else:
 
                                     write_clipped_read(circle_sv_reads, read1, read2, self.no_soft_clipped,
-                                                       self.no_hard_clipped, self.mapq_cutoff)
+                                                    self.no_hard_clipped, self.mapq_cutoff)
 
                                     write_clipped_read(circle_sv_reads, read2, read1, self.no_soft_clipped,
-                                                       self.no_hard_clipped, self.mapq_cutoff)
+                                                    self.no_hard_clipped, self.mapq_cutoff)
 
 
                             else:
 
                                 #if the leftmost mapping condition is not met check if they are soft-clipped
                                 write_clipped_read(circle_sv_reads, read1, read2, self.no_soft_clipped,
-                                                   self.no_hard_clipped, self.mapq_cutoff)
+                                                self.no_hard_clipped, self.mapq_cutoff)
 
                                 write_clipped_read(circle_sv_reads, read2, read1, self.no_soft_clipped,
-                                           self.no_hard_clipped, self.mapq_cutoff)
+                                            self.no_hard_clipped, self.mapq_cutoff)
 
 
                         else:
@@ -194,10 +194,10 @@ class readExtractor:
                             #check soft-clipped if R2F1 orientation is not True
 
                                 write_clipped_read(circle_sv_reads, read1, read2, self.no_soft_clipped,
-                                                   self.no_hard_clipped, self.mapq_cutoff)
+                                                    self.no_hard_clipped, self.mapq_cutoff)
 
                                 write_clipped_read(circle_sv_reads, read2, read1, self.no_soft_clipped,
-                                           self.no_hard_clipped, self.mapq_cutoff)
+                                            self.no_hard_clipped, self.mapq_cutoff)
 
 
                     else:
@@ -205,11 +205,11 @@ class readExtractor:
                         #check read 1 and read two for independent unmaps
                         if read1.is_unmapped == False:
                             write_clipped_read(circle_sv_reads, read1,read2, self.no_soft_clipped,
-                                               self.no_hard_clipped, self.mapq_cutoff, own_mapq=True)
+                                                self.no_hard_clipped, self.mapq_cutoff, own_mapq=True)
 
                         if read2.is_unmapped == False:
                             write_clipped_read(circle_sv_reads, read2, read1, self.no_soft_clipped,
-                                               self.no_hard_clipped, self.mapq_cutoff, own_mapq=True)
+                                                self.no_hard_clipped, self.mapq_cutoff, own_mapq=True)
 
                 else:
                     # reads are not queryname sorted and cannot be processed in paired mode

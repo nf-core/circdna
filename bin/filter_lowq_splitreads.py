@@ -2,16 +2,16 @@
 import pysam as ps
 import sys
 import argparse
- 
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument('-i', '--input', metavar='',
-                                  help="Input bam file")
+                    help="Input bam file")
 parser.add_argument('-o', '--output', metavar='',
-                                  help="Output bam file")
+                    help="Output bam file")
 parser.add_argument('-q', '--quality', type=int, metavar='',
-                                  help="bwa-mem mapping quality cutoff. Default value 20",
-                                  default=20)
+                    help="bwa-mem mapping quality cutoff. Default value 20",
+                    default=20)
 parser.parse_args()
 args = parser.parse_args(sys.argv[1:])
 bam = ps.AlignmentFile("%s" % args.input,"rb")

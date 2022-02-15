@@ -38,7 +38,7 @@ process CIRCEXPLORER2_PARSE {
     CIRCexplorer2 parse $options.args $bam -b ${prefix}.temp.bed > ${prefix}_CIRCexplorer2_parse.log
     cat ${prefix}.temp.bed | tr "/" "\t" > ${prefix}.circexplorer_circdna.bed
     rm ${prefix}.temp.bed
-    
+
     echo \$(CIRCexplorer2 --version) > ${software}.version.txt
     """
 }

@@ -27,12 +27,12 @@ process BEDTOOLS_SORTEDBAM2BED {
     }
 
     input:
-    tuple val(meta), 
-            path(sorted_bam), 
+    tuple val(meta),
+            path(sorted_bam),
             path(sorted_bai)
 
     output:
-    tuple val(meta), 
+    tuple val(meta),
         path("*.concordant.txt"),
         emit: conc_txt
 
@@ -46,7 +46,7 @@ process BEDTOOLS_SORTEDBAM2BED {
         sed -e 's/\\// /g' | \
         awk '{printf ("%s\t%d\t%d\t%s\t%d\t%d\t%s\t%s\\n",\$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8)}' > '${prefix}.concordant.txt'
 
-    # Software Version 
+    # Software Version
     bedtools --version > ${software}.version.txt
 
     """

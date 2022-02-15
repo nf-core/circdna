@@ -80,7 +80,7 @@ if rdList0:
     try:
         if len(rdList0[0].info) == 0:
             sys.stderr.write("ERROR: CNV estimate bed file had too few columns.\n"
-                             "Must contain: chr  pos1  pos2  cnv_estimate\n")
+                                "Must contain: chr  pos1  pos2  cnv_estimate\n")
             sys.exit(1)
         _ = float(rdList0[0].info[-1])
 
@@ -108,7 +108,7 @@ if args.bam != "":
     bamFileb2b = b2b.bam_to_breakpoint(bamFile, coverage_stats=cstats)
     rdList = hg.interval_list([r for r in rdList if float(r.info[-1]) >
                                GAIN + 2 * max(1.0, bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0]) - 2
-                               and bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0] > 0])
+                                and bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0] > 0])
 
 genome_features = hg.oncogene_list
 amplicon_listl = rdList
@@ -118,7 +118,7 @@ uc_list = hg.interval_list([])
 for a in amplicon_listl:
     if (len(hg.interval_list([a]).intersection(cr)) == 0 or
         a.size() > max(1000000, 10 * sum([a.intersection(ci[1]).size() for ci in hg.interval_list([a]).intersection(cr)])) or
-       a.size() - sum([a.intersection(ci[1]).size() for ci in hg.interval_list([a]).intersection(cr)]) > 2000000):
+        a.size() - sum([a.intersection(ci[1]).size() for ci in hg.interval_list([a]).intersection(cr)]) > 2000000):
         if (len(hg.interval_list([a]).intersection(cr))) == 0:
             uc_list.append(a)
         else:

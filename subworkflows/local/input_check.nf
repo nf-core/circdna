@@ -26,8 +26,8 @@ workflow INPUT_CHECK {
     }
 
     emit:
-    reads // channel: [ val(meta), [ reads ] ] OR
-          // channel: [ val(meta),  bam  ]
+    reads   // channel: [ val(meta), [ reads ] ] OR
+            // channel: [ val(meta),  bam  ]
 }
 
 // Function to get list of [ meta, [ fastq_1, fastq_2 ] ]

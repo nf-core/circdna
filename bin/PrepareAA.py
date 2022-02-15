@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 # author: Jens Luebeck (jluebeck [at] ucsd.edu)
 
@@ -83,7 +83,7 @@ def run_freebayes(ref, bam_file, outdir, sname, nthreads, regions, fb_path=None)
         replace_filter_field_func = "awk '{ if (substr($1,1,1) != \"#\" ) { $7 = ($7 == \".\" ? \"PASS\" : $7 ) }} 1 ' OFS=\"\\t\""
         cmd = "{} --genotype-qualities --standard-filters --use-best-n-alleles 5 --limit-coverage 25000 \
         --strict-vcf -f {} -r {} {} | {} > {}".format(fb_exec, ref, curr_region_string, bam_file,
-                                                      replace_filter_field_func, vcf_file)
+                                                        replace_filter_field_func, vcf_file)
         call(cmd, shell=True)
         # gzip the new VCF
         call("gzip -f " + vcf_file, shell=True)
@@ -308,7 +308,7 @@ def get_ref_sizes(ref_genome_size_file):
 def get_ref_centromeres(ref_name):
     centromere_dict = {}
     fnameD = {"GRCh38": "GRCh38_centromere.bed", "GRCh37": "human_g1k_v37_centromere.bed",
-              "hg19": "hg19_centromere.bed"}
+                "hg19": "hg19_centromere.bed"}
     with open(AA_REPO + ref_name + "/" + fnameD[ref_name]) as infile:
         for line in infile:
             fields = line.rstrip().rsplit("\t")
@@ -514,17 +514,17 @@ if __name__ == '__main__':
 
             # make a list of vcf files
             vcf_files = [freebayes_output_directory + x for x in os.listdir(freebayes_output_directory) if
-                         x.endswith(".vcf.gz")]
+                        x.endswith(".vcf.gz")]
 
             # MERGE VCFs
             merged_vcf_file = merge_and_filter_vcfs(chr_sizes.keys(), vcf_files, outdir, sname)
 
         else:
             print("Using " + merged_vcf_file + "for Canvas CNV step. Improper formatting of VCF can causes errors. See "
-                                               "README for formatting tips.")
+                "README for formatting tips.")
 
         run_canvas(args.canvas_dir, args.sorted_bam, merged_vcf_file, canvas_output_directory, removed_regions_bed,
-                   sname, ref)
+                    sname, ref)
         args.cnv_bed = convert_canvas_cnv_to_seeds(canvas_output_directory)
 
     elif args.reuse_canvas:
@@ -536,10 +536,10 @@ if __name__ == '__main__':
             os.mkdir(cnvkit_output_directory)
 
         run_cnvkit(args.cnvkit_dir, args.nthreads, cnvkit_output_directory, args.sorted_bam, normal=args.normal_bam,
-                   refG=ref)
+                    refG=ref)
         if args.ploidy or args.purity:
             rescale_cnvkit_calls(args.cnvkit_dir, cnvkit_output_directory, bambase, ploidy=args.ploidy,
-                                 purity=args.purity)
+                                    purity=args.purity)
             rescaling = True
         else:
             rescaling = False
@@ -551,7 +551,7 @@ if __name__ == '__main__':
 
     if not args.no_filter:
         amplified_interval_bed = run_amplified_intervals(args.cnv_bed, args.sorted_bam, outdir, sname, args.cngain,
-                                                     args.cnsize_min)
+                                                            args.cnsize_min)
     else:
         amplified_interval_bed = args.cnv_bed
 

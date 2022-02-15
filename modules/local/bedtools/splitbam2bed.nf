@@ -27,11 +27,11 @@ process BEDTOOLS_SPLITBAM2BED {
     }
 
     input:
-    tuple val(meta), 
+    tuple val(meta),
             path(split_bam)
 
     output:
-    tuple val(meta), 
+    tuple val(meta),
         path("*.split.txt"),
         emit: split_txt
 
@@ -53,7 +53,7 @@ process BEDTOOLS_SPLITBAM2BED {
         (\$9=="H" && \$NF=="M")) {printf ("%s\tsecond\\n",\$0)} }' | \
         awk 'BEGIN{FS=OFS="\t"} {gsub(" ", "", \$8)} 1' > '${prefix}.split.txt'
 
-    # Software Version 
+    # Software Version
     bedtools --version > ${software}.version.txt
 
     """

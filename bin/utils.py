@@ -358,7 +358,7 @@ def get_mate_intervals(sorted_bam,interval,mapq_cutoff,verbose,only_discordants)
                                     # L means that the SA is aligned to to a rightmost part.
 
                                     mate_interval = [interval['chrom'], int(supl_info[1]) - (ref_alignment_length),
-                                                     (int(supl_info[1]) + (ref_alignment_length)), "SA", "L",str(
+                                                    (int(supl_info[1]) + (ref_alignment_length)), "SA", "L",str(
                                             1-phred_to_prob(np.array(int(supl_info[4]),dtype=np.float64)))]
 
                                     candidate_mates.append(mate_interval)
@@ -373,7 +373,7 @@ def get_mate_intervals(sorted_bam,interval,mapq_cutoff,verbose,only_discordants)
                                     # by a supplementary alignment. R means that the SA is aligned to to a rightmost part.
 
                                     mate_interval = [interval['chrom'], (int(supl_info[1]) - (ref_alignment_length)),
-                                                     int(supl_info[1]) + (ref_alignment_length), "SA", "R",str(1-phred_to_prob(np.array(int(supl_info[4]),dtype=np.float64)))]
+                                                    int(supl_info[1]) + (ref_alignment_length), "SA", "R",str(1-phred_to_prob(np.array(int(supl_info[4]),dtype=np.float64)))]
 
                                     candidate_mates.append(mate_interval)
                     else:
@@ -403,8 +403,8 @@ def get_mate_intervals(sorted_bam,interval,mapq_cutoff,verbose,only_discordants)
 
 
                                 mate_interval = [interval['chrom'], read.next_reference_start,
-                                                 (read.next_reference_start + read_length), "DR",
-                                                 "R",str(1-phred_to_prob(np.array(read.get_tag('MQ'),dtype=np.float64)))]
+                                                (read.next_reference_start + read_length), "DR",
+                                                "R",str(1-phred_to_prob(np.array(read.get_tag('MQ'),dtype=np.float64)))]
                                 candidate_mates.append(mate_interval)
 
 
@@ -420,8 +420,8 @@ def get_mate_intervals(sorted_bam,interval,mapq_cutoff,verbose,only_discordants)
                                 # L means that the mate is aligned to a leftmost part
 
                                 mate_interval = [interval['chrom'], read.next_reference_start,
-                                                 (read.next_reference_start + read_length),
-                                                 "DR", "L",str(1-phred_to_prob(np.array(read.get_tag('MQ'),dtype=np.float64)))]
+                                                (read.next_reference_start + read_length),
+                                                "DR", "L",str(1-phred_to_prob(np.array(read.get_tag('MQ'),dtype=np.float64)))]
                                 candidate_mates.append(mate_interval)
                     else:
 
@@ -533,7 +533,7 @@ def get_mate_intervals(sorted_bam,interval,mapq_cutoff,verbose,only_discordants)
 def insert_size_dist(sample_size,mapq_cutoff,qname_bam):
     """Function that takes as input a queryname sorted bam and computes the mean insert a size and
     the standard deviation from. This number is computed from the F1R2 read with a user defined sample size,
-     using a user defined mapping quality cutoff in both reads"""
+    using a user defined mapping quality cutoff in both reads"""
 
 
     whole_bam = ps.AlignmentFile(qname_bam, "rb")
@@ -642,7 +642,7 @@ def get_realignment_intervals(bed_prior,interval_extension,interval_p_cutoff,ver
         extended = []
 
 
-        
+
 
         #if argmax is turn on interval_p is 0
         if interval_p_cutoff == 0:
@@ -791,7 +791,7 @@ def number_encoding(seq):
 
 def check_alphabet(sequence):
     """Function that takes as input a sequence and it will check that there is at least a letter matching the alphabet
-     in the sequence, returning true."""
+    in the sequence, returning true."""
 
     code = "ATCG"
 
@@ -822,7 +822,7 @@ def phred_to_prob(values):
 
 def get_longest_soft_clipped_bases(read):
     """Function that takes as input the cigar string and returns a dictionary containing the longest soft-clipped part of
-     the read, the quality values and  the read mapping quality"""
+    the read, the quality values and  the read mapping quality"""
 
     read_cigar = read.cigar
 
@@ -869,7 +869,7 @@ def get_longest_soft_clipped_bases(read):
             else:
 
                 return{'seq':read.seq[-read_cigar[-1][1]:],'qual': read.query_qualities[-read_cigar[-1][1]:],
-                       'mapq': read.mapq}
+                    'mapq': read.mapq}
 
         except AssertionError as e:
 
@@ -930,7 +930,7 @@ def realign(read,n_hits,plus_strand,minus_strand,plus_base_freqs,minus_base_freq
 
 
                 score = pssm(phred_to_prob(np.array(soft_clipped_read['qual'],dtype=np.float64)), encoded_nucs,
-                             edlib_cigar_to_iterable(alignment['cigar']),minus_base_freqs,gap_open,gap_extend,nuc_and_ops,verbose)
+                            edlib_cigar_to_iterable(alignment['cigar']),minus_base_freqs,gap_open,gap_extend,nuc_and_ops,verbose)
 
                 if score < min_score:
                     min_score = score
@@ -965,7 +965,7 @@ def realign(read,n_hits,plus_strand,minus_strand,plus_base_freqs,minus_base_freq
                 hits += 1
 
                 score = pssm(phred_to_prob(np.array(soft_clipped_read['qual'],dtype=np.float64)), encoded_nucs,
-                             edlib_cigar_to_iterable(alignment['cigar']), plus_base_freqs,gap_open,gap_extend,nuc_and_ops,verbose)
+                            edlib_cigar_to_iterable(alignment['cigar']), plus_base_freqs,gap_open,gap_extend,nuc_and_ops,verbose)
 
                 if score < min_score:
                     min_score = score
@@ -1117,7 +1117,7 @@ def realignment_probability(hit_dict,interval_length):
     except ZeroDivisionError as e:
         print(e)
         warnings.warn("ZeroDivisionError caught while computing the realignment posterior probability."
-                      "Setting posterior probability to 0")
+                    "Setting posterior probability to 0")
         posterior = 0
     return(posterior)
 
@@ -1187,9 +1187,9 @@ def iteration_merge(only_discordants,results,fraction,splits,score,sc_len,bam,af
 
 
     grouped = unparsed_pd.groupby(merge_fraction(unparsed_pd.iteration.shift(), unparsed_pd.start.shift(),
-                                           unparsed_pd.end.shift(), unparsed_pd.iteration,
-                                           unparsed_pd.start,
-                                           unparsed_pd.end).lt(norm_fraction).cumsum()).agg(
+                                                unparsed_pd.end.shift(), unparsed_pd.iteration,
+                                                unparsed_pd.start,
+                                                unparsed_pd.end).lt(norm_fraction).cumsum()).agg(
         {'chrom': 'first', 'start': 'min', 'end': 'max', 'discordants': 'max', 'read': 'sum','score':'sum'})
 
     bedtool_output = bt.BedTool.from_dataframe(grouped)
@@ -1207,12 +1207,12 @@ def iteration_merge(only_discordants,results,fraction,splits,score,sc_len,bam,af
             if int(interval[4]) != 0:
                 if (int(interval[4])) >= splits and float(interval[5]) > score:
                     start_cov = bam.count(contig=interval[0],
-                                                   start=int(interval[1]), stop=int(interval[1])+1
-                                                   ,read_callback='nofilter')
+                                        start=int(interval[1]), stop=int(interval[1])+1
+                                        ,read_callback='nofilter')
 
                     end_cov = bam.count(contig=interval[0],
-                                                 start=int(interval[2])-1, stop=int(interval[2])
-                                                 ,read_callback='nofilter')
+                                        start=int(interval[2])-1, stop=int(interval[2])
+                                        ,read_callback='nofilter')
 
 
 
@@ -1222,11 +1222,11 @@ def iteration_merge(only_discordants,results,fraction,splits,score,sc_len,bam,af
             else:
                 if int(interval[3]) >= n_discordant:
                         start_cov = bam.count(contig=interval[0],start=int(interval[1]), stop=int(interval[1]) + 1,
-                                                   read_callback='nofilter')
+                                            read_callback='nofilter')
 
                         end_cov = bam.count(contig=interval[0],
-                                                 start=int(interval[2]) - 1, stop=int(interval[2]),
-                                                 read_callback='nofilter')
+                                            start=int(interval[2]) - 1, stop=int(interval[2]),
+                                            read_callback='nofilter')
 
                         circle_af = (int(interval[3])) / ((start_cov+end_cov+0.01)/2)
 
@@ -1272,11 +1272,11 @@ def merge_final_output(bam,results,begin,splits,dir,fraction,pid):
     #merge the output
     # merge_fraction calculates the degree of overlap between the two genomic intervals
     #lt(norm_freaction) looks the ones that surpass the merging threshold (returns 0 if true, 1 if not)
-    # Cumsum calculates the cumulative sum over the output of lt. Which is then used for the grouping. 
+    # Cumsum calculates the cumulative sum over the output of lt. Which is then used for the grouping.
     #If the cumulative sum is the same for two rows, they are merged
     final_output = second_merging_round.groupby(
         merge_fraction(second_merging_round.chrom.shift(), second_merging_round.start.shift(),
-                     second_merging_round.end.shift(),second_merging_round.chrom,second_merging_round.start,second_merging_round.end).lt(norm_fraction).cumsum()).agg(
+                    second_merging_round.end.shift(),second_merging_round.chrom,second_merging_round.start,second_merging_round.end).lt(norm_fraction).cumsum()).agg(
         {'chrom': 'first', 'start': 'min', 'end': 'max', 'discordants' : 'max', 'sc': 'sum','score':'sum'})
 
     unfiltered_output = bt.BedTool.from_dataframe(final_output)
@@ -1417,7 +1417,7 @@ def merge_coverage_bed(results,frac,number):
 
     merging_out  = sort.groupby(
         merge_fraction(sort.chrom, sort.start,
-                     sort.end,sort.chrom.shift(),sort.start.shift(),sort.end.shift()).lt(fraction).cumsum()).agg(
+                    sort.end,sort.chrom.shift(),sort.start.shift(),sort.end.shift()).lt(fraction).cumsum()).agg(
         {'chrom': 'first', 'start': 'min', 'end': 'max','item': 'sum'})
 
     merging_out = merging_out.drop(merging_out[merging_out.item < number].index)
@@ -1432,7 +1432,7 @@ def merge_coverage_bed(results,frac,number):
 
     final_output = merging_out.groupby(
         merge_fraction(merging_out.chrom, merging_out.start,
-                       merging_out.end, merging_out.chrom.shift(), merging_out.start.shift(),merging_out.end.shift()).lt(fraction).cumsum()).agg(
+                    merging_out.end, merging_out.chrom.shift(), merging_out.start.shift(),merging_out.end.shift()).lt(fraction).cumsum()).agg(
         {'chrom': 'first', 'start': 'min', 'end': 'last', 'item': 'sum'})
 
 
@@ -1453,10 +1453,10 @@ def filter_by_ratio(eccdna_bed,cutoff):
 
         if float(row[8]) > cutoff or float(row[9]) > cutoff:
             circle_list.append([row['chrom'],row['start'],row['end'],row['discordants'],row['soft-clipped'],
-                             row['score'],row['mean'],row['std'],row['start_ratio'],row['end_ratio'],row['continuity']])
+                            row['score'],row['mean'],row['std'],row['start_ratio'],row['end_ratio'],row['continuity']])
 
     output = pd.DataFrame.from_records(circle_list,columns=['chrom', 'start', 'end', 'discordants', 'soft-clipped', 'score', 'mean','std',
-                          'start_ratio','end_ratio','continuity'])
+                        'start_ratio','end_ratio','continuity'])
 
     return(output)
 
@@ -1478,7 +1478,7 @@ def assign_discordants(split_bed,discordant_bed,insert_mean,insert_std):
     max_dist = (insert_mean) + (5 * insert_std)
 
     splits = pd.DataFrame.from_records(split_bed, columns=['chrom', 'start', 'end', 'read', 'iteration',
-                                                           'score']).sort_values(['chrom', 'start', 'end'])
+                                                            'score']).sort_values(['chrom', 'start', 'end'])
 
     splits['score'] = splits['score'].astype(float)
 
@@ -1507,7 +1507,7 @@ def assign_discordants(split_bed,discordant_bed,insert_mean,insert_std):
         for index,row in merged_splits.iterrows():
             assigned_splits.append(
                 [row['chrom'], row['start'], row['end'], row['read'], row['iteration'], float(row['score']),
-                 0])
+                0])
 
         return(assigned_splits)
 
@@ -1554,7 +1554,7 @@ def realignment_read_to_SA_string(realignment_dict,prob,chrom,soft_clip_start):
     returns an SA string"""
 
     sa_tag = chrom + "," + str(soft_clip_start) + "," + str(realignment_dict['alignments'][1][4]) + "," \
-             + realignment_dict['alignments'][1][1] + ","+ str(prob_to_phred(prob)) + "," + str(realignment_dict['alignments'][1][3]) + ";"
+            + realignment_dict['alignments'][1][1] + ","+ str(prob_to_phred(prob)) + "," + str(realignment_dict['alignments'][1][3]) + ";"
     return(sa_tag)
 
 def write_clipped_read(bam,read,mate,no_soft_clipped,no_hard_clipped,mapq_cutoff,own_mapq=False):
@@ -1605,5 +1605,3 @@ def write_clipped_read(bam,read,mate,no_soft_clipped,no_hard_clipped,mapq_cutoff
                         bam.write(read)
 
         return(None)
-
-

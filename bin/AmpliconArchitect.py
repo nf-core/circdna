@@ -310,4 +310,4 @@ if (args.extendmode in ['VIRAL', 'VIRAL_CLUSTERED']) and (args.runmode in ['FULL
         amplicon_id += 1
 
 
-logging.info("#TIME " + '%.3f\t'%(clock() - TSTART) + "Total Runtime")  
+logging.info("#TIME " + '%.3f\t'%(clock() - TSTART) + "Total Runtime")

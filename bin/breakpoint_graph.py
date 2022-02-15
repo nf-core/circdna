@@ -163,7 +163,7 @@ class breakpoint_edge(abstract_edge):
 
     def type(self, min_insert=0, max_insert=500):
         """Determine type of "breakpoint"/"discordant edge
-        Output values: 
+        Output values:
         "source": Contains v.pos = -1, indicates end of linear contig.
         "interchromosomal": Different chromosomes.
         "everted": Forward strand of larger position connected to reverse strand of reverse, indicated by outward orientation of read-pairs, may suggest tandem duplication.
@@ -171,7 +171,7 @@ class breakpoint_edge(abstract_edge):
         "reverse": Both vertex/paired-reads map to reverse strand
         "discordant": Alignment distance larger/smaller than max/min insert, may indicate deletion
         "concordant": Expected alignment length between min and max insert. NOTE: Different from edge_type
-         """
+        """
         if self.v1.pos == -1 or self.v2.pos == -1:
             return "source"
         elif self.v1.chrom != self.v2.chrom:
@@ -193,7 +193,7 @@ class breakpoint_edge(abstract_edge):
         if vmax.pos - vmin.pos > max_insert or vmax.pos - vmin.pos < min_insert:
             return "discordant"
         return "concordant"
-               
+
     def __repr__(self):
         """breakpoint_vertex1->breakpoint_vertex2"""
         return str(self.v1) + '->' + str(self.v2)
@@ -521,7 +521,7 @@ class breakpoint_graph(abstract_graph):
                 while tc[ci].type() == 'concordant' or tc[ci-1].type() == 'concordant':
                     ci -= 1
                 tc = tc[ci:] + tc[: ci]
-                    
+
             if tcw == 0:
                 print("tcw is 0")
                 break
@@ -577,7 +577,7 @@ class breakpoint_graph(abstract_graph):
                 cycle_list.append([cycle_number, tcw, tc, cycle_edge_list])
                 acc = tcw * sum([abs(e[1].pos - e[0].pos) for e in cycle_edge_list if -1 not in [e[0].pos, e[1].pos]])
                 amplicon_content_covered += acc
-            cycle_number += 1    
+            cycle_number += 1
             # print tcw, tc
             for e in tc:
                 w2[e] = w2[e] - tcw
@@ -869,7 +869,7 @@ class graph_decomposition(object):
         return fseq
 
 
-    def __repr__(self):            
+    def __repr__(self):
         s = ""
         for i in self.ilist:
             s += '\t'.join(["Interval", i.info[0], i.chrom, str(i.start), str(i.end)]) + '\n'

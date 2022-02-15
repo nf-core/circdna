@@ -113,10 +113,10 @@ def absPos(chrname, pos=0):
                 sumlen += chrLen[chrkeys[i]]
             if cnum < chrkeys[i]:
                 break
-    return chrOffset[chrNum(chrname)] + pos 
+    return chrOffset[chrNum(chrname)] + pos
 
 for c in chrLen:
-    ap = absPos(chrName[c]) 
+    ap = absPos(chrName[c])
 
 def chrPos(abspos):
     for c in chrOffset:
@@ -168,7 +168,7 @@ class interval(object):
                     self.strand = -1
                 return
             else:
-                 file_format = 'bed'
+                file_format = 'bed'
         if file_format=='gff':
             ll = line.strip().split()
             self.chrom = ll[0]
@@ -179,9 +179,9 @@ class interval(object):
                 self.strand = -1
             if not exclude_info_string:
                 self.info = {r[0: r.find('=')]: r[r.find('=') + 1: ]
-                         for r in ll[8].strip().strip(';').split(';')}
+                        for r in ll[8].strip().strip(';').split(';')}
                 self.info['Variant'] = ll[5]
-        elif file_format == 'bed':        
+        elif file_format == 'bed':
             ll = line.strip().split()
             self.chrom = ll[0]
             if (REF == "hg19" or REF == "GRCh38") and 0 < len(self.chrom) < 3:
@@ -208,7 +208,7 @@ class interval(object):
             raise(Exception("Invalid interval format" + str(line)))
 
     def load_pos(self, chrom, start, end, strand):
-        self.chrom = chrom 
+        self.chrom = chrom
         self.start = int(start)
         self.end = int(end)
         self.strand = strand
@@ -418,7 +418,7 @@ class interval(object):
         sl = interval_list([self]).intersection(segdup_list)
         slsd = sum([self.intersection(i[1]).size() for i in sl])
         return float(self.size()) / (self.size() + slsd)
-    
+
     def extend(self, extend_len=0):
         return interval(self.chrom, max(0, self.start - extend_len), min(self.end + extend_len, chrLen[chrNum(self.chrom)]), self.strand)
 
@@ -441,8 +441,8 @@ class interval_list(list, object):
             try:
                 f = open(file_name)
                 list.__init__(self, [interval(l, file_format=self.file_format, exclude_info_string=exclude_info_string)
-                              for l in f if len(l.strip().split()) > 2
-                              and l.strip()[0] != '#'])
+                            for l in f if len(l.strip().split()) > 2
+                            and l.strip()[0] != '#'])
                 f.close()
             except:
                 logging.warning("#TIME " + '%.3f\t'%clock() + " interval_list: Unable to open interval file \"" + file_name + "\"." )
@@ -627,7 +627,7 @@ class interval_list(list, object):
         hS = sum([i.size() for i in hlist if i.size > h_sum * gap / max(1, h_count)])
         min_hsize = hS / (max(1, h_count) / gap - hK)
         h_sum = hS + hK * min_hsize
-        
+
         vK = len([i for i in vlist if i.size() < v_sum * gap / max(1, v_count)])
         vS = sum([i.size() for i in vlist if i.size > v_sum * gap / max(1, v_count)])
         min_vsize = vS / (max(1, v_count) / gap - vK)
@@ -707,7 +707,7 @@ class interval_list(list, object):
         return breaks
 
     def __str__(self):
-       return str(([str(i) for i in self]))
+        return str(([str(i) for i in self]))
 
 
 
@@ -724,11 +724,11 @@ def load_exons():
     try:
         exon_file = open(exon_filename)
         exonFields = [interval(j, file_format='gff')
-                      for j in exon_file.read().strip().split('\n')
-                      if (len(j.strip()) > 0 and j.strip()[0] != '#' and
-                          {r.split('=')[0]:r.split('=')[1]
-                           for r in j.strip().split()[8].strip(';').split(';')
-                          }['color'] == '000080')]
+                    for j in exon_file.read().strip().split('\n')
+                    if (len(j.strip()) > 0 and j.strip()[0] != '#' and
+                        {r.split('=')[0]:r.split('=')[1]
+                        for r in j.strip().split()[8].strip(';').split(';')
+                            }['color'] == '000080')]
         exon_file.close()
         exon_list.extend((exonFields))
     except:
@@ -747,5 +747,3 @@ centromere_list = interval_list([i[0] for i in centromere_list.merge_clusters(ex
 
 segdup_list = interval_list(segdup_filename, 'bed')
 segdup_list.sort()
-
-

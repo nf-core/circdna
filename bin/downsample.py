@@ -113,7 +113,7 @@ elif cstats is None:
 final = args.final
 
 if cstats[0] <= final:
-    exit()    
+    exit()
 ratio = float(final) / float(cstats[0])
 
 

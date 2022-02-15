@@ -36,8 +36,8 @@ import warnings
 
 
 def sim_ecc_reads(genome_fasta,read_length,directory,reads,exclude_regions,fastq,insert_size,errors,mean_cov,locker,
-                  process,sim_circles,paired_end_fastq_1,paired_end_fastq_2,skipped,correct,ins_rate1,ins_rate2,del_rate1,
-                  del_rate2,sim_pid):
+                process,sim_circles,paired_end_fastq_1,paired_end_fastq_2,skipped,correct,ins_rate1,ins_rate2,del_rate1,
+                del_rate2,sim_pid):
     """Function that takes as arguments a genome fasta file, weights each chromosome based on the length
     and simulates single end eccDNA reads
     """
@@ -125,7 +125,7 @@ def sim_ecc_reads(genome_fasta,read_length,directory,reads,exclude_regions,fastq
             chr_pos_end = chromosomes[chr]
         else:
             chr_pos_end = chr_pos_start + circle_length
-            
+
         #if user of provides regions to exclude, check within it is on the region. and skip it
         if exclude_regions != None and bt.BedTool(exclude_regions).sort().any_hits(bt.Interval(chr,chr_pos_start,chr_pos_end)) != 0:
             #hit in a gap region
@@ -144,7 +144,7 @@ def sim_ecc_reads(genome_fasta,read_length,directory,reads,exclude_regions,fastq
 
             #create class object outside the loop
             new_read = sim_paired_end(n_of_reads, insert_size, genome_fasta, chr, chr_pos_start,
-                                      chr_pos_end, read_length, circle_number,process)
+                                    chr_pos_end, read_length, circle_number,process)
 
             #simulation rounds
             for each_sim in range(0,round(int(rounds_of_sim))):
@@ -160,8 +160,8 @@ def sim_ecc_reads(genome_fasta,read_length,directory,reads,exclude_regions,fastq
                         get_seq = new_read.simulate_read()
                         # put it in fastq format
                         simulated_reads = sim_paired_end.simulate_read_with_errors(new_read, get_seq[0], get_seq[1],
-                                                                               get_seq[2],ins_rate1,ins_rate2,del_rate1,
-                                                                                   del_rate2,sim_pid)
+                                                                                get_seq[2],ins_rate1,ins_rate2,del_rate1,
+                                                                                del_rate2,sim_pid)
                         if simulated_reads != None:
                             # save the read
                             assert len(set_of_left_reads) == len(set_of_right_reads)
@@ -182,8 +182,8 @@ def sim_ecc_reads(genome_fasta,read_length,directory,reads,exclude_regions,fastq
                         # simulate reads and save to disk
                         get_seq = new_read.simulate_read()
                         simulated_reads = sim_paired_end.simulate_read_with_errors(new_read, get_seq[0], get_seq[1],
-                                                                               get_seq[2],ins_rate1,ins_rate2,del_rate1,
-                                                                                   del_rate2,sim_pid)
+                                                                                get_seq[2],ins_rate1,ins_rate2,del_rate1,
+                                                                                del_rate2,sim_pid)
                         set_of_left_reads.append(simulated_reads[0])
                         set_of_right_reads.append(simulated_reads[1])
 
@@ -208,8 +208,8 @@ def sim_ecc_reads(genome_fasta,read_length,directory,reads,exclude_regions,fastq
                                                   chr_pos_end, read_length, circle_number,process)
                         get_seq = new_read.simulate_read()
                         simulated_reads = sim_paired_end.simulate_read_with_errors(new_read, get_seq[0], get_seq[1],
-                                                                               get_seq[2],ins_rate1,ins_rate2,del_rate1,
-                                                                                   del_rate2,sim_pid)
+                                                                                get_seq[2],ins_rate1,ins_rate2,del_rate1,
+                                                                                del_rate2,sim_pid)
                         assert len(set_of_left_reads) == len(set_of_right_reads)
                         set_of_left_reads = [simulated_reads[0]]
                         set_of_right_reads = [simulated_reads[1]]
@@ -238,7 +238,7 @@ def sim_ecc_reads(genome_fasta,read_length,directory,reads,exclude_regions,fastq
                         #simulate reads and save to disk
                         get_seq = new_read.simulate_read()
                         simulated_reads = sim_paired_end.simulate_perfect_read(new_read, get_seq[0], get_seq[1],
-                                                                               get_seq[2])
+                                                                                get_seq[2])
                         set_of_left_reads.append(simulated_reads[0])
                         set_of_right_reads.append(simulated_reads[1])
 
@@ -262,10 +262,10 @@ def sim_ecc_reads(genome_fasta,read_length,directory,reads,exclude_regions,fastq
 
                         #sim the first read of the list
                         new_read = sim_paired_end(n_of_reads, insert_size, genome_fasta, chr, chr_pos_start,
-                                                  chr_pos_end, read_length, circle_number,process)
+                                                chr_pos_end, read_length, circle_number,process)
                         get_seq = new_read.simulate_read()
                         simulated_reads = sim_paired_end.simulate_perfect_read(new_read, get_seq[0], get_seq[1],
-                                                                               get_seq[2])
+                                                                                get_seq[2])
 
                         assert len(set_of_left_reads) == len(set_of_right_reads)
                         set_of_left_reads = [simulated_reads[0]]
@@ -375,7 +375,7 @@ class sim_paired_end:
                     common_id = "%s|%s|%s:%s|%s:%s-%s:%s|2|%s" % (
                         self.read_number,self.chr, start, (start + self.read_length), right_start, self.chr_pos_end, self.chr_pos_start,
                         (self.chr_pos_start +
-                         right_dntps), self.circle_id)
+                        right_dntps), self.circle_id)
 
 
         else:
@@ -416,7 +416,7 @@ class sim_paired_end:
 
 
     def simulate_read_with_errors(self,right_read, left_read, common_id,ins_rate1,ins_rate2,del_rate1,
-                                                                                       del_rate2,pid):
+                                    del_rate2,pid):
         # put all together
         # unique identifiers for right and left reads
         dir = os.getcwd()
