@@ -17,7 +17,6 @@ jobs:
           workflow: linting.yml
           workflow_conclusion: completed
 
-
       - name: Get PR number
         id: pr_number
         run: echo "::set-output name=pr_number::$(cat linting-logs/PR_number.txt)"

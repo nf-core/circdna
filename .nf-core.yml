@@ -1,3 +1,0 @@
-lint:
-    actions_awsfulltest: False
-    pipeline_todos: False

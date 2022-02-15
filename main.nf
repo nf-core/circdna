@@ -1,11 +1,11 @@
 #!/usr/bin/env nextflow
 /*
 ========================================================================================
-    nf-core/circleseq
+    nf-core/circdna
 ========================================================================================
-    Github : https://github.com/nf-core/circleseq
-    Website: https://nf-co.re/circleseq
-    Slack  : https://nfcore.slack.com/channels/circleseq
+    Github : https://github.com/nf-core/circdna
+    Website: https://nf-co.re/circdna
+    Slack  : https://nfcore.slack.com/channels/circdna
 ----------------------------------------------------------------------------------------
 */
 
@@ -36,7 +36,7 @@ WorkflowMain.initialise(workflow, params, log)
 include { CIRCDNA } from './workflows/circdna'
 
 //
-// WORKFLOW: Run main nf-core/circleseq analysis pipeline
+// WORKFLOW: Run main nf-core/circdna analysis pipeline
 //
 workflow NFCORE_CIRCDNA {
     CIRCDNA ()
