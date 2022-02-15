@@ -205,7 +205,7 @@ def sim_ecc_reads(genome_fasta,read_length,directory,reads,exclude_regions,fastq
 
                         # sim the first read of the list
                         new_read = sim_paired_end(n_of_reads, insert_size, genome_fasta, chr, chr_pos_start,
-                                                  chr_pos_end, read_length, circle_number,process)
+                                                chr_pos_end, read_length, circle_number,process)
                         get_seq = new_read.simulate_read()
                         simulated_reads = sim_paired_end.simulate_read_with_errors(new_read, get_seq[0], get_seq[1],
                                                                                 get_seq[2],ins_rate1,ins_rate2,del_rate1,
@@ -374,7 +374,7 @@ class sim_paired_end:
                     right_read = left_split_read + right_split_read
                     common_id = "%s|%s|%s:%s|%s:%s-%s:%s|2|%s" % (
                         self.read_number,self.chr, start, (start + self.read_length), right_start, self.chr_pos_end, self.chr_pos_start,
-                        (self.chr_pos_start +
+                        (self.chr_pos_start
                         right_dntps), self.circle_id)
 
 

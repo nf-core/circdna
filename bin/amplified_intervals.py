@@ -107,7 +107,7 @@ if args.bam != "":
         coverage_stats_file.close()
     bamFileb2b = b2b.bam_to_breakpoint(bamFile, coverage_stats=cstats)
     rdList = hg.interval_list([r for r in rdList if float(r.info[-1]) >
-                               GAIN + 2 * max(1.0, bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0]) - 2
+                                GAIN + 2 * max(1.0, bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0]) - 2
                                 and bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0] > 0])
 
 genome_features = hg.oncogene_list

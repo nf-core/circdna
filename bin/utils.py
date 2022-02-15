@@ -482,7 +482,7 @@ def get_mate_intervals(sorted_bam,interval,mapq_cutoff,verbose,only_discordants)
                                                 # L means that the SA is in a downstream region
 
                                                 mate_interval = [interval['chrom'], int(supl_info[1]) - (ref_alignment_length * 2),
-                                                                 (int(supl_info[1]) + (ref_alignment_length * 2)), "SA", "L",str(1-phred_to_prob(int(supl_info[4])))]
+                                                                (int(supl_info[1]) + (ref_alignment_length * 2)), "SA", "L",str(1-phred_to_prob(int(supl_info[4])))]
 
                                                 candidate_mates.append(mate_interval)
 
@@ -497,8 +497,8 @@ def get_mate_intervals(sorted_bam,interval,mapq_cutoff,verbose,only_discordants)
                                                 # R means that the SA is in a upstream region
 
                                                 mate_interval = [interval['chrom'],
-                                                                 (int(supl_info[1]) - (ref_alignment_length * 2)),
-                                                                 int(supl_info[1]) + (ref_alignment_length * 2), "SA", "R",str(1-phred_to_prob(int(supl_info[4])))]
+                                                                (int(supl_info[1]) - (ref_alignment_length * 2)),
+                                                                int(supl_info[1]) + (ref_alignment_length * 2), "SA", "R",str(1-phred_to_prob(int(supl_info[4])))]
 
 
 

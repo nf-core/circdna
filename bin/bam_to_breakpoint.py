@@ -179,7 +179,7 @@ class bam_to_breakpoint():
         if s2 >= e2:
             return 0
         alist = [a for a in self.fetch(i.chrom, s2, e2)
-                 if not a.is_unmapped]
+                if not a.is_unmapped]
         # if e2 - s2 >= window_size and clip == False and gcc == False:
         #     return len(alist) * self.read_length / float(e2 - s2)
         sumb = 0
@@ -292,7 +292,7 @@ class bam_to_breakpoint():
                     newpos = hg.absPos(cwindow.chrom, ((cwindow.end + cwindow.start) / 2) - 5000)
                 if hg.chrPos(newpos) is None:
                     logging.debug("Unable to locate reference position: " + refi.chrom + " " + str(refi.start) + " "
-                                 + str(refi.end) + " " + str(newpos) + " " + str(sumchrLen))
+                                    + str(refi.end) + " " + str(newpos) + " " + str(sumchrLen))
                     iteri+=1
                     continue
                 (c,p) = hg.chrPos(newpos)
@@ -425,7 +425,7 @@ class bam_to_breakpoint():
     # Methods to find all coverage shifts in amplicon
     def meanshift(self, i, window_size=-1, hb=2, cov=None, rd_global=-1, h0=-1, gcc=False, n=-1):
         if window_size == -1:
-           window_size = self.max_insert - self.read_length
+            window_size = self.max_insert - self.read_length
         if rd_global == -1:
             rd_global = self.median_coverage(window_size, gcc)[0]
         if h0 == -1:
@@ -1593,7 +1593,7 @@ class bam_to_breakpoint():
             drange = [cpos, cpos + v.strand * self.max_insert]
             drange.sort()
             dlist = [a for a in self.fetch(v.chrom,
-                                                   drange[0], drange[1])]
+                                            drange[0], drange[1])]
             if (len(dlist) * self.read_length <
                 self.min_coverage * self.max_insert):
                 continue
