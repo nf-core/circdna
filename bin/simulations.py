@@ -374,8 +374,7 @@ class sim_paired_end:
                     right_read = left_split_read + right_split_read
                     common_id = "%s|%s|%s:%s|%s:%s-%s:%s|2|%s" % (
                         self.read_number,self.chr, start, (start + self.read_length), right_start, self.chr_pos_end, self.chr_pos_start,
-                        (self.chr_pos_start
-                        right_dntps), self.circle_id)
+                        (self.chr_pos_start, right_dntps), self.circle_id)
 
 
         else:
