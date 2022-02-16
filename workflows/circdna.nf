@@ -26,6 +26,10 @@ run_circle_finder = ("circle_finder" in software)
 run_ampliconarchitect = ("ampliconarchitect" in software)
 run_unicycler = ("unicycler" in software)
 
+if (!(run_unicycler | run_circle_map_realign | run_circle_map_repeats | run_circle_finder | run_ampliconarchitect)) {
+    exit 1, 'circle_identifier param not valid. Please check!'
+}
+
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 
 // Check if BWA Index is given
