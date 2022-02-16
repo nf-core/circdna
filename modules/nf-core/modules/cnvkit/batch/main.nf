@@ -8,10 +8,10 @@ process CNVKIT_BATCH {
         'quay.io/biocontainers/cnvkit:0.9.9--pyhdfd78af_0' }"
 
     input:
-    tuple val(meta), path(bam), path(bai)
+    tuple val(meta), path(tumor), path(normal)
     path  fasta
-    // path  targets
-    // path  reference
+    path  targets
+    path  reference
 
     output:
     tuple val(meta), path("*.bed"), emit: bed
@@ -25,27 +25,26 @@ process CNVKIT_BATCH {
 
     script:
     def args = task.ext.args ?: ''
-    // def normal_args = normal ? "--normal $normal" : ""
+    def normal_args = normal ? "--normal $normal" : ""
     def fasta_args = fasta ? "--fasta $fasta" : ""
-    // def reference_args = reference ? "--reference $reference" : ""
+    def reference_args = reference ? "--reference $reference" : ""
 
-//     def target_args = ""
-//     if (args.contains("--method wgs") || args.contains("-m wgs")) {
-//         target_args = targets ? "--targets $targets" : ""
-//     }
-//     else {
-//         target_args = "--targets $targets"
-//     }
-
+    def target_args = ""
+    if (args.contains("--method wgs") || args.contains("-m wgs")) {
+        target_args = targets ? "--targets $targets" : ""
+    }
+    else {
+        target_args = "--targets $targets"
+    }
     """
-    AA_DATA_REPO=${params.aa_data_repo}
-    BUILD=${params.reference_build}
-    REFERENCE=\${AA_DATA_REPO}/\$BUILD/\${BUILD}_cnvkit_filtered_ref.cnn
     cnvkit.py \\
         batch \\
-        $bam \\
+        $tumor \\
+        $normal_args \\
+        $fasta_args \\
+        $reference_args \\
+        $target_args \\
         --processes $task.cpus \\
-        -r \$REFERENCE \\
         $args
 
     cat <<-END_VERSIONS > versions.yml

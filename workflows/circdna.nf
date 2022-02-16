@@ -323,9 +323,12 @@ workflow CIRCDNA {
         ch_cnvkit_targets = params.cnvkit_targets ? Channel.fromPath(params.cnvkit_targets) : Channel.empty()
         ch_cnvkit_reference = params.cnvkit_reference ? Channel.fromPath(params.cnvkit_reference) : Channel.empty()
 
+        ch_bwa_sorted_bam.view()
         CNVKIT_BATCH (
             ch_bwa_sorted_bam.join(ch_bwa_sorted_bai),
-            ch_fasta
+            ch_fasta,
+            ch_cnvkit_targets,
+            ch_cnvkit_reference
         )
 
         CNVKIT_SEGMENT (

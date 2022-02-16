@@ -3,9 +3,6 @@
     "homePage": "https://github.com/nf-core/circdna",
     "repos": {
         "nf-core/modules": {
-            "custom/dumpsoftwareversions": {
-                "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"
-            },
             "bwa/index": {
                 "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
             },
@@ -13,49 +10,52 @@
                 "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
             },
             "cat/fastq": {
-                "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "cnvkit/batch": {
-                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
+            "custom/dumpsoftwareversions": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "cutadapt": {
-                "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "fastqc": {
                 "git_sha": "e937c7950af70930d1f34bb961403d9d2aa81c7d"
             },
             "minimap2/align": {
-                "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "multiqc": {
                 "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
             },
             "picard/markduplicates": {
-                "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "samtools/faidx": {
-                "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "samtools/flagstat": {
-                "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "samtools/idxstats": {
                 "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
             },
             "samtools/index": {
-                "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "samtools/sort": {
-                "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "samtools/stats": {
                 "git_sha": "ac1e6df076195cec553a2079c9cebd94026a0d47"
             },
             "samtools/view": {
-                "git_sha": "19035c99d1cd8412b5046c6bb4af787658b84e5b"
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "trimgalore": {
-                "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "unicycler": {
                 "git_sha": "e20e57f90b6787ac9a010a980cf6ea98bd990046"
