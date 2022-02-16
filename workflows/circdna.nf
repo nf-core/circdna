@@ -342,9 +342,9 @@ workflow CIRCDNA {
     //
     // SUBWORKFLOW - RUN CIRCLE_FINDER PIPELINE
     //
-    if (params.circle_identifier == "circle_finder" || params.circle_identifier == "all") {
+    if (run_circle_finder) {
         SAMTOOLS_SORT_QNAME_CF (
-            ch_bwa_sorted_bam
+            BWA_MEM.out.sorted_bam
         )
         SAMBLASTER (
             SAMTOOLS_SORT_QNAME_CF.out.bam
@@ -431,7 +431,6 @@ workflow CIRCDNA {
         SEQTK_SEQ (
             UNICYCLER.out.scaffolds
         )
-        SEQTK_SEQ.out.fastq_circular.view()
         MINIMAP2_ALIGN (
             ch_fasta,
             SEQTK_SEQ.out.fastq_circular
