@@ -188,14 +188,6 @@
                     "type": "string",
                     "description": "Specifies the circular DNA identification algorithm to use - available 'circle_map_realign', 'circle_map_repeats', 'circle_finder', and 'circexplorer2'.",
                     "fa_icon": "far fa-circle",
-                    "enum": [
-                        "circle_map_realign",
-                        "circle_map_repeats",
-                        "circle_finder",
-                        "circexplorer2",
-                        "ampliconarchitect",
-                        "all"
-                    ],
                     "default": "circle_map_realign"
                 },
                 "coverage_bases": {

@@ -18,12 +18,13 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 if (params.fasta) { ch_fasta = file(params.fasta) } else { exit 1, 'Fasta reference genome not specified!' }
 
-if (params.circle_identifier != "circle_map_realign" &
-    params.circle_identifier != "circle_map_repeats" &
-    params.circle_identifier != "circle_finder" &
-    params.circle_identifier != "circexplorer2" &
-    params.circle_identifier != "ampliconarchitect" &
-    params.circle_identifier != "all" ) {exit 1, 'Circle Identifier Software/Algorithm not specified!' }
+software = params.circle_identifier.split(",")
+run_circexplorer2 = ("circexplorer2" in software)
+run_circle_map_realign = ("circle_map_realign" in software)
+run_circle_map_repeats = ("circle_map_repeats" in software)
+run_circle_finder = ("circle_finder" in software)
+run_ampliconarchitect = ("ampliconarchitect" in software)
+run_unicycler = ("unicycler" in software)
 
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 
@@ -37,7 +38,7 @@ if (params.bwa_index) {
     }
 
 // AMPLICON ARCHITECT INPUT
-if (params.circle_identifier == "ampliconarchitect") {
+if (run_ampliconarchitect) {
     if (!params.mosek_license_dir) { exit 1, "Mosek Missing" }
     if (!params.aa_data_repo) { exit 1, "AmpliconArchitect Data Repository Missing" }
     if (params.reference_build != "hg19" & params.reference_build != "GRCh38" & params.reference_build != "GRCh37"){
@@ -314,7 +315,7 @@ workflow CIRCDNA {
     }
 
 
-    if (params.circle_identifier == "ampliconarchitect" || params.circle_identifier == "all") {
+    if (run_ampliconarchitect) {
         ch_cnvkit_targets = params.cnvkit_targets ? Channel.fromPath(params.cnvkit_targets) : Channel.empty()
         ch_cnvkit_reference = params.cnvkit_reference ? Channel.fromPath(params.cnvkit_reference) : Channel.empty()
 
@@ -367,8 +368,8 @@ workflow CIRCDNA {
     // SUBWORKFLOW: RUN CIRCLE-MAP REALIGN or REPEATS PIPELINE
     //
 
-    if (params.circle_identifier == "circle_map_realign" ||
-            params.circle_identifier == "circle_map_repeats" || params.circle_identifier == "all") {
+    if (run_circle_map_realign ||
+            run_circle_map_repeats) {
         SAMTOOLS_SORT_QNAME_CM (
             ch_bwa_sorted_bam
         )
@@ -394,7 +395,7 @@ workflow CIRCDNA {
         //
         // MODULE: RUN CIRCLE_MAP REPEATS
         //
-        if (params.circle_identifier == "circle_map_repeats" || params.circle_identifier == "all") {
+        if (run_circle_map_repeats) {
             CIRCLEMAP_REPEATS (
                 ch_re_sorted_bam.join(ch_re_sorted_bai)
             )
@@ -403,7 +404,7 @@ workflow CIRCDNA {
         //
         // MODULE: Run Circle-Map Realign
         //
-        if (params.circle_identifier == "circle_map_realign" || params.circle_identifier == "all") {
+        if (run_circle_map_realign) {
             CIRCLEMAP_REALIGN (
                 ch_re_sorted_bam.join(ch_re_sorted_bai).
                     join(ch_qname_sorted_bam).
@@ -416,13 +417,13 @@ workflow CIRCDNA {
     }
 
 
-    if (params.circle_identifier == "circexplorer2" || params.circle_identifier == "all") {
+    if (run_circexplorer2) {
         CIRCEXPLORER2_PARSE (
             ch_bwa_sorted_bam.join(ch_bwa_sorted_bai)
         )
     }
 
-    if (!params.skip_unicycler && params.input_format == "FASTQ") {
+    if (run_unicycler && params.input_format == "FASTQ") {
         ch_trimmed_reads.map{ meta, file -> [meta, file, []] }.set{ch_unicycler_input}
         UNICYCLER (
             ch_unicycler_input
@@ -435,6 +436,8 @@ workflow CIRCDNA {
             ch_fasta,
             SEQTK_SEQ.out.fastq_circular
         )
+    } else if (run_unicycler && !params.input_format == "FASTQ") {
+        exit 1, 'Unicycler needs FastQ input. Please specify input_format == "FASTQ", if possible, or don`t run unicycle or don`t run unicycler.'
     }
 
     //
