@@ -87,7 +87,6 @@ include { CAT_FASTQ }     from '../modules/nf-core/modules/cat/fastq/main'      
 
 // QUALITY CONTROL
 include { FASTQC as FASTQC_RAW  }     from '../modules/nf-core/modules/fastqc/main'       addParams( options: modules['fastqc']   )
-include { FASTQC as FASTQC_TRIM }     from '../modules/nf-core/modules/fastqc/main'       addParams( options: modules['fastqc']   )
 
 // TRIMMING
 include { TRIMGALORE }    from '../modules/nf-core/modules/trimgalore/main'     addParams( options: modules['trimgalore'] )
