@@ -48,6 +48,7 @@ if (run_ampliconarchitect) {
     if (params.reference_build != "hg19" & params.reference_build != "GRCh38" & params.reference_build != "GRCh37"){
         exit 1, "Reference Build not given! Please specify --reference_build 'hg19', 'GRCh38', or 'GRCh37'."
     }
+    ch_cnvkit_reference = Channel.fromPath(params.aa_data_repo + "/" + params.reference_build + "/" + params.reference_build + "_cnvkit_filtered_ref.cnn")
 }
 
 /*
@@ -106,7 +107,7 @@ include { MARK_DUPLICATES_PICARD    } from '../subworkflows/nf-core/mark_duplica
 
 
 // SAMTOOLS SORT & INDEX
-include { SAMTOOLS_FAIDX                            }   from '../modules/nf-core/modules/samtools/faidx/main'   addParams( options: modules['samtools_faidx']       )
+include { SAMTOOLS_FAIDX                            }   from '../modules/nf-core/modules/samtools/faidx/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_BAM      }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_bwa']   )
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_RE       }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_re']    )
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FILTERED }   from '../modules/nf-core/modules/samtools/index/main'   addParams( options: modules['samtools_index_re']    )
@@ -126,29 +127,30 @@ include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FILTER }   from '../modules/nf-core/mod
 include { SAMTOOLS_STATS                        }   from '../modules/nf-core/modules/samtools/stats/main'    addParams( options: modules['samtools_stats']   )
 
 // CIRCLE-MAP
-include { CIRCLEMAP_READEXTRACTOR   }   from '../modules/local/circlemap/readextractor.nf'  addParams( options: modules['circlemap_readextractor']  )
-include { CIRCLEMAP_REALIGN         }   from '../modules/local/circlemap/realign.nf'        addParams( options: modules['circlemap_realign']        )
-include { CIRCLEMAP_REPEATS         }   from '../modules/local/circlemap/repeats.nf'        addParams( options: modules['circlemap_repeats']        )
+include { CIRCLEMAP_READEXTRACTOR   }   from '../modules/local/circlemap/readextractor.nf'
+include { CIRCLEMAP_REALIGN         }   from '../modules/local/circlemap/realign.nf'
+include { CIRCLEMAP_REPEATS         }   from '../modules/local/circlemap/repeats.nf'
 
 // CIRCLE_FINDER
-include { SAMBLASTER                }     from '../modules/local/samblaster.nf'                 addParams( options: modules['samblaster']               )
-include { BEDTOOLS_SORTEDBAM2BED    }     from '../modules/local/bedtools/sortedbam2bed.nf'     addParams( options: modules['bedtools_sortedbam2bed']   )
-include { BEDTOOLS_SPLITBAM2BED     }     from '../modules/local/bedtools/splitbam2bed.nf'      addParams( options: modules['bedtools_splitbam2bed']    )
-include { CIRCLEFINDER              }     from '../modules/local/circlefinder.nf'               addParams( options: modules['circlefinder']             )
+include { SAMBLASTER                }     from '../modules/local/samblaster.nf'
+include { BEDTOOLS_SORTEDBAM2BED    }     from '../modules/local/bedtools/sortedbam2bed.nf'
+include { BEDTOOLS_SPLITBAM2BED     }     from '../modules/local/bedtools/splitbam2bed.nf'
+include { CIRCLEFINDER              }     from '../modules/local/circlefinder.nf'
 
 // CIRCexplorer2
-include { CIRCEXPLORER2_PARSE       }     from '../modules/local/circexplorer2/parse.nf'               addParams( options: modules['circexplorer2_parse']             )
+include { CIRCEXPLORER2_PARSE       }     from '../modules/local/circexplorer2/parse.nf'
 
 // AmpliconArchitect
-include { CNVKIT_BATCH                          }     from '../modules/nf-core/modules/cnvkit/batch/main.nf'            addParams( options: modules['cnvkit_batch']          )
-include { CNVKIT_SEGMENT                        }     from '../modules/local/cnvkit/segment.nf'            addParams( options: modules['cnvkit_batch']          )
-include { AMPLICONARCHITECT_PREPAREAA           }     from '../modules/local/ampliconarchitect/prepareaa.nf'            addParams( options: modules['ampliconarchitect_prepareaa']          )
-include { AMPLICONARCHITECT_AMPLICONARCHITECT   }     from '../modules/local/ampliconarchitect/ampliconarchitect.nf'    addParams( options: modules['ampliconarchitect_ampliconarchitect']  )
+include { CNVKIT_BATCH                              }     from '../modules/nf-core/modules/cnvkit/batch/main.nf'
+include { CNVKIT_SEGMENT                            }     from '../modules/local/cnvkit/segment.nf'
+include { AMPLICONARCHITECT_PREPAREAA               }     from '../modules/local/ampliconarchitect/prepareaa.nf'
+include { AMPLICONARCHITECT_AMPLICONARCHITECT       }     from '../modules/local/ampliconarchitect/ampliconarchitect.nf'
+include { AMPLICONARCHITECT_AMPLICONCLASSIFIER      }     from '../modules/local/ampliconarchitect/ampliconclassifier.nf'
 
 // Unicycler
-include { UNICYCLER           }     from '../modules/nf-core/modules/unicycler/main.nf'            addParams( options: modules['unicycler']          )
-include { SEQTK_SEQ           }     from '../modules/local/seqtk/seq.nf'                           addParams( options: modules['seqtk_seq']          )
-include { MINIMAP2_ALIGN      }     from '../modules/nf-core/modules/minimap2/align/main.nf'                           addParams( options: modules['minimap2_align']          )
+include { UNICYCLER           }     from '../modules/nf-core/modules/unicycler/main.nf'
+include { SEQTK_SEQ           }     from '../modules/local/seqtk/seq.nf'
+include { MINIMAP2_ALIGN      }     from '../modules/nf-core/modules/minimap2/align/main.nf'
 
 
 // MULTIQC
@@ -220,7 +222,7 @@ workflow CIRCDNA {
             FASTQC_RAW (
                 ch_cat_fastq
             )
-            ch_software_versions = ch_software_versions.mix(FASTQC_RAW.out.version.first().ifEmpty(null))
+            ch_software_versions = ch_software_versions.mix(FASTQC_RAW.out.versions.first().ifEmpty(null))
             ch_fastqc_report = FASTQC_RAW.out.zip
         }
 
@@ -247,12 +249,6 @@ workflow CIRCDNA {
             ch_bwa_index = BWA_INDEX.out.index
         }
 
-        //
-        // MODULE: Run samtools faidx
-        //
-        SAMTOOLS_FAIDX (
-            ch_fasta
-        )
 
         //
         // MODULE: BWA MEM ALIGNMENT
@@ -262,6 +258,7 @@ workflow CIRCDNA {
             ch_bwa_index
         )
         ch_bwa_sorted_bam = BWA_MEM.out.sorted_bam
+        ch_bam_sorted     = BWA_MEM.out.sorted_bam
 
         // SAMTOOLS INDEX SORTED BAM
         SAMTOOLS_INDEX_BAM(
@@ -277,9 +274,11 @@ workflow CIRCDNA {
             SAMTOOLS_SORT (
                 INPUT_CHECK.out.reads
             )
-            ch_bwa_sorted_bam = SAMTOOLS_SORT.out.bam
+            ch_bam_sorted       = SAMTOOLS_SORT.out.bam
+            ch_bwa_sorted_bam   = SAMTOOLS_SORT.out.bam
         } else {
-            ch_bwa_sorted_bam = INPUT_CHECK.out.reads
+            ch_bwa_sorted_bam   = INPUT_CHECK.out.reads
+            ch_bam_sorted       = INPUT_CHECK.out.reads
             // SAMTOOLS INDEX SORTED BAM
         }
         SAMTOOLS_INDEX_BAM (
@@ -318,16 +317,11 @@ workflow CIRCDNA {
         ch_markduplicates_multiqc = Channel.empty()
     }
 
-
+    println(run_ampliconarchitect)
     if (run_ampliconarchitect) {
-        ch_cnvkit_targets = params.cnvkit_targets ? Channel.fromPath(params.cnvkit_targets) : Channel.empty()
-        ch_cnvkit_reference = params.cnvkit_reference ? Channel.fromPath(params.cnvkit_reference) : Channel.empty()
-
-        ch_bwa_sorted_bam.view()
         CNVKIT_BATCH (
             ch_bwa_sorted_bam.join(ch_bwa_sorted_bai),
             ch_fasta,
-            ch_cnvkit_targets,
             ch_cnvkit_reference
         )
 
@@ -336,13 +330,18 @@ workflow CIRCDNA {
         )
 
         AMPLICONARCHITECT_PREPAREAA (
-            ch_bwa_sorted_bam.join(ch_bwa_sorted_bai),
-            CNVKIT_SEGMENT.out.cns
+            ch_bwa_sorted_bam.join(ch_bwa_sorted_bai).
+            join(CNVKIT_SEGMENT.out.cns)
         )
         ch_prepareaa_bed = AMPLICONARCHITECT_PREPAREAA.out.bed
         AMPLICONARCHITECT_AMPLICONARCHITECT (
             ch_bwa_sorted_bam.join(ch_bwa_sorted_bai).
                 join(ch_prepareaa_bed)
+        )
+        ch_aa_cycles = AMPLICONARCHITECT_AMPLICONARCHITECT.out.cycles
+        ch_aa_graphs = AMPLICONARCHITECT_AMPLICONARCHITECT.out.graph
+        AMPLICONARCHITECT_AMPLICONCLASSIFIER (
+            ch_aa_cycles.join(ch_aa_graphs)
         )
     }
 
@@ -351,7 +350,7 @@ workflow CIRCDNA {
     //
     if (run_circle_finder) {
         SAMTOOLS_SORT_QNAME_CF (
-            BWA_MEM.out.sorted_bam
+            ch_bam_sorted
         )
         SAMBLASTER (
             SAMTOOLS_SORT_QNAME_CF.out.bam
@@ -377,6 +376,12 @@ workflow CIRCDNA {
 
     if (run_circle_map_realign ||
             run_circle_map_repeats) {
+        //
+        // MODULE: Run samtools faidx
+        //
+        SAMTOOLS_FAIDX (
+            ch_fasta
+        )
         SAMTOOLS_SORT_QNAME_CM (
             ch_bwa_sorted_bam
         )
