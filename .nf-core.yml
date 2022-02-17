@@ -1,0 +1,3 @@
+update:
+  nf-core/modules:
+    cnvkit/batch: false
