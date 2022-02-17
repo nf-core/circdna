@@ -1,14 +1,6 @@
-include { initOptions; saveFiles; getSoftwareName } from './../functions'
-
-params.options = [:]
-options        = initOptions(params.options)
-
 process CNVKIT_SEGMENT {
     tag "$meta.id"
     label 'process_medium'
-    publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:getSoftwareName(task.process), meta:meta, publish_by_meta:['id']) }
 
     conda (params.enable_conda ? "bioconda::cnvkit=0.9.9" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
@@ -31,8 +23,8 @@ process CNVKIT_SEGMENT {
     // path "*.version.txt"          , emit: version
 
     script:
-    def software = getSoftwareName(task.process)
-    def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
     cnvkit.py \\

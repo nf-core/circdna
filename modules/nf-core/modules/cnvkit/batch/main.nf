@@ -8,9 +8,8 @@ process CNVKIT_BATCH {
         'quay.io/biocontainers/cnvkit:0.9.9--pyhdfd78af_0' }"
 
     input:
-    tuple val(meta), path(tumor), path(normal)
+    tuple val(meta), path(bam), path(bai)
     path  fasta
-    path  targets
     path  reference
 
     output:
@@ -20,30 +19,30 @@ process CNVKIT_BATCH {
     tuple val(meta), path("*.cns"), emit: cns, optional: true
     path "versions.yml"           , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
+//    when:
+//    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
-    def normal_args = normal ? "--normal $normal" : ""
-    def fasta_args = fasta ? "--fasta $fasta" : ""
+//    def normal_args = normal ? "--normal $normal" : ""
+    def fasta_args = reference ? "" : "--fasta $fasta"
     def reference_args = reference ? "--reference $reference" : ""
 
-    def target_args = ""
-    if (args.contains("--method wgs") || args.contains("-m wgs")) {
-        target_args = targets ? "--targets $targets" : ""
-    }
-    else {
-        target_args = "--targets $targets"
-    }
+
+//    def target_args = ""
+//
+//    if (args.contains("--method wgs") || args.contains("-m wgs")) {
+//        target_args = targets ? "--targets $targets" : ""
+//    }
+//    else {
+//        target_args = "--targets $targets"
+//    }
     """
     cnvkit.py \\
         batch \\
-        $tumor \\
-        $normal_args \\
+        $bam \\
         $fasta_args \\
         $reference_args \\
-        $target_args \\
         --processes $task.cpus \\
         $args
 
