@@ -219,16 +219,7 @@
                     "description": "Number of split reads required that support the circular DNA junction",
                     "fa_icon": "fas fa-ruler-combined",
                     "default": "2"
-                },
-                "skip_unicycler": {
-                    "type": "boolean",
-                    "description": "Skip de novo assembly of circular DNA using unicycler.",
-                    "help_text": "Use this if you want to skip the de novo assembly of circular DNAs using Unicycler.",
-                    "fa_icon": "fas fa-fast-forward",
-                    "default": "false"
                 }
-
-
             }
         },
         "amplicon_architect_options": {
