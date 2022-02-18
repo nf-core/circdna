@@ -1,3 +1,4 @@
 update:
   nf-core/modules:
     cnvkit/batch: false
+    picard/markduplicates: false
