@@ -1,8 +1,10 @@
-name: samtools_stats
-description: Produces comprehensive statistics from SAM/BAM/CRAM file
+name: samtools_idxstats
+description: Reports alignment summary statistics for a BAM/CRAM/SAM file
 keywords:
-  - statistics
+  - stats
+  - mapping
   - counts
+  - chromosome
   - bam
   - sam
   - cram
@@ -22,32 +24,27 @@ input:
       description: |
         Groovy Map containing sample information
         e.g. [ id:'test', single_end:false ]
-  - input:
-    type: file
-    description: BAM/CRAM file from alignment
-    pattern: "*.{bam,cram}"
-  - input_index:
-    type: file
-    description: BAI/CRAI file from alignment
-    pattern: "*.{bai,crai}"
-  - fasta:
-      type: optional file
-      description: Reference file the CRAM was created with
-      pattern: "*.{fasta,fa}"
+  - bam:
+      type: file
+      description: BAM/CRAM/SAM file
+      pattern: "*.{bam,cram,sam}"
+  - bai:
+      type: file
+      description: Index for BAM/CRAM/SAM file
+      pattern: "*.{bai,crai,sai}"
 output:
   - meta:
       type: map
       description: |
         Groovy Map containing sample information
         e.g. [ id:'test', single_end:false ]
-  - stats:
+  - idxstats:
       type: file
-      description: File containing samtools stats output
-      pattern: "*.{stats}"
+      description: File containing samtools idxstats output
+      pattern: "*.{idxstats}"
   - versions:
       type: file
       description: File containing software versions
       pattern: "versions.yml"
 authors:
   - "@drpatelh"
-  - "@FriederikeHanssen"

@@ -10,11 +10,8 @@ process SEQTK_SEQ {
     tuple val(meta), path(fasta)
 
     output:
-    // TODO nf-core: Named file extensions MUST be emitted for ALL output channels
     tuple val(meta), path("*unicycler.fastq.gz"), emit: fastq
-    tuple val(meta), path("*unicycler.circular.fastq.gz"), emit: fastq_circular
-    // tuple val(meta), path("*.unicycler.circular.fastq.gz"), emit: fastq, optional: true
-    // TODO nf-core: List additional required output channels/values here
+    tuple val(meta), path("*unicycler.circular.fastq.gz"), emit: fastq_circular, optional: true
 
     script:
     def args = task.ext.args ?: ''

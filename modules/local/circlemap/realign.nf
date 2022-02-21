@@ -1,12 +1,10 @@
 process CIRCLEMAP_REALIGN {
     tag "$meta.id"
     label 'process_high'
-    conda (params.enable_conda ? "bioconda::circle-map=1.1.4 conda-forge::biopython=1.77" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/circle-map:1.1.4--pyh864c0ab_1"
-    } else {
-        container "quay.io/biocontainers/circle-map:1.1.4--pyh864c0ab_1"
-    }
+    conda (params.enable_conda ? "bioconda::circle-map=1.1.4 biopython=1.77" : null)
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/circle-map:1.1.4--pyh864c0ab_1':
+        'quay.io/biocontainers/circle-map:1.1.4--pyh864c0ab_1' }"
 
     input:
     tuple val(meta), path(re_bam), path(re_bai), path(qname), path(sbam), path(sbai)

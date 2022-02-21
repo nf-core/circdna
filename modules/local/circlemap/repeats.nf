@@ -2,12 +2,10 @@ process CIRCLEMAP_REPEATS {
     tag "$meta.id"
     label 'process_high'
 
-    conda (params.enable_conda ? "bioconda::circle-map=1.1.4 conda-forge::biopython=1.77" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/mulled-v2-f7a0df9f53b95b416b41af4bb3c1e214667f88c0"
-    } else {
-        container "quay.io/biocontainers/circle-map:1.1.4--pyh864c0ab_1"
-    }
+    conda (params.enable_conda ? "bioconda::circle-map=1.1.4 biopython=1.77" : null)
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/circle-map:1.1.4--pyh864c0ab_1':
+        'quay.io/biocontainers/circle-map:1.1.4--pyh864c0ab_1' }"
 
     input:
     tuple val(meta), path(bam), path(bai)
