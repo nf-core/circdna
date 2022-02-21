@@ -309,7 +309,7 @@ workflow CIRCDNA {
 
         AMPLICONARCHITECT_PREPAREAA (
             ch_bwa_sorted_bam.join(ch_bwa_sorted_bai).
-            join(CNVKIT_SEGMENT.out.cns)
+            join(CNVKIT_BATCH.out.cns)
         )
         ch_prepareaa_bed = AMPLICONARCHITECT_PREPAREAA.out.bed
         AMPLICONARCHITECT_AMPLICONARCHITECT (
