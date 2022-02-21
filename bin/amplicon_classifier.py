@@ -233,7 +233,7 @@ def compute_f_from_AA_graph(graphf, add_chr_tag):
 
             elif line.startswith("sequence"):
                 if not lcD[fields[1].rsplit(":")[0]].overlaps(int(fields[1].rsplit(":")[1][:-1]),
-                                                              int(fields[2].rsplit(":")[1][:-1])):
+                                                            int(fields[2].rsplit(":")[1][:-1])):
 
                     ccn = float(fields[3])
                     if ccn > maxCN:
@@ -332,7 +332,7 @@ def cycles_file_bfb_props(cycleList, segSeqD, cycleCNs, graphf, add_chr_tag):
     if FB_breaks > 1.5 and tot_bfb_supp_cycles >= minBFBCyclesRequired:
         tot = float(FB_breaks + distal_breaks + lin_breaks)
         return FB_breaks / tot, distal_breaks / tot, bfb_weight / (non_bfb_cycle_weight + bfb_weight), hasEC, \
-               non_bfb_cycle_inds, bfb_cycle_inds
+                non_bfb_cycle_inds, bfb_cycle_inds
 
     return 0, 0, 0, False, [], []
 
@@ -567,12 +567,12 @@ mixLookups = {
 
 # (circular,complex)
 categories = ["No amp/Invalid", "Linear amplification", "Trivial cycle", "Complex non-cyclic", "Complex cyclic",
-              "foldback_read_prop", "BFB_bwp", "Distal_bwp", "BFB_cwp", "Amp_entropy", "Amp_decomp_entropy",
-              "Amp_nseg_entropy"]
+            "foldback_read_prop", "BFB_bwp", "Distal_bwp", "BFB_cwp", "Amp_entropy", "Amp_decomp_entropy",
+            "Amp_nseg_entropy"]
 mixing_cats = ["No amp/Invalid", "Non-cyclic", "Integration", "Hybrid", "Cyclic"]
 
 ampDefs = {(False, False): "Linear amplification", (False, True): "Complex non-cyclic",
-           (True, False): "Trivial cycle", (True, True): "Complex cyclic"}
+            (True, False): "Trivial cycle", (True, True): "Complex cyclic"}
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Classify AA amplicon type")
@@ -606,8 +606,8 @@ if __name__ == "__main__":
     parser.add_argument("--no_LC_filter", help="Do not filter low-complexity cycles. Not recommended to set this flag.",
                         action='store_true', default=False)
     parser.add_argument("--decomposition_strictness", help="Value between 0 and 1 reflecting how strictly to filter "
-                                                           "low CN decompositions (default = 0.1). Higher values "
-                                                           "filter more of the low-weight decompositions.", type=float,
+                                                        "low CN decompositions (default = 0.1). Higher values "
+                                                        "filter more of the low-weight decompositions.", type=float,
                         default=0.1)
     parser.add_argument("-v", "--version", action='version', version='amplicon_classifier {version} \n Author: Jens \
                         Luebeck (jluebeck [at] ucsd.edu)'.format(version=__version__))
@@ -799,9 +799,9 @@ if __name__ == "__main__":
 
         # get genes
         feat_gene_truncs, feat_gene_cns = get_genes.extract_gene_list(sName, ampN, gene_lookup, cycleList, segSeqD,
-                                                                      bfb_cycle_inds, ecIndexClusters, invalidInds,
-                                                                      bfbStat, ecStat, ampClass, graphFile,
-                                                                      args.add_chr_tag, args.o)
+                                                                    bfb_cycle_inds, ecIndexClusters, invalidInds,
+                                                                    bfbStat, ecStat, ampClass, graphFile,
+                                                                    args.add_chr_tag, args.o)
 
         ftgd_list.append([sName, ampN, feat_gene_truncs, feat_gene_cns])
 
@@ -834,11 +834,11 @@ if __name__ == "__main__":
         if args.annotate_cycles_file:
             outname = os.path.basename(cyclesFile).rsplit("_cycles")[0] + "_annotated_cycles.txt"
             write_annotated_corrected_cycles_file(args.o, outname, cycleList, cycleCNs, segSeqD, bfb_cycle_inds,
-                                                  ecIndexClusters, invalidInds, rearrCycleInds)
+                                                ecIndexClusters, invalidInds, rearrCycleInds)
 
     # PLOTTING
     textCategories = ["No amp/Invalid", "Linear\namplification", "Trivial\ncycle", "Complex\nnon-cyclic",
-                      "Complex\ncyclic", "BFB\nfoldback"]
+                    "Complex\ncyclic", "BFB\nfoldback"]
     if args.plotstyle == "grouped":
         from radar_plotting import *
 
@@ -853,12 +853,12 @@ if __name__ == "__main__":
         for a, e, s in zip(AMP_dvaluesList, EDGE_dvaluesList, sampNames):
             print(textCategories, a)
             make_classification_radar(textCategories, [a[:len(textCategories)], ], args.o + "_" + s + "_amp_class",
-                                      sampNames)
+                                    sampNames)
             make_classification_radar(mixing_cats, [e, ], args.o + "_" + s + "_edge_class", sampNames)
 
     #OUTPUT FILE WRITING
     print("writing output files")
     write_outputs(args, ftgd_list, featEntropyD, categories, sampNames, cyclesFiles, AMP_classifications,
-                  AMP_dvaluesList, mixing_cats, EDGE_dvaluesList, samp_to_ec_count)
+                AMP_dvaluesList, mixing_cats, EDGE_dvaluesList, samp_to_ec_count)
 
     print("done")

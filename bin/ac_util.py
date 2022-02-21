@@ -386,7 +386,7 @@ def read_patch_regions(ref):
 
 # write a cycles file with the cycles -> some corrected
 def write_annotated_corrected_cycles_file(prefix, outname, cycleList, cycleCNs, segSeqD, bfb_cycle_inds, ecIndexClusters,
-                                          invalidInds, rearrCycleInds):
+                                        invalidInds, rearrCycleInds):
 
     outdir = prefix + "_annotated_cycles_files/"
     if not os.path.exists(outdir):
@@ -425,12 +425,12 @@ def write_annotated_corrected_cycles_file(prefix, outname, cycleList, cycleCNs, 
                     acclass = "Linear"
 
             l1 = ";".join(["Cycle=" + str(ind+1), "Copy_count=" + str(ccn), "Length=" + str(clen),
-                           "IsCyclicPath=" + str(isCyclic), "CycleClass=" + acclass, "Segments=" + cl])
+                            "IsCyclicPath=" + str(isCyclic), "CycleClass=" + acclass, "Segments=" + cl])
             outfile.write(l1 + "\n")
 
 
 def write_outputs(args, ftgd_list, featEntropyD, categories, sampNames, cyclesFiles, AMP_classifications,
-                  AMP_dvaluesList, mixing_cats, EDGE_dvaluesList, samp_to_ec_count):
+                    AMP_dvaluesList, mixing_cats, EDGE_dvaluesList, samp_to_ec_count):
     # Genes
     gene_extraction_outname = args.o + "_gene_list.tsv"
     write_gene_results(gene_extraction_outname, ftgd_list)

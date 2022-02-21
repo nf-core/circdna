@@ -78,7 +78,7 @@ def get_gseg_cns(graphf, add_chr_tag):
 
 
 def extract_gene_list(sname, ampN, gene_lookup, cycleList, segSeqD, bfb_cycle_inds, ecIndexClusters,
-                      invalidInds, bfbStat, ecStat, ampClass, graphf, add_chr_tag, prefix):
+                    invalidInds, bfbStat, ecStat, ampClass, graphf, add_chr_tag, prefix):
     feature_dict = {}
     gseg_cn_d = get_gseg_cns(graphf, add_chr_tag)
     invalidSet = set(invalidInds)
