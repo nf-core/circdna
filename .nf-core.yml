@@ -3,3 +3,4 @@ update:
     cnvkit/batch: false
     picard/markduplicates: false
     unicycler: false
+    minimap2/align: false
