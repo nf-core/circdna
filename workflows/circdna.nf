@@ -139,6 +139,7 @@ include { AMPLICONARCHITECT_AMPLICONCLASSIFIER      }     from '../modules/local
 // Unicycler
 include { UNICYCLER           }     from '../modules/nf-core/modules/unicycler/main.nf'
 include { SEQTK_SEQ           }     from '../modules/local/seqtk/seq.nf'
+include { GETCIRCULARREADS    }     from '../modules/local/getcircularreads.nf'
 include { MINIMAP2_ALIGN      }     from '../modules/nf-core/modules/minimap2/align/main.nf'
 
 
@@ -234,10 +235,11 @@ workflow CIRCDNA {
         //
         BWA_MEM (
             ch_trimmed_reads,
-            ch_bwa_index
+            ch_bwa_index,
+            true
         )
-        ch_bwa_sorted_bam = BWA_MEM.out.sorted_bam
-        ch_bam_sorted     = BWA_MEM.out.sorted_bam
+        ch_bwa_sorted_bam = BWA_MEM.out.bam
+        ch_bam_sorted     = BWA_MEM.out.bam
 
         // SAMTOOLS INDEX SORTED BAM
         SAMTOOLS_INDEX_BAM(
@@ -309,7 +311,7 @@ workflow CIRCDNA {
 
         AMPLICONARCHITECT_PREPAREAA (
             ch_bwa_sorted_bam.join(ch_bwa_sorted_bai).
-            join(CNVKIT_BATCH.out.cns)
+            join(CNVKIT_SEGMENT.out.cns)
         )
         ch_prepareaa_bed = AMPLICONARCHITECT_PREPAREAA.out.bed
         AMPLICONARCHITECT_AMPLICONARCHITECT (
@@ -422,12 +424,15 @@ workflow CIRCDNA {
         SEQTK_SEQ (
             UNICYCLER.out.scaffolds
         )
+        GETCIRCULARREADS (
+            SEQTK_SEQ.out.fastq
+        )
         MINIMAP2_ALIGN (
-            ch_fasta,
-            SEQTK_SEQ.out.fastq_circular
+            GETCIRCULARREADS.out.fastq,
+            ch_fasta
         )
     } else if (run_unicycler && !params.input_format == "FASTQ") {
-        exit 1, 'Unicycler needs FastQ input. Please specify input_format == "FASTQ", if possible, or don`t run unicycle or don`t run unicycler.'
+        exit 1, 'Unicycler needs FastQ input. Please specify input_format == "FASTQ", if possible, or don`t run unicycler.'
     }
 
     //
