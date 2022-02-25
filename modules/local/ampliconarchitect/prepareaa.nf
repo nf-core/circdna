@@ -18,6 +18,7 @@ process AMPLICONARCHITECT_PREPAREAA {
 
     output:
     tuple val(meta), path("*CNV_SEEDS.bed"), emit: bed
+    path "versions.yml"          , emit: versions
 
     script:
     def software = getSoftwareName(task.process)
@@ -40,5 +41,9 @@ process AMPLICONARCHITECT_PREPAREAA {
         --cnv_bed $cns \\
         $cn_gain_threshold \\
         $no_filter
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(echo \$(python --version 2>&1) | sed 's/^.*Python /' )
+    END_VERSIONS
     """
 }

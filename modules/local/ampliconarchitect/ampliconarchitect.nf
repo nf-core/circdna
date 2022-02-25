@@ -35,7 +35,7 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        ampliconarchitect: \$(echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' ))
+        python: \$(echo \$(python --version 2>&1) | sed 's/^.*Python /' )
     END_VERSIONS
     """
 }

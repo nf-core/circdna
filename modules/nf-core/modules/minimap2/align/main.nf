@@ -8,7 +8,7 @@ process MINIMAP2_ALIGN {
         'quay.io/biocontainers/minimap2:2.21--h5bf99c6_0' }"
 
     input:
-    tuple val(meta), path(reads)
+    tuple val(meta), path(fastq)
     path reference
 
     output:
@@ -21,13 +21,12 @@ process MINIMAP2_ALIGN {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def input_reads = meta.single_end ? "$reads" : "${reads[0]} ${reads[1]}"
     """
     minimap2 \\
         $args \\
         -t $task.cpus \\
         $reference \\
-        $input_reads \\
+        $fastq \\
         > ${prefix}.paf
 
     cat <<-END_VERSIONS > versions.yml

@@ -24,11 +24,6 @@ process SEQTK_SEQ {
         $fasta > \\
         ${prefix}.unicycler.fastq
 
-    grep -A3 "circular=true" ${prefix}.unicycler.fastq | \\
-        grep -v "^--" | \\
-        gzip --no-name > \\
-        ${prefix}.unicycler.circular.fastq.gz
-
     gzip -n ${prefix}.unicycler.fastq
     """
 }
