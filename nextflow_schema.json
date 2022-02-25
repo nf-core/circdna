@@ -117,21 +117,25 @@
             "properties": {
                 "skip_qc": {
                     "type": "boolean",
+                    "default": false,
                     "fa_icon": "fas fa-fast-forward",
                     "description": "Skip all QC steps except for MultiQC."
                 },
                 "skip_multiqc": {
                     "type": "boolean",
+                    "default": false,
                     "fa_icon": "fas fa-fast-forward",
                     "description": "Skip MultiQC step except for MultiQC."
                 },
                 "skip_markduplicates": {
                     "type": "boolean",
+                    "default": false,
                     "fa_icon": "fas fa-fast-forward",
                     "description": "Skip Picard MarkDuplicates and duplicate filtering"
                 },
                 "keep_duplicates": {
                     "type": "boolean",
+                    "default": false,
                     "fa_icon": "fas fa-delete-left",
                     "description": "Keep read duplications marked by picard MarkDuplicates."
                 }
@@ -193,43 +197,13 @@
             "title": "Circular DNA identifier options",
             "type": "object",
             "fa_icon": "fas fa-circle-notch",
-            "description": "Options to adjust inital circular DNA identifier and parameters and filtering criteria",
+            "description": "Options to adjust inital circular DNA identifier",
             "properties": {
                 "circle_identifier": {
                     "type": "string",
                     "description": "Specifies the circular DNA identification algorithm to use - available 'circle_map_realign', 'circle_map_repeats', 'circle_finder', and 'circexplorer2'.",
                     "fa_icon": "far fa-circle",
                     "default": "circle_map_realign"
-                },
-                "coverage_bases": {
-                    "type": "integer",
-                    "description": "Number of bases to extend for computing the coverage ratio",
-                    "fa_icon": "fas fa-ruler-horizontal",
-                    "default": "200"
-                },
-                "coverage_mapq": {
-                    "type": "integer",
-                    "description": "Minimum mapping quality threshold for coverage computation",
-                    "fa_icon": "fas fa-check-circle",
-                    "default": "20"
-                },
-                "coverage_extension": {
-                    "type": "integer",
-                    "description": "Number of bases inside the circular DNA breakpoint coordinates to compute the coverage ratio",
-                    "fa_icon": "fas fa-ruler-combined",
-                    "default": "100"
-                },
-                "circdna_filter_mapq": {
-                    "type": "integer",
-                    "description": "Filter Split reads below the mapping quality threshold",
-                    "fa_icon": "fas fa-filter",
-                    "default": "20"
-                },
-                "circdna_filter_nSplit": {
-                    "type": "integer",
-                    "description": "Number of split reads required that support the circular DNA junction",
-                    "fa_icon": "fas fa-ruler-combined",
-                    "default": "2"
                 }
             }
         },
