@@ -1,6 +1,5 @@
 # ![nf-core/circdna](docs/images/nf-core-circdna_logo_light.png#gh-light-mode-only) ![nf-core/circdna](docs/images/nf-core-circdna_logo_dark.png#gh-dark-mode-only)
 
-
 [![GitHub Actions CI Status](https://github.com/nf-core/circdna/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/circdna/actions?query=workflow%3A%22nf-core+CI%22)
 [![GitHub Actions Linting Status](https://github.com/nf-core/circdna/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/circdna/actions?query=workflow%3A%22nf-core+linting%22)
 [![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/circdna/results)
