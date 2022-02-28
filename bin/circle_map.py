@@ -115,7 +115,7 @@ Commands:
             time.sleep(0.01)
             sys.stderr.write("\nNo argument given to Circle-Map"
                             "\nExiting\n")
-                sys.exit(0)
+            sys.exit(0)
 
         else:
             if sys.argv[1] == "ReadExtractor":
@@ -498,7 +498,7 @@ Commands:
                                             default=1)
 
             alignment_options.add_argument('-q', '--mapq', type=int, metavar='',
-                                            help="Minimum mapping quality allowed in the supplementary alignments. Default: 20"
+                                            help="Minimum mapping quality allowed in the supplementary alignments. Default: 20",
                                             default=20)
 
             alignment_options.add_argument('-d', '--edit_distance-fraction', type=float, metavar='',

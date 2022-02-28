@@ -1,4 +1,4 @@
-# ![nf-core/circdna](docs/images/nf-core-circdna_logo_light.png)
+# ![nf-core/circdna](docs/images/nf-core-circdna_logo_light.png#gh-light-mode-only) ![nf-core/circdna](docs/images/nf-core-circdna_logo_dark.png#gh-dark-mode-only)
 
 [![GitHub Actions CI Status](https://github.com/nf-core/circdna/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/circdna/actions?query=workflow%3A%22nf-core+CI%22)
 [![GitHub Actions Linting Status](https://github.com/nf-core/circdna/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/circdna/actions?query=workflow%3A%22nf-core+linting%22)
@@ -16,8 +16,7 @@
 
 ## Introduction
 
-<!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
-**nf-core/circdna** is a bioinformatics best-practice analysis pipeline for Pipeline for the identification of circular DNAs.
+**nf-core/circdna** is a bioinformatics best-practice analysis pipeline for the identification of extrachromosomal circular DNAs (ecDNAs) with short read sequencing data.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
@@ -37,11 +36,13 @@ On release, automated continuous integration tests run the pipeline on a full-si
    1. [`Circle-Map ReadExtractor`](https://github.com/iprada/Circle-Map) -> [`Circle-Map Realign`](https://github.com/iprada/Circle-Map)
    2. [`CIRCexplorer2`](https://circexplorer2.readthedocs.io/en/latest/)
    3. [`Samblaster`](https://github.com/GregoryFaust/samblaster) -> [`Circle_finder`](https://github.com/pk7zuva/Circle_finder)
-   4. [`AmpliconArchitect`](https://github.com/virajbdeshpande/AmpliconArchitect)
+   4. Identification of amplified ecDNAs [`AmpliconArchitect`](https://github.com/virajbdeshpande/AmpliconArchitect)
+   5. DeNovo Assembly of ecDNAs [`Unicycler`](https://github.com/rrwick/Unicycler) -> [`Minimap2`](https://github.com/lh3/minimap2)
 7. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
 ## Overview
-# ![nf-core/circdna/metromap](docs/images/circdna_pipeline_metromap.png)
+
+![nf-core/circdna/metromap](docs/images/circdna_pipeline_metromap.png)
 
 ## Quick Start
 
@@ -58,7 +59,6 @@ On release, automated continuous integration tests run the pipeline on a full-si
     Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
 
     > * The pipeline comes with config profiles called `docker`, `singularity`, `podman`, `shifter`, `charliecloud` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
-
     > * Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
     > * If you are using `singularity` and are persistently observing issues downloading Singularity images directly due to timeout or network issues, then you can use the `--singularity_pull_docker_container` parameter to pull and convert the Docker image instead. Alternatively, you can use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
     > * If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.

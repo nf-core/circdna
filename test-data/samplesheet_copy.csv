@@ -1,4 +1,0 @@
-sample,fastq_1,fastq_2
-SRR1822153,"test-data/data/SRR1822153_1.fastq.gz","test-data/data/SRR1822153_2.fastq.gz"
-SRR1822154,"test-data/data/SRR1822154_1.fastq.gz","test-data/data/SRR1822154_2.fastq.gz"
-SRR1822158,"test-data/data/SRR1822158_1.fastq.gz","test-data/data/SRR1822158_2.fastq.gz"

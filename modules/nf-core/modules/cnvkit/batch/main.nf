@@ -10,8 +10,7 @@ process CNVKIT_BATCH {
     input:
     tuple val(meta), path(bam), path(bai)
     path  fasta
-    // path  targets
-    // path  reference
+    path  reference
 
     output:
     tuple val(meta), path("*.bed"), emit: bed
@@ -20,32 +19,31 @@ process CNVKIT_BATCH {
     tuple val(meta), path("*.cns"), emit: cns, optional: true
     path "versions.yml"           , emit: versions
 
-    when:
-    task.ext.when == null || task.ext.when
+//    when:
+//    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
-    // def normal_args = normal ? "--normal $normal" : ""
-    def fasta_args = fasta ? "--fasta $fasta" : ""
-    // def reference_args = reference ? "--reference $reference" : ""
+//    def normal_args = normal ? "--normal $normal" : ""
+    def fasta_args = reference ? "" : "--fasta $fasta"
+    def reference_args = reference ? "--reference $reference" : ""
 
-//     def target_args = ""
-//     if (args.contains("--method wgs") || args.contains("-m wgs")) {
-//         target_args = targets ? "--targets $targets" : ""
-//     }
-//     else {
-//         target_args = "--targets $targets"
-//     }
 
+//    def target_args = ""
+//
+//    if (args.contains("--method wgs") || args.contains("-m wgs")) {
+//        target_args = targets ? "--targets $targets" : ""
+//    }
+//    else {
+//        target_args = "--targets $targets"
+//    }
     """
-    AA_DATA_REPO=${params.aa_data_repo}
-    BUILD=${params.reference_build}
-    REFERENCE=\${AA_DATA_REPO}/\$BUILD/\${BUILD}_cnvkit_filtered_ref.cnn
     cnvkit.py \\
         batch \\
         $bam \\
+        $fasta_args \\
+        $reference_args \\
         --processes $task.cpus \\
-        -r \$REFERENCE \\
         $args
 
     cat <<-END_VERSIONS > versions.yml

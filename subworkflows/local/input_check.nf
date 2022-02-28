@@ -2,9 +2,7 @@
 // Check input samplesheet and get read channels
 //
 
-params.options = [:]
-
-include { SAMPLESHEET_CHECK } from '../../modules/local/samplesheet_check' addParams( options: params.options )
+include { SAMPLESHEET_CHECK } from '../../modules/local/samplesheet_check'
 
 workflow INPUT_CHECK {
     take:
@@ -13,11 +11,13 @@ workflow INPUT_CHECK {
     main:
     if ( params.input_format == "FASTQ" ) {
         SAMPLESHEET_CHECK ( samplesheet )
+            .csv
             .splitCsv ( header:true, sep:',' )
             .map { create_fastq_channels(it) }
             .set { reads }
     } else if ( params.input_format == "BAM" ) {
         SAMPLESHEET_CHECK ( samplesheet )
+            .csv
             .splitCsv ( header:true, sep:',' )
             .map { create_bam_channels(it) }
             .set { reads }
@@ -28,6 +28,7 @@ workflow INPUT_CHECK {
     emit:
     reads   // channel: [ val(meta), [ reads ] ] OR
             // channel: [ val(meta),  bam  ]
+    versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
 }
 
 // Function to get list of [ meta, [ fastq_1, fastq_2 ] ]
