@@ -27,10 +27,6 @@ process CIRCLEMAP_REALIGN {
         -sbam $sbam \\
         -fasta $fasta \\
         --threads $task.cpus \\
-        --cmapq $params.circdna_filter_mapq \\
-        --bases $params.coverage_bases \\
-        --extension $params.coverage_extension \\
-        --split $params.circdna_filter_nSplit \\
         -o ${prefix}_circularDNA_coordinates.bed
 
     cat <<-END_VERSIONS > versions.yml

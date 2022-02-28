@@ -24,9 +24,6 @@ process AMPLICONARCHITECT_PREPAREAA {
     def software = getSoftwareName(task.process)
     def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
 
-    def cn_gain_threshold = params.aa_cn_gain_threshold ? "--cngain $params.aa_cn_gain_threshold" : ""
-    def no_filter   = params.aa_no_filter ? "--no_filter" : ""
-
     """
     AA_DATA_REPO=${params.aa_data_repo}
     MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
@@ -38,9 +35,7 @@ process AMPLICONARCHITECT_PREPAREAA {
         $options.args \\
         --sorted_bam $bam \\
         --ref \$REF \\
-        --cnv_bed $cns \\
-        $cn_gain_threshold \\
-        $no_filter
+        --cnv_bed $cns
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(echo \$(python --version 2>&1) | sed 's/^.*Python /' )
