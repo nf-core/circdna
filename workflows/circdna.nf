@@ -417,9 +417,8 @@ workflow CIRCDNA {
     }
 
     if (run_unicycler && params.input_format == "FASTQ") {
-        ch_trimmed_reads.map{ meta, file -> [meta, file, []] }.set{ch_unicycler_input}
         UNICYCLER (
-            ch_unicycler_input
+            ch_trimmed_reads
         )
         SEQTK_SEQ (
             UNICYCLER.out.scaffolds
