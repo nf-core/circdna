@@ -15,5 +15,10 @@ process GETCIRCULARREADS {
         grep -v "^--" | \\
         gzip --no-name > \\
         ${prefix}.unicycler.circular.fastq.gz
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        zcat: \$(zcat --version | grep zcat | sed 's/zcat (gzip) //g')
+    END_VERSIONS
     """
 }
