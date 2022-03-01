@@ -3,7 +3,6 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
     tag "$meta.id"
     label 'process_high'
 
-    // TODO nf-core: See section in main README for further information regarding finding and adding container addresses to the section below.
     conda (params.enable_conda ? "conda-forge::python=2.7 bioconda::pysam=0.17.0 anaconda::flask=1.1.2 anaconda::cython=0.29.14 anaconda::numpy=1.16.6 anaconda::scipy=1.2.1 conda-forge::matplotlib=2.2.5 mosek::mosek=8.0.60" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/YOUR-TOOL-HERE':

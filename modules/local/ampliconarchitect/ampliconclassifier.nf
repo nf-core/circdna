@@ -2,7 +2,6 @@ process AMPLICONARCHITECT_AMPLICONCLASSIFIER {
     tag "$meta.id"
     label 'process_medium'
 
-    // TODO nf-core: See section in main README for further information regarding finding and adding container addresses to the section below.
     conda (params.enable_conda ? "conda-forge::python=3.8 conda-forge::matplotlib=2.2.5 conda-forge::intervaltree" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/YOUR-TOOL-HERE':
