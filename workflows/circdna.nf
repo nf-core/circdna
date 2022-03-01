@@ -26,7 +26,7 @@ run_circle_finder = ("circle_finder" in software)
 run_ampliconarchitect = ("ampliconarchitect" in software)
 run_unicycler = ("unicycler" in software)
 
-if (!(run_unicycler | run_circle_map_realign | run_circle_map_repeats | run_circle_finder | run_ampliconarchitect)) {
+if (!(run_unicycler | run_circle_map_realign | run_circle_map_repeats | run_circle_finder | run_ampliconarchitect | run_circexplorer2)) {
     exit 1, 'circle_identifier param not valid. Please check!'
 }
 
@@ -82,42 +82,44 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/
 
 
 // CONCATENATE FASTQ
-include { CAT_FASTQ }     from '../modules/nf-core/modules/cat/fastq/main'
+include { CAT_FASTQ     }     from '../modules/nf-core/modules/cat/fastq/main'
 
 // QUALITY CONTROL
-include { FASTQC }     from '../modules/nf-core/modules/fastqc/main'
+include { FASTQC        }     from '../modules/nf-core/modules/fastqc/main'
 
 // TRIMMING
-include { TRIMGALORE }    from '../modules/nf-core/modules/trimgalore/main'
+include { TRIMGALORE    }    from '../modules/nf-core/modules/trimgalore/main'
 
 // Genome Preparation
-include { BWA_INDEX }   from '../modules/nf-core/modules/bwa/index/main'
+include { BWA_INDEX     }   from '../modules/nf-core/modules/bwa/index/main'
 
 // Alignment
-include { BWA_MEM   }   from '../modules/nf-core/modules/bwa/mem/main'
+include { BWA_MEM                                   }   from '../modules/nf-core/modules/bwa/mem/main'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_BAM        }   from '../modules/nf-core/modules/samtools/sort/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_BAM      }   from '../modules/nf-core/modules/samtools/index/main'
 
 // PICARD
-include { MARK_DUPLICATES_PICARD    } from '../subworkflows/nf-core/mark_duplicates_picard'
-include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FILTER }   from '../modules/nf-core/modules/samtools/view/main'
+include { MARK_DUPLICATES_PICARD                    } from '../subworkflows/nf-core/mark_duplicates_picard'
+include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FILTER     }   from '../modules/nf-core/modules/samtools/view/main'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_FILTERED   }   from '../modules/nf-core/modules/samtools/sort/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FILTERED }   from '../modules/nf-core/modules/samtools/index/main'
 
 // SAMTOOLS SORT & INDEX
 include { SAMTOOLS_FAIDX                            }   from '../modules/nf-core/modules/samtools/faidx/main'
 
-
 // SAMTOOLS STATISTICS
-include { SAMTOOLS_STATS                        }   from '../modules/nf-core/modules/samtools/stats/main'
+include { SAMTOOLS_STATS                            }   from '../modules/nf-core/modules/samtools/stats/main'
+
+// BAM STATS
+include { BAM_STATS_SAMTOOLS                        }   from '../subworkflows/nf-core/bam_stats_samtools.nf'
 
 // CIRCLE-MAP
-include { CIRCLEMAP_READEXTRACTOR   }   from '../modules/local/circlemap/readextractor.nf'
+include { CIRCLEMAP_READEXTRACTOR                   }   from '../modules/local/circlemap/readextractor.nf'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_RE         }   from '../modules/nf-core/modules/samtools/sort/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_RE       }   from '../modules/nf-core/modules/samtools/index/main'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_QNAME_CM   }   from '../modules/nf-core/modules/samtools/sort/main'
-include { CIRCLEMAP_REALIGN         }   from '../modules/local/circlemap/realign.nf'
-include { CIRCLEMAP_REPEATS         }   from '../modules/local/circlemap/repeats.nf'
+include { CIRCLEMAP_REALIGN                         }   from '../modules/local/circlemap/realign.nf'
+include { CIRCLEMAP_REPEATS                         }   from '../modules/local/circlemap/repeats.nf'
 
 // CIRCLE_FINDER
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_QNAME_CF   }   from '../modules/nf-core/modules/samtools/sort/main'
@@ -144,7 +146,7 @@ include { MINIMAP2_ALIGN      }     from '../modules/nf-core/modules/minimap2/al
 
 
 // MULTIQC
-include { MULTIQC }     from '../modules/nf-core/modules/multiqc/main'
+include { MULTIQC }     from '../modules/local/multiqc.nf'
 
 /*
 ========================================================================================
@@ -156,12 +158,7 @@ include { MULTIQC }     from '../modules/nf-core/modules/multiqc/main'
 def multiqc_report = []
 
 workflow CIRCDNA {
-
-    ch_software_versions = Channel.empty()
-
-    // Define channels of fastqc, trimgalore, bwa stats for multiqc
-    ch_fastqc_report     = Channel.empty()
-    ch_trimgalore_report = Channel.empty()
+    ch_versions = Channel.empty()
 
     // Check file format
     if (params.input_format == "FASTQ") {
@@ -185,7 +182,7 @@ workflow CIRCDNA {
                     return [ meta, fastq.flatten() ]
         }
         .set { ch_fastq }
-        // ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+        ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
         CAT_FASTQ (
             ch_fastq.multiple
@@ -194,16 +191,19 @@ workflow CIRCDNA {
         .mix(ch_fastq.single)
         .set { ch_cat_fastq }
 
+        ch_versions = ch_versions.mix(CAT_FASTQ.out.versions)
+
 
         //
         // MODULE: Run FastQC
         //
+        ch_fastqc_multiqc = Channel.empty()
         if ( ! params.skip_qc ) {
             FASTQC (
                 ch_cat_fastq
             )
-            ch_software_versions = ch_software_versions.mix(FASTQC.out.versions.first().ifEmpty(null))
-            ch_fastqc_report = FASTQC.out.zip
+            ch_versions         = ch_versions.mix(FASTQC.out.versions)
+            ch_fastqc_multiqc   = FASTQC.out.zip
         }
 
         //
@@ -213,10 +213,14 @@ workflow CIRCDNA {
             TRIMGALORE (
                 ch_cat_fastq
             )
-            ch_trimmed_reads        = TRIMGALORE.out.reads
-            ch_trimgalore_report    = TRIMGALORE.out.zip
+            ch_trimmed_reads            = TRIMGALORE.out.reads
+            ch_trimgalore_multiqc       = TRIMGALORE.out.zip
+            ch_trimgalore_multiqc_log   = TRIMGALORE.out.log
+            ch_versions                 = ch_versions.mix(TRIMGALORE.out.versions)
         } else {
-            ch_trimmed_reads = INPUT_CHECK.out.reads
+            ch_trimmed_reads            = INPUT_CHECK.out.reads
+            ch_trimgalore_multiqc       = Channel.empty()
+            ch_trimgalore_multiqc_log   = Channel.empty()
         }
 
         //
@@ -227,6 +231,7 @@ workflow CIRCDNA {
                 ch_fasta
             )
             ch_bwa_index = BWA_INDEX.out.index
+            ch_versions = ch_versions.mix(BWA_INDEX.out.versions)
         }
 
 
@@ -238,91 +243,115 @@ workflow CIRCDNA {
             ch_bwa_index,
             true
         )
-        ch_bwa_sorted_bam = BWA_MEM.out.bam
         ch_bam_sorted     = BWA_MEM.out.bam
+        ch_versions = ch_versions.mix(BWA_MEM.out.versions)
 
         // SAMTOOLS INDEX SORTED BAM
         SAMTOOLS_INDEX_BAM(
-            ch_bwa_sorted_bam
+            ch_bam_sorted
         )
+        ch_versions = ch_versions.mix(SAMTOOLS_INDEX_BAM.out.versions)
 
     } else if (params.input_format == "BAM") {
     // Use BAM Files as input
         INPUT_CHECK (
             ch_input
         )
+        ch_versions = ch_versions.mix(SAMTOOLS_INDEX_BAM.out.versions)
         if (!params.bam_sorted){
             SAMTOOLS_SORT_BAM (
                 INPUT_CHECK.out.reads
             )
+            ch_versions = ch_versions.mix(SAMTOOLS_SORT_BAM.out.versions)
             ch_bam_sorted       = SAMTOOLS_SORT_BAM.out.bam
-            ch_bwa_sorted_bam   = SAMTOOLS_SORT_BAM.out.bam
         } else {
-            ch_bwa_sorted_bam   = INPUT_CHECK.out.reads
             ch_bam_sorted       = INPUT_CHECK.out.reads
-            // SAMTOOLS INDEX SORTED BAM
         }
+        // SAMTOOLS INDEX SORTED BAM
         SAMTOOLS_INDEX_BAM (
-            ch_bwa_sorted_bam
+            ch_bam_sorted
         )
+        ch_versions = ch_versions.mix(SAMTOOLS_INDEX_BAM.out.versions)
     }
-    ch_bwa_sorted_bai       = SAMTOOLS_INDEX_BAM.out.bai
+
+    ch_bam_sorted_bai       = SAMTOOLS_INDEX_BAM.out.bai
+
+    BAM_STATS_SAMTOOLS (
+        ch_bam_sorted.join(ch_bam_sorted_bai)
+    )
+    ch_samtools_stats               = BAM_STATS_SAMTOOLS.out.stats
+    ch_samtools_flagstat            = BAM_STATS_SAMTOOLS.out.flagstat
+    ch_samtools_idxstats            = BAM_STATS_SAMTOOLS.out.idxstats
 
     // PICARD MARK_DUPLICATES
     if (!params.skip_markduplicates) {
         MARK_DUPLICATES_PICARD (
-            ch_bwa_sorted_bam
+            ch_bam_sorted
         )
-        ch_bwa_sorted_bam         = MARK_DUPLICATES_PICARD.out.bam
-        ch_bwa_sorted_bai         = MARK_DUPLICATES_PICARD.out.bai
-        ch_bam_stats              = MARK_DUPLICATES_PICARD.out.stats
-        ch_bam_flagstat           = MARK_DUPLICATES_PICARD.out.flagstat
-        ch_bam_idxstats           = MARK_DUPLICATES_PICARD.out.idxstats
-        ch_markduplicates_multiqc = MARK_DUPLICATES_PICARD.out.metrics
+        ch_versions = ch_versions.mix(MARK_DUPLICATES_PICARD.out.versions)
+        ch_bam_sorted               = MARK_DUPLICATES_PICARD.out.bam
+        ch_bam_sorted_bai           = MARK_DUPLICATES_PICARD.out.bai
+        ch_markduplicates_stats     = MARK_DUPLICATES_PICARD.out.stats
+        ch_markduplicates_flagstat  = MARK_DUPLICATES_PICARD.out.flagstat
+        ch_markduplicates_idxstats  = MARK_DUPLICATES_PICARD.out.idxstats
+        ch_markduplicates_multiqc   = MARK_DUPLICATES_PICARD.out.metrics
+
         // FILTER BAM FILES USING SAMTOOLS VIEW
         SAMTOOLS_VIEW_FILTER (
-            ch_bwa_sorted_bam, ch_fasta
+            ch_bam_sorted, ch_fasta
         )
+        ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FILTER.out.versions)
+
         SAMTOOLS_SORT_FILTERED (
             SAMTOOLS_VIEW_FILTER.out.bam
         )
-        ch_bwa_sorted_bam = SAMTOOLS_SORT_FILTERED.out.bam
+        ch_versions = ch_versions.mix(SAMTOOLS_SORT_FILTERED.out.versions)
+        ch_bam_sorted = SAMTOOLS_SORT_FILTERED.out.bam
+
         SAMTOOLS_INDEX_FILTERED (
-            ch_bwa_sorted_bam
+            ch_bam_sorted
         )
-        ch_bwa_sorted_bai = SAMTOOLS_INDEX_FILTERED.out.bai
+        ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FILTERED.out.versions)
+        ch_bam_sorted_bai = SAMTOOLS_INDEX_FILTERED.out.bai
     } else {
-        ch_bam_stats              = Channel.empty()
-        ch_bam_flagstat           = Channel.empty()
-        ch_bam_idxstats           = Channel.empty()
-        ch_markduplicates_multiqc = Channel.empty()
+        ch_markduplicates_stats         = Channel.empty()
+        ch_markduplicates_flagstat      = Channel.empty()
+        ch_markduplicates_idxstats      = Channel.empty()
+        ch_markduplicates_multiqc       = Channel.empty()
     }
 
     if (run_ampliconarchitect) {
         CNVKIT_BATCH (
-            ch_bwa_sorted_bam.join(ch_bwa_sorted_bai),
+            ch_bam_sorted.join(ch_bam_sorted_bai),
             ch_fasta,
             ch_cnvkit_reference
         )
+        ch_versions = ch_versions.mix(CNVKIT_BATCH.out.versions)
 
         CNVKIT_SEGMENT (
             CNVKIT_BATCH.out.cnr
         )
+        ch_versions = ch_versions.mix(CNVKIT_SEGMENT.out.versions)
 
         AMPLICONARCHITECT_PREPAREAA (
-            ch_bwa_sorted_bam.join(ch_bwa_sorted_bai).
+            ch_bam_sorted.join(ch_bam_sorted_bai).
             join(CNVKIT_SEGMENT.out.cns)
         )
+        ch_versions = ch_versions.mix(AMPLICONARCHITECT_PREPAREAA.out.versions)
         ch_prepareaa_bed = AMPLICONARCHITECT_PREPAREAA.out.bed
+
         AMPLICONARCHITECT_AMPLICONARCHITECT (
-            ch_bwa_sorted_bam.join(ch_bwa_sorted_bai).
+            ch_bam_sorted.join(ch_bam_sorted_bai).
                 join(ch_prepareaa_bed)
         )
+        ch_versions = ch_versions.mix(AMPLICONARCHITECT_AMPLICONARCHITECT.out.versions)
+
         ch_aa_cycles = AMPLICONARCHITECT_AMPLICONARCHITECT.out.cycles
         ch_aa_graphs = AMPLICONARCHITECT_AMPLICONARCHITECT.out.graph
         AMPLICONARCHITECT_AMPLICONCLASSIFIER (
             ch_aa_cycles.join(ch_aa_graphs)
         )
+        ch_versions = ch_versions.mix(AMPLICONARCHITECT_AMPLICONCLASSIFIER.out.versions)
     }
 
 
@@ -333,22 +362,30 @@ workflow CIRCDNA {
         SAMTOOLS_SORT_QNAME_CF (
             ch_bam_sorted
         )
+        ch_versions = ch_versions.mix(SAMTOOLS_SORT_QNAME_CF.out.versions)
+
         SAMBLASTER (
             SAMTOOLS_SORT_QNAME_CF.out.bam
         )
+        ch_versions = ch_versions.mix(SAMBLASTER.out.versions)
 
         BEDTOOLS_SPLITBAM2BED (
             SAMBLASTER.out.split_bam
         )
+        ch_versions = ch_versions.mix(BEDTOOLS_SPLITBAM2BED.out.versions)
+
         BEDTOOLS_SORTEDBAM2BED (
-            ch_bwa_sorted_bam.join(ch_bwa_sorted_bai)
+            ch_bam_sorted.join(ch_bam_sorted_bai)
         )
+        ch_versions = ch_versions.mix(BEDTOOLS_SORTED_BAM2BED.out.versions)
 
         ch_b2b_sorted = BEDTOOLS_SORTEDBAM2BED.out.conc_txt
         ch_b2b_split = BEDTOOLS_SPLITBAM2BED.out.split_txt
         CIRCLEFINDER (
             ch_b2b_split.join(ch_b2b_sorted)
         )
+        ch_versions = ch_versions.mix(CIRCLEFINDER.out.versions)
+
     }
 
     //
@@ -357,27 +394,32 @@ workflow CIRCDNA {
 
     if (run_circle_map_realign ||
             run_circle_map_repeats) {
-        //
-        // MODULE: Run samtools faidx
-        //
+
         SAMTOOLS_FAIDX (
             ch_fasta
         )
+        ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
+
         SAMTOOLS_SORT_QNAME_CM (
-            ch_bwa_sorted_bam
+            ch_bam_sorted
         )
+        ch_versions = ch_versions.mix(SAMTOOLS_SORT_QNAME_CM.out.versions)
+
         CIRCLEMAP_READEXTRACTOR (
             SAMTOOLS_SORT_QNAME_CM.out.bam
         )
+        ch_versions = ch_versions.mix(CIRCLEMAP_READEXTRACTOR.out.versions)
+
 
         SAMTOOLS_SORT_RE (
             CIRCLEMAP_READEXTRACTOR.out.circ_bam
         )
+        ch_versions = ch_versions.mix(SAMTOOLS_SORT_RE.out.versions)
 
         SAMTOOLS_INDEX_RE (
             SAMTOOLS_SORT_RE.out.bam
         )
-
+        ch_versions = ch_versions.mix(SAMTOOLS_INDEX_RE.out.versions)
 
         // DEFINE CHANNELS FOR REALIGN AND REPEATS
         ch_qname_sorted_bam = SAMTOOLS_SORT_QNAME_CM.out.bam
@@ -392,6 +434,7 @@ workflow CIRCDNA {
             CIRCLEMAP_REPEATS (
                 ch_re_sorted_bam.join(ch_re_sorted_bai)
             )
+            ch_versions = ch_versions.mix(CIRCLEMAP_REPEATS.out.versions)
         }
 
         //
@@ -401,35 +444,44 @@ workflow CIRCDNA {
             CIRCLEMAP_REALIGN (
                 ch_re_sorted_bam.join(ch_re_sorted_bai).
                     join(ch_qname_sorted_bam).
-                    join(ch_bwa_sorted_bam).
-                    join(ch_bwa_sorted_bai),
+                    join(ch_bam_sorted).
+                    join(ch_bam_sorted_bai),
                 ch_fasta,
                 ch_fasta_index
             )
+            ch_versions = ch_versions.mix(CIRCLEMAP_REALIGN.out.versions)
         }
     }
 
 
     if (run_circexplorer2) {
         CIRCEXPLORER2_PARSE (
-            ch_bwa_sorted_bam.join(ch_bwa_sorted_bai)
+            ch_bam_sorted.join(ch_bam_sorted_bai)
         )
+        ch_versions = ch_versions.mix(CIRCEXPLORER2_PARSE.out.versions)
     }
 
     if (run_unicycler && params.input_format == "FASTQ") {
         UNICYCLER (
             ch_trimmed_reads
         )
+        ch_versions = ch_versions.mix(UNICYCLER.out.versions)
+
         SEQTK_SEQ (
             UNICYCLER.out.scaffolds
         )
+        ch_versions = ch_versions.mix(SEQTK_SEQ.out.versions)
+
         GETCIRCULARREADS (
             SEQTK_SEQ.out.fastq
         )
+        ch_versions = ch_versions.mix(GETCIRCULARREADS.out.versions)
+
         MINIMAP2_ALIGN (
             GETCIRCULARREADS.out.fastq,
             ch_fasta
         )
+        ch_versions = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
     } else if (run_unicycler && !params.input_format == "FASTQ") {
         exit 1, 'Unicycler needs FastQ input. Please specify input_format == "FASTQ", if possible, or don`t run unicycler.'
     }
@@ -437,9 +489,9 @@ workflow CIRCDNA {
     //
     // MODULE: Pipeline reporting
     //
-//    CUSTOM_DUMPSOFTWAREVERSIONS (
-//        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-//    )
+    CUSTOM_DUMPSOFTWAREVERSIONS (
+        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+    )
 
     //
     // MODULE: MultiQC
@@ -448,17 +500,23 @@ workflow CIRCDNA {
         workflow_summary    = WorkflowCircdna.paramsSummaryMultiqc(workflow, summary_params)
         ch_workflow_summary = Channel.value(workflow_summary)
 
-        ch_multiqc_files = Channel.empty()
-        ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-
-//        MULTIQC (
-//            ch_multiqc_files.collect(),
-//            ch_multiqc_custom_config.collect().ifEmpty([]),
-////  CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect(),
-//            ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml')
-//
-//        )
-        //multiqc_report       = MULTIQC.out.report.toList()
+        MULTIQC (
+            ch_multiqc_config,
+            ch_multiqc_custom_config.collect().ifEmpty([]),
+            CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect(),
+            ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'),
+            ch_fastqc_multiqc.collect{it[1]}.ifEmpty([]),
+            ch_trimgalore_multiqc.collect{it[1]}.ifEmpty([]),
+            ch_trimgalore_multiqc_log.collect{it[1]}.ifEmpty([]),
+            ch_samtools_stats.collect{it[1]}.ifEmpty([]),
+            ch_samtools_flagstat.collect{it[1]}.ifEmpty([]),
+            ch_samtools_idxstats.collect{it[1]}.ifEmpty([]),
+            ch_markduplicates_flagstat.collect{it[1]}.ifEmpty([]),
+            ch_markduplicates_stats.collect{it[1]}.ifEmpty([]),
+            ch_markduplicates_idxstats.collect{it[1]}.ifEmpty([]),
+            ch_markduplicates_multiqc.collect{it[1]}.ifEmpty([]),
+        )
+        multiqc_report       = MULTIQC.out.report.toList()
     }
 }
 

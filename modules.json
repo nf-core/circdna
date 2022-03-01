@@ -24,9 +24,6 @@
             "minimap2/align": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
-            "multiqc": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
-            },
             "picard/markduplicates": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
