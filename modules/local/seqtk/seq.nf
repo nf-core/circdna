@@ -11,7 +11,8 @@ process SEQTK_SEQ {
 
     output:
     tuple val(meta), path("*unicycler.fastq.gz"), emit: fastq
-    tuple val(meta), path("*unicycler.circular.fastq.gz"), emit: fastq_circular, optional: true
+    path "versions.yml"                         , emit: versions
+
 
     script:
     def args = task.ext.args ?: ''
@@ -21,9 +22,12 @@ process SEQTK_SEQ {
         seq \\
         $args \\
         -F "#" \\
-        $fasta > \\
-        ${prefix}.unicycler.fastq
+        $fasta | \\
+        gzip -c > ${prefix}.unicycler.fastq.gz
 
-    gzip -n ${prefix}.unicycler.fastq
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        seqtk: \$(echo \$(seqtk 2>&1) | sed 's/^.*Version: //; s/ .*\$//')
+    END_VERSIONS
     """
 }

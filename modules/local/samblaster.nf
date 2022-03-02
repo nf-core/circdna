@@ -4,11 +4,9 @@ process SAMBLASTER {
     label 'process_low'
 
     conda (params.enable_conda ? "bioconda::samblaster=0.1.26 bioconda::samtools=1.14" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/samblaster:0.1.26--h7d875b9_1"
-    } else {
-        container "quay.io/biocontainers/samblaster:0.1.26--h7d875b9_1"
-    }
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/mulled-v2-19fa9f1a5c3966b63a24166365e81da35738c5ab:ba4a02b56f3e524a6e006bcd99fe8cc1d7fe09eb-0' :
+        'quay.io/biocontainers/mulled-v2-19fa9f1a5c3966b63a24166365e81da35738c5ab:ba4a02b56f3e524a6e006bcd99fe8cc1d7fe09eb-0' }"
 
     input:
     tuple val(meta), path(bam)
@@ -40,7 +38,7 @@ process SAMBLASTER {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        samblaster: \$(echo \$(samblaster --version 2>&1))
+        samblaster: \$(echo \$(samblaster --version 2>&1) | sed 's/samblaster: Version //g')
     END_VERSIONS
     """
 }

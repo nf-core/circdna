@@ -243,7 +243,8 @@ workflow CIRCDNA {
             ch_bwa_index,
             true
         )
-        ch_bam_sorted     = BWA_MEM.out.bam
+        ch_bam_sorted   = BWA_MEM.out.bam
+        ch_bwa_sorted   = BWA_MEM.out.bam
         ch_versions = ch_versions.mix(BWA_MEM.out.versions)
 
         // SAMTOOLS INDEX SORTED BAM
@@ -266,6 +267,7 @@ workflow CIRCDNA {
             ch_bam_sorted       = SAMTOOLS_SORT_BAM.out.bam
         } else {
             ch_bam_sorted       = INPUT_CHECK.out.reads
+            ch_bwa_sorted       = INPUT_CHECK.out.reads
         }
         // SAMTOOLS INDEX SORTED BAM
         SAMTOOLS_INDEX_BAM (
@@ -360,7 +362,7 @@ workflow CIRCDNA {
     //
     if (run_circle_finder) {
         SAMTOOLS_SORT_QNAME_CF (
-            ch_bam_sorted
+            ch_bwa_sorted
         )
         ch_versions = ch_versions.mix(SAMTOOLS_SORT_QNAME_CF.out.versions)
 
@@ -377,7 +379,7 @@ workflow CIRCDNA {
         BEDTOOLS_SORTEDBAM2BED (
             ch_bam_sorted.join(ch_bam_sorted_bai)
         )
-        ch_versions = ch_versions.mix(BEDTOOLS_SORTED_BAM2BED.out.versions)
+        ch_versions = ch_versions.mix(BEDTOOLS_SORTEDBAM2BED.out.versions)
 
         ch_b2b_sorted = BEDTOOLS_SORTEDBAM2BED.out.conc_txt
         ch_b2b_split = BEDTOOLS_SPLITBAM2BED.out.split_txt
@@ -491,6 +493,7 @@ workflow CIRCDNA {
     //
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
+
     )
 
     //
