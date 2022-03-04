@@ -17,18 +17,18 @@ process AMPLICONARCHITECT_PREPAREAA {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def reference_build = params.reference_build ?: "GRCh38"
 
     """
     AA_DATA_REPO=${params.aa_data_repo}
     MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
-    REF=${params.reference_build}
 
     PrepareAA.py \\
-        -s ${meta.id} \\
+        -s ${prefix} \\
         -t ${task.cpus} \\
-        $options.args \\
+        $args \\
         --sorted_bam $bam \\
-        --ref \$REF \\
+        --ref $params.reference_build \\
         --cnv_bed $cns
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
