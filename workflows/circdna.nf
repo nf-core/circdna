@@ -273,6 +273,9 @@ workflow CIRCDNA {
             ch_bam_sorted
         )
         ch_versions = ch_versions.mix(SAMTOOLS_INDEX_BAM.out.versions)
+        ch_fastqc_multiqc           = Channel.empty()
+        ch_trimgalore_multiqc       = Channel.empty()
+        ch_trimgalore_multiqc_log   = Channel.empty()
     }
 
     ch_bam_sorted_bai       = SAMTOOLS_INDEX_BAM.out.bai
