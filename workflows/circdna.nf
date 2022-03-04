@@ -248,7 +248,7 @@ workflow CIRCDNA {
         ch_versions = ch_versions.mix(BWA_MEM.out.versions)
 
         // SAMTOOLS INDEX SORTED BAM
-        SAMTOOLS_INDEX_BAM(
+        SAMTOOLS_INDEX_BAM (
             ch_bam_sorted
         )
         ch_versions = ch_versions.mix(SAMTOOLS_INDEX_BAM.out.versions)
@@ -258,7 +258,6 @@ workflow CIRCDNA {
         INPUT_CHECK (
             ch_input
         )
-        ch_versions = ch_versions.mix(SAMTOOLS_INDEX_BAM.out.versions)
         if (!params.bam_sorted){
             SAMTOOLS_SORT_BAM (
                 INPUT_CHECK.out.reads
