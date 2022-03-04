@@ -6,18 +6,15 @@ process CIRCLEFINDER {
     tuple val(meta), path(split), path(concordant)
 
     output:
-    tuple val(meta), path("*.microDNA-JT.txt"), optional: true, emit: circdna
-    tuple val(meta), path("*.circle_finder_exit_log.txt"), optional: true
+    tuple val(meta), path("*.microDNA-JT.txt")              , optional: true, emit: circdna
+    tuple val(meta), path("*.circle_finder_exit_log.txt")   , optional: true
+    path "versions.yml"                                     , emit: versions
 
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     #!/usr/bin/env bash
-
-    # prefix=${prefix}
-    # split=${split}
-    # concordant=${concordant}
 
     # Function to output an error if files do not exist
     file_exists () {
@@ -43,45 +40,36 @@ process CIRCLEFINDER {
     awk '\$1=="3" {print \$2}' ${prefix}.concordant.id-freq.txt > ${prefix}.concordant.id-freq3.txt
     awk '\$1>3 {print \$2}' ${prefix}.concordant.id-freq.txt > ${prefix}.concordant.id-freqGr3.txt
 
-    # check if output files exists and are not empty
     file_exists ${prefix}.concordant.id-freq3.txt
     file_exists ${prefix}.concordant.id-freqGr3.txt
 
     grep -w -Ff ${prefix}.split.id-freq2.txt ${split} > ${prefix}.split_freq2.txt
     # grep -w -Ff ${prefix}.split.id-freq4.txt ${split} > ${prefix}.split_freq4.txt
 
-    # check if output files exist and are not empty
     file_exists ${prefix}.split_freq2.txt
-    # file_exists ${prefix}.split_freq4.txt
 
     #Selecting concordant pairs that were 1) mapped uniquely and 2) mapped on more than one loci (file "freqGr3.txt")
     grep -w -Ff ${prefix}.concordant.id-freq3.txt ${concordant} > ${prefix}.concordant_freq3.txt
     grep -w -Ff ${prefix}.concordant.id-freqGr3.txt ${concordant} > ${prefix}.concordant_freqGr3.txt
 
-    # check if output files exist and are not empty
     file_exists ${prefix}.concordant_freq3.txt
     file_exists ${prefix}.concordant_freqGr3.txt
 
     #Step 7: Putting split read with same id in one line
     sed 'N;s/\\n/\\t/' ${prefix}.split_freq2.txt > ${prefix}.split_freq2.oneline.txt
-    # sed 'N;s/\\n/\\t/' ${prefix}.split_freq4.txt > ${prefix}.split_freq4.oneline.txt
 
-    # check if output files exist and are not empty
     file_exists ${prefix}.split_freq2.oneline.txt
-    # file_exists ${prefix}.split_freq4.oneline.txt
 
     #Step 8: Split reads map on same chromosome and map on same strand. Finally extracting id (split read same chromosome, split read same strand), collecting all the split reads that had quality >0
     awk '\$1==\$10 && \$7==\$16 && \$6>0 && \$15>0 {print \$4} ' ${prefix}.split_freq2.oneline.txt > \
         ${prefix}.split_freq2.oneline.S-R-S-CHR-S-ST.ID.txt
 
-    # check if output files exist and are not empty
     file_exists ${prefix}.split_freq2.oneline.S-R-S-CHR-S-ST.ID.txt
 
     #Step 9: Based on unique id I am extracting one continuously mapped reads and their partner mapped as split read (3 lines for each id)
     grep -w -Ff "${prefix}.split_freq2.oneline.S-R-S-CHR-S-ST.ID.txt" "${prefix}.concordant_freq3.txt" > \
         "${prefix}.concordant_freq3.2SPLIT-1M.txt"
 
-    # check if output files exist and are not empty
     file_exists ${prefix}.concordant_freq3.2SPLIT-1M.txt
 
     #Step 10: Sorting based on read-id followed by length of mapped reads.
@@ -102,7 +90,6 @@ process CIRCLEFINDER {
             {printf ("%s\\t%d\\t%d\\t%s\\t%d\\t%d\\t%s\\t%s\\t%s\\t%d\\t%s\\t%d\\t%d\\t%s\\t%d\\t%d\\t%s\\t%s\\t%s\\t%d\\t%s\\t%d\\t%d\\t%s\\t%d\\t%d\\t%s\\t%s\\t%s\\t%d\\n", \$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20,\$21,\$22,\$23,\$24,\$25,\$26,\$27,\$28,\$29,\$30,\$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10)} }' \
         > ${prefix}.concordant_freq3.2SPLIT-1M.inoneline.txt
 
-    # check if output files exist and are not empty
     file_exists ${prefix}.concordant_freq3.2SPLIT-1M.inoneline.txt
 
     #Step 11: Unique number of microDNA with number of split reads
@@ -114,5 +101,9 @@ process CIRCLEFINDER {
         else if (\$7=="-" && \$9=="second" && \$2<\$12 && \$22>=\$2 && \$23<=\$13) {printf ("%s\\t%d\\t%d\\n",\$1,\$2,\$13)} }' | \
     sort | uniq -c | awk '{printf ("%s\\t%d\\t%d\\t%d\\n",\$2,\$3,\$4,\$1)}' > ${prefix}.microDNA-JT.txt
 
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        awk: \$(awk --version | grep Awk |sed 's/GNU Awk //g' |sed 's/, API: .*//g')
+    END_VERSIONS
     """
 }

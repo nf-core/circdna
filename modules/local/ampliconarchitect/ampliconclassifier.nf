@@ -33,11 +33,7 @@ process AMPLICONARCHITECT_AMPLICONCLASSIFIER {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        ampliconarchitect:
-    END_VERSIONS
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        python: \$(echo \$(python --version 2>&1) | sed 's/^.*Python /' )
+        AmpliconClassifier: \$(echo \$(amplicon_classifier.py --version | sed 's/amplicon_classifier //g' | sed 's/ .*//g'))
     END_VERSIONS
     """
 }

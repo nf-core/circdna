@@ -1,12 +1,6 @@
-// Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from '../functions'
-
-params.options = [:]
-options        = initOptions(params.options)
-
 process AMPLICONARCHITECT_PREPAREAA {
     tag "$meta.id"
-    label 'process_high'
+    label 'process_medium'
 
     conda (params.enable_conda ? "conda-forge::python=2.7 anaconda::numpy=1.15.4 conda-forge::matplotlib=2.2.5 conda-forge:intervaltree=3.0.2 bioconda::pysam=0.17.0 mosek::mosek=8.0.60 anaconda::scipy=1.2.0" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -21,8 +15,8 @@ process AMPLICONARCHITECT_PREPAREAA {
     path "versions.yml"          , emit: versions
 
     script:
-    def software = getSoftwareName(task.process)
-    def prefix   = options.suffix ? "${meta.id}${options.suffix}" : "${meta.id}"
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
     AA_DATA_REPO=${params.aa_data_repo}

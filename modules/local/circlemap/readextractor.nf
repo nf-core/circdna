@@ -4,8 +4,8 @@ process CIRCLEMAP_READEXTRACTOR {
 
     conda (params.enable_conda ? "bioconda::circle-map=1.1.4 biopython=1.77" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/circle-map:1.1.4--pyh864c0ab_1':
-        'quay.io/biocontainers/circle-map:1.1.4--pyh864c0ab_1' }"
+        'https://depot.galaxyproject.org/singularity/mulled-v2-3423532b7f92d89bbf04791d2e48d40cb0a4111e:2a8abad654fa8c270bfcc01eef47487e2573badb-0':
+        'quay.io/biocontainers/mulled-v2-3423532b7f92d89bbf04791d2e48d40cb0a4111e:2a8abad654fa8c270bfcc01eef47487e2573badb-0' }"
 
     input:
     tuple val(meta), path(qname_bam)

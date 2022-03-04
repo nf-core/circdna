@@ -28,13 +28,13 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
     AA_DATA_REPO=${params.aa_data_repo}
     MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
     REF=${params.reference_build}
-    # output=${params.outdir}/ampliconarchitect
+
     AmpliconArchitect.py $args \\
         --bam $bam --bed $bed --ref \$REF --out "${prefix}"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        python: \$(echo \$(python --version 2>&1) | sed 's/^.*Python /' )
+        AmpliconArchitect: \$(echo \$(AmpliconArchitect.py --version 2>&1) | sed 's/AmpliconArchitect version //g')
     END_VERSIONS
     """
 }
