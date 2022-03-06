@@ -13,6 +13,7 @@ process AMPLICONARCHITECT_AMPLICONCLASSIFIER {
     output:
     // TODO nf-core: Named file extensions MUST be emitted for ALL output channels
     tuple val(meta), path("*"), emit: all
+    tuple val(meta), path("*amplicon_classification_profiles.tsv"), emit: class_file
     path "*.classifier_stdout.log", emit: log
     path "versions.yml"           , emit: versions
 
