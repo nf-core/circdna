@@ -28,15 +28,6 @@ process CNVKIT_BATCH {
     def fasta_args = reference ? "" : "--fasta $fasta"
     def reference_args = reference ? "--reference $reference" : ""
 
-
-//    def target_args = ""
-//
-//    if (args.contains("--method wgs") || args.contains("-m wgs")) {
-//        target_args = targets ? "--targets $targets" : ""
-//    }
-//    else {
-//        target_args = "--targets $targets"
-//    }
     """
     cnvkit.py \\
         batch \\
