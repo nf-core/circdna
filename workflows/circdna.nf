@@ -328,8 +328,7 @@ workflow CIRCDNA {
     if (run_ampliconarchitect) {
         CNVKIT_BATCH (
             ch_bam_sorted.join(ch_bam_sorted_bai),
-            ch_fasta,
-            ch_cnvkit_reference
+            ch_fasta
         )
         ch_versions = ch_versions.mix(CNVKIT_BATCH.out.versions)
 
@@ -393,8 +392,6 @@ workflow CIRCDNA {
         CIRCLEFINDER (
             ch_b2b_split.join(ch_b2b_sorted)
         )
-        ch_versions = ch_versions.mix(CIRCLEFINDER.out.versions)
-
     }
 
     //
@@ -484,7 +481,6 @@ workflow CIRCDNA {
         GETCIRCULARREADS (
             SEQTK_SEQ.out.fastq
         )
-        ch_versions = ch_versions.mix(GETCIRCULARREADS.out.versions)
 
         MINIMAP2_ALIGN (
             GETCIRCULARREADS.out.fastq,
