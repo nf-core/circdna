@@ -19,8 +19,8 @@ process AMPLICONARCHITECT_PREPAREAA {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    AA_DATA_REPO=${params.aa_data_repo}
-    MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
+    export AA_DATA_REPO=${params.aa_data_repo}
+    export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
 
     PrepareAA.py \\
         -s ${prefix} \\

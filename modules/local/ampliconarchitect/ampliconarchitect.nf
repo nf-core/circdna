@@ -25,8 +25,8 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    AA_DATA_REPO=${params.aa_data_repo}
-    MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
+    export AA_DATA_REPO=${params.aa_data_repo}
+    export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
     REF=${params.reference_build}
 
     AmpliconArchitect.py $args \\

@@ -24,7 +24,7 @@ process AMPLICONARCHITECT_AMPLICONCLASSIFIER {
     """
     make_AmpliconClassifier_input.sh ./ ${meta.id}.AmpliconClassifier
     REF=${params.reference_build}
-    AA_DATA_REPO=${params.aa_data_repo}
+    export AA_DATA_REPO=${params.aa_data_repo}
 
     amplicon_classifier.py \\
         --ref \$REF \\
