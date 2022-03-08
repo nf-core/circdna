@@ -27,6 +27,7 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
     """
     export AA_DATA_REPO=${params.aa_data_repo}
     export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
+    export AA_SRC=${projectDir}/bin
     REF=${params.reference_build}
 
     AmpliconArchitect.py $args \\
