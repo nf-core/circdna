@@ -11,9 +11,9 @@ process AMPLICONARCHITECT_PREPAREAA {
     tuple val(meta), path(bam), path(bai), path(cns)
 
     output:
-    tuple val(meta), path("*CNV_SEEDS.bed"), emit: bed
-    tuple val(meta), path("*_CNV_GAIN.bed"), emit: bed_all
-    path "versions.yml"          , emit: versions
+    tuple val(meta), path("*CNV_SEEDS.bed") , emit: bed
+    tuple val(meta), path("*CNV_GAIN.bed")  , emit: bed_all
+    path "versions.yml"                     , emit: versions
 
     script:
     def args = task.ext.args ?: ''
