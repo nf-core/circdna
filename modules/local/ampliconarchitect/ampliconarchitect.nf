@@ -12,21 +12,22 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
     tuple val(meta), path(bam), path(bai), path(bed)
 
     output:
-    path "versions.yml"          , emit: versions
-    tuple val(meta), path("*.logs.txt"), emit: log, optional: true
-    tuple val(meta), path("*cycles.txt"), optional: true, emit: cycles
-    tuple val(meta), path("*graph.txt"), optional: true, emit: graph
-    tuple val(meta), path("*.out"), optional: true, emit: out
-    tuple val(meta), path("*_cnseg.txt"), optional: true, emit: cnseg
-    tuple val(meta), path("*.pdf"), optional: true, emit: pdf
-    tuple val(meta), path("*_summary.txt"), optional: true, emit: summary
+    path "versions.yml"                     , emit: versions
+    tuple val(meta), path("*.logs.txt")     , emit: log, optional: true
+    tuple val(meta), path("*cycles.txt")    , optional: true, emit: cycles
+    tuple val(meta), path("*graph.txt")     , optional: true, emit: graph
+    tuple val(meta), path("*.out")          , optional: true, emit: out
+    tuple val(meta), path("*_cnseg.txt")    , optional: true, emit: cnseg
+    tuple val(meta), path("*.pdf")          , optional: true, emit: pdf
+    tuple val(meta), path("*_summary.txt")  , optional: true, emit: summary
 
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    AA_DATA_REPO=${params.aa_data_repo}
-    MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
+    export AA_DATA_REPO=${params.aa_data_repo}
+    export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
+    export AA_SRC=${projectDir}/bin
     REF=${params.reference_build}
 
     AmpliconArchitect.py $args \\

@@ -69,6 +69,13 @@ On release, automated continuous integration tests run the pipeline on a full-si
     nextflow run nf-core/circdna -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --fasta genome.fa
 ```
 
+**IMPORTANT** The pipeline is currently only usable with conda. Implementation of docker, singularity, podman, shifter, charliecloud is currently under development.
+Please specify:
+
+```console
+nextflow run nf-core/circdna -profile conda,YOURPROFILE
+```
+
 ## Documentation
 
 The nf-core/circdna pipeline comes with documentation about the pipeline [usage](https://nf-co.re/circdna/usage), [parameters](https://nf-co.re/circdna/parameters) and [output](https://nf-co.re/circdna/output).

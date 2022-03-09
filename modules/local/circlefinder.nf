@@ -8,7 +8,6 @@ process CIRCLEFINDER {
     output:
     tuple val(meta), path("*.microDNA-JT.txt")              , optional: true, emit: circdna
     tuple val(meta), path("*.circle_finder_exit_log.txt")   , optional: true
-    path "versions.yml"                                     , emit: versions
 
     script:
     def args = task.ext.args ?: ''
@@ -100,10 +99,5 @@ process CIRCLEFINDER {
             else if (\$17=="-" && \$19=="second" && \$12<\$2 && \$22>=\$12 && \$23<=\$3) {printf ("%s\\t%d\\t%d\\n",\$1,\$12,\$3)} \
         else if (\$7=="-" && \$9=="second" && \$2<\$12 && \$22>=\$2 && \$23<=\$13) {printf ("%s\\t%d\\t%d\\n",\$1,\$2,\$13)} }' | \
     sort | uniq -c | awk '{printf ("%s\\t%d\\t%d\\t%d\\n",\$2,\$3,\$4,\$1)}' > ${prefix}.microDNA-JT.txt
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        awk: \$(awk --version | grep Awk |sed 's/GNU Awk //g' |sed 's/, API: .*//g')
-    END_VERSIONS
     """
 }
