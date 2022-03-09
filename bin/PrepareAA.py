@@ -544,10 +544,10 @@ if __name__ == '__main__':
         else:
             rescaling = False
 
-        args.cnv_bed = convert_cnvkit_cnv_to_seeds(cnvkit_output_directory, bambase, rescaled=rescaling)
+        args.cnv_bed = convert_cnvkit_cnv_to_seeds(cnvkit_output_directory, sname, rescaled=rescaling)
 
     if args.cnv_bed.endswith(".cns"):
-        args.cnv_bed = convert_cnvkit_cnv_to_seeds(outdir, bambase, args.cnv_bed)
+        args.cnv_bed = convert_cnvkit_cnv_to_seeds(outdir, sname, args.cnv_bed)
 
     if not args.no_filter:
         amplified_interval_bed = run_amplified_intervals(args.cnv_bed, args.sorted_bam, outdir, sname, args.cngain,

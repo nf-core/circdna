@@ -7,7 +7,7 @@
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "bwa/mem": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                "git_sha": "950700bcdc0e9a2b6883d40d2c51c6fc435cd714"
             },
             "cat/fastq": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
@@ -28,25 +28,25 @@
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "samtools/faidx": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
             },
             "samtools/flagstat": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
             },
             "samtools/idxstats": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
             },
             "samtools/index": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
             },
             "samtools/sort": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
             },
             "samtools/stats": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
             },
             "samtools/view": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
             },
             "seqtk/seq": {
                 "git_sha": "1016c9bd1a7b23e31b8215b8c33095e733080735"

@@ -13,6 +13,7 @@ process AMPLICONARCHITECT_AMPLICONCLASSIFIER {
     output:
     // TODO nf-core: Named file extensions MUST be emitted for ALL output channels
     tuple val(meta), path("*"), emit: all
+    tuple val(meta), path("*amplicon_classification_profiles.tsv"), emit: class_file
     path "*.classifier_stdout.log", emit: log
     path "versions.yml"           , emit: versions
 
@@ -23,7 +24,8 @@ process AMPLICONARCHITECT_AMPLICONCLASSIFIER {
     """
     make_AmpliconClassifier_input.sh ./ ${meta.id}.AmpliconClassifier
     REF=${params.reference_build}
-    AA_DATA_REPO=${params.aa_data_repo}
+    export AA_DATA_REPO=${params.aa_data_repo}
+    export AA_SRC=${projectDir}/bin
 
     amplicon_classifier.py \\
         --ref \$REF \\

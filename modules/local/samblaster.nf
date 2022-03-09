@@ -1,4 +1,3 @@
-// Import generic module functions
 process SAMBLASTER {
     tag "$meta.id"
     label 'process_low'

@@ -11,24 +11,25 @@ process AMPLICONARCHITECT_PREPAREAA {
     tuple val(meta), path(bam), path(bai), path(cns)
 
     output:
-    tuple val(meta), path("*CNV_SEEDS.bed"), emit: bed
-    path "versions.yml"          , emit: versions
+    tuple val(meta), path("*CNV_SEEDS.bed") , emit: bed
+    tuple val(meta), path("*CNV_GAIN.bed")  , emit: bed_all
+    path "versions.yml"                     , emit: versions
 
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    AA_DATA_REPO=${params.aa_data_repo}
-    MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
-    REF=${params.reference_build}
+    export AA_DATA_REPO=${params.aa_data_repo}
+    export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
+    export AA_SRC=${projectDir}/bin
 
     PrepareAA.py \\
-        -s ${meta.id} \\
+        -s ${prefix} \\
         -t ${task.cpus} \\
-        $options.args \\
+        $args \\
         --sorted_bam $bam \\
-        --ref \$REF \\
+        --ref $params.reference_build \\
         --cnv_bed $cns
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

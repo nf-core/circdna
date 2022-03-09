@@ -137,6 +137,7 @@ include { CNVKIT_SEGMENT                            }     from '../modules/local
 include { AMPLICONARCHITECT_PREPAREAA               }     from '../modules/local/ampliconarchitect/prepareaa.nf'
 include { AMPLICONARCHITECT_AMPLICONARCHITECT       }     from '../modules/local/ampliconarchitect/ampliconarchitect.nf'
 include { AMPLICONARCHITECT_AMPLICONCLASSIFIER      }     from '../modules/local/ampliconarchitect/ampliconclassifier.nf'
+include { SUMMARISE_AA                              }     from '../modules/local/summarise_aa.nf'
 
 // Unicycler
 include { UNICYCLER           }     from '../modules/nf-core/modules/unicycler/main.nf'
@@ -327,8 +328,7 @@ workflow CIRCDNA {
     if (run_ampliconarchitect) {
         CNVKIT_BATCH (
             ch_bam_sorted.join(ch_bam_sorted_bai),
-            ch_fasta,
-            ch_cnvkit_reference
+            ch_fasta
         )
         ch_versions = ch_versions.mix(CNVKIT_BATCH.out.versions)
 
@@ -354,6 +354,10 @@ workflow CIRCDNA {
         ch_aa_graphs = AMPLICONARCHITECT_AMPLICONARCHITECT.out.graph
         AMPLICONARCHITECT_AMPLICONCLASSIFIER (
             ch_aa_cycles.join(ch_aa_graphs)
+        )
+        aa_summary_ch = AMPLICONARCHITECT_AMPLICONARCHITECT.out.summary
+        SUMMARISE_AA (
+            aa_summary_ch.join(AMPLICONARCHITECT_AMPLICONCLASSIFIER.out.class_file)
         )
         ch_versions = ch_versions.mix(AMPLICONARCHITECT_AMPLICONCLASSIFIER.out.versions)
     }
@@ -388,8 +392,6 @@ workflow CIRCDNA {
         CIRCLEFINDER (
             ch_b2b_split.join(ch_b2b_sorted)
         )
-        ch_versions = ch_versions.mix(CIRCLEFINDER.out.versions)
-
     }
 
     //
@@ -479,7 +481,6 @@ workflow CIRCDNA {
         GETCIRCULARREADS (
             SEQTK_SEQ.out.fastq
         )
-        ch_versions = ch_versions.mix(GETCIRCULARREADS.out.versions)
 
         MINIMAP2_ALIGN (
             GETCIRCULARREADS.out.fastq,

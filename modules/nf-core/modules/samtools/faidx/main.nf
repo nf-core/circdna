@@ -2,16 +2,16 @@ process SAMTOOLS_FAIDX {
     tag "$fasta"
     label 'process_low'
 
-    conda (params.enable_conda ? "bioconda::samtools=1.14" : null)
+    conda (params.enable_conda ? "bioconda::samtools=1.15" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/samtools:1.14--hb421002_0' :
-        'quay.io/biocontainers/samtools:1.14--hb421002_0' }"
+        'https://depot.galaxyproject.org/singularity/samtools:1.15--h1170115_1' :
+        'quay.io/biocontainers/samtools:1.15--h1170115_1' }"
 
     input:
-    path(fasta)
+    tuple val(meta), path(fasta)
 
     output:
-    path ("*.fai"), emit: fai
+    tuple val(meta), path ("*.fai"), emit: fai
     path "versions.yml"            , emit: versions
 
     when:
