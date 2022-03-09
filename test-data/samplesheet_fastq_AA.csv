@@ -1,2 +1,2 @@
 sample,fastq_1,fastq_2
-SRR8236746,/mnt/data_disk/R01/dschreye/AA_test/SRR8236746_02perc_R1.fastq.gz,/mnt/data_disk/R01/dschreye/AA_data/SRR8236746_02perc_R2.fastq.gz
+SRR8236746_05perc,/mnt/data_disk/R01/dschreye/AA_test/SRR8236746_05perc_R1.fastq.gz,/mnt/data_disk/R01/dschreye/AA_test/SRR8236746_05perc_R2.fastq.gz
