@@ -9,4 +9,3 @@ lint:
   files_unchanged:
   - .gitignore
   - .github/workflows/linting.yml
-
