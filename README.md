@@ -81,13 +81,11 @@ nextflow run nf-core/circdna -profile conda,YOURPROFILE
 The nf-core/circdna pipeline comes with documentation about the pipeline [usage](https://nf-co.re/circdna/usage), [parameters](https://nf-co.re/circdna/parameters) and [output](https://nf-co.re/circdna/output).
 
 ## Credits
+Main authors:
+- [Daniel Schreyer](https://github.com/DSchreyer), University of Glasgow, Institute of Cancer Sciences, Peter Bailey Lab
 
-nf-core/circdna was originally written by Daniel Schreyer.
-
-We thank the following people for their extensive assistance in the development of this pipeline:
-
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
-
+### Funding
+Daniel Schreyer received funding from the European Union’s Horizon 2020 Research and Innovation Program under the Marie Skłodowska-Curie grant agreement No 861196 designated for PRECODE.
 ## Contributions and Support
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
