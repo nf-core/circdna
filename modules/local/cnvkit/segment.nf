@@ -30,4 +30,17 @@ process CNVKIT_SEGMENT {
         cnvkit: \$(cnvkit.py version | sed -e "s/cnvkit v//g")
     END_VERSIONS
     """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+
+    """
+    touch ${prefix}.cnvkit.segment.cns
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        cnvkit: \$(cnvkit.py version | sed -e "s/cnvkit v//g")
+    END_VERSIONS
+    """
 }

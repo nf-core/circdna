@@ -36,4 +36,23 @@ process AMPLICONARCHITECT_PREPAREAA {
         python: \$(echo \$(python --version 2>&1) | sed 's/^.*Python /' )
     END_VERSIONS
     """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+
+    """
+    export AA_DATA_REPO=${params.aa_data_repo}
+    export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
+    export AA_SRC=${projectDir}/bin
+
+    touch "${prefix}.CNV_SEEDS.bed"
+    touch "${prefix}.CNV_GAIN.bed"
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        python: \$(echo \$(python --version 2>&1) | sed 's/^.*Python /' )
+    END_VERSIONS
+    """
+
 }

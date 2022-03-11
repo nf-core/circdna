@@ -22,16 +22,36 @@ process AMPLICONARCHITECT_AMPLICONCLASSIFIER {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    make_AmpliconClassifier_input.sh ./ ${meta.id}.AmpliconClassifier
     REF=${params.reference_build}
     export AA_DATA_REPO=${params.aa_data_repo}
     export AA_SRC=${projectDir}/bin
+
+    # Make AmpliconClassifier Input from graph and cycles files
+    make_AmpliconClassifier_input.sh ./ ${meta.id}.AmpliconClassifier
 
     amplicon_classifier.py \\
         --ref \$REF \\
         $args \\
         --input ${meta.id}.AmpliconClassifier.input \\
         > ${meta.id}.classifier_stdout.log
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        AmpliconClassifier: \$(echo \$(amplicon_classifier.py --version | sed 's/amplicon_classifier //g' | sed 's/ .*//g'))
+    END_VERSIONS
+    """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    export AA_DATA_REPO=${params.aa_data_repo}
+    export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
+    export AA_SRC=${projectDir}/bin
+    REF=${params.reference_build}
+
+    touch "${prefix}.amplicon_classification_profiles.tsv"
+    touch "${prefix}.classifier_stdout.log"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
