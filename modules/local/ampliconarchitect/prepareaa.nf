@@ -33,7 +33,7 @@ process AMPLICONARCHITECT_PREPAREAA {
         --cnv_bed $cns
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        python: \$(echo \$(python --version 2>&1) | sed 's/^.*Python /' )
+        python: \$(python --version | sed 's/Python //g')
     END_VERSIONS
     """
 
@@ -51,7 +51,7 @@ process AMPLICONARCHITECT_PREPAREAA {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        python: \$(echo \$(python --version 2>&1) | sed 's/^.*Python /' )
+        python: \$(python --version | sed 's/Python //g')
     END_VERSIONS
     """
 

@@ -8,10 +8,10 @@ process SAMTOOLS_FAIDX {
         'quay.io/biocontainers/samtools:1.15--h1170115_1' }"
 
     input:
-    tuple val(meta), path(fasta)
+    path(fasta)
 
     output:
-    tuple val(meta), path ("*.fai"), emit: fai
+    path "*.fai", emit: fai
     path "versions.yml"            , emit: versions
 
     when:

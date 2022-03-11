@@ -4,6 +4,7 @@ update:
     picard/markduplicates: false
     unicycler: false
     minimap2/align: false
+    samtools/faidx: false
 
 lint:
   files_unchanged:

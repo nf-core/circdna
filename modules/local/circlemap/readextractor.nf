@@ -23,7 +23,7 @@ process CIRCLEMAP_READEXTRACTOR {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        Circle-Map: \$(echo \$(Circle-Map --help 2<&1) | grep -o "version=[0-9].[0-9].[0-9]")
+        Circle-Map: \$(echo \$(Circle-Map --help 2<&1 | grep -o "version=[0-9].[0-9].[0-9]" | sed 's/version=//g'))
     END_VERSIONS
     """
 }
