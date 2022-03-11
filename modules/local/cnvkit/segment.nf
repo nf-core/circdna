@@ -12,7 +12,6 @@ process CNVKIT_SEGMENT {
 
     output:
     tuple val(meta), path("*.cns"), emit: cns
-    tuple val(meta), path("*.cnr"), emit: cnr
     path "versions.yml"           , emit: versions
 
     script:
