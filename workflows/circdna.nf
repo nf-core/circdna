@@ -134,7 +134,8 @@ include { CIRCEXPLORER2_PARSE       }     from '../modules/local/circexplorer2/p
 // AmpliconArchitect
 include { CNVKIT_BATCH                              }     from '../modules/nf-core/modules/cnvkit/batch/main.nf'
 include { CNVKIT_SEGMENT                            }     from '../modules/local/cnvkit/segment.nf'
-include { AMPLICONARCHITECT_PREPAREAA               }     from '../modules/local/ampliconarchitect/prepareaa.nf'
+include { COLLECT_SEEDS                             }     from '../modules/local/collect_seeds.nf'
+include { AMPLIFIED_INTERVALS                       }     from '../modules/local/amplified_intervals.nf'
 include { AMPLICONARCHITECT_AMPLICONARCHITECT       }     from '../modules/local/ampliconarchitect/ampliconarchitect.nf'
 include { AMPLICONARCHITECT_AMPLICONCLASSIFIER      }     from '../modules/local/ampliconarchitect/ampliconclassifier.nf'
 include { SUMMARISE_AA                              }     from '../modules/local/summarise_aa.nf'
@@ -337,16 +338,20 @@ workflow CIRCDNA {
         )
         ch_versions = ch_versions.mix(CNVKIT_SEGMENT.out.versions)
 
-        AMPLICONARCHITECT_PREPAREAA (
-            ch_bam_sorted.join(ch_bam_sorted_bai).
-            join(CNVKIT_SEGMENT.out.cns)
+        COLLECT_SEEDS (
+            CNVKIT_SEGMENT.out.cns
         )
-        ch_versions = ch_versions.mix(AMPLICONARCHITECT_PREPAREAA.out.versions)
-        ch_prepareaa_bed = AMPLICONARCHITECT_PREPAREAA.out.bed
+        ch_versions = ch_versions.mix(COLLECT_SEEDS.out.versions)
+
+        ch_aa_seeds = COLLECT_SEEDS.out.bed
+        AMPLIFIED_INTERVALS (
+            ch_aa_seeds.join(ch_bam_sorted).join(ch_bam_sorted_bai)
+        )
+        ch_versions = ch_versions.mix(AMPLIFIED_INTERVALS.out.versions)
 
         AMPLICONARCHITECT_AMPLICONARCHITECT (
             ch_bam_sorted.join(ch_bam_sorted_bai).
-                join(ch_prepareaa_bed)
+                join(AMPLIFIED_INTERVALS.out.bed)
         )
         ch_versions = ch_versions.mix(AMPLICONARCHITECT_AMPLICONARCHITECT.out.versions)
 
@@ -356,10 +361,11 @@ workflow CIRCDNA {
             ch_aa_cycles.join(ch_aa_graphs)
         )
         aa_summary_ch = AMPLICONARCHITECT_AMPLICONARCHITECT.out.summary
+        ch_versions = ch_versions.mix(AMPLICONARCHITECT_AMPLICONCLASSIFIER.out.versions)
+
         SUMMARISE_AA (
             aa_summary_ch.join(AMPLICONARCHITECT_AMPLICONCLASSIFIER.out.class_file)
         )
-        ch_versions = ch_versions.mix(AMPLICONARCHITECT_AMPLICONCLASSIFIER.out.versions)
     }
 
 
