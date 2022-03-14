@@ -220,6 +220,12 @@
                     "fa_icon": "fas fa-folder",
                     "description": "Path to the downloaded AA data repository. See AmpliconArchitect: https://github.com/virajbdeshpande/AmpliconArchitect"
                 },
+                "aa_cngain": {
+                    "type": "string",
+                    "mimetype": "text/plain",
+                    "fa_icon": "fa-chart-gantt",
+                    "description": "Copy Number Threshold for seeds to be considered by AmpliconArchitect."
+                },
                 "mosek_license_dir": {
                     "type": "string",
                     "format": "directory-path",
