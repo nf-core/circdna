@@ -14,6 +14,8 @@
 [![Follow on Twitter](http://img.shields.io/badge/twitter-%40nf__core-1DA1F2?labelColor=000000&logo=twitter)](https://twitter.com/nf_core)
 [![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?labelColor=000000&logo=youtube)](https://www.youtube.com/c/nf-core)
 
+## IMPORTANT
+AmpliconArchitect is currently only runnable using **conda**. Please specify -profile conda, when using AmpliconArchitect.
 ## Introduction
 
 **nf-core/circdna** is a bioinformatics best-practice analysis pipeline for the identification of extrachromosomal circular DNAs (ecDNAs) with short read sequencing data.
@@ -24,8 +26,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources. The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/circdna/results).
 
 ## Pipeline summary
-
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
 
 1. Merge re-sequenced FastQ files ([`cat`](http://www.linfo.org/cat.html))
 2. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
@@ -66,7 +66,7 @@ On release, automated continuous integration tests run the pipeline on a full-si
 4. Start running your own analysis!
 
 ```console
-    nextflow run nf-core/circdna -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --fasta genome.fa
+    nextflow run nf-core/circdna -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --genome "GRCh38"
 ```
 
 **IMPORTANT** The pipeline is currently only usable with conda. Implementation of docker, singularity, podman, shifter, charliecloud is currently under development.
@@ -82,11 +82,13 @@ The nf-core/circdna pipeline comes with documentation about the pipeline [usage]
 
 ## Credits
 
-nf-core/circdna was originally written by Daniel Schreyer.
+Main authors:
 
-We thank the following people for their extensive assistance in the development of this pipeline:
+* [Daniel Schreyer](https://github.com/DSchreyer), University of Glasgow, Institute of Cancer Sciences, Peter Bailey Lab
 
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
+### Funding
+
+Daniel Schreyer received funding from the European Union’s Horizon 2020 Research and Innovation Program under the Marie Skłodowska-Curie grant agreement No 861196 designated for PRECODE.
 
 ## Contributions and Support
 

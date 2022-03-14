@@ -25,8 +25,7 @@ process BEDTOOLS_SORTEDBAM2BED {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bedtools: \$(echo \$(bedtools --version)
+        bedtools: \$(bedtools --version | sed -e "s/bedtools v//g")
     END_VERSIONS
-
     """
 }

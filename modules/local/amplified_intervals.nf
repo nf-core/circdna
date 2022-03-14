@@ -1,37 +1,37 @@
-process AMPLICONARCHITECT_PREPAREAA {
+process AMPLIFIED_INTERVALS {
     tag "$meta.id"
     label 'process_medium'
 
-    conda (params.enable_conda ? "conda-forge::python=2.7 anaconda::numpy=1.15.4 conda-forge::matplotlib=2.2.5 conda-forge:intervaltree=3.0.2 bioconda::pysam=0.17.0 mosek::mosek=8.0.60 anaconda::scipy=1.2.0" : null)
+    conda (params.enable_conda ? "conda-forge::python=2.7 conda-forge::matplotlib=2.2.5 anaconda::numpy=1.15.4 bioconda::pysam=0.17.0 mosek::mosek=8.0.60 anaconda::scipy=1.2.0" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/YOUR-TOOL-HERE':
         'quay.io/biocontainers/YOUR-TOOL-HERE' }"
 
     input:
-    tuple val(meta), path(bam), path(bai), path(cns)
+    tuple val(meta), path(bed), path(bam), path(bai)
 
     output:
-    tuple val(meta), path("*CNV_SEEDS.bed") , emit: bed
-    tuple val(meta), path("*CNV_GAIN.bed")  , emit: bed_all
-    path "versions.yml"                     , emit: versions
+    tuple val(meta), path("*CNV_SEEDS.bed"), emit: bed
+    path "versions.yml"           , emit: versions
 
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def cngain = params.aa_cngain
     def ref = params.reference_build
-
     """
     export AA_DATA_REPO=${params.aa_data_repo}
     export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
-    export AA_SRC=${projectDir}/bin
+    REF=${params.reference_build}
 
-    PrepareAA.py \\
-        -s ${prefix} \\
-        -t ${task.cpus} \\
+    amplified_intervals.py \\
         $args \\
-        --sorted_bam $bam \\
-        --ref $ref \\
-        --cnv_bed $cns
+        --bed $bed \\
+        --out ${prefix}_AA_CNV_SEEDS \\
+        --bam $bam \\
+        --gain $cngain \\
+        --ref $ref
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(python --version | sed 's/Python //g')
@@ -41,19 +41,18 @@ process AMPLICONARCHITECT_PREPAREAA {
     stub:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-
+    def cngain = params.aa_cngain
+    def ref = params.reference_build
     """
     export AA_DATA_REPO=${params.aa_data_repo}
     export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
-    export AA_SRC=${projectDir}/bin
+    REF=${params.reference_build}
 
-    touch "${prefix}.CNV_SEEDS.bed"
-    touch "${prefix}.CNV_GAIN.bed"
+    touch ${prefix}_AA_CNV_SEEDS.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        python: \$(python --version | sed 's/Python //g')
+        python: echo \$(python --version 2<&1 | sed 's/Python //g')
     END_VERSIONS
     """
-
 }

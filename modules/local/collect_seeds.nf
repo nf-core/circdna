@@ -1,28 +1,28 @@
-process SUMMARISE_AA {
+process COLLECT_SEEDS {
     tag "$meta.id"
     label 'process_low'
 
-    conda (params.enable_conda ? "pandas=1.1.5" : null)
+    conda (params.enable_conda ? "conda-forge::python=3.9.5" : null)
         container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-            'https://depot.galaxyproject.org/singularity/pandas:1.1.5' :
-            'quay.io/biocontainers/pandas:1.1.5' }"
+            'https://depot.galaxyproject.org/singularity/python:3.9--1' :
+            'quay.io/biocontainers/python:3.9--1' }"
 
     input:
-    tuple val(meta), path(summary_file), path(class_file)
+    tuple val(meta), path(cns)
 
     output:
-    tuple val(meta), path("*aa_results_summary.tsv"), emit: txt
-    path  "versions.yml"          , emit: versions
+    tuple val(meta), path("*.bed"), emit: bed
+    path "versions.yml"           , emit: versions
 
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def cngain = params.aa_cngain
     """
-    summarise_aa.py \\
-        --summary $summary_file \\
-        --class_file $class_file \\
-        --id ${meta.id} \\
-        --output ${prefix}.aa_results_summary.tsv
+    collect_seeds.py \\
+        --sample $prefix \\
+        --cns $cns \\
+        --cngain $cngain
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
@@ -33,8 +33,13 @@ process SUMMARISE_AA {
     stub:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def cngain = params.aa_cngain
     """
-    touch "${prefix}.aa_results_summary.tsv"
+    export AA_DATA_REPO=${params.aa_data_repo}
+    export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
+    REF=${params.reference_build}
+
+    touch ${prefix}.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

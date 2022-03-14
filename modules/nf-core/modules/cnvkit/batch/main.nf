@@ -23,7 +23,6 @@ process CNVKIT_BATCH {
 
     script:
     def args = task.ext.args ?: ''
-//    def normal_args = normal ? "--normal $normal" : ""
     def reference = params.aa_data_repo + "/" + params.reference_build + "/" + params.reference_build + "_cnvkit_filtered_ref.cnn"
     def fasta_args = reference ? "" : "--fasta $fasta"
     def reference_args = reference ? "--reference $reference" : ""
@@ -36,6 +35,25 @@ process CNVKIT_BATCH {
         $reference_args \\
         --processes $task.cpus \\
         $args
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        cnvkit: \$(cnvkit.py version | sed -e "s/cnvkit v//g")
+    END_VERSIONS
+    """
+
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    def reference = params.aa_data_repo + "/" + params.reference_build + "/" + params.reference_build + "_cnvkit_filtered_ref.cnn"
+    def fasta_args = reference ? "" : "--fasta $fasta"
+    def reference_args = reference ? "--reference $reference" : ""
+
+    """
+    touch ${prefix}.bed
+    touch ${prefix}.cnn
+    touch ${prefix}.cnr
+    touch ${prefix}.cns
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -38,4 +38,26 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
         AmpliconArchitect: \$(echo \$(AmpliconArchitect.py --version 2>&1) | sed 's/AmpliconArchitect version //g')
     END_VERSIONS
     """
+    stub:
+    def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    export AA_DATA_REPO=${params.aa_data_repo}
+    export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
+    export AA_SRC=${projectDir}/bin
+    REF=${params.reference_build}
+
+    touch "${prefix}.logs.txt"
+    touch "${prefix}.cycles.txt"
+    touch "${prefix}.graph.txt"
+    touch "${prefix}.out"
+    touch "${prefix}_cnseg.txt"
+    touch "${prefix}.pdf"
+    touch "${prefix}_summary.txt"
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        AmpliconArchitect: \$(echo \$(AmpliconArchitect.py --version 2>&1) | sed 's/AmpliconArchitect version //g')
+    END_VERSIONS
+    """
 }

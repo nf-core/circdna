@@ -153,7 +153,7 @@ def check_samplesheet(file_in, file_out, input_format):
                 if not sample:
                     print_error("Sample entry has not been specified!", "Line", line)
 
-                ## Check FastQ file extension
+                ## Check bam file extension
                 if bam:
                     if bam.find(" ") != -1:
                         print_error("BAM file contains spaces!", "Line", line)
@@ -198,7 +198,7 @@ def check_samplesheet(file_in, file_out, input_format):
                     for sample in sorted(sample_mapping_dict.keys()):
 
                         for idx, val in enumerate(sample_mapping_dict[sample]):
-                            fout.write(",".join(["{}_T{}".format(sample, idx + 1)] + val) + "\n")
+                            fout.write(",".join(["{}".format(sample)] + val) + "\n")
 
         else:
             print_error("No entries to process!", "Samplesheet: {}".format(file_in))
