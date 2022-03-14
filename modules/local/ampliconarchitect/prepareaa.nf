@@ -18,6 +18,7 @@ process AMPLICONARCHITECT_PREPAREAA {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def ref = params.reference_build
 
     """
     export AA_DATA_REPO=${params.aa_data_repo}
@@ -29,7 +30,7 @@ process AMPLICONARCHITECT_PREPAREAA {
         -t ${task.cpus} \\
         $args \\
         --sorted_bam $bam \\
-        --ref $params.reference_build \\
+        --ref $ref \\
         --cnv_bed $cns
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
