@@ -34,7 +34,7 @@ process SUMMARISE_AA {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch "{prefix}.aa_results_summary.tsv"
+    touch "${prefix}.aa_results_summary.tsv"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
