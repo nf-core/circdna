@@ -1,6 +1,6 @@
 process AMPLIFIED_INTERVALS {
     tag "$meta.id"
-    label 'process_medium'
+    label 'process_low'
 
     conda (params.enable_conda ? "conda-forge::python=2.7 conda-forge::matplotlib=2.2.5 anaconda::numpy=1.15.4 bioconda::pysam=0.17.0 mosek::mosek=8.0.60 anaconda::scipy=1.2.0" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -34,7 +34,7 @@ process AMPLIFIED_INTERVALS {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        python: \$(python --version | sed 's/Python //g')
+        python: echo \$(python --version 2<&1 | sed 's/Python //g')
     END_VERSIONS
     """
 
