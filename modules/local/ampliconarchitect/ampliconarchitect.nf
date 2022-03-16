@@ -1,7 +1,6 @@
-// Import generic module functions
 process AMPLICONARCHITECT_AMPLICONARCHITECT {
     tag "$meta.id"
-    label 'process_high'
+    label 'process_low'
 
     conda (params.enable_conda ? "conda-forge::python=2.7 bioconda::pysam=0.17.0 anaconda::flask=1.1.2 anaconda::cython=0.29.14 anaconda::numpy=1.16.6 anaconda::scipy=1.2.1 conda-forge::matplotlib=2.2.5 mosek::mosek=8.0.60" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -13,7 +12,6 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
 
     output:
     path "versions.yml"                     , emit: versions
-    tuple val(meta), path("*.logs.txt")     , emit: log, optional: true
     tuple val(meta), path("*cycles.txt")    , optional: true, emit: cycles
     tuple val(meta), path("*graph.txt")     , optional: true, emit: graph
     tuple val(meta), path("*.out")          , optional: true, emit: out
@@ -38,6 +36,7 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
         AmpliconArchitect: \$(echo \$(AmpliconArchitect.py --version 2>&1) | sed 's/AmpliconArchitect version //g')
     END_VERSIONS
     """
+
     stub:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"

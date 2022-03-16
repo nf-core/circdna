@@ -9,3 +9,4 @@ update:
 lint:
   files_unchanged:
   - .gitignore
+repository_type: pipeline
