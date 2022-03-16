@@ -95,7 +95,7 @@ include { BWA_INDEX     }   from '../modules/nf-core/modules/bwa/index/main'
 
 // Alignment
 include { BWA_MEM                                   }   from '../modules/nf-core/modules/bwa/mem/main'
-include { SAMTOOLS_SORT                             }   from '../modules/nf-core/modules/samtools/sort/main'
+include { SAMTOOLS_SORT as SAMTOOLS_SORT_BAM        }   from '../modules/nf-core/modules/samtools/sort/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_BAM      }   from '../modules/nf-core/modules/samtools/index/main'
 
 // PICARD
