@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 update:
   nf-core/modules:
     cnvkit/batch: false
@@ -10,6 +9,4 @@ update:
 lint:
   files_unchanged:
   - .gitignore
-=======
 repository_type: pipeline
->>>>>>> TEMPLATE
