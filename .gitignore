@@ -1,14 +1,8 @@
 .nextflow*
 work/
-<<<<<<< HEAD
-results/
-.DS_Store
-__pycache__
-=======
 data/
 results/
 .DS_Store
 testing/
 testing*
->>>>>>> TEMPLATE
 *.pyc
