@@ -138,6 +138,7 @@ include { COLLECT_SEEDS                             }     from '../modules/local
 include { AMPLIFIED_INTERVALS                       }     from '../modules/local/amplified_intervals.nf'
 include { AMPLICONARCHITECT_AMPLICONARCHITECT       }     from '../modules/local/ampliconarchitect/ampliconarchitect.nf'
 include { AMPLICONARCHITECT_AMPLICONCLASSIFIER      }     from '../modules/local/ampliconarchitect/ampliconclassifier.nf'
+include { AMPLICONARCHITECT_AMPLICONSIMILARITY      }     from '../modules/local/ampliconarchitect/ampliconsimilarity.nf'
 include { SUMMARISE_AA                              }     from '../modules/local/summarise_aa.nf'
 
 // Unicycler
@@ -360,11 +361,14 @@ workflow CIRCDNA {
         AMPLICONARCHITECT_AMPLICONCLASSIFIER (
             ch_aa_cycles.join(ch_aa_graphs)
         )
+        AMPLICONARCHITECT_AMPLICONSIMILARITY (
+            ch_aa_cycles.join(ch_aa_graphs)
+        )
         aa_summary_ch = AMPLICONARCHITECT_AMPLICONARCHITECT.out.summary
         ch_versions = ch_versions.mix(AMPLICONARCHITECT_AMPLICONCLASSIFIER.out.versions)
 
         SUMMARISE_AA (
-            aa_summary_ch.join(AMPLICONARCHITECT_AMPLICONCLASSIFIER.out.class_file)
+            aa_summary_ch.join(AMPLICONARCHITECT_AMPLICONCLASSIFIER.out.class_tsv)
         )
     }
 

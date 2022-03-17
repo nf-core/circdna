@@ -12,7 +12,7 @@ process SAMBLASTER {
 
     output:
     tuple val(meta), path("*.split.bam"), emit: split_bam
-    path  "versions.yml"          , emit: versions
+    path  "versions.yml"                , emit: versions
 
     script:
     def args = task.ext.args ?: ''
