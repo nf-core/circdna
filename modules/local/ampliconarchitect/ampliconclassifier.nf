@@ -11,11 +11,11 @@ process AMPLICONARCHITECT_AMPLICONCLASSIFIER {
     tuple val(meta), path(cycles), path(graph)
 
     output:
-    tuple val(meta), path("*_profiles.tsv")     , emit: class_tsv
-    tuple val(meta), path("*gene_list.tsv")     , emit: gene_list
-    tuple val(meta), path("*ecDNA_counts.tsv")  , emit: ecDNA_counts
-    path "*.classifier_stdout.log"              , emit: log
-    path "versions.yml"                         , emit: versions
+    tuple val(meta), path("*_profiles.tsv")     , emit: class_tsv   , optional: true
+    tuple val(meta), path("*gene_list.tsv")     , emit: gene_list   , optional: true
+    tuple val(meta), path("*ecDNA_counts.tsv")  , emit: ecDNA_counts, optional: true
+    path "*.classifier_stdout.log"              , emit: log         , optional: true
+    path "versions.yml"                         , emit: versions    , optional: true
 
     script:
     def args = task.ext.args ?: ''
