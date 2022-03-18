@@ -105,7 +105,7 @@ include { SAMTOOLS_SORT as SAMTOOLS_SORT_FILTERED   }   from '../modules/nf-core
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FILTERED }   from '../modules/nf-core/modules/samtools/index/main'
 
 // SAMTOOLS SORT & INDEX
-include { SAMTOOLS_FAIDX                            }   from '../modules/nf-core/modules/samtools/faidx/main'
+include { SAMTOOLS_FAIDX                            }   from '../modules/local/samtools/faidx/main'
 
 // SAMTOOLS STATISTICS
 include { SAMTOOLS_STATS                            }   from '../modules/nf-core/modules/samtools/stats/main'
@@ -132,19 +132,20 @@ include { CIRCLEFINDER              }     from '../modules/local/circlefinder.nf
 include { CIRCEXPLORER2_PARSE       }     from '../modules/local/circexplorer2/parse.nf'
 
 // AmpliconArchitect
-include { CNVKIT_BATCH                              }     from '../modules/nf-core/modules/cnvkit/batch/main.nf'
+include { CNVKIT_BATCH                              }     from '../modules/local/cnvkit/batch/main.nf'
 include { CNVKIT_SEGMENT                            }     from '../modules/local/cnvkit/segment.nf'
 include { COLLECT_SEEDS                             }     from '../modules/local/collect_seeds.nf'
 include { AMPLIFIED_INTERVALS                       }     from '../modules/local/amplified_intervals.nf'
 include { AMPLICONARCHITECT_AMPLICONARCHITECT       }     from '../modules/local/ampliconarchitect/ampliconarchitect.nf'
 include { AMPLICONARCHITECT_AMPLICONCLASSIFIER      }     from '../modules/local/ampliconarchitect/ampliconclassifier.nf'
+include { AMPLICONARCHITECT_AMPLICONSIMILARITY      }     from '../modules/local/ampliconarchitect/ampliconsimilarity.nf'
 include { SUMMARISE_AA                              }     from '../modules/local/summarise_aa.nf'
 
 // Unicycler
-include { UNICYCLER           }     from '../modules/nf-core/modules/unicycler/main.nf'
+include { UNICYCLER           }     from '../modules/local/unicycler/main.nf'
 include { SEQTK_SEQ           }     from '../modules/local/seqtk/seq.nf'
 include { GETCIRCULARREADS    }     from '../modules/local/getcircularreads.nf'
-include { MINIMAP2_ALIGN      }     from '../modules/nf-core/modules/minimap2/align/main.nf'
+include { MINIMAP2_ALIGN      }     from '../modules/local/minimap2/align/main.nf'
 
 
 // MULTIQC
@@ -360,11 +361,14 @@ workflow CIRCDNA {
         AMPLICONARCHITECT_AMPLICONCLASSIFIER (
             ch_aa_cycles.join(ch_aa_graphs)
         )
+        AMPLICONARCHITECT_AMPLICONSIMILARITY (
+            ch_aa_cycles.join(ch_aa_graphs)
+        )
         aa_summary_ch = AMPLICONARCHITECT_AMPLICONARCHITECT.out.summary
         ch_versions = ch_versions.mix(AMPLICONARCHITECT_AMPLICONCLASSIFIER.out.versions)
 
         SUMMARISE_AA (
-            aa_summary_ch.join(AMPLICONARCHITECT_AMPLICONCLASSIFIER.out.class_file)
+            aa_summary_ch.join(AMPLICONARCHITECT_AMPLICONCLASSIFIER.out.class_tsv)
         )
     }
 

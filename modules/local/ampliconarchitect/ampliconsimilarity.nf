@@ -1,37 +1,38 @@
-process AMPLICONARCHITECT_PREPAREAA {
+process AMPLICONARCHITECT_AMPLICONSIMILARITY {
     tag "$meta.id"
     label 'process_low'
 
-    conda (params.enable_conda ? "conda-forge::python=2.7 anaconda::numpy=1.15.4 conda-forge::matplotlib=2.2.5 conda-forge:intervaltree=3.0.2 bioconda::pysam=0.17.0 mosek::mosek=8.0.60 anaconda::scipy=1.2.0" : null)
+    conda (params.enable_conda ? "conda-forge::intervaltree=3.0.2" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/YOUR-TOOL-HERE':
         'quay.io/biocontainers/YOUR-TOOL-HERE' }"
 
     input:
-    tuple val(meta), path(bam), path(bai), path(cns)
+    tuple val(meta), path(cycles), path(graph)
 
     output:
-    tuple val(meta), path("*CNV_SEEDS.bed") , emit: bed
-    tuple val(meta), path("*CNV_GAIN.bed")  , emit: bed_all
+    tuple val(meta), path("*_scores.tsv")   , emit: scores
+    path("*")
     path "versions.yml"                     , emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def ref = params.reference_build
-
     """
+    REF=${params.reference_build}
     export AA_DATA_REPO=${params.aa_data_repo}
-    export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
     export AA_SRC=${projectDir}/bin
 
-    PrepareAA.py \\
-        -s ${prefix} \\
-        -t ${task.cpus} \\
+    make_AmpliconClassifier_input.sh ./ ${meta.id}.AmpliconSimilarity
+
+    amplicon_similarity.py \\
+        --ref \$REF \\
         $args \\
-        --sorted_bam $bam \\
-        --ref $ref \\
-        --cnv_bed $cns
+        --input ${meta.id}.AmpliconSimilarity.input \\
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(python --version | sed 's/Python //g')
@@ -41,19 +42,16 @@ process AMPLICONARCHITECT_PREPAREAA {
     stub:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-
     """
+    REF=${params.reference_build}
     export AA_DATA_REPO=${params.aa_data_repo}
-    export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
     export AA_SRC=${projectDir}/bin
 
-    touch "${prefix}.CNV_SEEDS.bed"
-    touch "${prefix}.CNV_GAIN.bed"
+    touch "${prefix}.similarity_scores.tsv"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(python --version | sed 's/Python //g')
     END_VERSIONS
     """
-
 }

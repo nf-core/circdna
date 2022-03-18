@@ -15,7 +15,9 @@
 [![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?labelColor=000000&logo=youtube)](https://www.youtube.com/c/nf-core)
 
 ## IMPORTANT
+
 AmpliconArchitect is currently only runnable using **conda**. Please specify -profile conda, when using AmpliconArchitect.
+
 ## Introduction
 
 **nf-core/circdna** is a bioinformatics best-practice analysis pipeline for the identification of extrachromosomal circular DNAs (ecDNAs) with short read sequencing data.
@@ -68,9 +70,9 @@ On release, automated continuous integration tests run the pipeline on a full-si
 **IMPORTANT** The pipeline is currently only usable with conda. Implementation of docker, singularity, podman, shifter, charliecloud is currently under development.
 Please specify:
 
-    ```console
-    nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
-    ```
+```console
+nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
+```
 
 ## Documentation
 
