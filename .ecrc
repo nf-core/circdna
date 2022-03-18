@@ -1,0 +1,3 @@
+{
+	"Exclude": ["bin/sorted_background_scores.txt", "README.md"],
+}
