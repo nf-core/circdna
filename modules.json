@@ -12,26 +12,17 @@
             "cat/fastq": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
-            "cnvkit/batch": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
-            },
             "custom/dumpsoftwareversions": {
-                "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "fastqc": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
-            "minimap2/align": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
-            },
             "multiqc": {
-                "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "picard/markduplicates": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
-            },
-            "samtools/faidx": {
-                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
             },
             "samtools/flagstat": {
                 "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
@@ -52,12 +43,9 @@
                 "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
             },
             "seqtk/seq": {
-                "git_sha": "1016c9bd1a7b23e31b8215b8c33095e733080735"
+                "git_sha": "f0800157544a82ae222931764483331a81812012"
             },
             "trimgalore": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
-            },
-            "unicycler": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             }
         }

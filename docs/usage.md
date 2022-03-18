@@ -52,7 +52,8 @@ sample3, sample3.bam
 | `bam`      | Full path to BAM file for Illumina short reads. File has to be aligned to a reference genome and in bam format with the extension ".bam" |
 
 An [example samplesheet](../assets/samplesheet_bam.csv) has been provided with the pipeline.
-# Running the pipeline
+
+## Running the pipeline
 
 The typical command for running the pipeline is as follows:
 

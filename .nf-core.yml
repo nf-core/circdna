@@ -1,9 +1,1 @@
-update:
-  nf-core/modules:
-    cnvkit/batch: false
-    picard/markduplicates: false
-    unicycler: false
-    minimap2/align: false
-    samtools/faidx: false
-
 repository_type: pipeline
