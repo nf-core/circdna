@@ -187,6 +187,9 @@ workflow CIRCDNA {
         .set { ch_fastq }
         ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
+        //
+        // MODULE: Concatenate FASTQs from the same samples
+        //
         CAT_FASTQ (
             ch_fastq.multiple
         )
