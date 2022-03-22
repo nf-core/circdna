@@ -47,11 +47,6 @@ jobs:
         with:
           channels: conda-forge,bioconda
           channel-priority: flexible
-        run: |
-          conda info
-          conda list
-          conda config --show-sources
-          conda config --show
 
       - name: Run pipeline with test data
         # TODO nf-core: You can customise CI pipeline run tests as required
