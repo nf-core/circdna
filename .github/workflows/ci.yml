@@ -31,6 +31,16 @@ jobs:
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v2
+      - name: Install and configure conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          channels: conda-forge,bioconda
+          channel-priority: flexible
+      - run: |
+          conda info
+          conda list
+          conda config --show-sources
+          conda config --show
 
       - name: Install Nextflow
         env:
