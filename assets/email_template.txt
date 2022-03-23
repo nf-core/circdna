@@ -4,16 +4,16 @@
   |\\ | |__  __ /  ` /  \\ |__) |__         }  {
   | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                         `._,._,'
-  nf-core/circleseq v${version}
+  nf-core/circdna v${version}
 ----------------------------------------------------
 
 Run Name: $runName
 
 <% if (success){
-    out << "## nf-core/circleseq execution completed successfully! ##"
+    out << "## nf-core/circdna execution completed successfully! ##"
 } else {
     out << """####################################################
-## nf-core/circleseq execution completed unsuccessfully! ##
+## nf-core/circdna execution completed unsuccessfully! ##
 ####################################################
 The exit status of the task that caused the workflow execution to fail was: $exitStatus.
 The full error message was:
@@ -36,5 +36,5 @@ Pipeline Configuration:
 <% out << summary.collect{ k,v -> " - $k: $v" }.join("\n") %>
 
 --
-nf-core/circleseq
-https://github.com/nf-core/circleseq
+nf-core/circdna
+https://github.com/nf-core/circdna

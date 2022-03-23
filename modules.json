@@ -1,28 +1,16 @@
 {
-    "name": "nf-core/circleseq",
-    "homePage": "https://github.com/nf-core/circleseq",
+    "name": "nf-core/circdna",
+    "homePage": "https://github.com/nf-core/circdna",
     "repos": {
         "nf-core/modules": {
-            "bwa/index": {
-                "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
-            },
-            "bwa/mem": {
-                "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
-            },
-            "cutadapt": {
-                "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
+            "custom/dumpsoftwareversions": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "fastqc": {
-                "git_sha": "e937c7950af70930d1f34bb961403d9d2aa81c7d"
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "multiqc": {
-                "git_sha": "e937c7950af70930d1f34bb961403d9d2aa81c7d"
-            },
-            "samtools/index": {
-                "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
-            },
-            "samtools/sort": {
-                "git_sha": "3aacd46da2b221ed47aaa05c413a828538d2c2ae"
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             }
         }
     }
