@@ -53,6 +53,7 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
     touch "${prefix}.out"
     touch "${prefix}_cnseg.txt"
     touch "${prefix}.pdf"
+    touch "${prefix}.png
     touch "${prefix}_summary.txt"
 
     cat <<-END_VERSIONS > versions.yml
