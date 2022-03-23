@@ -51,7 +51,7 @@ jobs:
           allow-softlinks: true
           auto-activate-base: true
           use-only-tar-bz2: true
-          activate-environment: ""
+          activate-environment: true
 
       - name: Conda info
         run: conda info
