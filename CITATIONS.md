@@ -11,6 +11,9 @@
 ## Pipeline tools
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
 -   [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 
 -   [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)

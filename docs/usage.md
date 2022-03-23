@@ -24,6 +24,7 @@ CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 | Column         | Description                                                                                                                                                                            |
 |----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `sample`       | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
@@ -47,12 +48,17 @@ TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
 TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
 ```
 
+=======
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
 | Column    | Description                                                                                                                                                                            |
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
 | `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
 | `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+<<<<<<< HEAD
 >>>>>>> nf-core-TEMPLATE
+=======
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
@@ -71,10 +77,10 @@ sample2, sample2.bam
 sample3, sample3.bam
 ```
 
-| Column         | Description                                                                                                                                                                            |
-|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `sample`       | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `bam`      | Full path to BAM file for Illumina short reads. File has to be aligned to a reference genome and in bam format with the extension ".bam" |
+| Column   | Description                                                                                                                                                                            |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample` | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
+| `bam`    | Full path to BAM file for Illumina short reads. File has to be aligned to a reference genome and in bam format with the extension ".bam"                                               |
 
 An [example samplesheet](../assets/samplesheet_bam.csv) has been provided with the pipeline.
 
@@ -137,6 +143,9 @@ They are loaded in sequence, so later profiles can overwrite earlier profiles.
 If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
 -   `docker`
     -   A generic configuration profile to be used with [Docker](https://docker.com/)
 -   `singularity`
@@ -152,6 +161,7 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
 -   `test`
     -   A profile with a complete configuration for automated testing
     -   Includes links to test data so needs no other parameters
+<<<<<<< HEAD
 =======
 - `docker`
   - A generic configuration profile to be used with [Docker](https://docker.com/)
@@ -169,6 +179,8 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
   - A profile with a complete configuration for automated testing
   - Includes links to test data so needs no other parameters
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+=======
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
 
 ### `-resume`
 
@@ -249,10 +261,14 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
 3. Create the custom config accordingly:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     - For Docker:
 =======
    - For Docker:
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+=======
+    - For Docker:
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
 
      ```nextflow
      process {
@@ -263,10 +279,14 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
      ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     - For Singularity:
 =======
    - For Singularity:
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+=======
+    - For Singularity:
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
 
      ```nextflow
      process {
@@ -277,10 +297,14 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
      ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     - For Conda:
 =======
    - For Conda:
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+=======
+    - For Conda:
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
 
      ```nextflow
      process {

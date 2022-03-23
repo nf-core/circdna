@@ -15,6 +15,9 @@ Learn more about contributing: [CONTRIBUTING.md](https://github.com/nf-core/circ
 ## PR checklist
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
 -   [ ] This comment contains a description of changes (with reason).
 -   [ ] If you've fixed a bug or added code that should be tested, add tests!
     -   [ ] If you've added a new tool - have you followed the pipeline conventions in the [contribution docs](https://github.com/nf-core/circdna/tree/master/.github/CONTRIBUTING.md)
@@ -25,6 +28,7 @@ Learn more about contributing: [CONTRIBUTING.md](https://github.com/nf-core/circ
 -   [ ] Output Documentation in `docs/output.md` is updated.
 -   [ ] `CHANGELOG.md` is updated.
 -   [ ] `README.md` is updated (including new tool citations and authors/contributors).
+<<<<<<< HEAD
 =======
 - [ ] This comment contains a description of changes (with reason).
 - [ ] If you've fixed a bug or added code that should be tested, add tests!
@@ -37,3 +41,5 @@ Learn more about contributing: [CONTRIBUTING.md](https://github.com/nf-core/circ
 - [ ] `CHANGELOG.md` is updated.
 - [ ] `README.md` is updated (including new tool citations and authors/contributors).
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+=======
+>>>>>>> 417c56964a4eef354736058b448d677d04172201

@@ -18,9 +18,12 @@ If you'd like to write some code for nf-core/circdna, the standard workflow is a
 <<<<<<< HEAD
 1. Check that there isn't already an issue about your idea in the [nf-core/circdna issues](https://github.com/nf-core/circdna/issues) to avoid duplicating work
     - If there isn't one already, please create one so that others know you're working on this
+<<<<<<< HEAD
 =======
 1. Check that there isn't already an issue about your idea in the [nf-core/circdna issues](https://github.com/nf-core/circdna/issues) to avoid duplicating work. If there isn't one already, please create one so that others know you're working on this
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+=======
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
 2. [Fork](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) the [nf-core/circdna repository](https://github.com/nf-core/circdna) to your GitHub account
 3. Make the necessary changes / additions within your forked repository following [Pipeline conventions](#pipeline-contribution-conventions)
 4. Use `nf-core schema build` and add any new parameters to the pipeline JSON schema (requires [nf-core tools](https://github.com/nf-core/tools) >= 1.10).
@@ -54,6 +57,7 @@ These tests are run both with the latest available version of `Nextflow` and als
 :warning: Only in the unlikely and regretful event of a release happening with a bug.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 -   On your own fork, make a new branch `patch` based on `upstream/master`.
 -   Fix the bug, and bump version (X.Y.Z+1).
 -   A PR should be made on `master` from patch to directly this particular bug.
@@ -62,6 +66,11 @@ These tests are run both with the latest available version of `Nextflow` and als
 - Fix the bug, and bump version (X.Y.Z+1).
 - A PR should be made on `master` from patch to directly this particular bug.
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+=======
+-   On your own fork, make a new branch `patch` based on `upstream/master`.
+-   Fix the bug, and bump version (X.Y.Z+1).
+-   A PR should be made on `master` from patch to directly this particular bug.
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
 
 ## Getting help
 
@@ -107,12 +116,17 @@ The process resources can be passed on to the tool dynamically within the proces
 Please use the following naming schemes, to make it easy to understand what is going where.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 -   initial process channel: `ch_output_from_<process>`
 -   intermediate and terminal channels: `ch_<previousprocess>_for_<nextprocess>`
 =======
 - initial process channel: `ch_output_from_<process>`
 - intermediate and terminal channels: `ch_<previousprocess>_for_<nextprocess>`
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+=======
+-   initial process channel: `ch_output_from_<process>`
+-   intermediate and terminal channels: `ch_<previousprocess>_for_<nextprocess>`
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
 
 ### Nextflow version bumping
 

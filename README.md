@@ -46,11 +46,11 @@ On release, automated continuous integration tests run the pipeline on a full-si
 4. Map reads using BWA-MEM ([`BWA`](https://github.com/lh3/bwa))
 5. Sort and index alignments ([`SAMtools`](https://sourceforge.net/projects/samtools/files/samtools/))
 6. Choice of multiple Circular DNA identification routes
-   1. [`Circle-Map ReadExtractor`](https://github.com/iprada/Circle-Map) -> [`Circle-Map Realign`](https://github.com/iprada/Circle-Map)
-   2. [`CIRCexplorer2`](https://circexplorer2.readthedocs.io/en/latest/)
-   3. [`Samblaster`](https://github.com/GregoryFaust/samblaster) -> [`Circle_finder`](https://github.com/pk7zuva/Circle_finder)
-   4. Identification of amplified ecDNAs [`AmpliconArchitect`](https://github.com/virajbdeshpande/AmpliconArchitect)
-   5. DeNovo Assembly of ecDNAs [`Unicycler`](https://github.com/rrwick/Unicycler) -> [`Minimap2`](https://github.com/lh3/minimap2)
+    1. [`Circle-Map ReadExtractor`](https://github.com/iprada/Circle-Map) -> [`Circle-Map Realign`](https://github.com/iprada/Circle-Map)
+    2. [`CIRCexplorer2`](https://circexplorer2.readthedocs.io/en/latest/)
+    3. [`Samblaster`](https://github.com/GregoryFaust/samblaster) -> [`Circle_finder`](https://github.com/pk7zuva/Circle_finder)
+    4. Identification of amplified ecDNAs [`AmpliconArchitect`](https://github.com/virajbdeshpande/AmpliconArchitect)
+    5. DeNovo Assembly of ecDNAs [`Unicycler`](https://github.com/rrwick/Unicycler) -> [`Minimap2`](https://github.com/lh3/minimap2)
 7. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
 ## Overview
@@ -76,6 +76,7 @@ On release, automated continuous integration tests run the pipeline on a full-si
     > - Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
     > - If you are using `singularity`, please use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
     > - If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
+<<<<<<< HEAD
 =======
    ```console
    nextflow run nf-core/circdna -profile test,YOURPROFILE --outdir <OUTDIR>
@@ -88,6 +89,8 @@ On release, automated continuous integration tests run the pipeline on a full-si
    > - If you are using `singularity`, please use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
    > - If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+=======
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
 
 4. Start running your own analysis!
 
@@ -120,7 +123,7 @@ The nf-core/circdna pipeline comes with documentation about the pipeline [usage]
 
 Main authors:
 
-* [Daniel Schreyer](https://github.com/DSchreyer), University of Glasgow, Institute of Cancer Sciences, Peter Bailey Lab
+-   [Daniel Schreyer](https://github.com/DSchreyer), University of Glasgow, Institute of Cancer Sciences, Peter Bailey Lab
 
 ### Funding
 
