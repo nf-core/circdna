@@ -23,11 +23,36 @@ CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
 CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
 ```
 
+<<<<<<< HEAD
 | Column         | Description                                                                                                                                                                            |
 |----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `sample`       | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
 | `fastq_1`      | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
 | `fastq_2`      | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+=======
+### Full samplesheet
+
+The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
+
+A final samplesheet file consisting of both single- and paired-end data may look something like the one below. This is for 6 samples, where `TREATMENT_REP3` has been sequenced twice.
+
+```console
+sample,fastq_1,fastq_2
+CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
+CONTROL_REP2,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
+CONTROL_REP3,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
+TREATMENT_REP1,AEG588A4_S4_L003_R1_001.fastq.gz,
+TREATMENT_REP2,AEG588A5_S5_L003_R1_001.fastq.gz,
+TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
+TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
+```
+
+| Column    | Description                                                                                                                                                                            |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
+| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+>>>>>>> nf-core-TEMPLATE
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
@@ -58,7 +83,11 @@ An [example samplesheet](../assets/samplesheet_bam.csv) has been provided with t
 The typical command for running the pipeline is as follows:
 
 ```console
+<<<<<<< HEAD
 nextflow run nf-core/circdna --input samplesheet.csv  --outdir <OUTDIR> --genome GRCh37 -profile docker
+=======
+nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile docker
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -66,9 +95,9 @@ This will launch the pipeline with the `docker` configuration profile. See below
 Note that the pipeline will create the following files in your working directory:
 
 ```console
-work            # Directory containing the nextflow working files
-results         # Finished results (configurable, see below)
-.nextflow_log   # Log file from Nextflow
+work                # Directory containing the nextflow working files
+<OUTIDR>            # Finished results in specified location (defined with --outdir)
+.nextflow_log       # Log file from Nextflow
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
 ```
 
@@ -107,25 +136,43 @@ They are loaded in sequence, so later profiles can overwrite earlier profiles.
 
 If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended.
 
-* `docker`
-    * A generic configuration profile to be used with [Docker](https://docker.com/)
-* `singularity`
-    * A generic configuration profile to be used with [Singularity](https://sylabs.io/docs/)
-* `podman`
-    * A generic configuration profile to be used with [Podman](https://podman.io/)
-* `shifter`
-    * A generic configuration profile to be used with [Shifter](https://nersc.gitlab.io/development/shifter/how-to-use/)
-* `charliecloud`
-    * A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
-* `conda`
-    * A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
-* `test`
-    * A profile with a complete configuration for automated testing
-    * Includes links to test data so needs no other parameters
+<<<<<<< HEAD
+-   `docker`
+    -   A generic configuration profile to be used with [Docker](https://docker.com/)
+-   `singularity`
+    -   A generic configuration profile to be used with [Singularity](https://sylabs.io/docs/)
+-   `podman`
+    -   A generic configuration profile to be used with [Podman](https://podman.io/)
+-   `shifter`
+    -   A generic configuration profile to be used with [Shifter](https://nersc.gitlab.io/development/shifter/how-to-use/)
+-   `charliecloud`
+    -   A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
+-   `conda`
+    -   A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
+-   `test`
+    -   A profile with a complete configuration for automated testing
+    -   Includes links to test data so needs no other parameters
+=======
+- `docker`
+  - A generic configuration profile to be used with [Docker](https://docker.com/)
+- `singularity`
+  - A generic configuration profile to be used with [Singularity](https://sylabs.io/docs/)
+- `podman`
+  - A generic configuration profile to be used with [Podman](https://podman.io/)
+- `shifter`
+  - A generic configuration profile to be used with [Shifter](https://nersc.gitlab.io/development/shifter/how-to-use/)
+- `charliecloud`
+  - A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
+- `conda`
+  - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
+- `test`
+  - A profile with a complete configuration for automated testing
+  - Includes links to test data so needs no other parameters
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
 
 ### `-resume`
 
-Specify this when restarting a pipeline. Nextflow will used cached results from any pipeline steps where the inputs are the same, continuing from where it got to previously.
+Specify this when restarting a pipeline. Nextflow will use cached results from any pipeline steps where the inputs are the same, continuing from where it got to previously. For input to be considered the same, not only the names must be identical but the files' contents as well. For more info about this parameter, see [this blog post](https://www.nextflow.io/blog/2019/demystifying-nextflow-resume.html).
 
 You can also supply a run name to resume a specific run: `-resume [run-name]`. Use the `nextflow log` command to show previous run names.
 
@@ -187,6 +234,10 @@ process {
 ```
 
 > **NB:** We specify the full process name i.e. `NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN` in the config file because this takes priority over the short name (`STAR_ALIGN`) and allows existing configuration using the full process name to be correctly overridden.
+<<<<<<< HEAD
+=======
+>
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
 > If you get a warning suggesting that the process selector isn't recognised check that the process name has been specified correctly.
 
 ### Updating containers
@@ -197,35 +248,47 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
 2. Find the latest version of the Biocontainer available on [Quay.io](https://quay.io/repository/biocontainers/pangolin?tag=latest&tab=tags)
 3. Create the custom config accordingly:
 
-    * For Docker:
+<<<<<<< HEAD
+    - For Docker:
+=======
+   - For Docker:
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
 
-        ```nextflow
-        process {
-            withName: PANGOLIN {
-                container = 'quay.io/biocontainers/pangolin:3.0.5--pyhdfd78af_0'
-            }
-        }
-        ```
+     ```nextflow
+     process {
+         withName: PANGOLIN {
+             container = 'quay.io/biocontainers/pangolin:3.0.5--pyhdfd78af_0'
+         }
+     }
+     ```
 
-    * For Singularity:
+<<<<<<< HEAD
+    - For Singularity:
+=======
+   - For Singularity:
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
 
-        ```nextflow
-        process {
-            withName: PANGOLIN {
-                container = 'https://depot.galaxyproject.org/singularity/pangolin:3.0.5--pyhdfd78af_0'
-            }
-        }
-        ```
+     ```nextflow
+     process {
+         withName: PANGOLIN {
+             container = 'https://depot.galaxyproject.org/singularity/pangolin:3.0.5--pyhdfd78af_0'
+         }
+     }
+     ```
 
-    * For Conda:
+<<<<<<< HEAD
+    - For Conda:
+=======
+   - For Conda:
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
 
-        ```nextflow
-        process {
-            withName: PANGOLIN {
-                conda = 'bioconda::pangolin=3.0.5'
-            }
-        }
-        ```
+     ```nextflow
+     process {
+         withName: PANGOLIN {
+             conda = 'bioconda::pangolin=3.0.5'
+         }
+     }
+     ```
 
 > **NB:** If you wish to periodically update individual tool-specific results (e.g. Pangolin) generated by the pipeline then you must ensure to keep the `work/` directory otherwise the `-resume` ability of the pipeline will be compromised and it will restart from scratch.
 

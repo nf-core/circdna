@@ -16,18 +16,22 @@ jobs:
   test:
     name: Run pipeline with test data
     # Only run on push if this is the nf-core dev branch (merged PRs)
+<<<<<<< HEAD
     if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/circdna') }}
+=======
+    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/circdna') }}"
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
     runs-on: ubuntu-latest
     strategy:
       matrix:
         # Nextflow versions
         include:
           # Test pipeline minimum Nextflow version
-          - NXF_VER: '21.10.3'
-            NXF_EDGE: ''
+          - NXF_VER: "21.10.3"
+            NXF_EDGE: ""
           # Test latest edge release of Nextflow
-          - NXF_VER: ''
-            NXF_EDGE: '1'
+          - NXF_VER: ""
+            NXF_EDGE: "1"
     steps:
       - name: Check out pipeline code
         uses: actions/checkout@v2
@@ -61,4 +65,13 @@ jobs:
         # For example: adding multiple test runs with different parameters
         # Remember that you can parallelise this by using strategy.matrix
         run: |
+<<<<<<< HEAD
           nextflow run ${GITHUB_WORKSPACE} -profile test,conda --outdir ./results -stub-run
+=======
+          nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results
+<<<<<<< HEAD
+=======
+
+#
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+>>>>>>> nf-core-TEMPLATE
