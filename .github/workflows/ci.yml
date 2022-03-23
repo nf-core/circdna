@@ -16,7 +16,11 @@ jobs:
   test:
     name: Run pipeline with test data
     # Only run on push if this is the nf-core dev branch (merged PRs)
+<<<<<<< HEAD
     if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/circdna') }}
+=======
+    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/circdna') }}"
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -48,3 +52,8 @@ jobs:
         # Remember that you can parallelise this by using strategy.matrix
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results
+<<<<<<< HEAD
+=======
+
+#
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f

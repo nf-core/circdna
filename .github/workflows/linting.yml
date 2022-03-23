@@ -1,6 +1,11 @@
 name: nf-core linting
 # This workflow is triggered on pushes and PRs to the repository.
+<<<<<<< HEAD
 # It runs the `nf-core lint` and markdown lint tests to ensure that the code meets the nf-core guidelines
+=======
+# It runs the `nf-core lint` and markdown lint tests to ensure
+# that the code meets the nf-core guidelines.
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
 on:
   push:
   pull_request:
@@ -8,6 +13,7 @@ on:
     types: [published]
 
 jobs:
+<<<<<<< HEAD
   Markdown:
     runs-on: ubuntu-latest
     steps:
@@ -44,6 +50,8 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           allow-repeats: false
 
+=======
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
   EditorConfig:
     runs-on: ubuntu-latest
     steps:
@@ -55,6 +63,7 @@ jobs:
         run: npm install -g editorconfig-checker
 
       - name: Run ECLint check
+<<<<<<< HEAD
         run: editorconfig-checker -exclude README.md $(git ls-files | grep -v test)
 
   YAML:
@@ -93,6 +102,22 @@ jobs:
             Thanks again for your contribution!
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           allow-repeats: false
+=======
+        run: editorconfig-checker -exclude README.md $(find .* -type f | grep -v '.git\|.py\|.md\|json\|yml\|yaml\|html\|css\|work\|.nextflow\|build\|nf_core.egg-info\|log.txt\|Makefile')
+
+  Prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+
+      - name: Install Prettier
+        run: npm install -g prettier
+
+      - name: Run Prettier --check
+        run: prettier --check ${GITHUB_WORKSPACE}
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
 
   nf-core:
     runs-on: ubuntu-latest
@@ -137,3 +162,8 @@ jobs:
             lint_log.txt
             lint_results.md
             PR_number.txt
+<<<<<<< HEAD
+=======
+
+#
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
