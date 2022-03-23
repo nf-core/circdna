@@ -13,14 +13,7 @@ jobs:
       - name: Check PRs
         if: github.repository == 'nf-core/circdna'
         run: |
-<<<<<<< HEAD
-          { [[ ${{github.event.pull_request.head.repo.full_name }} == nf-core/circdna ]] && [[ $GITHUB_HEAD_REF = "dev" ]]; } || [[ $GITHUB_HEAD_REF == "patch" ]]
-<<<<<<< HEAD
-=======
           "{ [[ ${{github.event.pull_request.head.repo.full_name }} == nf-core/circdna ]] && [[ $GITHUB_HEAD_REF = "dev" ]]; } || [[ $GITHUB_HEAD_REF == "patch" ]]"
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-=======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
 
       # If the above check failed, post a comment on the PR explaining the failure
       # NOTE - this doesn't currently work if the PR is coming from a fork, due to limitations in GitHub actions secrets
@@ -49,10 +42,4 @@ jobs:
             Thanks again for your contribution!
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           allow-repeats: false
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 #
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-=======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
