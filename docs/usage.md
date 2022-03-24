@@ -27,15 +27,17 @@ CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
 <<<<<<< HEAD
 =======
 =======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
-<<<<<<< HEAD
-| Column         | Description                                                                                                                                                                            |
-|----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `sample`       | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1`      | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2`      | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-=======
+
+> > > > > > > nf-core-dev
+> > > > > > > <<<<<<< HEAD
+> > > > > > > <<<<<<< HEAD
+> > > > > > > | Column | Description |
+> > > > > > > |----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+> > > > > > > | `sample` | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
+> > > > > > > | `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz". |
+
+# | `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz". |
+
 ### Full samplesheet
 
 The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. The samplesheet can have as many columns as you desire, however, there is a strict requirement for the first 3 columns to match those defined in the table below.
@@ -54,22 +56,24 @@ TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
 ```
 
 =======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
-| Column    | Description                                                                                                                                                                            |
-| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
-<<<<<<< HEAD
->>>>>>> nf-core-TEMPLATE
-=======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
+
+> > > > > > > 417c56964a4eef354736058b448d677d04172201
+> > > > > > > <<<<<<< HEAD
+> > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
+
+# =======
+
+> > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
+> > > > > > > nf-core-dev
+> > > > > > > | Column | Description |
+> > > > > > > | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+> > > > > > > | `sample` | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
+> > > > > > > | `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz". |
+> > > > > > > | `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz". |
+> > > > > > > <<<<<<< HEAD
+> > > > > > > nf-core-TEMPLATE
+> > > > > > > =======
+> > > > > > > 417c56964a4eef354736058b448d677d04172201
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
@@ -170,34 +174,34 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
 <<<<<<< HEAD
 =======
 =======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
--   `docker`
-    -   A generic configuration profile to be used with [Docker](https://docker.com/)
--   `singularity`
-    -   A generic configuration profile to be used with [Singularity](https://sylabs.io/docs/)
--   `podman`
-    -   A generic configuration profile to be used with [Podman](https://podman.io/)
--   `shifter`
-    -   A generic configuration profile to be used with [Shifter](https://nersc.gitlab.io/development/shifter/how-to-use/)
--   `charliecloud`
-    -   A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
--   `conda`
-    -   A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
--   `test`
-    -   A profile with a complete configuration for automated testing
-    -   Includes links to test data so needs no other parameters
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
+
+> > > > > > > nf-core-dev
+> > > > > > > <<<<<<< HEAD
+
+# <<<<<<< HEAD
+
+> > > > > > > 417c56964a4eef354736058b448d677d04172201
+
+- `docker`
+  - A generic configuration profile to be used with [Docker](https://docker.com/)
+- `singularity`
+  - A generic configuration profile to be used with [Singularity](https://sylabs.io/docs/)
+- `podman`
+  - A generic configuration profile to be used with [Podman](https://podman.io/)
+- `shifter`
+  - A generic configuration profile to be used with [Shifter](https://nersc.gitlab.io/development/shifter/how-to-use/)
+- `charliecloud`
+  - A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
+- `conda`
+  - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
+- `test` - A profile with a complete configuration for automated testing - Includes links to test data so needs no other parameters
+  <<<<<<< HEAD
+  =======
+  <<<<<<< HEAD
+  > > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
+  # =======
+  > > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
+  > > > > > > > nf-core-dev
 - `docker`
   - A generic configuration profile to be used with [Docker](https://docker.com/)
 - `singularity`
@@ -213,20 +217,20 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
 - `test`
   - A profile with a complete configuration for automated testing
   - Includes links to test data so needs no other parameters
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-=======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-=======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
-=======
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
+    <<<<<<< HEAD
+    <<<<<<< HEAD
+    =======
+    > > > > > > > # d13c279908de1b8cc2914a29996b39dc584e9e3f
+    > > > > > > >
+    > > > > > > > 417c56964a4eef354736058b448d677d04172201
+    > > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
+    > > > > > > > =======
+    > > > > > > > d13c279908de1b8cc2914a29996b39dc584e9e3f
+    > > > > > > > =======
+    > > > > > > > 417c56964a4eef354736058b448d677d04172201
+    > > > > > > > =======
+    > > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
+    > > > > > > > nf-core-dev
 
 ### `-resume`
 
@@ -292,24 +296,24 @@ process {
 ```
 
 > **NB:** We specify the full process name i.e. `NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN` in the config file because this takes priority over the short name (`STAR_ALIGN`) and allows existing configuration using the full process name to be correctly overridden.
-<<<<<<< HEAD
-<<<<<<< HEAD
->
-=======
-=======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
-=======
->
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
->
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
-> If you get a warning suggesting that the process selector isn't recognised check that the process name has been specified correctly.
+> <<<<<<< HEAD
+> <<<<<<< HEAD
+
+# =======
+
+> > > > > > > nf-core-dev
+
+# <<<<<<< HEAD
+
+> > > > > > > d13c279908de1b8cc2914a29996b39dc584e9e3f
+> > > > > > > <<<<<<< HEAD
+> > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
+
+# =======
+
+> > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
+> > > > > > > nf-core-dev
+> > > > > > > If you get a warning suggesting that the process selector isn't recognised check that the process name has been specified correctly.
 
 ### Updating containers
 
@@ -321,96 +325,90 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
 
 <<<<<<< HEAD
 <<<<<<< HEAD
-   - For Docker:
-=======
-=======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
-<<<<<<< HEAD
-    - For Docker:
-=======
-   - For Docker:
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-=======
-    - For Docker:
->>>>>>> 417c56964a4eef354736058b448d677d04172201
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
-   - For Docker:
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
 
-     ```nextflow
-     process {
-         withName: PANGOLIN {
-             container = 'quay.io/biocontainers/pangolin:3.0.5--pyhdfd78af_0'
-         }
-     }
-     ```
+- # For Docker:
+  =======
+  > > > > > > > nf-core-dev
+  > > > > > > > <<<<<<< HEAD
+  > > > > > > > <<<<<<< HEAD
+- # For Docker:
+- For Docker:
+  > > > > > > > # d13c279908de1b8cc2914a29996b39dc584e9e3f
+- For Docker:
+  > > > > > > > 417c56964a4eef354736058b448d677d04172201
+  > > > > > > > <<<<<<< HEAD
+  > > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
+  # =======
+- For Docker:
+
+  > > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
+  > > > > > > > nf-core-dev
+
+       ```nextflow
+       process {
+           withName: PANGOLIN {
+               container = 'quay.io/biocontainers/pangolin:3.0.5--pyhdfd78af_0'
+           }
+       }
+       ```
 
 <<<<<<< HEAD
 <<<<<<< HEAD
-   - For Singularity:
-=======
-=======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
-<<<<<<< HEAD
-    - For Singularity:
-=======
-   - For Singularity:
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-=======
-    - For Singularity:
->>>>>>> 417c56964a4eef354736058b448d677d04172201
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
-   - For Singularity:
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
 
-     ```nextflow
-     process {
-         withName: PANGOLIN {
-             container = 'https://depot.galaxyproject.org/singularity/pangolin:3.0.5--pyhdfd78af_0'
-         }
-     }
-     ```
+- # For Singularity:
+  =======
+  > > > > > > > nf-core-dev
+  > > > > > > > <<<<<<< HEAD
+  > > > > > > > <<<<<<< HEAD
+- # For Singularity:
+- For Singularity:
+  > > > > > > > # d13c279908de1b8cc2914a29996b39dc584e9e3f
+- For Singularity:
+  > > > > > > > 417c56964a4eef354736058b448d677d04172201
+  > > > > > > > <<<<<<< HEAD
+  > > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
+  # =======
+- For Singularity:
+
+  > > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
+  > > > > > > > nf-core-dev
+
+       ```nextflow
+       process {
+           withName: PANGOLIN {
+               container = 'https://depot.galaxyproject.org/singularity/pangolin:3.0.5--pyhdfd78af_0'
+           }
+       }
+       ```
 
 <<<<<<< HEAD
 <<<<<<< HEAD
-   - For Conda:
-=======
-=======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
-<<<<<<< HEAD
-    - For Conda:
-=======
-   - For Conda:
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-=======
-    - For Conda:
->>>>>>> 417c56964a4eef354736058b448d677d04172201
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
-   - For Conda:
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
 
-     ```nextflow
-     process {
-         withName: PANGOLIN {
-             conda = 'bioconda::pangolin=3.0.5'
-         }
-     }
-     ```
+- # For Conda:
+  =======
+  > > > > > > > nf-core-dev
+  > > > > > > > <<<<<<< HEAD
+  > > > > > > > <<<<<<< HEAD
+- # For Conda:
+- For Conda:
+  > > > > > > > # d13c279908de1b8cc2914a29996b39dc584e9e3f
+- For Conda:
+  > > > > > > > 417c56964a4eef354736058b448d677d04172201
+  > > > > > > > <<<<<<< HEAD
+  > > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
+  # =======
+- For Conda:
+
+  > > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
+  > > > > > > > nf-core-dev
+
+       ```nextflow
+       process {
+           withName: PANGOLIN {
+               conda = 'bioconda::pangolin=3.0.5'
+           }
+       }
+       ```
 
 > **NB:** If you wish to periodically update individual tool-specific results (e.g. Pangolin) generated by the pipeline then you must ensure to keep the `work/` directory otherwise the `-resume` ability of the pipeline will be compromised and it will restart from scratch.
 

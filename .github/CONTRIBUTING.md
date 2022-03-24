@@ -17,30 +17,28 @@ If you'd like to write some code for nf-core/circdna, the standard workflow is a
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+
+1. # Check that there isn't already an issue about your idea in the [nf-core/circdna issues](https://github.com/nf-core/circdna/issues) to avoid duplicating work. If there isn't one already, please create one so that others know you're working on this
+   =======
+   > > > > > > > nf-core-dev
+   > > > > > > > <<<<<<< HEAD
+1. Check that there isn't already an issue about your idea in the [nf-core/circdna issues](https://github.com/nf-core/circdna/issues) to avoid duplicating work - If there isn't one already, please create one so that others know you're working on this
+   <<<<<<< HEAD
+   =======
 1. Check that there isn't already an issue about your idea in the [nf-core/circdna issues](https://github.com/nf-core/circdna/issues) to avoid duplicating work. If there isn't one already, please create one so that others know you're working on this
-=======
-=======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
-1. Check that there isn't already an issue about your idea in the [nf-core/circdna issues](https://github.com/nf-core/circdna/issues) to avoid duplicating work
-    - If there isn't one already, please create one so that others know you're working on this
-<<<<<<< HEAD
-=======
+   > > > > > > > # d13c279908de1b8cc2914a29996b39dc584e9e3f
+   > > > > > > >
+   > > > > > > > 417c56964a4eef354736058b448d677d04172201
+   > > > > > > > <<<<<<< HEAD
+   > > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
+   # =======
 1. Check that there isn't already an issue about your idea in the [nf-core/circdna issues](https://github.com/nf-core/circdna/issues) to avoid duplicating work. If there isn't one already, please create one so that others know you're working on this
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-=======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
-1. Check that there isn't already an issue about your idea in the [nf-core/circdna issues](https://github.com/nf-core/circdna/issues) to avoid duplicating work. If there isn't one already, please create one so that others know you're working on this
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
-2. [Fork](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) the [nf-core/circdna repository](https://github.com/nf-core/circdna) to your GitHub account
-3. Make the necessary changes / additions within your forked repository following [Pipeline conventions](#pipeline-contribution-conventions)
-4. Use `nf-core schema build` and add any new parameters to the pipeline JSON schema (requires [nf-core tools](https://github.com/nf-core/tools) >= 1.10).
-5. Submit a Pull Request against the `dev` branch and wait for the code to be reviewed and merged
+   > > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
+   > > > > > > > nf-core-dev
+1. [Fork](https://help.github.com/en/github/getting-started-with-github/fork-a-repo) the [nf-core/circdna repository](https://github.com/nf-core/circdna) to your GitHub account
+1. Make the necessary changes / additions within your forked repository following [Pipeline conventions](#pipeline-contribution-conventions)
+1. Use `nf-core schema build` and add any new parameters to the pipeline JSON schema (requires [nf-core tools](https://github.com/nf-core/tools) >= 1.10).
+1. Submit a Pull Request against the `dev` branch and wait for the code to be reviewed and merged
 
 If you're not used to this workflow with git, you can start with some [docs from GitHub](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests) or even their [excellent `git` resources](https://try.github.io/).
 
@@ -71,36 +69,33 @@ These tests are run both with the latest available version of `Nextflow` and als
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+
+- On your own fork, make a new branch `patch` based on `upstream/master`.
+- Fix the bug, and bump version (X.Y.Z+1).
+- # A PR should be made on `master` from patch to directly this particular bug.
+  =======
+  > > > > > > > nf-core-dev
+  > > > > > > > <<<<<<< HEAD
+  > > > > > > > <<<<<<< HEAD
+- On your own fork, make a new branch `patch` based on `upstream/master`.
+- Fix the bug, and bump version (X.Y.Z+1).
+- # A PR should be made on `master` from patch to directly this particular bug.
 - On your own fork, make a new branch `patch` based on `upstream/master`.
 - Fix the bug, and bump version (X.Y.Z+1).
 - A PR should be made on `master` from patch to directly this particular bug.
-=======
-=======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
-<<<<<<< HEAD
--   On your own fork, make a new branch `patch` based on `upstream/master`.
--   Fix the bug, and bump version (X.Y.Z+1).
--   A PR should be made on `master` from patch to directly this particular bug.
-=======
+  > > > > > > > # d13c279908de1b8cc2914a29996b39dc584e9e3f
 - On your own fork, make a new branch `patch` based on `upstream/master`.
 - Fix the bug, and bump version (X.Y.Z+1).
 - A PR should be made on `master` from patch to directly this particular bug.
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-=======
--   On your own fork, make a new branch `patch` based on `upstream/master`.
--   Fix the bug, and bump version (X.Y.Z+1).
--   A PR should be made on `master` from patch to directly this particular bug.
->>>>>>> 417c56964a4eef354736058b448d677d04172201
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
+  > > > > > > > 417c56964a4eef354736058b448d677d04172201
+  > > > > > > > <<<<<<< HEAD
+  > > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
+  # =======
 - On your own fork, make a new branch `patch` based on `upstream/master`.
 - Fix the bug, and bump version (X.Y.Z+1).
 - A PR should be made on `master` from patch to directly this particular bug.
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
+  > > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
+  > > > > > > > nf-core-dev
 
 ## Getting help
 
@@ -122,25 +117,22 @@ If you wish to contribute a new step, please use the following coding standards:
 6. Add sanity checks and validation for all relevant parameters.
 7. Perform local tests to validate that the new code works as expected.
 8. If applicable, add a new test command in `.github/workflow/ci.yml`.
-<<<<<<< HEAD
-<<<<<<< HEAD
-9. Update MultiQC config `assets/multiqc_config.yml` so relevant suffixes, file name clean up and module plots are in the appropriate order. If applicable, add a [MultiQC](https://https://multiqc.info/) module.
-=======
-=======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
-9. Update MultiQC config `assets/multiqc_config.yaml` so relevant suffixes, file name clean up and module plots are in the appropriate order. If applicable, add a [MultiQC](https://https://multiqc.info/) module.
-=======
-9. Update MultiQC config `assets/multiqc_config.yml` so relevant suffixes, file name clean up and module plots are in the appropriate order. If applicable, add a [MultiQC](https://https://multiqc.info/) module.
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
-9. Update MultiQC config `assets/multiqc_config.yml` so relevant suffixes, file name clean up and module plots are in the appropriate order. If applicable, add a [MultiQC](https://https://multiqc.info/) module.
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
-10. Add a description of the output files and if relevant any appropriate images from the MultiQC report to `docs/output.md`.
+   <<<<<<< HEAD
+   <<<<<<< HEAD
+9. # Update MultiQC config `assets/multiqc_config.yml` so relevant suffixes, file name clean up and module plots are in the appropriate order. If applicable, add a [MultiQC](https://https://multiqc.info/) module.
+   =======
+   > > > > > > > nf-core-dev
+   > > > > > > > <<<<<<< HEAD
+10. # Update MultiQC config `assets/multiqc_config.yaml` so relevant suffixes, file name clean up and module plots are in the appropriate order. If applicable, add a [MultiQC](https://https://multiqc.info/) module.
+11. Update MultiQC config `assets/multiqc_config.yml` so relevant suffixes, file name clean up and module plots are in the appropriate order. If applicable, add a [MultiQC](https://https://multiqc.info/) module.
+    > > > > > > > d13c279908de1b8cc2914a29996b39dc584e9e3f
+    > > > > > > > <<<<<<< HEAD
+    > > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
+    # =======
+12. Update MultiQC config `assets/multiqc_config.yml` so relevant suffixes, file name clean up and module plots are in the appropriate order. If applicable, add a [MultiQC](https://https://multiqc.info/) module.
+    > > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
+    > > > > > > > nf-core-dev
+13. Add a description of the output files and if relevant any appropriate images from the MultiQC report to `docs/output.md`.
 
 ### Default values
 
@@ -160,31 +152,28 @@ Please use the following naming schemes, to make it easy to understand what is g
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+
+- initial process channel: `ch_output_from_<process>`
+- # intermediate and terminal channels: `ch_<previousprocess>_for_<nextprocess>`
+  =======
+  > > > > > > > nf-core-dev
+  > > > > > > > <<<<<<< HEAD
+  > > > > > > > <<<<<<< HEAD
+- initial process channel: `ch_output_from_<process>`
+- # intermediate and terminal channels: `ch_<previousprocess>_for_<nextprocess>`
 - initial process channel: `ch_output_from_<process>`
 - intermediate and terminal channels: `ch_<previousprocess>_for_<nextprocess>`
-=======
-=======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
-<<<<<<< HEAD
--   initial process channel: `ch_output_from_<process>`
--   intermediate and terminal channels: `ch_<previousprocess>_for_<nextprocess>`
-=======
+  > > > > > > > # d13c279908de1b8cc2914a29996b39dc584e9e3f
 - initial process channel: `ch_output_from_<process>`
 - intermediate and terminal channels: `ch_<previousprocess>_for_<nextprocess>`
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-=======
--   initial process channel: `ch_output_from_<process>`
--   intermediate and terminal channels: `ch_<previousprocess>_for_<nextprocess>`
->>>>>>> 417c56964a4eef354736058b448d677d04172201
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
+  > > > > > > > 417c56964a4eef354736058b448d677d04172201
+  > > > > > > > <<<<<<< HEAD
+  > > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
+  # =======
 - initial process channel: `ch_output_from_<process>`
 - intermediate and terminal channels: `ch_<previousprocess>_for_<nextprocess>`
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
+  > > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
+  > > > > > > > nf-core-dev
 
 ### Nextflow version bumping
 

@@ -18,29 +18,31 @@ Learn more about contributing: [CONTRIBUTING.md](https://github.com/nf-core/circ
 <<<<<<< HEAD
 =======
 =======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
--   [ ] This comment contains a description of changes (with reason).
--   [ ] If you've fixed a bug or added code that should be tested, add tests!
-    -   [ ] If you've added a new tool - have you followed the pipeline conventions in the [contribution docs](https://github.com/nf-core/circdna/tree/master/.github/CONTRIBUTING.md)
-    -   [ ] If necessary, also make a PR on the nf-core/circdna _branch_ on the [nf-core/test-datasets](https://github.com/nf-core/test-datasets) repository.
--   [ ] Make sure your code lints (`nf-core lint`).
--   [ ] Ensure the test suite passes (`nextflow run . -profile test,docker` --outdir <OUTDIR>`).
--   [ ] Usage Documentation in `docs/usage.md` is updated.
--   [ ] Output Documentation in `docs/output.md` is updated.
--   [ ] `CHANGELOG.md` is updated.
--   [ ] `README.md` is updated (including new tool citations and authors/contributors).
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
+
+> > > > > > > nf-core-dev
+> > > > > > > <<<<<<< HEAD
+
+# <<<<<<< HEAD
+
+> > > > > > > 417c56964a4eef354736058b448d677d04172201
+
+- [ ] This comment contains a description of changes (with reason).
+- [ ] If you've fixed a bug or added code that should be tested, add tests!
+  - [ ] If you've added a new tool - have you followed the pipeline conventions in the [contribution docs](https://github.com/nf-core/circdna/tree/master/.github/CONTRIBUTING.md)
+  - [ ] If necessary, also make a PR on the nf-core/circdna _branch_ on the [nf-core/test-datasets](https://github.com/nf-core/test-datasets) repository.
+- [ ] Make sure your code lints (`nf-core lint`).
+- [ ] Ensure the test suite passes (`nextflow run . -profile test,docker` --outdir <OUTDIR>`).
+- [ ] Usage Documentation in `docs/usage.md` is updated.
+- [ ] Output Documentation in `docs/output.md` is updated.
+- [ ] `CHANGELOG.md` is updated.
+- [ ] `README.md` is updated (including new tool citations and authors/contributors).
+      <<<<<<< HEAD
+      =======
+      <<<<<<< HEAD
+  > > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
+  # =======
+  > > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
+  > > > > > > > nf-core-dev
 - [ ] This comment contains a description of changes (with reason).
 - [ ] If you've fixed a bug or added code that should be tested, add tests!
   - [ ] If you've added a new tool - have you followed the pipeline conventions in the [contribution docs](https://github.com/nf-core/circdna/tree/master/.github/CONTRIBUTING.md)
@@ -51,17 +53,17 @@ Learn more about contributing: [CONTRIBUTING.md](https://github.com/nf-core/circ
 - [ ] Output Documentation in `docs/output.md` is updated.
 - [ ] `CHANGELOG.md` is updated.
 - [ ] `README.md` is updated (including new tool citations and authors/contributors).
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-=======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-=======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
-=======
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
+      <<<<<<< HEAD
+      <<<<<<< HEAD
+      =======
+  > > > > > > > # d13c279908de1b8cc2914a29996b39dc584e9e3f
+  > > > > > > >
+  > > > > > > > 417c56964a4eef354736058b448d677d04172201
+  > > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
+  > > > > > > > =======
+  > > > > > > > d13c279908de1b8cc2914a29996b39dc584e9e3f
+  > > > > > > > =======
+  > > > > > > > 417c56964a4eef354736058b448d677d04172201
+  > > > > > > > =======
+  > > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
+  > > > > > > > nf-core-dev

@@ -34,11 +34,11 @@ On release, automated continuous integration tests run the pipeline on a full-si
 4. Map reads using BWA-MEM ([`BWA`](https://github.com/lh3/bwa))
 5. Sort and index alignments ([`SAMtools`](https://sourceforge.net/projects/samtools/files/samtools/))
 6. Choice of multiple Circular DNA identification routes
-    1. [`Circle-Map ReadExtractor`](https://github.com/iprada/Circle-Map) -> [`Circle-Map Realign`](https://github.com/iprada/Circle-Map)
-    2. [`CIRCexplorer2`](https://circexplorer2.readthedocs.io/en/latest/)
-    3. [`Samblaster`](https://github.com/GregoryFaust/samblaster) -> [`Circle_finder`](https://github.com/pk7zuva/Circle_finder)
-    4. Identification of amplified ecDNAs [`AmpliconArchitect`](https://github.com/virajbdeshpande/AmpliconArchitect)
-    5. DeNovo Assembly of ecDNAs [`Unicycler`](https://github.com/rrwick/Unicycler) -> [`Minimap2`](https://github.com/lh3/minimap2)
+   1. [`Circle-Map ReadExtractor`](https://github.com/iprada/Circle-Map) -> [`Circle-Map Realign`](https://github.com/iprada/Circle-Map)
+   2. [`CIRCexplorer2`](https://circexplorer2.readthedocs.io/en/latest/)
+   3. [`Samblaster`](https://github.com/GregoryFaust/samblaster) -> [`Circle_finder`](https://github.com/pk7zuva/Circle_finder)
+   4. Identification of amplified ecDNAs [`AmpliconArchitect`](https://github.com/virajbdeshpande/AmpliconArchitect)
+   5. DeNovo Assembly of ecDNAs [`Unicycler`](https://github.com/rrwick/Unicycler) -> [`Minimap2`](https://github.com/lh3/minimap2)
 7. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
 ## Overview
@@ -80,7 +80,7 @@ The nf-core/circdna pipeline comes with documentation about the pipeline [usage]
 
 Main authors:
 
--   [Daniel Schreyer](https://github.com/DSchreyer), University of Glasgow, Institute of Cancer Sciences, Peter Bailey Lab
+- [Daniel Schreyer](https://github.com/DSchreyer), University of Glasgow, Institute of Cancer Sciences, Peter Bailey Lab
 
 ### Funding
 
