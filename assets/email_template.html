@@ -1,256 +1,53 @@
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
-    <meta
-      name="description"
-      content="nf-core/circdna: Pipeline for the identification of circular DNAs"
-    />
-    <title>nf-core/circdna Pipeline Report</title>
-  </head>
-  <body>
-    <div
-      style="
-        font-family: Helvetica, Arial, sans-serif;
-        padding: 30px;
-        max-width: 800px;
-        margin: 0 auto;
-      "
-    >
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
-    <!-- prettier-ignore -->
-    <meta name="description" content="nf-core/circdna: Pipeline for the identification of circular DNAs" />
-    <title>nf-core/circdna Pipeline Report</title>
-  </head>
-  <body>
-    <div style="font-family: Helvetica, Arial, sans-serif; padding: 30px; max-width: 800px; margin: 0 auto">
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-=======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-=======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
-=======
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
-      <img src="cid:nfcorepipelinelogo" />
+  <meta name="description" content="nf-core/circdna: Pipeline for the identification of circular DNAs">
+  <title>nf-core/circdna Pipeline Report</title>
+</head>
+<body>
+<div style="font-family: Helvetica, Arial, sans-serif; padding: 30px; max-width: 800px; margin: 0 auto;">
 
-      <h1>nf-core/circdna v${version}</h1>
-      <h2>Run Name: $runName</h2>
+<img src="cid:nfcorepipelinelogo">
 
-      <% if (!success){ out << """
-      <div
-        style="
-          color: #a94442;
-          background-color: #f2dede;
-          border-color: #ebccd1;
-          padding: 15px;
-          margin-bottom: 20px;
-          border: 1px solid transparent;
-          border-radius: 4px;
-        "
-      >
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
-        <h4 style="margin-top: 0; color: inherit">
-          nf-core/circdna execution completed unsuccessfully!
-        </h4>
-        <p>
-          The exit status of the task that caused the workflow execution to fail
-          was: <code>$exitStatus</code>.
-        </p>
-<<<<<<< HEAD
-        <p>The full error message was:</p>
-        <pre style="white-space: pre-wrap; overflow: visible; margin-bottom: 0">
-${errorReport}</pre
-        >
-=======
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
-        <h4 style="margin-top: 0; color: inherit">nf-core/circdna execution completed unsuccessfully!</h4>
+<h1>nf-core/circdna v${version}</h1>
+<h2>Run Name: $runName</h2>
+
+<% if (!success){
+    out << """
+    <div style="color: #a94442; background-color: #f2dede; border-color: #ebccd1; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px;">
+        <h4 style="margin-top:0; color: inherit;">nf-core/circdna execution completed unsuccessfully!</h4>
         <p>The exit status of the task that caused the workflow execution to fail was: <code>$exitStatus</code>.</p>
         <p>The full error message was:</p>
-        <pre style="white-space: pre-wrap; overflow: visible; margin-bottom: 0">${errorReport}</pre>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> nf-core-dev
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-=======
-        <p>The full error message was:</p>
-        <pre style="white-space: pre-wrap; overflow: visible; margin-bottom: 0">
-${errorReport}</pre
-        >
->>>>>>> 417c56964a4eef354736058b448d677d04172201
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
-      </div>
-      """ } else { out << """
-      <div
-        style="
-          color: #3c763d;
-          background-color: #dff0d8;
-          border-color: #d6e9c6;
-          padding: 15px;
-          margin-bottom: 20px;
-          border: 1px solid transparent;
-          border-radius: 4px;
-        "
-      >
-        nf-core/circdna execution completed successfully!
-      </div>
-      """ } %>
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-      <p>The workflow was completed at <strong>$dateComplete</strong> (duration: <strong>$duration</strong>)</p>
-=======
-=======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
-      <p>
-        The workflow was completed at <strong>$dateComplete</strong> (duration:
-        <strong>$duration</strong>)
-      </p>
-<<<<<<< HEAD
-=======
-      <p>The workflow was completed at <strong>$dateComplete</strong> (duration: <strong>$duration</strong>)</p>
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-=======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
-      <p>The workflow was completed at <strong>$dateComplete</strong> (duration: <strong>$duration</strong>)</p>
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
-      <p>The command used to launch the workflow was as follows:</p>
-      <pre
-        style="
-          white-space: pre-wrap;
-          overflow: visible;
-          background-color: #ededed;
-          padding: 15px;
-          border-radius: 4px;
-          margin-bottom: 30px;
-        "
-      >
-$commandLine</pre
-      >
-
-      <h3>Pipeline Configuration:</h3>
-      <table
-        style="
-          width: 100%;
-          max-width: 100%;
-          border-spacing: 0;
-          border-collapse: collapse;
-          border: 0;
-          margin-bottom: 30px;
-        "
-      >
-        <tbody style="border-bottom: 1px solid #ddd">
-          <% out << summary.collect{ k,v -> "
-          <tr>
-            <th
-              style="
-                text-align: left;
-                padding: 8px 0;
-                line-height: 1.42857143;
-                vertical-align: top;
-                border-top: 1px solid #ddd;
-              "
-            >
-              $k
-            </th>
-            <td
-              style="
-                text-align: left;
-                padding: 8px;
-                line-height: 1.42857143;
-                vertical-align: top;
-                border-top: 1px solid #ddd;
-              "
-            >
-              <pre style="white-space: pre-wrap; overflow: visible">$v</pre>
-            </td>
-          </tr>
-          " }.join("\n") %>
-        </tbody>
-      </table>
-
-      <p>nf-core/circdna</p>
-<<<<<<< HEAD
-<<<<<<< HEAD
-      <p><a href="https://github.com/nf-core/circdna">https://github.com/nf-core/circdna</a></p>
-=======
-=======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
-      <p>
-        <a href="https://github.com/nf-core/circdna"
-          >https://github.com/nf-core/circdna</a
-        >
-      </p>
-<<<<<<< HEAD
-=======
-      <p><a href="https://github.com/nf-core/circdna">https://github.com/nf-core/circdna</a></p>
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-=======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
-      <p><a href="https://github.com/nf-core/circdna">https://github.com/nf-core/circdna</a></p>
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
+        <pre style="white-space: pre-wrap; overflow: visible; margin-bottom: 0;">${errorReport}</pre>
     </div>
-  </body>
+    """
+} else {
+    out << """
+    <div style="color: #3c763d; background-color: #dff0d8; border-color: #d6e9c6; padding: 15px; margin-bottom: 20px; border: 1px solid transparent; border-radius: 4px;">
+        nf-core/circdna execution completed successfully!
+    </div>
+    """
+}
+%>
+
+<p>The workflow was completed at <strong>$dateComplete</strong> (duration: <strong>$duration</strong>)</p>
+<p>The command used to launch the workflow was as follows:</p>
+<pre style="white-space: pre-wrap; overflow: visible; background-color: #ededed; padding: 15px; border-radius: 4px; margin-bottom:30px;">$commandLine</pre>
+
+<h3>Pipeline Configuration:</h3>
+<table style="width:100%; max-width:100%; border-spacing: 0; border-collapse: collapse; border:0; margin-bottom: 30px;">
+    <tbody style="border-bottom: 1px solid #ddd;">
+        <% out << summary.collect{ k,v -> "<tr><th style='text-align:left; padding: 8px 0; line-height: 1.42857143; vertical-align: top; border-top: 1px solid #ddd;'>$k</th><td style='text-align:left; padding: 8px; line-height: 1.42857143; vertical-align: top; border-top: 1px solid #ddd;'><pre style='white-space: pre-wrap; overflow: visible;'>$v</pre></td></tr>" }.join("\n") %>
+    </tbody>
+</table>
+
+<p>nf-core/circdna</p>
+<p><a href="https://github.com/nf-core/circdna">https://github.com/nf-core/circdna</a></p>
+
+</div>
+
+</body>
 </html>

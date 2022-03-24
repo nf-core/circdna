@@ -1,26 +1,6 @@
 name: nf-core linting
 # This workflow is triggered on pushes and PRs to the repository.
-<<<<<<< HEAD
-<<<<<<< HEAD
-# It runs the `nf-core lint` and markdown lint tests to ensure
-# that the code meets the nf-core guidelines.
-=======
-=======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
 # It runs the `nf-core lint` and markdown lint tests to ensure that the code meets the nf-core guidelines
-=======
-# It runs the `nf-core lint` and markdown lint tests to ensure
-# that the code meets the nf-core guidelines.
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
-# It runs the `nf-core lint` and markdown lint tests to ensure
-# that the code meets the nf-core guidelines.
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
 on:
   push:
   pull_request:
@@ -28,12 +8,6 @@ on:
     types: [published]
 
 jobs:
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
   Markdown:
     runs-on: ubuntu-latest
     steps:
@@ -70,14 +44,6 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           allow-repeats: false
 
-=======
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
   EditorConfig:
     runs-on: ubuntu-latest
     steps:
@@ -89,12 +55,6 @@ jobs:
         run: npm install -g editorconfig-checker
 
       - name: Run ECLint check
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
         run: editorconfig-checker -exclude README.md $(git ls-files | grep -v test)
 
   YAML:
@@ -102,11 +62,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@master
-      - name: "Yamllint"
+      - name: 'Yamllint'
         uses: karancode/yamllint-github-action@master
         with:
-          yamllint_file_or_dir: "."
-          yamllint_config_filepath: ".yamllint.yml"
+          yamllint_file_or_dir: '.'
+          yamllint_config_filepath: '.yamllint.yml'
 
       # If the above check failed, post a comment on the PR explaining the failure
       - name: Post PR comment
@@ -133,41 +93,11 @@ jobs:
             Thanks again for your contribution!
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           allow-repeats: false
-=======
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
-        run: editorconfig-checker -exclude README.md $(find .* -type f | grep -v '.git\|.py\|.md\|json\|yml\|yaml\|html\|css\|work\|.nextflow\|build\|nf_core.egg-info\|log.txt\|Makefile')
-
-  Prettier:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: actions/setup-node@v2
-
-      - name: Install Prettier
-        run: npm install -g prettier
-
-      - name: Run Prettier --check
-        run: prettier --check ${GITHUB_WORKSPACE}
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-=======
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
 
   nf-core:
     runs-on: ubuntu-latest
     steps:
+
       - name: Check out pipeline code
         uses: actions/checkout@v2
 
@@ -180,8 +110,8 @@ jobs:
 
       - uses: actions/setup-python@v1
         with:
-          python-version: "3.6"
-          architecture: "x64"
+          python-version: '3.6'
+          architecture: 'x64'
 
       - name: Install dependencies
         run: |
@@ -208,26 +138,4 @@ jobs:
             lint_log.txt
             lint_results.md
             PR_number.txt
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-#
-=======
-=======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
-#
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-=======
->>>>>>> 417c56964a4eef354736058b448d677d04172201
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
-
-#
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
