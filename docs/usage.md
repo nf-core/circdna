@@ -8,7 +8,7 @@
 
 <!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
 
-## Samplesheet input - FASTQ
+## Samplesheet input
 
 You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
 
@@ -16,27 +16,16 @@ You will need to create a samplesheet with information about the samples you wou
 --input '[path to samplesheet file]'
 ```
 
+### Multiple runs of the same sample
+
+The `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
+
 ```console
-sample,bam
+sample,fastq_1,fastq_2
 CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
 CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
 CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
 ```
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
-
-> > > > > > > nf-core-dev
-> > > > > > > <<<<<<< HEAD
-> > > > > > > <<<<<<< HEAD
-> > > > > > > | Column | Description |
-> > > > > > > |----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-> > > > > > > | `sample` | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-> > > > > > > | `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz". |
-
-# | `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz". |
 
 ### Full samplesheet
 
@@ -55,73 +44,20 @@ TREATMENT_REP3,AEG588A6_S6_L003_R1_001.fastq.gz,
 TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
 ```
 
-=======
-
-> > > > > > > 417c56964a4eef354736058b448d677d04172201
-> > > > > > > <<<<<<< HEAD
-> > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
-
-# =======
-
-> > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
-> > > > > > > nf-core-dev
-> > > > > > > | Column | Description |
-> > > > > > > | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-> > > > > > > | `sample` | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-> > > > > > > | `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz". |
-> > > > > > > | `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz". |
-> > > > > > > <<<<<<< HEAD
-> > > > > > > nf-core-TEMPLATE
-> > > > > > > =======
-> > > > > > > 417c56964a4eef354736058b448d677d04172201
+| Column    | Description                                                                                                                                                                            |
+| --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
+| `fastq_1` | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
+| `fastq_2` | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             |
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
-
-## Samplesheet input - BAM
-
-The pipeline can be run from directly from bam files. Here,the samplesheet has to be a comma-separated file with 2 columns, and a header row as shown in the examples below.
-
-```console
---input '[path to samplesheet file]'
-```
-
-```console
-sample,bam
-sample1, sample1.bam
-sample2, sample2.bam
-sample3, sample3.bam
-```
-
-| Column   | Description                                                                                                                                                                            |
-| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sample` | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `bam`    | Full path to BAM file for Illumina short reads. File has to be aligned to a reference genome and in bam format with the extension ".bam"                                               |
-
-An [example samplesheet](../assets/samplesheet_bam.csv) has been provided with the pipeline.
 
 ## Running the pipeline
 
 The typical command for running the pipeline is as follows:
 
 ```console
-<<<<<<< HEAD
-<<<<<<< HEAD
 nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile docker
-=======
-=======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
-nextflow run nf-core/circdna --input samplesheet.csv  --outdir <OUTDIR> --genome GRCh37 -profile docker
-=======
-nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile docker
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
-nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile docker
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -170,38 +106,6 @@ They are loaded in sequence, so later profiles can overwrite earlier profiles.
 
 If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended.
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
-
-> > > > > > > nf-core-dev
-> > > > > > > <<<<<<< HEAD
-
-# <<<<<<< HEAD
-
-> > > > > > > 417c56964a4eef354736058b448d677d04172201
-
-- `docker`
-  - A generic configuration profile to be used with [Docker](https://docker.com/)
-- `singularity`
-  - A generic configuration profile to be used with [Singularity](https://sylabs.io/docs/)
-- `podman`
-  - A generic configuration profile to be used with [Podman](https://podman.io/)
-- `shifter`
-  - A generic configuration profile to be used with [Shifter](https://nersc.gitlab.io/development/shifter/how-to-use/)
-- `charliecloud`
-  - A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
-- `conda`
-  - A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
-- `test` - A profile with a complete configuration for automated testing - Includes links to test data so needs no other parameters
-  <<<<<<< HEAD
-  =======
-  <<<<<<< HEAD
-  > > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
-  # =======
-  > > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
-  > > > > > > > nf-core-dev
 - `docker`
   - A generic configuration profile to be used with [Docker](https://docker.com/)
 - `singularity`
@@ -217,20 +121,6 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
 - `test`
   - A profile with a complete configuration for automated testing
   - Includes links to test data so needs no other parameters
-    <<<<<<< HEAD
-    <<<<<<< HEAD
-    =======
-    > > > > > > > # d13c279908de1b8cc2914a29996b39dc584e9e3f
-    > > > > > > >
-    > > > > > > > 417c56964a4eef354736058b448d677d04172201
-    > > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
-    > > > > > > > =======
-    > > > > > > > d13c279908de1b8cc2914a29996b39dc584e9e3f
-    > > > > > > > =======
-    > > > > > > > 417c56964a4eef354736058b448d677d04172201
-    > > > > > > > =======
-    > > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
-    > > > > > > > nf-core-dev
 
 ### `-resume`
 
@@ -296,24 +186,8 @@ process {
 ```
 
 > **NB:** We specify the full process name i.e. `NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN` in the config file because this takes priority over the short name (`STAR_ALIGN`) and allows existing configuration using the full process name to be correctly overridden.
-> <<<<<<< HEAD
-> <<<<<<< HEAD
-
-# =======
-
-> > > > > > > nf-core-dev
-
-# <<<<<<< HEAD
-
-> > > > > > > d13c279908de1b8cc2914a29996b39dc584e9e3f
-> > > > > > > <<<<<<< HEAD
-> > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
-
-# =======
-
-> > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
-> > > > > > > nf-core-dev
-> > > > > > > If you get a warning suggesting that the process selector isn't recognised check that the process name has been specified correctly.
+>
+> If you get a warning suggesting that the process selector isn't recognised check that the process name has been specified correctly.
 
 ### Updating containers
 
@@ -323,92 +197,35 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
 2. Find the latest version of the Biocontainer available on [Quay.io](https://quay.io/repository/biocontainers/pangolin?tag=latest&tab=tags)
 3. Create the custom config accordingly:
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+   - For Docker:
 
-- # For Docker:
-  =======
-  > > > > > > > nf-core-dev
-  > > > > > > > <<<<<<< HEAD
-  > > > > > > > <<<<<<< HEAD
-- # For Docker:
-- For Docker:
-  > > > > > > > # d13c279908de1b8cc2914a29996b39dc584e9e3f
-- For Docker:
-  > > > > > > > 417c56964a4eef354736058b448d677d04172201
-  > > > > > > > <<<<<<< HEAD
-  > > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
-  # =======
-- For Docker:
+     ```nextflow
+     process {
+         withName: PANGOLIN {
+             container = 'quay.io/biocontainers/pangolin:3.0.5--pyhdfd78af_0'
+         }
+     }
+     ```
 
-  > > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
-  > > > > > > > nf-core-dev
+   - For Singularity:
 
-       ```nextflow
-       process {
-           withName: PANGOLIN {
-               container = 'quay.io/biocontainers/pangolin:3.0.5--pyhdfd78af_0'
-           }
-       }
-       ```
+     ```nextflow
+     process {
+         withName: PANGOLIN {
+             container = 'https://depot.galaxyproject.org/singularity/pangolin:3.0.5--pyhdfd78af_0'
+         }
+     }
+     ```
 
-<<<<<<< HEAD
-<<<<<<< HEAD
+   - For Conda:
 
-- # For Singularity:
-  =======
-  > > > > > > > nf-core-dev
-  > > > > > > > <<<<<<< HEAD
-  > > > > > > > <<<<<<< HEAD
-- # For Singularity:
-- For Singularity:
-  > > > > > > > # d13c279908de1b8cc2914a29996b39dc584e9e3f
-- For Singularity:
-  > > > > > > > 417c56964a4eef354736058b448d677d04172201
-  > > > > > > > <<<<<<< HEAD
-  > > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
-  # =======
-- For Singularity:
-
-  > > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
-  > > > > > > > nf-core-dev
-
-       ```nextflow
-       process {
-           withName: PANGOLIN {
-               container = 'https://depot.galaxyproject.org/singularity/pangolin:3.0.5--pyhdfd78af_0'
-           }
-       }
-       ```
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-- # For Conda:
-  =======
-  > > > > > > > nf-core-dev
-  > > > > > > > <<<<<<< HEAD
-  > > > > > > > <<<<<<< HEAD
-- # For Conda:
-- For Conda:
-  > > > > > > > # d13c279908de1b8cc2914a29996b39dc584e9e3f
-- For Conda:
-  > > > > > > > 417c56964a4eef354736058b448d677d04172201
-  > > > > > > > <<<<<<< HEAD
-  > > > > > > > 6a32be9b78b05990be38e99304c76909cdbea507
-  # =======
-- For Conda:
-
-  > > > > > > > 0eb448327e3e093f2004670630b02f6e99181e66
-  > > > > > > > nf-core-dev
-
-       ```nextflow
-       process {
-           withName: PANGOLIN {
-               conda = 'bioconda::pangolin=3.0.5'
-           }
-       }
-       ```
+     ```nextflow
+     process {
+         withName: PANGOLIN {
+             conda = 'bioconda::pangolin=3.0.5'
+         }
+     }
+     ```
 
 > **NB:** If you wish to periodically update individual tool-specific results (e.g. Pangolin) generated by the pipeline then you must ensure to keep the `work/` directory otherwise the `-resume` ability of the pipeline will be compromised and it will restart from scratch.
 
