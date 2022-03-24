@@ -19,6 +19,7 @@ jobs:
         # Add full size test data (but still relatively small datasets for few samples)
         # on the `test_full.config` test runs with only one set of parameters
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
 <<<<<<< HEAD
@@ -26,6 +27,8 @@ jobs:
 =======
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
 >>>>>>> nf-core-TEMPLATE
+=======
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}

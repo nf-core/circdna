@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 <<<<<<< HEAD
+<<<<<<< HEAD
       - name: Launch workflow via tower
         uses: nf-core/tower-action@v3
 
@@ -22,6 +23,11 @@ jobs:
         uses: nf-core/tower-action@v3
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
 >>>>>>> nf-core-TEMPLATE
+=======
+      # Launch workflow using Tower CLI tool action
+      - name: Launch workflow via tower
+        uses: nf-core/tower-action@v3
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}

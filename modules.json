@@ -3,12 +3,15 @@
     "homePage": "https://github.com/nf-core/circdna",
     "repos": {
         "nf-core/modules": {
+<<<<<<< HEAD
             "bwa/index": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "bwa/mem": {
                 "git_sha": "950700bcdc0e9a2b6883d40d2c51c6fc435cd714"
             },
+=======
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
             "cat/fastq": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
@@ -36,12 +39,6 @@
             "samtools/idxstats": {
                 "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
             },
-            "samtools/index": {
-                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
-            },
-            "samtools/sort": {
-                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
-            },
             "samtools/stats": {
                 "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
             },
@@ -53,6 +50,7 @@
             },
             "trimgalore": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+<<<<<<< HEAD
 =======
                 "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"
 =======
@@ -65,6 +63,8 @@
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
 >>>>>>> nf-core-TEMPLATE
+=======
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
             }
         }
     }

@@ -1,11 +1,16 @@
 name: nf-core linting
 # This workflow is triggered on pushes and PRs to the repository.
 <<<<<<< HEAD
+<<<<<<< HEAD
 # It runs the `nf-core lint` and markdown lint tests to ensure that the code meets the nf-core guidelines
 =======
 # It runs the `nf-core lint` and markdown lint tests to ensure
 # that the code meets the nf-core guidelines.
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+=======
+# It runs the `nf-core lint` and markdown lint tests to ensure
+# that the code meets the nf-core guidelines.
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
 on:
   push:
   pull_request:
@@ -13,6 +18,7 @@ on:
     types: [published]
 
 jobs:
+<<<<<<< HEAD
 <<<<<<< HEAD
   Markdown:
     runs-on: ubuntu-latest
@@ -52,6 +58,8 @@ jobs:
 
 =======
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+=======
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
   EditorConfig:
     runs-on: ubuntu-latest
     steps:
@@ -63,6 +71,7 @@ jobs:
         run: npm install -g editorconfig-checker
 
       - name: Run ECLint check
+<<<<<<< HEAD
 <<<<<<< HEAD
         run: editorconfig-checker -exclude README.md $(git ls-files | grep -v test)
 
@@ -103,6 +112,8 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           allow-repeats: false
 =======
+=======
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
         run: editorconfig-checker -exclude README.md $(find .* -type f | grep -v '.git\|.py\|.md\|json\|yml\|yaml\|html\|css\|work\|.nextflow\|build\|nf_core.egg-info\|log.txt\|Makefile')
 
   Prettier:
@@ -117,7 +128,10 @@ jobs:
 
       - name: Run Prettier --check
         run: prettier --check ${GITHUB_WORKSPACE}
+<<<<<<< HEAD
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+=======
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
 
   nf-core:
     runs-on: ubuntu-latest
@@ -164,9 +178,14 @@ jobs:
             PR_number.txt
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 #
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
 =======
 >>>>>>> 417c56964a4eef354736058b448d677d04172201
+=======
+
+#
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
