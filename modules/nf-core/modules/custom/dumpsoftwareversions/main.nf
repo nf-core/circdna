@@ -15,18 +15,9 @@ process CUSTOM_DUMPSOFTWAREVERSIONS {
     path "software_versions_mqc.yml", emit: mqc_yml
     path "versions.yml"             , emit: versions
 
-<<<<<<< HEAD
     when:
     task.ext.when == null || task.ext.when
 
-=======
-<<<<<<< HEAD
-=======
-    when:
-    task.ext.when == null || task.ext.when
-
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
->>>>>>> nf-core-TEMPLATE
     script:
     def args = task.ext.args ?: ''
     template 'dumpsoftwareversions.py'
