@@ -17,8 +17,7 @@ process SAMPLESHEET_CHECK {
     """
     check_samplesheet.py \\
         $samplesheet \\
-        samplesheet.valid.csv \\
-        $params.input_format
+        samplesheet.valid.csv
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

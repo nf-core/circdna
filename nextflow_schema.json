@@ -22,24 +22,6 @@
                     "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/circdna/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
                 },
-                "input_format": {
-                    "type": "string",
-                    "description": "Specify input format. Default *FASTQ*. Options 'FASTQ' or 'BAM'.",
-                    "help_text": "Set this parameter if you specified bam files in your samplesheet.",
-                    "fa_icon": "fas fa-pen-field"
-                },
-                "bam_sorted": {
-                    "type": "boolean",
-                    "description": "Specify if bam file is sorted [false, true]. If false or not specified, bam file will be sorted!",
-                    "help_text": "Set this parameter if you specified bam files in your samplesheet.",
-                    "fa_icon": "fas fa-pen-field"
-                },
-                "save_sorted_bam": {
-                    "type": "boolean",
-                    "description": "Specify if sorted bam file should be saved [false, true]. Default: false",
-                    "help_text": "Set this parameter if you specified bam files in your samplesheet.",
-                    "fa_icon": "fas fa-pen-field"
-                },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
@@ -81,15 +63,6 @@
                     "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
                     "fa_icon": "far fa-file-code"
                 },
-                "bwa_index": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/plain",
-                    "pattern": "^\\S+\\.\\{alt,amb,ann,bwt,pac,sa\\}$",
-                    "description": "Path to BWA Index genome file.",
-                    "help_text": "This parameter is *optional*. If you don't have a BWA index available this will be generated for you automatically.",
-                    "fa_icon": "far fa-file-code"
-                },
                 "igenomes_base": {
                     "type": "string",
                     "format": "directory-path",
@@ -104,145 +77,6 @@
                     "fa_icon": "fas fa-ban",
                     "hidden": true,
                     "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
-                },
-                "save_reference": {
-                    "type": "boolean",
-                    "description": "Save the index reference fasta in the results directory.",
-                    "help_text": "By default, indexed reference genome files will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
-                    "fa_icon": "fas fa-save"
-                }
-            }
-        },
-        "process_skipping_options": {
-            "title": "Process Skipping Options",
-            "type": "object",
-            "fa_icon": "fas fa-fast-forward",
-            "description": "Options to skip various steps within the workflow.",
-            "properties": {
-                "skip_qc": {
-                    "type": "boolean",
-                    "default": false,
-                    "fa_icon": "fas fa-fast-forward",
-                    "description": "Skip all QC steps except for MultiQC."
-                },
-                "skip_multiqc": {
-                    "type": "boolean",
-                    "default": false,
-                    "fa_icon": "fas fa-fast-forward",
-                    "description": "Skip MultiQC step except for MultiQC."
-                },
-                "skip_markduplicates": {
-                    "type": "boolean",
-                    "default": false,
-                    "fa_icon": "fas fa-fast-forward",
-                    "description": "Skip Picard MarkDuplicates and duplicate filtering"
-                },
-                "keep_duplicates": {
-                    "type": "boolean",
-                    "default": false,
-                    "fa_icon": "fas fa-delete-left",
-                    "description": "Keep read duplications marked by picard MarkDuplicates."
-                }
-            }
-        },
-        "read_trimming_options": {
-            "title": "Read trimming options",
-            "type": "object",
-            "fa_icon": "fas fa-cut",
-            "description": "Options to adjust read trimming criteria.",
-            "properties": {
-                "clip_r1": {
-                    "type": "integer",
-                    "description": "Instructs Trim Galore to remove bp from the 5' end of read 1 (or single-end reads).",
-                    "fa_icon": "fas fa-cut"
-                },
-                "clip_r2": {
-                    "type": "integer",
-                    "description": "Instructs Trim Galore to remove bp from the 5' end of read 2 (paired-end reads only).",
-                    "fa_icon": "fas fa-cut"
-                },
-                "three_prime_clip_r1": {
-                    "type": "integer",
-                    "description": "Instructs Trim Galore to remove bp from the 3' end of read 1 AFTER adapter/quality trimming has been performed.",
-                    "fa_icon": "fas fa-cut"
-                },
-                "three_prime_clip_r2": {
-                    "type": "integer",
-                    "description": "Instructs Trim Galore to remove bp from the 3' end of read 2 AFTER adapter/quality trimming has been performed.",
-                    "fa_icon": "fas fa-cut"
-                },
-                "trim_nextseq": {
-                    "type": "integer",
-                    "description": "Instructs Trim Galore to apply the --nextseq=X option, to trim based on quality after removing poly-G tails.",
-                    "help_text": "This enables the option Cutadapt `--nextseq-trim=3'CUTOFF` option via Trim Galore, which will set a quality cutoff (that is normally given with -q instead), but qualities of G bases are ignored. This trimming is in common for the NextSeq- and NovaSeq-platforms, where basecalls without any signal are called as high-quality G bases.",
-                    "fa_icon": "fas fa-cut"
-                },
-                "skip_trimming": {
-                    "type": "boolean",
-                    "description": "Skip the adapter trimming step.",
-                    "help_text": "Use this if your input FastQ files have already been trimmed outside of the workflow or if you're very confident that there is no adapter contamination in your data.",
-                    "fa_icon": "fas fa-fast-forward"
-                },
-                "save_trimmed": {
-                    "type": "boolean",
-                    "description": "Save the trimmed FastQ files in the results directory.",
-                    "help_text": "By default, trimmed FastQ files will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
-                    "fa_icon": "fas fa-save"
-                },
-                "save_merged_fastq": {
-                    "type": "boolean",
-                    "description": "Save the merged FastQ files in the results directory.",
-                    "help_text": "By default, merged FastQ files will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
-                    "fa_icon": "fas fa-save"
-                }
-            }
-        },
-        "circdna_identifier_options": {
-            "title": "Circular DNA identifier options",
-            "type": "object",
-            "fa_icon": "fas fa-circle-notch",
-            "description": "Options to adjust inital circular DNA identifier",
-            "properties": {
-                "circle_identifier": {
-                    "type": "string",
-                    "description": "Specifies the circular DNA identification algorithm to use - available 'circle_map_realign', 'circle_map_repeats', 'circle_finder', and 'circexplorer2'.",
-                    "fa_icon": "far fa-circle",
-                    "default": "circle_map_realign"
-                }
-            }
-        },
-        "amplicon_architect_options": {
-            "title": "Options to run AmpliconArchitect",
-            "type": "object",
-            "fa_icon": "fas fa-solid fa-circle-dashed",
-            "description": "Parameters used to run AmpliconArchitect. The software needs additional data files not included in ",
-            "properties": {
-                "aa_data_repo": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "mimetype": "text/plain",
-                    "fa_icon": "fas fa-folder",
-                    "description": "Path to the downloaded AA data repository. See AmpliconArchitect: https://github.com/virajbdeshpande/AmpliconArchitect"
-                },
-                "aa_cngain": {
-                    "type": "string",
-                    "mimetype": "text/plain",
-                    "fa_icon": "fa-chart-gantt",
-                    "description": "Copy Number Threshold for seeds to be considered by AmpliconArchitect."
-                },
-                "mosek_license_dir": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "mimetype": "text/plain",
-                    "fa_icon": "fas fa-folder",
-                    "description": "Path to the directory containing the mosek license file 'mosek.lic'."
-                },
-                "reference_build": {
-                    "type": "string",
-                    "mimetype": "text/plain",
-                    "fa_icon": "fas fa-box-archive",
-                    "description": "When running AmpliconArchitect, specify reference build ['GRCh37', 'GRCh38]. This is *mandatory* to match fasta and AA reference build!",
-                    "default": "GRCh38"
                 }
             }
         },
@@ -427,18 +261,6 @@
         },
         {
             "$ref": "#/definitions/max_job_request_options"
-        },
-        {
-            "$ref": "#/definitions/process_skipping_options"
-        },
-        {
-            "$ref": "#/definitions/circdna_identifier_options"
-        },
-        {
-            "$ref": "#/definitions/amplicon_architect_options"
-        },
-        {
-            "$ref": "#/definitions/read_trimming_options"
         },
         {
             "$ref": "#/definitions/generic_options"

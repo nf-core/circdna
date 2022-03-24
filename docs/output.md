@@ -14,14 +14,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 - [FastQC](#fastqc) - Raw read QC
 - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
-- [TrimGalore](#trimgalore) - Read Trimming
-- [BWA](#bwa) - Read mapping to reference genome
-- [Samtools](#samtools) - Sorting, indexing, filtering & stats generation of BAM file
-- [Bedtools](#bedtools) - Converts bam to bed file
-- [Circle-Map](#circle-map) - Identifies putative circular DNA junctions
-- [CIRCexplorer2](#circexplorer2) - Identifies putative circular DNA junctions
-- [Circle_finder](#circle_finder) - Identifies putative circular DNA junctions
-- [AmpliconArchitect](#ampliconarchitect) - Reconstruct the structure of focally amplified regions
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 
 ### FastQC
