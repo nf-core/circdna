@@ -17,6 +17,7 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
     tuple val(meta), path("*.out")          , optional: true, emit: out
     tuple val(meta), path("*_cnseg.txt")    , optional: true, emit: cnseg
     tuple val(meta), path("*.pdf")          , optional: true, emit: pdf
+    tuple val(meta), path("*.png")          , optional: true, emit: png
     tuple val(meta), path("*_summary.txt")  , optional: true, emit: summary
 
     script:
@@ -52,6 +53,7 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
     touch "${prefix}.out"
     touch "${prefix}_cnseg.txt"
     touch "${prefix}.pdf"
+    touch "${prefix}.png"
     touch "${prefix}_summary.txt"
 
     cat <<-END_VERSIONS > versions.yml

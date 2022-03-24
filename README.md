@@ -14,13 +14,11 @@
 [![Follow on Twitter](http://img.shields.io/badge/twitter-%40nf__core-1DA1F2?labelColor=000000&logo=twitter)](https://twitter.com/nf_core)
 [![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?labelColor=000000&logo=youtube)](https://www.youtube.com/c/nf-core)
 
-## IMPORTANT
-
-AmpliconArchitect is currently only runnable using **conda**. Please specify -profile conda, when using AmpliconArchitect.
-
 ## Introduction
 
-**nf-core/circdna** is a bioinformatics best-practice analysis pipeline for the identification of extrachromosomal circular DNAs (ecDNAs) with short read sequencing data.
+<!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
+
+**nf-core/circdna** is a bioinformatics best-practice analysis pipeline for Pipeline for the identification of circular DNAs.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
@@ -68,6 +66,8 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 4. Start running your own analysis!
 
+   <!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
+
    ```console
    nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
    ```
@@ -85,6 +85,10 @@ Main authors:
 ### Funding
 
 Daniel Schreyer received funding from the European Union’s Horizon 2020 Research and Innovation Program under the Marie Skłodowska-Curie grant agreement No 861196 designated for PRECODE.
+
+nf-core/circdna was originally written by Daniel Schreyer.
+
+We thank the following people for their extensive assistance in the development of this pipeline:
 
 ## Contributions and Support
 
