@@ -18,25 +18,6 @@ jobs:
         # TODO nf-core: You can customise AWS full pipeline tests as required
         # Add full size test data (but still relatively small datasets for few samples)
         # on the `test_full.config` test runs with only one set of parameters
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
-
-=======
-<<<<<<< HEAD
-
-=======
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
->>>>>>> nf-core-TEMPLATE
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}

@@ -16,24 +16,7 @@ jobs:
   test:
     name: Run pipeline with test data
     # Only run on push if this is the nf-core dev branch (merged PRs)
-<<<<<<< HEAD
-<<<<<<< HEAD
     if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/circdna') }}"
-=======
-=======
->>>>>>> nf-core-dev
-<<<<<<< HEAD
-    if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/circdna') }}
-=======
-    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/circdna') }}"
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
-<<<<<<< HEAD
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-=======
-    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/circdna') }}"
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -59,53 +42,11 @@ jobs:
           wget -qO- get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
 
-      - name: Install and configure Conda
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          channels: conda-forge,bioconda,defaults
-          miniconda-version: "latest"
-          python-version: 3.7
-          allow-softlinks: true
-          auto-activate-base: true
-          use-only-tar-bz2: true
-          activate-environment: true
-
-      - name: Conda info
-        run: conda info
-
       - name: Run pipeline with test data
         # TODO nf-core: You can customise CI pipeline run tests as required
         # For example: adding multiple test runs with different parameters
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-          nextflow run ${GITHUB_WORKSPACE} -profile test,conda --outdir ./results -stub-run
-=======
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
-<<<<<<< HEAD
-          nextflow run ${GITHUB_WORKSPACE} -profile test,conda --outdir ./results -stub-run
-=======
-=======
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results
-<<<<<<< HEAD
-=======
 
 #
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
->>>>>>> nf-core-TEMPLATE
->>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
-=======
->>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
->>>>>>> nf-core-TEMPLATE
-=======
->>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
->>>>>>> nf-core-dev
