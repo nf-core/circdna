@@ -11,7 +11,10 @@
 ## Pipeline tools
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> nf-core-dev
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -40,7 +43,12 @@
 -   [Singularity](https://pubmed.ncbi.nlm.nih.gov/28494014/)
     > Kurtzer GM, Sochat V, Bauer MW. Singularity: Scientific containers for mobility of compute. PLoS One. 2017 May 11;12(5):e0177459. doi: 10.1371/journal.pone.0177459. eCollection 2017. PubMed PMID: 28494014; PubMed Central PMCID: PMC5426675.
 =======
+<<<<<<< HEAD
 >>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
+=======
+=======
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
+>>>>>>> nf-core-dev
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 
 - [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
@@ -65,6 +73,12 @@
 - [Singularity](https://pubmed.ncbi.nlm.nih.gov/28494014/)
   > Kurtzer GM, Sochat V, Bauer MW. Singularity: Scientific containers for mobility of compute. PLoS One. 2017 May 11;12(5):e0177459. doi: 10.1371/journal.pone.0177459. eCollection 2017. PubMed PMID: 28494014; PubMed Central PMCID: PMC5426675.
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
 >>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
+=======
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+=======
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
+>>>>>>> nf-core-dev

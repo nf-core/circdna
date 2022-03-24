@@ -4,14 +4,22 @@
     "repos": {
         "nf-core/modules": {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> nf-core-dev
             "bwa/index": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "bwa/mem": {
                 "git_sha": "950700bcdc0e9a2b6883d40d2c51c6fc435cd714"
             },
+<<<<<<< HEAD
 >>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
+=======
+=======
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
+>>>>>>> nf-core-dev
             "cat/fastq": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
@@ -51,7 +59,10 @@
             "trimgalore": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> nf-core-dev
 =======
                 "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"
 =======
@@ -64,7 +75,12 @@
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
 >>>>>>> nf-core-TEMPLATE
+<<<<<<< HEAD
 >>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
+=======
+=======
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
+>>>>>>> nf-core-dev
             }
         }
     }

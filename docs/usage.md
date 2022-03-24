@@ -24,7 +24,10 @@ CONTROL_REP1,AEG588A1_S1_L004_R1_001.fastq.gz,AEG588A1_S1_L004_R2_001.fastq.gz
 ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> nf-core-dev
 <<<<<<< HEAD
 <<<<<<< HEAD
 | Column         | Description                                                                                                                                                                            |
@@ -52,7 +55,12 @@ TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
 
 =======
 >>>>>>> 417c56964a4eef354736058b448d677d04172201
+<<<<<<< HEAD
 >>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
+=======
+=======
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
+>>>>>>> nf-core-dev
 | Column    | Description                                                                                                                                                                            |
 | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `sample`  | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
@@ -93,14 +101,23 @@ The typical command for running the pipeline is as follows:
 
 ```console
 <<<<<<< HEAD
+<<<<<<< HEAD
 nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile docker
 =======
+=======
+>>>>>>> nf-core-dev
 <<<<<<< HEAD
 nextflow run nf-core/circdna --input samplesheet.csv  --outdir <OUTDIR> --genome GRCh37 -profile docker
 =======
 nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile docker
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+<<<<<<< HEAD
 >>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
+=======
+=======
+nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile docker
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
+>>>>>>> nf-core-dev
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -150,7 +167,10 @@ They are loaded in sequence, so later profiles can overwrite earlier profiles.
 If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> nf-core-dev
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -172,7 +192,12 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
     -   Includes links to test data so needs no other parameters
 <<<<<<< HEAD
 =======
+<<<<<<< HEAD
 >>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
+=======
+=======
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
+>>>>>>> nf-core-dev
 - `docker`
   - A generic configuration profile to be used with [Docker](https://docker.com/)
 - `singularity`
@@ -189,11 +214,19 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
   - A profile with a complete configuration for automated testing
   - Includes links to test data so needs no other parameters
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
 =======
 >>>>>>> 417c56964a4eef354736058b448d677d04172201
 >>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
+=======
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+=======
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
+=======
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
+>>>>>>> nf-core-dev
 
 ### `-resume`
 
@@ -260,13 +293,22 @@ process {
 
 > **NB:** We specify the full process name i.e. `NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN` in the config file because this takes priority over the short name (`STAR_ALIGN`) and allows existing configuration using the full process name to be correctly overridden.
 <<<<<<< HEAD
+<<<<<<< HEAD
 >
 =======
+=======
+>>>>>>> nf-core-dev
 <<<<<<< HEAD
 =======
 >
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+<<<<<<< HEAD
 >>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
+=======
+=======
+>
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
+>>>>>>> nf-core-dev
 > If you get a warning suggesting that the process selector isn't recognised check that the process name has been specified correctly.
 
 ### Updating containers
@@ -278,8 +320,11 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
 3. Create the custom config accordingly:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
    - For Docker:
 =======
+=======
+>>>>>>> nf-core-dev
 <<<<<<< HEAD
 <<<<<<< HEAD
     - For Docker:
@@ -289,7 +334,13 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
 =======
     - For Docker:
 >>>>>>> 417c56964a4eef354736058b448d677d04172201
+<<<<<<< HEAD
 >>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
+=======
+=======
+   - For Docker:
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
+>>>>>>> nf-core-dev
 
      ```nextflow
      process {
@@ -300,8 +351,11 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
      ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
    - For Singularity:
 =======
+=======
+>>>>>>> nf-core-dev
 <<<<<<< HEAD
 <<<<<<< HEAD
     - For Singularity:
@@ -311,7 +365,13 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
 =======
     - For Singularity:
 >>>>>>> 417c56964a4eef354736058b448d677d04172201
+<<<<<<< HEAD
 >>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
+=======
+=======
+   - For Singularity:
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
+>>>>>>> nf-core-dev
 
      ```nextflow
      process {
@@ -322,8 +382,11 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
      ```
 
 <<<<<<< HEAD
+<<<<<<< HEAD
    - For Conda:
 =======
+=======
+>>>>>>> nf-core-dev
 <<<<<<< HEAD
 <<<<<<< HEAD
     - For Conda:
@@ -333,7 +396,13 @@ The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementatio
 =======
     - For Conda:
 >>>>>>> 417c56964a4eef354736058b448d677d04172201
+<<<<<<< HEAD
 >>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
+=======
+=======
+   - For Conda:
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
+>>>>>>> nf-core-dev
 
      ```nextflow
      process {

@@ -27,8 +27,11 @@ jobs:
           number: ${{ steps.pr_number.outputs.pr_number }}
           path: linting-logs/lint_results.md
 <<<<<<< HEAD
+<<<<<<< HEAD
 #
 =======
+=======
+>>>>>>> nf-core-dev
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
@@ -36,4 +39,10 @@ jobs:
 >>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
 =======
 >>>>>>> 417c56964a4eef354736058b448d677d04172201
+<<<<<<< HEAD
 >>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
+=======
+=======
+#
+>>>>>>> 0eb448327e3e093f2004670630b02f6e99181e66
+>>>>>>> nf-core-dev
