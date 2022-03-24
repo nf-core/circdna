@@ -12,6 +12,28 @@ The directories listed below will be created in the results directory after the 
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+* [FastQC](#fastqc) - Raw read QC
+* [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
+* [TrimGalore](#trimgalore) - Read Trimming
+* [BWA](#bwa) - Read mapping to reference genome
+* [Samtools](#samtools) - Sorting, indexing, filtering & stats generation of BAM file
+* [Bedtools](#bedtools) - Converts bam to bed file
+* [Circle-Map](#circle-map) - Identifies putative circular DNA junctions
+* [CIRCexplorer2](#circexplorer2) - Identifies putative circular DNA junctions
+* [Circle_finder](#circle_finder) - Identifies putative circular DNA junctions
+* [AmpliconArchitect](#ampliconarchitect) - Reconstruct the structure of focally amplified regions
+* [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
+=======
+<<<<<<< HEAD
+-   [FastQC](#fastqc) - Raw read QC
+-   [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
+-   [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
+=======
+>>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
 - [FastQC](#fastqc) - Raw read QC
 - [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
 - [TrimGalore](#trimgalore) - Read Trimming
@@ -23,15 +45,51 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [Circle_finder](#circle_finder) - Identifies putative circular DNA junctions
 - [AmpliconArchitect](#ampliconarchitect) - Reconstruct the structure of focally amplified regions
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
+<<<<<<< HEAD
+=======
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+>>>>>>> nf-core-TEMPLATE
+=======
+-   [FastQC](#fastqc) - Raw read QC
+-   [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
+-   [TrimGalore](#trimgalore) - Read Trimming
+-   [BWA](#bwa) - Read mapping to reference genome
+-   [Samtools](#samtools) - Sorting, indexing, filtering & stats generation of BAM file
+-   [Bedtools](#bedtools) - Converts bam to bed file
+-   [Circle-Map](#circle-map) - Identifies putative circular DNA junctions
+-   [CIRCexplorer2](#circexplorer2) - Identifies putative circular DNA junctions
+-   [Circle_finder](#circle_finder) - Identifies putative circular DNA junctions
+-   [AmpliconArchitect](#ampliconarchitect) - Reconstruct the structure of focally amplified regions
+-   [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
+>>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
 
 ### FastQC
 
 <details markdown="1">
 <summary>Output files</summary>
 
+<<<<<<< HEAD
 - `fastqc/`
   - `*_fastqc.html`: FastQC report containing quality metrics.
   - `*_fastqc.zip`: Zip archive containing the FastQC report, tab-delimited data file and plot images.
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+-   `fastqc/`
+    -   `*_fastqc.html`: FastQC report containing quality metrics.
+    -   `*_fastqc.zip`: Zip archive containing the FastQC report, tab-delimited data file and plot images.
+=======
+- `fastqc/`
+  - `*_fastqc.html`: FastQC report containing quality metrics.
+  - `*_fastqc.zip`: Zip archive containing the FastQC report, tab-delimited data file and plot images.
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+=======
+-   `fastqc/`
+    -   `*_fastqc.html`: FastQC report containing quality metrics.
+    -   `*_fastqc.zip`: Zip archive containing the FastQC report, tab-delimited data file and plot images.
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
+>>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
 
 </details>
 
@@ -50,10 +108,29 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 <details markdown="1">
 <summary>Output files</summary>
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
+-   `multiqc/`
+    -   `multiqc_report.html`: a standalone HTML file that can be viewed in your web browser.
+    -   `multiqc_data/`: directory containing parsed statistics from the different tools used in the pipeline.
+    -   `multiqc_plots/`: directory containing static images from the report in various formats.
+<<<<<<< HEAD
+=======
+>>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
 - `multiqc/`
   - `multiqc_report.html`: a standalone HTML file that can be viewed in your web browser.
   - `multiqc_data/`: directory containing parsed statistics from the different tools used in the pipeline.
   - `multiqc_plots/`: directory containing static images from the report in various formats.
+<<<<<<< HEAD
+=======
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+=======
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
+>>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
 
 </details>
 
@@ -66,10 +143,29 @@ Results generated by MultiQC collate pipeline QC from supported tools e.g. FastQ
 <details markdown="1">
 <summary>Output files</summary>
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
+-   `pipeline_info/`
+    -   Reports generated by Nextflow: `execution_report.html`, `execution_timeline.html`, `execution_trace.txt` and `pipeline_dag.dot`/`pipeline_dag.svg`.
+    -   Reports generated by the pipeline: `pipeline_report.html`, `pipeline_report.txt` and `software_versions.yml`. The `pipeline_report*` files will only be present if the `--email` / `--email_on_fail` parameter's are used when running the pipeline.
+    -   Reformatted samplesheet files used as input to the pipeline: `samplesheet.valid.csv`.
+<<<<<<< HEAD
+=======
+>>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
 - `pipeline_info/`
   - Reports generated by Nextflow: `execution_report.html`, `execution_timeline.html`, `execution_trace.txt` and `pipeline_dag.dot`/`pipeline_dag.svg`.
   - Reports generated by the pipeline: `pipeline_report.html`, `pipeline_report.txt` and `software_versions.yml`. The `pipeline_report*` files will only be present if the `--email` / `--email_on_fail` parameter's are used when running the pipeline.
   - Reformatted samplesheet files used as input to the pipeline: `samplesheet.valid.csv`.
+<<<<<<< HEAD
+=======
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+=======
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
+>>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
 
 </details>
 

@@ -14,6 +14,12 @@ process FASTQC {
     tuple val(meta), path("*.html"), emit: html
     tuple val(meta), path("*.zip") , emit: zip
     path  "versions.yml"           , emit: versions
+<<<<<<< HEAD
+=======
+
+    when:
+    task.ext.when == null || task.ext.when
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
 
     when:
     task.ext.when == null || task.ext.when

@@ -10,9 +10,24 @@ jobs:
     if: github.repository == 'nf-core/circdna'
     runs-on: ubuntu-latest
     steps:
+<<<<<<< HEAD
       # Launch workflow using Tower CLI tool action
       - name: Launch workflow via tower
         uses: nf-core/tower-action@v3
+=======
+<<<<<<< HEAD
+      - name: Launch workflow via tower
+        uses: nf-core/tower-action@v3
+
+<<<<<<< HEAD
+=======
+=======
+      # Launch workflow using Tower CLI tool action
+      - name: Launch workflow via tower
+        uses: nf-core/tower-action@v3
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+>>>>>>> nf-core-TEMPLATE
+>>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
         with:
           workspace_id: ${{ secrets.TOWER_WORKSPACE_ID }}
           access_token: ${{ secrets.TOWER_ACCESS_TOKEN }}

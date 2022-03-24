@@ -3,16 +3,31 @@
     "homePage": "https://github.com/nf-core/circdna",
     "repos": {
         "nf-core/modules": {
+<<<<<<< HEAD
+=======
+            "bwa/index": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
+            "bwa/mem": {
+                "git_sha": "950700bcdc0e9a2b6883d40d2c51c6fc435cd714"
+            },
+>>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
             "cat/fastq": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "custom/dumpsoftwareversions": {
+<<<<<<< HEAD
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+=======
+<<<<<<< HEAD
+                "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"
+>>>>>>> nf-core-TEMPLATE
             },
             "fastqc": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "multiqc": {
+<<<<<<< HEAD
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
             "picard/markduplicates": {
@@ -35,6 +50,21 @@
             },
             "trimgalore": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+<<<<<<< HEAD
+=======
+=======
+                "git_sha": "20d8250d9f39ddb05dfb437603aaf99b5c0b2b41"
+=======
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
+            "fastqc": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
+            "multiqc": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+>>>>>>> nf-core-TEMPLATE
+>>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
             }
         }
     }

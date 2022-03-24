@@ -26,4 +26,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           number: ${{ steps.pr_number.outputs.pr_number }}
           path: linting-logs/lint_results.md
+<<<<<<< HEAD
 #
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+#
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+=======
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
+>>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507

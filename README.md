@@ -1,4 +1,12 @@
+<<<<<<< HEAD
 # ![nf-core/circdna](docs/images/nf-core/circdna_logo_light.png#gh-light-mode-only) ![nf-core/circdna](docs/images/nf-core/circdna_logo_dark.png#gh-dark-mode-only)
+=======
+<<<<<<< HEAD
+# ![nf-core/circdna](docs/images/nf-core-circdna_logo_light.png#gh-light-mode-only) ![nf-core/circdna](docs/images/nf-core-circdna_logo_dark.png#gh-dark-mode-only)
+=======
+# ![nf-core/circdna](docs/images/nf-core/circdna_logo_light.png#gh-light-mode-only) ![nf-core/circdna](docs/images/nf-core/circdna_logo_dark.png#gh-dark-mode-only)
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+>>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
 
 [![GitHub Actions CI Status](https://github.com/nf-core/circdna/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/circdna/actions?query=workflow%3A%22nf-core+CI%22)
 [![GitHub Actions Linting Status](https://github.com/nf-core/circdna/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/circdna/actions?query=workflow%3A%22nf-core+linting%22)
@@ -20,7 +28,17 @@ AmpliconArchitect is currently only runnable using **conda**. Please specify -pr
 
 ## Introduction
 
+<<<<<<< HEAD
 **nf-core/circdna** is a bioinformatics best-practice analysis pipeline for the identification of extrachromosomal circular DNAs (ecDNAs) with short read sequencing data.
+=======
+<<<<<<< HEAD
+**nf-core/circdna** is a bioinformatics best-practice analysis pipeline for the identification of extrachromosomal circular DNAs (ecDNAs) with short read sequencing data.
+=======
+<!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
+
+**nf-core/circdna** is a bioinformatics best-practice analysis pipeline for Pipeline for the identification of circular DNAs.
+>>>>>>> nf-core-TEMPLATE
+>>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
@@ -55,6 +73,22 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 3. Download the pipeline and test it on a minimal dataset with a single command:
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+    ```console
+    nextflow run nf-core/circdna -profile test,YOURPROFILE --outdir <OUTDIR>
+    ```
+
+    Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
+
+    > - The pipeline comes with config profiles called `docker`, `singularity`, `podman`, `shifter`, `charliecloud` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
+    > - Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
+    > - If you are using `singularity`, please use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
+    > - If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
+<<<<<<< HEAD
+=======
+>>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
    ```console
    nextflow run nf-core/circdna -profile test,YOURPROFILE --outdir <OUTDIR>
    ```
@@ -65,12 +99,41 @@ On release, automated continuous integration tests run the pipeline on a full-si
    > - Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
    > - If you are using `singularity`, please use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to download images first, before running the pipeline. Setting the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options enables you to store and re-use the images from a central location for future pipeline runs.
    > - If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
+<<<<<<< HEAD
 
 4. Start running your own analysis!
 
    ```console
    nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
    ```
+=======
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+=======
+>>>>>>> 417c56964a4eef354736058b448d677d04172201
+
+4. Start running your own analysis!
+
+<<<<<<< HEAD
+**IMPORTANT** The pipeline is currently only usable with conda. Implementation of docker, singularity, podman, shifter, charliecloud is currently under development.
+Please specify:
+
+```console
+nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
+```
+=======
+   <!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
+
+<<<<<<< HEAD
+    ```console
+    nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
+    ```
+=======
+   ```console
+   nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
+   ```
+>>>>>>> d13c279908de1b8cc2914a29996b39dc584e9e3f
+>>>>>>> nf-core-TEMPLATE
+>>>>>>> 6a32be9b78b05990be38e99304c76909cdbea507
 
 ## Documentation
 
