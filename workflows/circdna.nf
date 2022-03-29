@@ -43,11 +43,15 @@ if (params.bwa_index) {
     }
 
 // AMPLICON ARCHITECT INPUT
+mosek_license = file(params.mosek_license_dir + "/mosek.lic")
+
 if (run_ampliconarchitect) {
-    if (!params.mosek_license_dir & new File(params.mosek_license_dir + "/mosek.lic").exists()) {
-        exit 1, "Mosek Missing! Please specifiy --mosek_license_dir."
+    if (!stubRun) {
+        if (!mosek_license.exists()) {
+            exit 1, "Mosek License File is missing! Please specifiy directory containing mosek license using --mosek_license_dir and rename license to 'mosek.lic'."
+        }
+        if (!params.aa_data_repo) { exit 1, "AmpliconArchitect Data Repository Missing! Please specify --aa_data_repo." }
     }
-    if (!params.aa_data_repo) { exit 1, "AmpliconArchitect Data Repository Missing! Please specify --aa_data_repo." }
     if (params.reference_build != "hg19" & params.reference_build != "GRCh38" & params.reference_build != "GRCh37"){
         exit 1, "Reference Build not given! Please specify --reference_build 'hg19', 'GRCh38', or 'GRCh37'."
     }
