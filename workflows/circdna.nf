@@ -369,9 +369,9 @@ workflow CIRCDNA {
         AMPLICONARCHITECT_AMPLICONCLASSIFIER (
             ch_aa_cycles.join(ch_aa_graphs)
         )
-        AMPLICONARCHITECT_AMPLICONSIMILARITY (
-            ch_aa_cycles.join(ch_aa_graphs)
-        )
+//        AMPLICONARCHITECT_AMPLICONSIMILARITY (
+//            ch_aa_cycles.join(ch_aa_graphs)
+//        )
         aa_summary_ch = AMPLICONARCHITECT_AMPLICONARCHITECT.out.summary
         ch_versions = ch_versions.mix(AMPLICONARCHITECT_AMPLICONCLASSIFIER.out.versions)
 
