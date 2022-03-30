@@ -1,6 +1,6 @@
 process CIRCLEMAP_REPEATS {
     tag "$meta.id"
-    label 'process_high'
+    label 'process_low'
 
     conda (params.enable_conda ? "bioconda::circle-map=1.1.4 biopython=1.77" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?

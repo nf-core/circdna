@@ -1,11 +1,11 @@
 process AMPLICONARCHITECT_AMPLICONCLASSIFIER {
     tag "$meta.id"
-    label 'process_medium'
+    label 'process_low'
 
-    conda (params.enable_conda ? "conda-forge::python=3.8 conda-forge::matplotlib=2.2.5 conda-forge::intervaltree=3.0.2" : null)
+    conda (params.enable_conda ? "bioconda::ampliconclassifier=0.4.5" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/YOUR-TOOL-HERE':
-        'quay.io/biocontainers/YOUR-TOOL-HERE' }"
+        'https://depot.galaxyproject.org/singularity/ampliconclassifier:0.4.5--hdfd78af_0':
+        'quay.io/biocontainers/ampliconclassifier:0.4.5--hdfd78af_0' }"
 
     input:
     tuple val(meta), path(cycles), path(graph)
