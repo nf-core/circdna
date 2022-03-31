@@ -19,7 +19,7 @@ process CIRCLEMAP_REALIGN {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    circle_map.py \\
+    Circle-Map \\
         Realign \\
         $args \\
         -i $re_bam \\

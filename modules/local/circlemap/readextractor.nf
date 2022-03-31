@@ -18,7 +18,7 @@ process CIRCLEMAP_READEXTRACTOR {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    circle_map.py ReadExtractor -i $qname_bam \\
+    Circle-Map ReadExtractor -i $qname_bam \\
         -o ${prefix}.circular_read_candidates.bam
 
     cat <<-END_VERSIONS > versions.yml
