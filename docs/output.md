@@ -23,6 +23,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 - [CIRCexplorer2](#circexplorer2) - Identifies putative circular DNA junctions
 - [Circle_finder](#circle_finder) - Identifies putative circular DNA junctions
 - [AmpliconArchitect](#ampliconarchitect) - Reconstruct the structure of focally amplified regions
+- [Unicycler](#unicycler) - DeNovo Alignment of circular DNAs
 
 ### FastQC
 

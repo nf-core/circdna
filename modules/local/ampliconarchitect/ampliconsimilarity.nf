@@ -2,10 +2,10 @@ process AMPLICONARCHITECT_AMPLICONSIMILARITY {
     tag "$meta.id"
     label 'process_low'
 
-    conda (params.enable_conda ? "conda-forge::intervaltree=3.0.2" : null)
+    conda (params.enable_conda ? "bioconda::ampliconclassifier=0.4.5=hdfd78af_1" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/YOUR-TOOL-HERE':
-        'quay.io/biocontainers/YOUR-TOOL-HERE' }"
+        'https://depot.galaxyproject.org/singularity/ampliconclassifier:0.4.5--hdfd78af_1':
+        'quay.io/biocontainers/ampliconclassifier:0.4.5--hdfd78af_1' }"
 
     input:
     tuple val(meta), path(cycles), path(graph)
@@ -52,6 +52,10 @@ process AMPLICONARCHITECT_AMPLICONSIMILARITY {
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         python: \$(python --version | sed 's/Python //g')
+    END_VERSIONS
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        AmpliconClassifier: \$(echo \$(amplicon_classifier.py --version | sed 's/amplicon_classifier //g' | sed 's/ .*//g'))
     END_VERSIONS
     """
 }

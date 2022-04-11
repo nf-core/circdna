@@ -26,19 +26,19 @@
                     "type": "string",
                     "description": "Specify input format. Default *FASTQ*. Options 'FASTQ' or 'BAM'.",
                     "help_text": "Set this parameter if you specified bam files in your samplesheet.",
-                    "fa_icon": "fas fa-pen-field"
+                    "fa_icon": "fa-solid fa-pen"
                 },
                 "bam_sorted": {
                     "type": "boolean",
                     "description": "Specify if bam file is sorted [false, true]. If false or not specified, bam file will be sorted!",
                     "help_text": "Set this parameter if you specified bam files in your samplesheet.",
-                    "fa_icon": "fas fa-pen-field"
+                    "fa_icon": "fa-solid fa-sort-down"
                 },
                 "save_sorted_bam": {
                     "type": "boolean",
                     "description": "Specify if sorted bam file should be saved [false, true]. Default: false",
                     "help_text": "Set this parameter if you specified bam files in your samplesheet.",
-                    "fa_icon": "fas fa-pen-field"
+                    "fa_icon": "fas fa-save"
                 },
                 "outdir": {
                     "type": "string",
@@ -140,7 +140,7 @@
                 "keep_duplicates": {
                     "type": "boolean",
                     "default": false,
-                    "fa_icon": "fas fa-delete-left",
+                    "fa_icon": "fa-solid fa-box-archive",
                     "description": "Keep read duplications marked by picard MarkDuplicates."
                 }
             }
@@ -227,7 +227,7 @@
                 "aa_cngain": {
                     "type": "string",
                     "mimetype": "text/plain",
-                    "fa_icon": "fa-chart-gantt",
+                    "fa_icon": "fa-solid fa-chart-gantt",
                     "description": "Copy Number Threshold for seeds to be considered by AmpliconArchitect."
                 },
                 "mosek_license_dir": {
@@ -240,7 +240,7 @@
                 "reference_build": {
                     "type": "string",
                     "mimetype": "text/plain",
-                    "fa_icon": "fas fa-box-archive",
+                    "fa_icon": "fa-solid fa-box-archive",
                     "description": "When running AmpliconArchitect, specify reference build ['GRCh37', 'GRCh38]. This is *mandatory* to match fasta and AA reference build!",
                     "default": "GRCh38"
                 }
