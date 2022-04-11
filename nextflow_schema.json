@@ -142,6 +142,12 @@
                     "default": false,
                     "fa_icon": "fa-solid fa-box-archive",
                     "description": "Keep read duplications marked by picard MarkDuplicates."
+                },
+                "save_markduplicates_bam": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fa-solid fa-box-archive",
+                    "description": "Store bam with marked duplicate reads."
                 }
             }
         },
