@@ -42,25 +42,11 @@ jobs:
           wget -qO- get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
 
-      - name: Install and configure Conda
-        uses: conda-incubator/setup-miniconda@v2
-        with:
-          channels: conda-forge,bioconda,defaults
-          miniconda-version: "latest"
-          python-version: 3.7
-          allow-softlinks: true
-          auto-activate-base: true
-          use-only-tar-bz2: true
-          activate-environment: true
-
-      - name: Conda info
-        run: conda info
-
       - name: Run pipeline with test data
         # TODO nf-core: You can customise CI pipeline run tests as required
         # For example: adding multiple test runs with different parameters
         # Remember that you can parallelise this by using strategy.matrix
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,conda --outdir ./results
+          nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results
 
 #
