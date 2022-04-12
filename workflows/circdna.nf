@@ -43,8 +43,6 @@ if (params.bwa_index) {
     }
 
 // AMPLICON ARCHITECT INPUT
-mosek_license = file(params.mosek_license_dir)
-
 if (run_ampliconarchitect) {
     // if (!mosek_license.exists()) {
     //     exit 1, "Mosek License File is missing! Please specifiy directory containing mosek license using --mosek_license_dir and rename license to 'mosek.lic'."
