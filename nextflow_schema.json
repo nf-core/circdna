@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "outdir"],
+            "required": ["input", "outdir", "input_format"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -25,6 +25,7 @@
                 "input_format": {
                     "type": "string",
                     "description": "Specify input format. Default *FASTQ*. Options 'FASTQ' or 'BAM'.",
+                    "default": "FASTQ",
                     "help_text": "Set this parameter if you specified bam files in your samplesheet.",
                     "fa_icon": "fa-solid fa-pen"
                 },
@@ -107,6 +108,7 @@
                 },
                 "save_reference": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Save the index reference fasta in the results directory.",
                     "help_text": "By default, indexed reference genome files will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
                     "fa_icon": "fas fa-save"
@@ -191,12 +193,14 @@
                 },
                 "save_trimmed": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Save the trimmed FastQ files in the results directory.",
                     "help_text": "By default, trimmed FastQ files will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
                     "fa_icon": "fas fa-save"
                 },
                 "save_merged_fastq": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Save the merged FastQ files in the results directory.",
                     "help_text": "By default, merged FastQ files will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
                     "fa_icon": "fas fa-save"
