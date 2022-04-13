@@ -142,13 +142,13 @@
                 "keep_duplicates": {
                     "type": "boolean",
                     "default": false,
-                    "fa_icon": "fa-solid fa-box-archive",
+                    "fa_icon": "fas fa-save",
                     "description": "Keep read duplications marked by picard MarkDuplicates."
                 },
                 "save_markduplicates_bam": {
                     "type": "boolean",
                     "default": false,
-                    "fa_icon": "fa-solid fa-box-archive",
+                    "fa_icon": "fas fa-save",
                     "description": "Store bam with marked duplicate reads."
                 }
             }
@@ -237,7 +237,8 @@
                 "aa_cngain": {
                     "type": "string",
                     "mimetype": "text/plain",
-                    "fa_icon": "fa-solid fa-chart-gantt",
+                    "default": "4.5",
+                    "fa_icon": "fas fa-chart-gantt",
                     "description": "Copy Number Threshold for seeds to be considered by AmpliconArchitect."
                 },
                 "mosek_license_dir": {
@@ -250,7 +251,7 @@
                 "reference_build": {
                     "type": "string",
                     "mimetype": "text/plain",
-                    "fa_icon": "fa-solid fa-box-archive",
+                    "fa_icon": "fas fa-book",
                     "description": "When running AmpliconArchitect, specify reference build ['GRCh37', 'GRCh38]. This is *mandatory* to match fasta and AA reference build!",
                     "default": "GRCh38"
                 }
