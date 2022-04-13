@@ -36,10 +36,10 @@ On release, automated continuous integration tests run the pipeline on a full-si
 6. Choice of multiple circular DNA identification routes
    1. [`Circle-Map ReadExtractor`](https://github.com/iprada/Circle-Map) -> [`Circle-Map Realign`](https://github.com/iprada/Circle-Map)
    1. [`Circle-Map ReadExtractor`](https://github.com/iprada/Circle-Map) -> [`Circle-Map Repeats`](https://github.com/iprada/Circle-Map)
-   2. [`CIRCexplorer2`](https://circexplorer2.readthedocs.io/en/latest/)
-   3. [`Samblaster`](https://github.com/GregoryFaust/samblaster) -> [`Circle_finder`](https://github.com/pk7zuva/Circle_finder)
-   4. Identification of circular amplicons [`AmpliconArchitect`](https://github.com/virajbdeshpande/AmpliconArchitect)
-   5. DeNovo Assembly of circular DNAs [`Unicycler`](https://github.com/rrwick/Unicycler) -> [`Minimap2`](https://github.com/lh3/minimap2)
+   1. [`CIRCexplorer2`](https://circexplorer2.readthedocs.io/en/latest/)
+   1. [`Samblaster`](https://github.com/GregoryFaust/samblaster) -> [`Circle_finder`](https://github.com/pk7zuva/Circle_finder)
+   1. Identification of circular amplicons [`AmpliconArchitect`](https://github.com/virajbdeshpande/AmpliconArchitect)
+   1. DeNovo Assembly of circular DNAs [`Unicycler`](https://github.com/rrwick/Unicycler) -> [`Minimap2`](https://github.com/lh3/minimap2)
 7. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
 ## Functionality Overview
@@ -81,29 +81,29 @@ Please specify the parameter `circle_identifier` depending on the pipeline branc
 
 ### Identification of putative ecDNA junctions with ATAC-seq or Circle-seq data
 
-  > `circle_finder` uses [Circle_finder](https://github.com/pk7zuva/Circle_finder)
+> `circle_finder` uses [Circle_finder](https://github.com/pk7zuva/Circle_finder)
 
-  > `circexplorer2` uses [CIRCexplorer2](https://circexplorer2.readthedocs.io/en/latest/)
+> `circexplorer2` uses [CIRCexplorer2](https://circexplorer2.readthedocs.io/en/latest/)
 
-  > `circle_map_realign` uses [Circle-Map Realign](https://github.com/iprada/Circle-Map)
+> `circle_map_realign` uses [Circle-Map Realign](https://github.com/iprada/Circle-Map)
 
-  > `circle_map_repeats` uses [Circle-Map Repeats](https://github.com/iprada/Circle-Map) for the identification of repetetive circular DNA
+> `circle_map_repeats` uses [Circle-Map Repeats](https://github.com/iprada/Circle-Map) for the identification of repetetive circular DNA
 
 ### Identification of circular amplicons with WGS data
 
-  > `ampliconarchitect` uses [AmpliconArchitect](https://github.com/virajbdeshpande/AmpliconArchitect)
+> `ampliconarchitect` uses [AmpliconArchitect](https://github.com/virajbdeshpande/AmpliconArchitect)
 
 ### De novo assembly of circular DNAs with Circle-Seq data
 
-  > `unicycler` uses [Unicycler](https://github.com/rrwick/Unicycler) for de novo assembly of circular DNAs and [Minimap2](https://github.com/lh3/minimap2) for accurate mapping of the identified circular sequences.
-
+> `unicycler` uses [Unicycler](https://github.com/rrwick/Unicycler) for de novo assembly of circular DNAs and [Minimap2](https://github.com/lh3/minimap2) for accurate mapping of the identified circular sequences.
 
 ### Example Usage
 
 The user can specify either one or multiple `circle_identifier` (see below).
-  ``` console
-  nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 -profile docker --circle_identifier circle_map_realign,unicycler
-  ```
+
+```console
+nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 -profile docker --circle_identifier circle_map_realign,unicycler
+```
 
 ## Documentation
 
