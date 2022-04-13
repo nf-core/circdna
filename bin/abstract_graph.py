@@ -17,8 +17,8 @@
 # IN NO EVENT SHALL THE UNIVERSITY OF CALIFORNIA BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE UNIVERSITY OF CALIFORNIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. THE UNIVERSITY OF CALIFORNIA SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE SOFTWARE PROVIDED HEREUNDER IS ON AN "AS IS" BASIS, AND THE UNIVERSITY OF CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
 
-#Author: Viraj Deshpande
-#Contact: virajbdeshpande@gmail.com
+# Author: Viraj Deshpande
+# Contact: virajbdeshpande@gmail.com
 
 
 # This file defines classes and methods for an abstract undirected graph, vertex and edge.
@@ -26,12 +26,14 @@
 
 import logging
 
+
 class abstract_vertex(object):
     """Class describing a graph vertex.
     Attributes:
     elist: List of abstract_edges
     vid: (optional) ID for the abstract_vertex
     graph: (optional) abstract_graph to which the vertex belongs"""
+
     def __init__(self, vid=0, graph=None):
         """Initiate vertex with optional vid and graph"""
         self.elist = []
@@ -63,6 +65,7 @@ class abstract_edge(object):
     v1, v2: Ordered pair of vertices connected by the edge
     eid: (optional) ID for the abstract_edge
     graph: (optional) abstract_graph to which the vertex belongs."""
+
     def __init__(self, v1, v2, eid=0, graph=None, update_vertices=True):
         """Initiate edge
         Arguments: v1, v2, (optional)eid, (optional) graph.
@@ -104,7 +107,7 @@ class abstract_edge(object):
 
     def __repr__(self):
         """String representation of the form v1<->v2."""
-        return str(self.v1) + '<->' + str(self.v2)
+        return str(self.v1) + "<->" + str(self.v2)
 
 
 class abstract_graph(object):
@@ -114,11 +117,12 @@ class abstract_graph(object):
     es: Dictionary from eid/key to edge
     max_vid: (internal) max_vid, used to assign vid for new vertex. Suggested to use function next_vid.
     max_eid: (internal) max_eid, used to assign eid for new edge. Suggested to use function next_eid."""
+
     def __init__(self):
         """Initiate empty graph"""
         self.es = {}  # key -->edges
         self.vs = {}  # key -->vertices
-        #self.logger = logging.getLogger('Algae')
+        # self.logger = logging.getLogger('Algae')
         self.max_eid = 1
         self.max_vid = 1
 
@@ -142,13 +146,13 @@ class abstract_graph(object):
             e.graph = self
         self.es[e.eid] = e
 
-    def next_eid (self):
+    def next_eid(self):
         """Find the next eid available for assignment to new edge"""
         while self.max_eid in self.es or -1 * self.max_eid in self.es:
             self.max_eid += 1
         return self.max_eid
 
-    def next_vid (self):
+    def next_vid(self):
         """Find the next vid available for assignment to new vertex"""
         while self.max_vid in self.vs or -1 * self.max_vid in self.vs:
             self.max_vid += 1

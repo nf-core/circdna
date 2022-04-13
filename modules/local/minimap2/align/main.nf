@@ -27,7 +27,7 @@ process MINIMAP2_ALIGN {
         -t $task.cpus \\
         $reference \\
         $fastq \\
-        > ${prefix}.paf
+        > ${prefix}.circdna.mapped.paf
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
