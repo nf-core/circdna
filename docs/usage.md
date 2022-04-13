@@ -6,7 +6,13 @@
 
 ## Introduction
 
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
+**nf-core/circdna** is a bioinformatics best-practice analysis pipeline for the identification of circular DNAs in eukaryotic cells. The pipeline is able to process WGS, ATAC-seq data or Circle-Seq data generated from short-read sequencing technologies.
+
+Depending on the branch (circle_identifier) used in the pipeline, different input data is needed:
+
+> The circle_identifiers `circle_map_realign`, `circle_map_repeats`, `circle_finder`, and `circexplorer2` work best with ATAC-seq or Circle-seq data.
+
+> The circle_identifier `ampliconarchitect` only works with WGS data.
 
 ## Samplesheet input
 
@@ -77,7 +83,7 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 The typical command for running the pipeline is as follows:
 
 ```console
-nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 -profile docker
+nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 -profile docker --circle_identifier <CIRCLE_IDENTIFIER_STRING>
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -86,7 +92,7 @@ Note that the pipeline will create the following files in your working directory
 
 ```console
 work                # Directory containing the nextflow working files
-<OUTIDR>            # Finished results in specified location (defined with --outdir)
+<OUTDIR>            # Finished results in specified location (defined with --outdir)
 .nextflow_log       # Log file from Nextflow
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
 ```

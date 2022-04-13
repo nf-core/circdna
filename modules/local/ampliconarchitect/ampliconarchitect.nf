@@ -56,6 +56,8 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
     touch "${prefix}.png"
     touch "${prefix}_summary.txt"
 
+    AmpliconArchitect.py --help
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         AmpliconArchitect: \$(echo \$(AmpliconArchitect.py --version 2>&1) | sed 's/AmpliconArchitect version //g')
