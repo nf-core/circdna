@@ -99,7 +99,7 @@ Please specify the parameter `circle_identifier` depending on the pipeline branc
 
 ### Example Usage
 
-The user can specify either one or multiple `circle_identifier` (see below).
+The user can specify either one or multiple comma-separated `circle_identifier` (see below).
 
 ```console
 nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 -profile docker --circle_identifier circle_map_realign,unicycler
