@@ -187,6 +187,7 @@
                 },
                 "skip_trimming": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Skip the adapter trimming step.",
                     "help_text": "Use this if your input FastQ files have already been trimmed outside of the workflow or if you're very confident that there is no adapter contamination in your data.",
                     "fa_icon": "fas fa-fast-forward"
@@ -238,7 +239,7 @@
                     "type": "string",
                     "mimetype": "text/plain",
                     "default": "4.5",
-                    "fa_icon": "far fa-chart-gantt",
+                    "fa_icon": "fas fa-chart-bar",
                     "description": "Copy Number Threshold for seeds to be considered by AmpliconArchitect."
                 },
                 "mosek_license_dir": {
