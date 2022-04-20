@@ -3,30 +3,54 @@
     "homePage": "https://github.com/nf-core/circdna",
     "repos": {
         "nf-core/modules": {
-            "bwa/index": { "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d" },
-            "bwa/mem": { "git_sha": "950700bcdc0e9a2b6883d40d2c51c6fc435cd714" },
-            "cat/fastq": { "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d" },
+            "bwa/index": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
+            "bwa/mem": {
+                "git_sha": "4f5274c3de0c9521f5033893ff61057a74c45ba9"
+            },
+            "cat/fastq": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            },
             "custom/dumpsoftwareversions": {
                 "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             },
-            "fastqc": { "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d" },
-            "multiqc": { "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d" },
-            "picard/markduplicates": {
-                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            "fastqc": {
+                "git_sha": "49b18b1639f4f7104187058866a8fab33332bdfe"
             },
-            "samtools/faidx": { "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35" },
+            "multiqc": {
+                "git_sha": "49b18b1639f4f7104187058866a8fab33332bdfe"
+            },
+            "picard/markduplicates": {
+                "git_sha": "49b18b1639f4f7104187058866a8fab33332bdfe"
+            },
+            "samtools/faidx": {
+                "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
+            },
             "samtools/flagstat": {
-                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
+                "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
             },
             "samtools/idxstats": {
+                "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
+            },
+            "samtools/index": {
                 "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
             },
-            "samtools/index": { "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35" },
-            "samtools/sort": { "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35" },
-            "samtools/stats": { "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35" },
-            "samtools/view": { "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35" },
-            "seqtk/seq": { "git_sha": "f0800157544a82ae222931764483331a81812012" },
-            "trimgalore": { "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d" }
+            "samtools/sort": {
+                "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
+            },
+            "samtools/stats": {
+                "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
+            },
+            "samtools/view": {
+                "git_sha": "897c33d5da084b61109500ee44c01da2d3e4e773"
+            },
+            "seqtk/seq": {
+                "git_sha": "f0800157544a82ae222931764483331a81812012"
+            },
+            "trimgalore": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
+            }
         }
     }
 }
