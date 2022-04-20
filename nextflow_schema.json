@@ -125,30 +125,35 @@
                     "type": "boolean",
                     "default": false,
                     "fa_icon": "fas fa-fast-forward",
+                    "help_text": "Set this parameter to skip all quality control steps except MultiQC.",
                     "description": "Skip all QC steps except for MultiQC."
                 },
                 "skip_multiqc": {
                     "type": "boolean",
                     "default": false,
                     "fa_icon": "fas fa-fast-forward",
-                    "description": "Skip MultiQC step except for MultiQC."
+                    "help_text": "Set this parameter to skip the MultiQC step.",
+                    "description": "Skip MultiQC step."
                 },
                 "skip_markduplicates": {
                     "type": "boolean",
                     "default": false,
                     "fa_icon": "fas fa-fast-forward",
+                    "help_text": "Set this parameter to skip annotating and filtering of duplicates marked by Picard Markduplicates.",
                     "description": "Skip Picard MarkDuplicates and duplicate filtering"
                 },
                 "keep_duplicates": {
                     "type": "boolean",
                     "default": false,
                     "fa_icon": "fas fa-save",
+                    "help_text": "Set this parameter to skip filtering of duplicates marked by Picard Markduplicates.",
                     "description": "Keep read duplications marked by picard MarkDuplicates."
                 },
                 "save_markduplicates_bam": {
                     "type": "boolean",
                     "default": false,
                     "fa_icon": "fas fa-save",
+                    "help_text": "Set this parameter to save bam file with marked duplicate reads..",
                     "description": "Store bam with marked duplicate reads."
                 }
             }
@@ -217,6 +222,7 @@
                 "circle_identifier": {
                     "type": "string",
                     "description": "Specifies the circular DNA identification algorithm to use - available 'circle_map_realign', 'circle_map_repeats', 'circle_finder', and 'circexplorer2'.",
+                    "help_text": "Specify the circle_identifier branch used. Multiple circle_identifier's can be specified with a comma-separated string. E.g. `--circle_identifier 'circle_map_realign,unicycler'`.",
                     "fa_icon": "fas fa-circle-notch",
                     "default": "circle_map_realign"
                 }
@@ -233,13 +239,15 @@
                     "format": "directory-path",
                     "mimetype": "text/plain",
                     "fa_icon": "fas fa-folder",
-                    "description": "Path to the downloaded AA data repository. See AmpliconArchitect: https://github.com/virajbdeshpande/AmpliconArchitect"
+                    "help_text": "Specify the path to the AmpliconArchitect data repository. See [AmpliconArchitect](https://github.com/virajbdeshpande/AmpliconArchitect)",
+                    "description": "Path to the downloaded AA data repository. See [AmpliconArchitect](https://github.com/virajbdeshpande/AmpliconArchitect)"
                 },
                 "aa_cngain": {
                     "type": "string",
                     "mimetype": "text/plain",
                     "default": "4.5",
                     "fa_icon": "fas fa-chart-bar",
+                    "help_text": "Specify the seed copy number threshold.",
                     "description": "Copy Number Threshold for seeds to be considered by AmpliconArchitect."
                 },
                 "mosek_license_dir": {
@@ -247,6 +255,7 @@
                     "format": "directory-path",
                     "mimetype": "text/plain",
                     "fa_icon": "fas fa-folder",
+                    "help_text": "Specify the path to the directory containing the mosek license file named `mosek.lic`. A free academic license can be obtained at [Mosek.com](https://www.mosek.com/products/academic-licenses/).",
                     "description": "Path to the directory containing the mosek license file 'mosek.lic'."
                 },
                 "reference_build": {
@@ -254,6 +263,7 @@
                     "mimetype": "text/plain",
                     "fa_icon": "fas fa-book",
                     "description": "When running AmpliconArchitect, specify reference build ['GRCh37', 'GRCh38]. This is *mandatory* to match fasta and AA reference build!",
+                    "help_text": "Specify the reference genome build used for alignment of the WGS reads.",
                     "default": "GRCh38"
                 }
             }
