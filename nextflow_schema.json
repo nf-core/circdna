@@ -116,7 +116,7 @@
             }
         },
         "process_skipping_options": {
-            "title": "Process Skipping Options",
+            "title": "Process Skipping options",
             "type": "object",
             "fa_icon": "fas fa-fast-forward",
             "description": "Options to skip various steps within the workflow.",
@@ -217,15 +217,15 @@
                 "circle_identifier": {
                     "type": "string",
                     "description": "Specifies the circular DNA identification algorithm to use - available 'circle_map_realign', 'circle_map_repeats', 'circle_finder', and 'circexplorer2'.",
-                    "fa_icon": "far fa-circle",
+                    "fa_icon": "fas fa-circle-notch",
                     "default": "circle_map_realign"
                 }
             }
         },
         "amplicon_architect_options": {
-            "title": "Options to run AmpliconArchitect",
+            "title": "AmpliconArchitect options",
             "type": "object",
-            "fa_icon": "fas fa-solid fa-circle-dashed",
+            "fa_icon": "fas fa-circle-notch",
             "description": "Parameters used to run AmpliconArchitect. The software needs additional data files not included in ",
             "properties": {
                 "aa_data_repo": {
