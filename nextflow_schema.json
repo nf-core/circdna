@@ -26,13 +26,13 @@
                     "type": "string",
                     "description": "Specify input format. Default *FASTQ*. Options 'FASTQ' or 'BAM'.",
                     "default": "FASTQ",
-                    "help_text": "Set this parameter if you specified bam files in your samplesheet.",
+                    "help_text": "Define which input file formats are used in the pipeline run. Use either `--input_format FASTQ` or `--input_format BAM`.",
                     "fa_icon": "fas fa-pen"
                 },
                 "bam_sorted": {
                     "type": "boolean",
                     "description": "Specify if bam file is sorted [false, true]. If false or not specified, bam file will be sorted!",
-                    "help_text": "Set this parameter if you specified bam files in your samplesheet.",
+                    "help_text": "Set this parameter if you specified `--input_format BAM` and supplied sorted `BAM` files. This will skip the `samtools sort` step.",
                     "fa_icon": "fas fa-sort-down"
                 },
                 "save_sorted_bam": {
