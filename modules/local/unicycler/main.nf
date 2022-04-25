@@ -1,8 +1,6 @@
 process UNICYCLER {
     tag "$meta.id"
-    label 'process_high'
-    cpus params.max_cpus
-    memory params.max_memory
+    label 'process_max'
 
     conda (params.enable_conda ? 'bioconda::unicycler=0.5.0=py39h2add14b_1' : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
