@@ -33,7 +33,7 @@ On release, automated continuous integration tests run the pipeline on a [full-s
    1. [`Circle-Map ReadExtractor`](https://github.com/iprada/Circle-Map) -> [`Circle-Map Repeats`](https://github.com/iprada/Circle-Map)
    1. [`CIRCexplorer2`](https://circexplorer2.readthedocs.io/en/latest/)
    1. [`Samblaster`](https://github.com/GregoryFaust/samblaster) -> [`Circle_finder`](https://github.com/pk7zuva/Circle_finder)
-   1. Identification of circular amplicons [`AmpliconArchitect`](https://github.com/virajbdeshpande/AmpliconArchitect)
+   1. Identification of circular amplicons [`AmpliconArchitect`](https://github.com/jluebeck/AmpliconArchitect)
    1. DeNovo Assembly of circular DNAs [`Unicycler`](https://github.com/rrwick/Unicycler) -> [`Minimap2`](https://github.com/lh3/minimap2)
 7. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
@@ -86,7 +86,7 @@ Please specify the parameter `circle_identifier` depending on the pipeline branc
 
 ### Identification of circular amplicons with WGS data
 
-> `ampliconarchitect` uses [AmpliconArchitect](https://github.com/virajbdeshpande/AmpliconArchitect)
+> `ampliconarchitect` uses [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect)
 
 ### De novo assembly of circular DNAs with Circle-Seq data
 

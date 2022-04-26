@@ -205,20 +205,20 @@ This pipeline branch `ampliconarchitect` is only usable with WGS data.
 
 #### **CNVkit**
 
-[CNVkit](https://cnvkit.readthedocs.io/en/stable/) uses alignment information to make copy number calls. These copy number calls will be used by AmpliconArchitect to identify circular and other types of amplicons. The Copy Number calls are then connected to seeds and filtered based on the copy number threshold using scripts provided by [PrepareAA](https://github.com/jluebeck/Prepare
+[CNVkit](https://cnvkit.readthedocs.io/en/stable/) uses alignment information to make copy number calls. These copy number calls will be used by AmpliconArchitect to identify circular and other types of amplicons. The Copy Number calls are then connected to seeds and filtered based on the copy number threshold using scripts provided by [PrepareAA](<https://github.com/jluebeck/Prepare>
 
 **Output directory: `results/ampliconarchitect/cnvkit`**
 
 - `[SAMPLE]_CNV_GAIN.bed`
   - `bed` file containing filtered Copy Number calls
 - `[SAMPLE]_AA_CNV_SEEDS.bed`
-  - `bed` file containing filtered and connected amplified regions (seeds). This is used as input for [AmpliconArchitect](https://github.com/virajbdeshpande/AmpliconArchitect)
+  - `bed` file containing filtered and connected amplified regions (seeds). This is used as input for [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect)
 - `[SAMPLE].cnvkit.segment.cns`
   - `cns` file containing copy number calls of CNVkit segment.
 
 #### **AmpliconArchitect**
 
-[AmpliconArchitect](https://github.com/virajbdeshpande/AmpliconArchitect) uses amplicon seeds provided by `CNVkit`and `PrepareAA`to identify different types of amplicons in each sample.
+[AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect) uses amplicon seeds provided by `CNVkit`and `PrepareAA`to identify different types of amplicons in each sample.
 
 **Output directory: `results/ampliconarchitect/ampliconarchitect`**
 
