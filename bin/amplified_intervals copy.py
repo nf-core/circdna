@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 # This software is Copyright 2017 The Regents of the University of California. All Rights Reserved. Permission to copy, modify, and distribute this software and its documentation for educational, research and non-profit purposes, without fee, and without a written agreement is hereby granted, provided that the above copyright notice, this paragraph and the following three paragraphs appear in all copies. Permission to make commercial use of this software may be obtained by contacting:
 #
@@ -18,11 +18,12 @@
 
 # Author: Viraj Deshpande
 # Contact: virajbdeshpande@gmail.com
-# Maintained by Jens Luebeck jluebeck@ucsd.edu
+
 
 import copy
 from collections import defaultdict
 import sys
+from sets import Set
 import numpy as np
 import re
 
@@ -32,8 +33,8 @@ import os
 import pysam
 import global_names
 
-GAIN = 4.5
-CNSIZE_MIN = 50000
+GAIN = 5.0
+CNSIZE_MIN = 100000
 
 parser = argparse.ArgumentParser(description="Filter and merge amplified intervals")
 parser.add_argument(
@@ -88,19 +89,11 @@ parser.add_argument(
     type=str,
     default="hg19",
 )
-parser.add_argument(
-    "--no_cstats",
-    dest="no_cstats",
-    help="Do not re-use coverage statistics from coverage.stats.",
-    action="store_true",
-    default=False,
-)
-
-
 args = parser.parse_args()
 
 global_names.REF = args.ref
-import ref_util as hg
+import hg19util as hg
+
 
 if args.bed != "":
     rdAlts = args.bed
@@ -136,58 +129,32 @@ if args.bam != "":
         bamFile = pysam.Samfile(args.bam, "rc")
     else:
         bamFile = pysam.Samfile(args.bam, "rb")
-
     cstats = None
     cb = bamFile
-    if (
-        os.path.exists(os.path.join(hg.DATA_REPO, "coverage.stats"))
-        and not args.no_cstats
-    ):
+    if os.path.exists(os.path.join(hg.DATA_REPO, "coverage.stats")):
         coverage_stats_file = open(os.path.join(hg.DATA_REPO, "coverage.stats"))
         for l in coverage_stats_file:
             ll = l.strip().split()
-            bamfile_pathname = str(cb.filename.decode())
-            bamfile_filesize = os.path.getsize(bamfile_pathname)
-            if ll[0] == os.path.abspath(bamfile_pathname):
+            if ll[0] == os.path.abspath(cb.filename):
                 cstats = tuple(map(float, ll[1:]))
-                if (
-                    len(cstats) < 15
-                    or cstats[13] != 3
-                    or bamfile_filesize != int(cstats[14])
-                ):
-                    cstats = None
-
         coverage_stats_file.close()
-
     bamFileb2b = b2b.bam_to_breakpoint(bamFile, coverage_stats=cstats)
-    pre_int_list = []
-    for r in rdList:
-        try:
-            chrom_cov_ratio = (
-                bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0]
+    rdList = hg.interval_list(
+        [
+            r
+            for r in rdList
+            if float(r.info[-1])
+            > GAIN
+            + 2
+            * max(
+                1.0,
+                bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0],
             )
-            # print("chrom ratio " + r.chrom + " " + str(chrom_cov_ratio))
-            if (
-                float(r.info[-1])
-                > GAIN
-                + 2
-                * max(
-                    1.0,
-                    bamFileb2b.median_coverage(refi=r)[0]
-                    / bamFileb2b.median_coverage()[0],
-                )
-                - 2
-                and bamFileb2b.median_coverage(refi=r)[0]
-                / bamFileb2b.median_coverage()[0]
-                > 0
-            ):
-                if r.size() < 10000000 or float(r.info[-1]) > 1.5 * GAIN:
-                    pre_int_list.append(r)
-
-        except ZeroDivisionError:
-            continue
-
-    rdList = hg.interval_list(pre_int_list)
+            - 2
+            and bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0]
+            > 0
+        ]
+    )
 
 genome_features = hg.oncogene_list
 amplicon_listl = rdList
