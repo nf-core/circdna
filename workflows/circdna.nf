@@ -311,7 +311,8 @@ workflow CIRCDNA {
 
         // FILTER BAM FILES USING SAMTOOLS VIEW
         SAMTOOLS_VIEW_FILTER (
-            ch_bam_sorted, ch_fasta
+            ch_bam_sorted.join(ch_bam_sorted_bai),
+            ch_fasta
         )
         ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FILTER.out.versions)
 
