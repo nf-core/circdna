@@ -258,7 +258,7 @@ This Branch utilises the ability of [Unicycler](https://github.com/rrwick/Unicyc
 
 ### Branch: `ampliconarchitect`
 
-This pipeline branch `ampliconarchitect` is only usable with WGS data. This branch uses the utility of [PrepareAA](<https://github.com/jluebeck/Prepare>) to collect amplified seeds from copy number calls, which will be then fed to [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect) to characterise amplicons in each given sample.
+This pipeline branch `ampliconarchitect` is only usable with WGS data. This branch uses the utility of [PrepareAA](https://github.com/jluebeck/Prepare) to collect amplified seeds from copy number calls, which will be then fed to [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect) to characterise amplicons in each given sample.
 
 #### **CNVkit**
 
@@ -328,7 +328,7 @@ This pipeline branch `ampliconarchitect` is only usable with WGS data. This bran
 
 #### **AmpliconArchitect Summary**
 
-The `Summary` script merges the output of `AmpliconArchitect` and `AmpliconClassifer` to give full information about each amplicon in a sample.  Please refer to [AmpliconClassifier](#ampliconclassifier) for more accurate ecDNA interval calling. Some intervals classified in the `AmpliconArchitect` and `Summary` output are not located on ecDNAs.
+The `Summary` script merges the output of `AmpliconArchitect` and `AmpliconClassifer` to give full information about each amplicon in a sample. Please refer to [AmpliconClassifier](#ampliconclassifier) for more accurate ecDNA interval calling. Some intervals classified in the `AmpliconArchitect` and `Summary` output are not located on ecDNAs.
 
 <details markdown="1">
 <summary>Output files</summary>
