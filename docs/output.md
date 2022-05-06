@@ -205,7 +205,7 @@ This pipeline branch `ampliconarchitect` is only usable with WGS data.
 
 #### **CNVkit**
 
-[CNVkit](https://cnvkit.readthedocs.io/en/stable/) uses alignment information to make copy number calls. These copy number calls will be used by AmpliconArchitect to identify circular and other types of amplicons. The Copy Number calls are then connected to seeds and filtered based on the copy number threshold using scripts provided by [PrepareAA](<https://github.com/jluebeck/Prepare>
+[CNVkit](https://cnvkit.readthedocs.io/en/stable/) uses alignment information to make copy number calls. These copy number calls will be used by AmpliconArchitect to identify circular and other types of amplicons. The Copy Number calls are then connected to seeds and filtered based on the copy number threshold using scripts provided by [PrepareAA](<https://github.com/jluebeck/Prepare>)
 
 **Output directory: `results/ampliconarchitect/cnvkit`**
 
@@ -247,14 +247,17 @@ This pipeline branch `ampliconarchitect` is only usable with WGS data.
   - `tsv` file describing if an amplicon is circular [1 = circular, 0 = non-circular].
 - `gene_list/[SAMPLE]_gene_list.tsv`
   - `tsv` file detailing the genes on each amplicon.
-- `log/[SAMPLE]_.classifier_stdout.log`
+- `log/[SAMPLE].classifier_stdout.log`
   - `log` file
 - `similarity/[SAMPLE]_similarity_scores.tsv`
   - `tsv` file containing amplicon similarity scores calculated by `AmpliconSimilarity`.
+- `bed/[SAMPLE]_amplicon[AMPLICONID]_[CLASSIFICATION]_[ID]_intervals.bed`
+  - `bed` files containing information about the intervals on each amplicon. `unknown` intervals were not identified to be located on the respective amplicon.
 
 #### **AmpliconArchitect Summary**
 
 The `Summary` script merges the output of `AmpliconArchitect` and `AmpliconClassifer` to give full information about each amplicon in a sample.
+Please refer to [AmpliconClassifier](#ampliconclassifier) for more accurate ecDNA interval calling. Some intervals classified in the `AmpliconArchitect` and `Summary` output are not located on ecDNAs.
 
 **Output directory: `results/ampliconarchitect/summary`**
 
