@@ -59,6 +59,12 @@ A graphical view of the pipeline and its diverse branches can be seen below.
    nextflow run nf-core/circdna -profile test,YOURPROFILE --outdir <OUTDIR>
    ```
 
+   To test the `ampliconarchitect` branch functionality, please use the following command:
+
+   ```console
+   nextflow run nf-core/circdna -profile test_AA,YOURPROFILE --outdir <OUTDIR>
+   ```
+
    Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
 
    > - The pipeline comes with config profiles called `docker`, `singularity`, `podman`, `shifter`, `charliecloud` and `conda` which instruct the pipeline to use the named tool for software management. For example, `-profile test,docker`.
@@ -96,7 +102,7 @@ Please specify the parameter `circle_identifier` depending on the pipeline branc
 
 ### Example Usage
 
-The user can specify either one or multiple comma-separated `circle_identifier` (see below).
+The user can specify either one or multiple `circle_identifier` in a comma-separated string (see below).
 
 ```console
 nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 -profile docker --circle_identifier circle_map_realign,unicycler

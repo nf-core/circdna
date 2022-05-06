@@ -239,8 +239,8 @@
                     "format": "directory-path",
                     "mimetype": "text/plain",
                     "fa_icon": "fas fa-folder",
-                    "help_text": "Specify the path to the AmpliconArchitect data repository. See [AmpliconArchitect](https://github.com/virajbdeshpande/AmpliconArchitect)",
-                    "description": "Path to the downloaded AA data repository. See [AmpliconArchitect](https://github.com/virajbdeshpande/AmpliconArchitect)"
+                    "help_text": "Specify the path to the AmpliconArchitect data repository. See [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect)",
+                    "description": "Path to the downloaded AA data repository. See [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect)"
                 },
                 "aa_cngain": {
                     "type": "string",
