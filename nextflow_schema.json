@@ -221,7 +221,7 @@
             "properties": {
                 "circle_identifier": {
                     "type": "string",
-                    "description": "Specifies the circular DNA identification algorithm to use - available 'circle_map_realign', 'circle_map_repeats', 'circle_finder', and 'circexplorer2'.",
+                    "description": "Specifies the circular DNA identification algorithm to use - available 'circle_map_realign', 'circle_map_repeats', 'circle_finder', 'circexplorer2', and 'ampliconarchitect'.",
                     "help_text": "Specify the circle_identifier branch used. Multiple circle_identifier's can be specified with a comma-separated string. E.g. `--circle_identifier 'circle_map_realign,unicycler'`.",
                     "fa_icon": "fas fa-circle-notch",
                     "default": "circle_map_realign"
