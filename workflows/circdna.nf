@@ -326,6 +326,7 @@ workflow CIRCDNA {
             ch_bam_sorted
         )
         ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FILTERED.out.versions)
+
         ch_bam_sorted_bai = SAMTOOLS_INDEX_FILTERED.out.bai
     } else {
         ch_markduplicates_stats         = Channel.empty()
@@ -385,7 +386,7 @@ workflow CIRCDNA {
     //
     if (run_circle_finder) {
         SAMTOOLS_SORT_QNAME_CF (
-            ch_bwa_sorted
+            ch_bam_sorted
         )
         ch_versions = ch_versions.mix(SAMTOOLS_SORT_QNAME_CF.out.versions)
 
