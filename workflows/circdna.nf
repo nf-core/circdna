@@ -76,9 +76,9 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 include { INPUT_CHECK           } from '../subworkflows/local/input_check'
 
 /*
-========================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS & LOCAL MODULES/SUBWORKFLOWS
-========================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
@@ -114,7 +114,7 @@ include { SAMTOOLS_FAIDX                            }   from '../modules/local/s
 include { SAMTOOLS_STATS                            }   from '../modules/nf-core/modules/samtools/stats/main'
 
 // BAM STATS
-include { BAM_STATS_SAMTOOLS                        }   from '../subworkflows/nf-core/bam_stats_samtools.nf'
+include { BAM_STATS_SAMTOOLS as BAM_STATS_SAMTOOLS_RAW }   from '../subworkflows/nf-core/bam_stats_samtools.nf'
 
 // CIRCLE-MAP
 include { CIRCLEMAP_READEXTRACTOR                   }   from '../modules/local/circlemap/readextractor.nf'
@@ -155,9 +155,9 @@ include { MINIMAP2_ALIGN      }     from '../modules/local/minimap2/align/main.n
 include { MULTIQC }     from '../modules/local/multiqc.nf'
 
 /*
-========================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
-========================================================================================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
 // Info required for completion email and summary
@@ -165,6 +165,15 @@ def multiqc_report = []
 
 workflow CIRCDNA {
     ch_versions = Channel.empty()
+
+    // Define Empty Channels for MultiQC
+    ch_samtools_stats           = Channel.empty()
+    ch_samtools_flagstat        = Channel.empty()
+    ch_samtools_idxstats        = Channel.empty()
+    ch_markduplicates_stats     = Channel.empty()
+    ch_markduplicates_flagstat  = Channel.empty()
+    ch_markduplicates_idxstats  = Channel.empty()
+    ch_markduplicates_multiqc   = Channel.empty()
 
     // Check file format
     if (params.input_format == "FASTQ") {
@@ -235,7 +244,8 @@ workflow CIRCDNA {
         //
         // MODULE: Run bwa index
         //
-        if (!bwa_index_exists) {
+        if (!bwa_index_exists & (run_ampliconarchitect | run_circexplorer2 |
+                                run_circle_finder | run_circle_map_realign | run_circle_map_repeats)) {
             BWA_INDEX (
                 ch_fasta
             )
@@ -247,6 +257,8 @@ workflow CIRCDNA {
         //
         // MODULE: BWA MEM ALIGNMENT
         //
+        if (run_ampliconarchitect | run_circexplorer2 | run_circle_finder |
+            run_circle_map_realign | run_circle_map_repeats) {
         BWA_MEM (
             ch_trimmed_reads,
             ch_bwa_index,
@@ -261,6 +273,7 @@ workflow CIRCDNA {
             ch_bam_sorted
         )
         ch_versions = ch_versions.mix(SAMTOOLS_INDEX_BAM.out.versions)
+        }
 
     } else if (params.input_format == "BAM") {
     // Use BAM Files as input
@@ -287,52 +300,55 @@ workflow CIRCDNA {
         ch_trimgalore_multiqc_log   = Channel.empty()
     }
 
-    ch_bam_sorted_bai       = SAMTOOLS_INDEX_BAM.out.bai
+    if (run_ampliconarchitect | run_circexplorer2 | run_circle_finder |
+        run_circle_map_realign | run_circle_map_repeats) {
+        ch_bam_sorted_bai       = SAMTOOLS_INDEX_BAM.out.bai
 
-    BAM_STATS_SAMTOOLS (
-        ch_bam_sorted.join(ch_bam_sorted_bai)
-    )
-    ch_samtools_stats               = BAM_STATS_SAMTOOLS.out.stats
-    ch_samtools_flagstat            = BAM_STATS_SAMTOOLS.out.flagstat
-    ch_samtools_idxstats            = BAM_STATS_SAMTOOLS.out.idxstats
-
-    // PICARD MARK_DUPLICATES
-    if (!params.skip_markduplicates) {
-        MARK_DUPLICATES_PICARD (
-            ch_bam_sorted
+        BAM_STATS_SAMTOOLS_RAW (
+            ch_bam_sorted.join(ch_bam_sorted_bai)
         )
-        ch_versions = ch_versions.mix(MARK_DUPLICATES_PICARD.out.versions)
-        ch_bam_sorted               = MARK_DUPLICATES_PICARD.out.bam
-        ch_bam_sorted_bai           = MARK_DUPLICATES_PICARD.out.bai
-        ch_markduplicates_stats     = MARK_DUPLICATES_PICARD.out.stats
-        ch_markduplicates_flagstat  = MARK_DUPLICATES_PICARD.out.flagstat
-        ch_markduplicates_idxstats  = MARK_DUPLICATES_PICARD.out.idxstats
-        ch_markduplicates_multiqc   = MARK_DUPLICATES_PICARD.out.metrics
+        ch_samtools_stats               = BAM_STATS_SAMTOOLS_RAW.out.stats
+        ch_samtools_flagstat            = BAM_STATS_SAMTOOLS_RAW.out.flagstat
+        ch_samtools_idxstats            = BAM_STATS_SAMTOOLS_RAW.out.idxstats
 
-        // FILTER BAM FILES USING SAMTOOLS VIEW
-        SAMTOOLS_VIEW_FILTER (
-            ch_bam_sorted.join(ch_bam_sorted_bai),
-            ch_fasta
-        )
-        ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FILTER.out.versions)
+        // PICARD MARK_DUPLICATES
+        if (!params.skip_markduplicates) {
+            MARK_DUPLICATES_PICARD (
+                ch_bam_sorted
+            )
+            ch_versions = ch_versions.mix(MARK_DUPLICATES_PICARD.out.versions)
+            ch_bam_sorted               = MARK_DUPLICATES_PICARD.out.bam
+            ch_bam_sorted_bai           = MARK_DUPLICATES_PICARD.out.bai
+            ch_markduplicates_stats     = MARK_DUPLICATES_PICARD.out.stats
+            ch_markduplicates_flagstat  = MARK_DUPLICATES_PICARD.out.flagstat
+            ch_markduplicates_idxstats  = MARK_DUPLICATES_PICARD.out.idxstats
+            ch_markduplicates_multiqc   = MARK_DUPLICATES_PICARD.out.metrics
 
-        SAMTOOLS_SORT_FILTERED (
-            SAMTOOLS_VIEW_FILTER.out.bam
-        )
-        ch_versions = ch_versions.mix(SAMTOOLS_SORT_FILTERED.out.versions)
-        ch_bam_sorted = SAMTOOLS_SORT_FILTERED.out.bam
+            // FILTER BAM FILES USING SAMTOOLS VIEW
+            SAMTOOLS_VIEW_FILTER (
+                ch_bam_sorted.join(ch_bam_sorted_bai),
+                ch_fasta
+            )
+            ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FILTER.out.versions)
 
-        SAMTOOLS_INDEX_FILTERED (
-            ch_bam_sorted
-        )
-        ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FILTERED.out.versions)
+            SAMTOOLS_SORT_FILTERED (
+                SAMTOOLS_VIEW_FILTER.out.bam
+            )
+            ch_versions = ch_versions.mix(SAMTOOLS_SORT_FILTERED.out.versions)
+            ch_bam_sorted = SAMTOOLS_SORT_FILTERED.out.bam
 
-        ch_bam_sorted_bai = SAMTOOLS_INDEX_FILTERED.out.bai
-    } else {
-        ch_markduplicates_stats         = Channel.empty()
-        ch_markduplicates_flagstat      = Channel.empty()
-        ch_markduplicates_idxstats      = Channel.empty()
-        ch_markduplicates_multiqc       = Channel.empty()
+            SAMTOOLS_INDEX_FILTERED (
+                ch_bam_sorted
+            )
+            ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FILTERED.out.versions)
+
+            ch_bam_sorted_bai = SAMTOOLS_INDEX_FILTERED.out.bai
+        } else {
+            ch_markduplicates_stats         = Channel.empty()
+            ch_markduplicates_flagstat      = Channel.empty()
+            ch_markduplicates_idxstats      = Channel.empty()
+            ch_markduplicates_multiqc       = Channel.empty()
+        }
     }
 
     if (run_ampliconarchitect) {
