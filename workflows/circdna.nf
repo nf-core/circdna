@@ -108,7 +108,7 @@ include { SAMTOOLS_SORT as SAMTOOLS_SORT_FILTERED   }   from '../modules/nf-core
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FILTERED }   from '../modules/nf-core/modules/samtools/index/main'
 
 // SAMTOOLS SORT & INDEX
-include { SAMTOOLS_FAIDX                            }   from '../modules/local/samtools/faidx/main'
+include { SAMTOOLS_FAIDX                            }   from '../modules/nf-core/modules/samtools/faidx/main'
 
 // SAMTOOLS STATISTICS
 include { SAMTOOLS_STATS                            }   from '../modules/nf-core/modules/samtools/stats/main'
@@ -145,10 +145,10 @@ include { AMPLICONARCHITECT_AMPLICONSIMILARITY      }     from '../modules/local
 include { SUMMARISE_AA                              }     from '../modules/local/summarise_aa.nf'
 
 // Unicycler
-include { UNICYCLER           }     from '../modules/local/unicycler/main.nf'
+include { UNICYCLER           }     from '../modules/nf-core/modules/unicycler/main.nf'
 include { SEQTK_SEQ           }     from '../modules/local/seqtk/seq.nf'
 include { GETCIRCULARREADS    }     from '../modules/local/getcircularreads.nf'
-include { MINIMAP2_ALIGN      }     from '../modules/local/minimap2/align/main.nf'
+include { MINIMAP2_ALIGN      }     from '../modules/nf-core/modules/minimap2/align/main.nf'
 
 
 // MULTIQC
@@ -435,8 +435,12 @@ workflow CIRCDNA {
     if (run_circle_map_realign ||
             run_circle_map_repeats) {
 
+        ch_fasta_faidx = [Channel.value("Reference"), ch_fasta]
+
+        ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
+
         SAMTOOLS_FAIDX (
-            ch_fasta
+            ch_fasta_faidx
         )
         ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
 
@@ -503,7 +507,7 @@ workflow CIRCDNA {
 
     if (run_unicycler && params.input_format == "FASTQ") {
         UNICYCLER (
-            ch_trimmed_reads
+            ch_trimmed_reads.join(Channel.value(false))
         )
         ch_versions = ch_versions.mix(UNICYCLER.out.versions)
 
@@ -516,9 +520,17 @@ workflow CIRCDNA {
             SEQTK_SEQ.out.fastq
         )
 
+        GETCIRCULARREADS.out.fastq.map {
+            meta, fastq ->
+                meta.single_end = true
+                [ meta, fastq ] }.set { ch_circular_fastq }
+
         MINIMAP2_ALIGN (
-            GETCIRCULARREADS.out.fastq,
-            ch_fasta
+            ch_circular_fastq,
+            ch_fasta,
+            false,
+            false,
+            false
         )
         ch_versions = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
     } else if (run_unicycler && !params.input_format == "FASTQ") {
