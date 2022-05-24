@@ -506,8 +506,13 @@ workflow CIRCDNA {
     }
 
     if (run_unicycler && params.input_format == "FASTQ") {
+
+        ch_trimmed_reads.map { meta, fastq -> [ meta, fastq, []] }
+        .set { ch_unicycler_input }
+
+
         UNICYCLER (
-            ch_trimmed_reads.join(Channel.value(false))
+            ch_unicycler_input
         )
         ch_versions = ch_versions.mix(UNICYCLER.out.versions)
 
@@ -520,10 +525,17 @@ workflow CIRCDNA {
             SEQTK_SEQ.out.fastq
         )
 
-        GETCIRCULARREADS.out.fastq.map {
-            meta, fastq ->
-                meta.single_end = true
-                [ meta, fastq ] }.set { ch_circular_fastq }
+//        GETCIRCULARREADS.out.fastq.map {
+//            meta, fastq ->
+//                meta.single_end = true
+//                [ meta, fastq ] }.set { ch_circular_fastq }
+
+        GETCIRCULARREADS.out.fastq
+        .map { meta, fastq -> meta }
+        .view()
+        GETCIRCULARREADS.out.fastq
+            .map { meta, fastq -> [ meta + [single_end: true], fastq ] }
+            .set { ch_circular_fastq }
 
         MINIMAP2_ALIGN (
             ch_circular_fastq,
