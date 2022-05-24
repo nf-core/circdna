@@ -18,8 +18,8 @@
             "fastqc": {
                 "git_sha": "49b18b1639f4f7104187058866a8fab33332bdfe"
             },
-            "multiqc": {
-                "git_sha": "49b18b1639f4f7104187058866a8fab33332bdfe"
+            "minimap2/align": {
+                "git_sha": "1a5a9e7b4009dcf34e6867dd1a5a1d9a718b027b"
             },
             "picard/markduplicates": {
                 "git_sha": "49b18b1639f4f7104187058866a8fab33332bdfe"
@@ -45,11 +45,11 @@
             "samtools/view": {
                 "git_sha": "12afb6b0faf3cabf769c9a2a7dd477e3f066eac0"
             },
-            "seqtk/seq": {
-                "git_sha": "f0800157544a82ae222931764483331a81812012"
-            },
             "trimgalore": {
                 "git_sha": "85ec13ff1fc2196c5a507ea497de468101baabed"
+            },
+            "unicycler": {
+                "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
             }
         }
     }
