@@ -18,13 +18,13 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 if (params.fasta) { ch_fasta = file(params.fasta) } else { exit 1, 'Fasta reference genome not specified!' }
 
-software = params.circle_identifier.split(",")
-run_circexplorer2 = ("circexplorer2" in software)
-run_circle_map_realign = ("circle_map_realign" in software)
-run_circle_map_repeats = ("circle_map_repeats" in software)
-run_circle_finder = ("circle_finder" in software)
-run_ampliconarchitect = ("ampliconarchitect" in software)
-run_unicycler = ("unicycler" in software)
+branch = params.circle_identifier.split(",")
+run_circexplorer2 = ("circexplorer2" in branch)
+run_circle_map_realign = ("circle_map_realign" in branch)
+run_circle_map_repeats = ("circle_map_repeats" in branch)
+run_circle_finder = ("circle_finder" in branch)
+run_ampliconarchitect = ("ampliconarchitect" in branch)
+run_unicycler = ("unicycler" in branch)
 
 if (!(run_unicycler | run_circle_map_realign | run_circle_map_repeats | run_circle_finder | run_ampliconarchitect | run_circexplorer2)) {
     exit 1, 'circle_identifier param not valid. Please check!'
@@ -435,14 +435,6 @@ workflow CIRCDNA {
     if (run_circle_map_realign ||
             run_circle_map_repeats) {
 
-        ch_fasta_faidx = [Channel.value("Reference"), ch_fasta]
-
-        ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-
-        SAMTOOLS_FAIDX (
-            ch_fasta_faidx
-        )
-        ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
 
         SAMTOOLS_SORT_QNAME_CM (
             ch_bam_sorted
@@ -469,7 +461,6 @@ workflow CIRCDNA {
         ch_qname_sorted_bam = SAMTOOLS_SORT_QNAME_CM.out.bam
         ch_re_sorted_bam = SAMTOOLS_SORT_RE.out.bam
         ch_re_sorted_bai = SAMTOOLS_INDEX_RE.out.bai
-        ch_fasta_index = SAMTOOLS_FAIDX.out.fai
 
         //
         // MODULE: RUN CIRCLE_MAP REPEATS
@@ -485,6 +476,15 @@ workflow CIRCDNA {
         // MODULE: Run Circle-Map Realign
         //
         if (run_circle_map_realign) {
+
+            Channel.of(ch_fasta).map { fasta -> [ [], fasta ] }.set { ch_fasta_faidx }
+
+            SAMTOOLS_FAIDX (
+                ch_fasta_faidx
+            )
+            ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
+
+            ch_fasta_index = SAMTOOLS_FAIDX.out.fai
             CIRCLEMAP_REALIGN (
                 ch_re_sorted_bam.join(ch_re_sorted_bai).
                     join(ch_qname_sorted_bam).
@@ -525,14 +525,6 @@ workflow CIRCDNA {
             SEQTK_SEQ.out.fastq
         )
 
-//        GETCIRCULARREADS.out.fastq.map {
-//            meta, fastq ->
-//                meta.single_end = true
-//                [ meta, fastq ] }.set { ch_circular_fastq }
-
-        GETCIRCULARREADS.out.fastq
-        .map { meta, fastq -> meta }
-        .view()
         GETCIRCULARREADS.out.fastq
             .map { meta, fastq -> [ meta + [single_end: true], fastq ] }
             .set { ch_circular_fastq }
