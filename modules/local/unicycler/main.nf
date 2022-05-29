@@ -23,6 +23,7 @@ process UNICYCLER {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def short_reads = shortreads ? ( meta.single_end ? "-s $shortreads" : "-1 ${shortreads[0]} -2 ${shortreads[1]}" ) : ""
+
     """
     unicycler \\
         --threads $task.cpus \\

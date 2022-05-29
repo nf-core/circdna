@@ -145,7 +145,7 @@ include { AMPLICONARCHITECT_AMPLICONSIMILARITY      }     from '../modules/local
 include { SUMMARISE_AA                              }     from '../modules/local/summarise_aa.nf'
 
 // Unicycler
-include { UNICYCLER           }     from '../modules/nf-core/modules/unicycler/main.nf'
+include { UNICYCLER           }     from '../modules/local/unicycler/main.nf'
 include { SEQTK_SEQ           }     from '../modules/local/seqtk/seq.nf'
 include { GETCIRCULARREADS    }     from '../modules/local/getcircularreads.nf'
 include { MINIMAP2_ALIGN      }     from '../modules/nf-core/modules/minimap2/align/main.nf'
@@ -506,10 +506,6 @@ workflow CIRCDNA {
     }
 
     if (run_unicycler && params.input_format == "FASTQ") {
-
-        ch_trimmed_reads.map { meta, fastq -> [ meta, fastq, []] }
-        .set { ch_unicycler_input }
-
 
         UNICYCLER (
             ch_unicycler_input
