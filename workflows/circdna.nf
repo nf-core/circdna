@@ -508,7 +508,7 @@ workflow CIRCDNA {
     if (run_unicycler && params.input_format == "FASTQ") {
 
         UNICYCLER (
-            ch_unicycler_input
+            ch_trimmed_reads
         )
         ch_versions = ch_versions.mix(UNICYCLER.out.versions)
 
