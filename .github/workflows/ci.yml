@@ -67,5 +67,3 @@ jobs:
       - name: Run pipeline with AmpliconArchitect
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test_AA,docker --outdir ./results
-
-#
