@@ -37,10 +37,9 @@ process CIRCLEFINDER {
     #The following command will chose (may not be always true) one concordant and 2 split read
 
     awk '\$1=="3" {print \$2}' ${prefix}.concordant.id-freq.txt > ${prefix}.concordant.id-freq3.txt
-    awk '\$1>3 {print \$2}' ${prefix}.concordant.id-freq.txt > ${prefix}.concordant.id-freqGr3.txt
+    # awk '\$1>3 {print \$2}' ${prefix}.concordant.id-freq.txt > ${prefix}.concordant.id-freqGr3.txt
 
     file_exists ${prefix}.concordant.id-freq3.txt
-    file_exists ${prefix}.concordant.id-freqGr3.txt
 
     grep -w -Ff ${prefix}.split.id-freq2.txt ${split} > ${prefix}.split_freq2.txt
     # grep -w -Ff ${prefix}.split.id-freq4.txt ${split} > ${prefix}.split_freq4.txt
@@ -49,10 +48,9 @@ process CIRCLEFINDER {
 
     #Selecting concordant pairs that were 1) mapped uniquely and 2) mapped on more than one loci (file "freqGr3.txt")
     grep -w -Ff ${prefix}.concordant.id-freq3.txt ${concordant} > ${prefix}.concordant_freq3.txt
-    grep -w -Ff ${prefix}.concordant.id-freqGr3.txt ${concordant} > ${prefix}.concordant_freqGr3.txt
+#    grep -w -Ff ${prefix}.concordant.id-freqGr3.txt ${concordant} > ${prefix}.concordant_freqGr3.txt
 
     file_exists ${prefix}.concordant_freq3.txt
-    file_exists ${prefix}.concordant_freqGr3.txt
 
     #Step 7: Putting split read with same id in one line
     sed 'N;s/\\n/\\t/' ${prefix}.split_freq2.txt > ${prefix}.split_freq2.oneline.txt

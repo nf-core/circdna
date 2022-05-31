@@ -1,12 +1,12 @@
-update:
-  nf-core/modules:
-    cnvkit/batch: false
-    picard/markduplicates: false
-    unicycler: false
-    minimap2/align: false
+repository_type: pipeline
 
 lint:
+  files_exist:
+    - assets/multiqc_config.yml
   files_unchanged:
-  - .gitignore
-  - .github/workflows/linting.yml
+    - assets/email_template.html
 
+update:
+  nf-core/modules:
+    samtools/sort: "1ad73f1b2abdea9398680d6d20014838135c9a35"
+    samtools/index: "1ad73f1b2abdea9398680d6d20014838135c9a35"

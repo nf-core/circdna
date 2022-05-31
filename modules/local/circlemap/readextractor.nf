@@ -1,11 +1,11 @@
 process CIRCLEMAP_READEXTRACTOR {
     tag "$meta.id"
-    label 'process_high'
+    label 'process_low'
 
-    conda (params.enable_conda ? "bioconda::circle-map=1.1.4 biopython=1.77" : null)
+    conda (params.enable_conda ? "bioconda::circle-map=1.1.4=pyh5e36f6f_2" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/mulled-v2-3423532b7f92d89bbf04791d2e48d40cb0a4111e:2a8abad654fa8c270bfcc01eef47487e2573badb-0':
-        'quay.io/biocontainers/mulled-v2-3423532b7f92d89bbf04791d2e48d40cb0a4111e:2a8abad654fa8c270bfcc01eef47487e2573badb-0' }"
+        'https://depot.galaxyproject.org/singularity/circle-map:1.1.4--pyh5e36f6f_2':
+        'quay.io/biocontainers/circle-map:1.1.4--pyh5e36f6f_2' }"
 
     input:
     tuple val(meta), path(qname_bam)
@@ -23,7 +23,7 @@ process CIRCLEMAP_READEXTRACTOR {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        Circle-Map: \$(echo \$(Circle-Map --help 2<&1) | grep -o "version=[0-9].[0-9].[0-9]")
+        Circle-Map: \$(echo \$(circle_map.py --help 2<&1 | grep -o "version=[0-9].[0-9].[0-9]" | sed 's/version=//g'))
     END_VERSIONS
     """
 }

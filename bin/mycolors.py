@@ -132,9 +132,9 @@ chrcolor = {
 
 
 ecolor = {'interchromosomal' : 'blue',
-        'concordant' : 'black',
-        'everted' : (139/256.0, 69/256.0, 19/256.0), # 'brown', yellow',
-        'forward' : 'magenta',
-        'reverse' : (0/256.0, 139/256.0, 139/256.0), #'cyan',
-        'discordant' : 'red'}
+          'concordant' : 'black',
+          'everted' : (139/256.0, 69/256.0, 19/256.0), # 'brown', yellow',
+          'forward' : 'magenta',
+          'reverse' : (0/256.0, 139/256.0, 139/256.0), #'cyan',
+          'discordant' : 'red'}
 

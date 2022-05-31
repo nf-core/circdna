@@ -36,8 +36,7 @@ process BEDTOOLS_SPLITBAM2BED {
     # Software Version
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        bedtools: \$(echo \$(bedtools --version)
+        bedtools: \$(bedtools --version | sed -e "s/bedtools v//g")
     END_VERSIONS
-
     """
 }

@@ -17,15 +17,13 @@
 #Contact: virajbdeshpande@gmail.com
 
 import sys
-if (sys.version_info < (3, 0)):
-    from sets import Set
 
 from collections import defaultdict
 import heapq
 import logging
 
 from abstract_graph import *
-import hg19util as hg
+import ref_util as hg
 
 cycle_logger = logging.getLogger('cycle')
 
@@ -157,13 +155,13 @@ class breakpoint_edge(abstract_edge):
         """Number of shared k-mers within "span" distance on either side of vertex positions"""
         seq1 = ''.join([a.capitalize() for a in hg.interval(self.v1.chrom, max(1,self.v1.pos - span), min(self.v1.pos + span, hg.chrLen[hg.chrNum(self.v1.chrom)]), self.v1.strand).sequence()])
         seq2 = ''.join([a.capitalize() for a in hg.interval(self.v2.chrom, max(1,self.v2.pos - span), min(self.v2.pos + span, hg.chrLen[hg.chrNum(self.v2.chrom)]), -1 * self.v2.strand).sequence()])
-        kset1 = Set([seq1[i:i+10] for i in range(len(seq1) - k + 1)])
-        kset2 = Set([seq2[i:i+10] for i in range(len(seq2) - k + 1)])
+        kset1 = set([seq1[i:i+10] for i in range(len(seq1) - k + 1)])
+        kset2 = set([seq2[i:i+10] for i in range(len(seq2) - k + 1)])
         return len(kset1.intersection(kset2))
 
     def type(self, min_insert=0, max_insert=500):
         """Determine type of "breakpoint"/"discordant edge
-        Output values:
+        Output values: 
         "source": Contains v.pos = -1, indicates end of linear contig.
         "interchromosomal": Different chromosomes.
         "everted": Forward strand of larger position connected to reverse strand of reverse, indicated by outward orientation of read-pairs, may suggest tandem duplication.
@@ -171,7 +169,7 @@ class breakpoint_edge(abstract_edge):
         "reverse": Both vertex/paired-reads map to reverse strand
         "discordant": Alignment distance larger/smaller than max/min insert, may indicate deletion
         "concordant": Expected alignment length between min and max insert. NOTE: Different from edge_type
-        """
+         """
         if self.v1.pos == -1 or self.v2.pos == -1:
             return "source"
         elif self.v1.chrom != self.v2.chrom:
@@ -193,10 +191,14 @@ class breakpoint_edge(abstract_edge):
         if vmax.pos - vmin.pos > max_insert or vmax.pos - vmin.pos < min_insert:
             return "discordant"
         return "concordant"
-
+               
     def __repr__(self):
         """breakpoint_vertex1->breakpoint_vertex2"""
         return str(self.v1) + '->' + str(self.v2)
+
+    def __lt__(self, other):
+        return min((self.v1.chrom, self.v1.pos), (self.v2.chrom, self.v2.pos)) < min((other.v1.chrom, self.v1.pos),
+                                                                                     (other.v2.chrom, self.v2.pos))
 
 
 class breakpoint_graph(abstract_graph):
@@ -358,9 +360,9 @@ class breakpoint_graph(abstract_graph):
             v1 = hce[1].v1
             a = [(-1 * hce[0], v1)]
             heapq.heapify(a)
-            hdict = {v1: (hce[0], [hce[1]], None, Set([]))}
-            seenSet = Set([])
-            seenEdges = Set([])
+            hdict = {v1: (hce[0], [hce[1]], None, set())}
+            seenSet = set()
+            seenEdges = set()
             completed = False
             while len(a) > 0 and not completed:
                 # print len(a), str(a[0]), str(hdict[a[0][1]])
@@ -412,7 +414,7 @@ class breakpoint_graph(abstract_graph):
                     heapq.heappush(a, (-1 * hdict[v3][0], v3))
             if len(a) == 0 and not completed:
                 print("NOT COMPLETED", hce[1].v1)
-            s2Set = Set([])
+            s2Set = set()
             tc = hdict[hce[1].v1][1]
             v2 = hdict[hce[1].v1][2]
             while v2 != hce[1].v1: #and not v2 in s2Set:
@@ -427,8 +429,6 @@ class breakpoint_graph(abstract_graph):
                 s2Set.add(v2)
             #     print v2, tc
             return tc, hdict[hce[1].v1][0]
-
-
 
         total_amplicon_content = sum([(e.v2.pos - e.v1.pos) * w[e] for e in w if e.edge_type == 'sequence'])
         amplicon_content_covered = 0
@@ -521,7 +521,7 @@ class breakpoint_graph(abstract_graph):
                 while tc[ci].type() == 'concordant' or tc[ci-1].type() == 'concordant':
                     ci -= 1
                 tc = tc[ci:] + tc[: ci]
-
+                    
             if tcw == 0:
                 print("tcw is 0")
                 break
@@ -577,7 +577,7 @@ class breakpoint_graph(abstract_graph):
                 cycle_list.append([cycle_number, tcw, tc, cycle_edge_list])
                 acc = tcw * sum([abs(e[1].pos - e[0].pos) for e in cycle_edge_list if -1 not in [e[0].pos, e[1].pos]])
                 amplicon_content_covered += acc
-            cycle_number += 1
+            cycle_number += 1    
             # print tcw, tc
             for e in tc:
                 w2[e] = w2[e] - tcw
@@ -868,8 +868,7 @@ class graph_decomposition(object):
             outfile.close()
         return fseq
 
-
-    def __repr__(self):
+    def __repr__(self):            
         s = ""
         for i in self.ilist:
             s += '\t'.join(["Interval", i.info[0], i.chrom, str(i.start), str(i.end)]) + '\n'

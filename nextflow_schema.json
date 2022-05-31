@@ -10,9 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": [
-                "input"
-            ],
+            "required": ["input", "outdir", "input_format"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -21,25 +19,32 @@
                     "pattern": "^\\S+\\.csv$",
                     "schema": "assets/schema_input.json",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 (FASTQ Input) or 2 (BAM Input) columns, and a header row. See [usage docs](https://nf-co.re/circdna/usage#samplesheet-input).",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with either 2 [BAM] or 3 [FASTQ] columns, and a header row. See [usage docs](https://nf-co.re/circdna/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "input_format": {
                     "type": "string",
                     "description": "Specify input format. Default *FASTQ*. Options 'FASTQ' or 'BAM'.",
-                    "help_text": "Set this parameter if you specified bam files in your samplesheet.",
-                    "fa_icon": "fas fa-pen-field"
+                    "default": "FASTQ",
+                    "help_text": "Define which input file formats are used in the pipeline run. Use either `--input_format FASTQ` or `--input_format BAM`.",
+                    "fa_icon": "fas fa-pen"
                 },
                 "bam_sorted": {
                     "type": "boolean",
                     "description": "Specify if bam file is sorted [false, true]. If false or not specified, bam file will be sorted!",
+                    "help_text": "Set this parameter if you specified `--input_format BAM` and supplied sorted `BAM` files. This will skip the `samtools sort` step.",
+                    "fa_icon": "fas fa-sort-down"
+                },
+                "save_sorted_bam": {
+                    "type": "boolean",
+                    "description": "Specify if sorted bam file should be saved [false, true]. Default: false",
                     "help_text": "Set this parameter if you specified bam files in your samplesheet.",
-                    "fa_icon": "fas fa-pen-field"
+                    "fa_icon": "fas fa-save"
                 },
                 "outdir": {
                     "type": "string",
-                    "description": "Path to the output directory where the results will be saved.",
-                    "default": "./results",
+                    "format": "directory-path",
+                    "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
                     "fa_icon": "fas fa-folder-open"
                 },
                 "email": {
@@ -103,6 +108,7 @@
                 },
                 "save_reference": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Save the index reference fasta in the results directory.",
                     "help_text": "By default, indexed reference genome files will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
                     "fa_icon": "fas fa-save"
@@ -110,7 +116,7 @@
             }
         },
         "process_skipping_options": {
-            "title": "Process Skipping Options",
+            "title": "Process Skipping options",
             "type": "object",
             "fa_icon": "fas fa-fast-forward",
             "description": "Options to skip various steps within the workflow.",
@@ -119,25 +125,36 @@
                     "type": "boolean",
                     "default": false,
                     "fa_icon": "fas fa-fast-forward",
+                    "help_text": "Set this parameter to skip all quality control steps except MultiQC.",
                     "description": "Skip all QC steps except for MultiQC."
                 },
                 "skip_multiqc": {
                     "type": "boolean",
                     "default": false,
                     "fa_icon": "fas fa-fast-forward",
-                    "description": "Skip MultiQC step except for MultiQC."
+                    "help_text": "Set this parameter to skip the MultiQC step.",
+                    "description": "Skip MultiQC step."
                 },
                 "skip_markduplicates": {
                     "type": "boolean",
                     "default": false,
                     "fa_icon": "fas fa-fast-forward",
+                    "help_text": "Set this parameter to skip annotating and filtering of duplicates marked by Picard Markduplicates.",
                     "description": "Skip Picard MarkDuplicates and duplicate filtering"
                 },
                 "keep_duplicates": {
                     "type": "boolean",
                     "default": false,
-                    "fa_icon": "fas fa-delete-left",
+                    "fa_icon": "fas fa-save",
+                    "help_text": "Set this parameter to skip filtering of duplicates marked by Picard Markduplicates.",
                     "description": "Keep read duplications marked by picard MarkDuplicates."
+                },
+                "save_markduplicates_bam": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fas fa-save",
+                    "help_text": "Set this parameter to save bam file with marked duplicate reads..",
+                    "description": "Store bam with marked duplicate reads."
                 }
             }
         },
@@ -175,18 +192,21 @@
                 },
                 "skip_trimming": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Skip the adapter trimming step.",
                     "help_text": "Use this if your input FastQ files have already been trimmed outside of the workflow or if you're very confident that there is no adapter contamination in your data.",
                     "fa_icon": "fas fa-fast-forward"
                 },
                 "save_trimmed": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Save the trimmed FastQ files in the results directory.",
                     "help_text": "By default, trimmed FastQ files will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
                     "fa_icon": "fas fa-save"
                 },
                 "save_merged_fastq": {
                     "type": "boolean",
+                    "default": false,
                     "description": "Save the merged FastQ files in the results directory.",
                     "help_text": "By default, merged FastQ files will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
                     "fa_icon": "fas fa-save"
@@ -201,16 +221,17 @@
             "properties": {
                 "circle_identifier": {
                     "type": "string",
-                    "description": "Specifies the circular DNA identification algorithm to use - available 'circle_map_realign', 'circle_map_repeats', 'circle_finder', and 'circexplorer2'.",
-                    "fa_icon": "far fa-circle",
+                    "description": "Specifies the circular DNA identification algorithm to use - available 'circle_map_realign', 'circle_map_repeats', 'circle_finder', 'circexplorer2', and 'ampliconarchitect'.",
+                    "help_text": "Specify the circle_identifier branch used. Multiple circle_identifier's can be specified with a comma-separated string. E.g. `--circle_identifier 'circle_map_realign,unicycler'`.",
+                    "fa_icon": "fas fa-circle-notch",
                     "default": "circle_map_realign"
                 }
             }
         },
         "amplicon_architect_options": {
-            "title": "Options to run AmpliconArchitect",
+            "title": "AmpliconArchitect options",
             "type": "object",
-            "fa_icon": "fas fa-solid fa-circle-dashed",
+            "fa_icon": "fas fa-circle-notch",
             "description": "Parameters used to run AmpliconArchitect. The software needs additional data files not included in ",
             "properties": {
                 "aa_data_repo": {
@@ -218,20 +239,31 @@
                     "format": "directory-path",
                     "mimetype": "text/plain",
                     "fa_icon": "fas fa-folder",
-                    "description": "Path to the downloaded AA data repository. See AmpliconArchitect: https://github.com/virajbdeshpande/AmpliconArchitect"
+                    "help_text": "Specify the path to the AmpliconArchitect data repository. See [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect)",
+                    "description": "Path to the downloaded AA data repository. See [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect)"
+                },
+                "aa_cngain": {
+                    "type": "string",
+                    "mimetype": "text/plain",
+                    "default": "4.5",
+                    "fa_icon": "fas fa-chart-bar",
+                    "help_text": "Specify the seed copy number threshold.",
+                    "description": "Copy Number Threshold for seeds to be considered by AmpliconArchitect."
                 },
                 "mosek_license_dir": {
                     "type": "string",
                     "format": "directory-path",
                     "mimetype": "text/plain",
                     "fa_icon": "fas fa-folder",
+                    "help_text": "Specify the path to the directory containing the mosek license file named `mosek.lic`. A free academic license can be obtained at [Mosek.com](https://www.mosek.com/products/academic-licenses/).",
                     "description": "Path to the directory containing the mosek license file 'mosek.lic'."
                 },
                 "reference_build": {
                     "type": "string",
                     "mimetype": "text/plain",
-                    "fa_icon": "fas fa-box-archive",
+                    "fa_icon": "fas fa-book",
                     "description": "When running AmpliconArchitect, specify reference build ['GRCh37', 'GRCh38]. This is *mandatory* to match fasta and AA reference build!",
+                    "help_text": "Specify the reference genome build used for alignment of the WGS reads.",
                     "default": "GRCh38"
                 }
             }
@@ -256,12 +288,6 @@
                     "default": "https://raw.githubusercontent.com/nf-core/configs/master",
                     "hidden": true,
                     "help_text": "If you're running offline, Nextflow will not be able to fetch the institutional config files from the internet. If you don't need them, then this is not a problem. If you do need them, you should download the files from the repo and tell Nextflow where to find them with this parameter.",
-                    "fa_icon": "fas fa-users-cog"
-                },
-                "hostnames": {
-                    "type": "string",
-                    "description": "Institutional configs hostname.",
-                    "hidden": true,
                     "fa_icon": "fas fa-users-cog"
                 },
                 "config_profile_name": {
@@ -344,14 +370,7 @@
                     "description": "Method used to save pipeline results to output directory.",
                     "help_text": "The Nextflow `publishDir` option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir) for details.",
                     "fa_icon": "fas fa-copy",
-                    "enum": [
-                        "symlink",
-                        "rellink",
-                        "link",
-                        "copy",
-                        "copyNoFollow",
-                        "move"
-                    ],
+                    "enum": ["symlink", "rellink", "link", "copy", "copyNoFollow", "move"],
                     "hidden": true
                 },
                 "email_on_fail": {
@@ -414,44 +433,19 @@
                     "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
                     "hidden": true,
                     "fa_icon": "fas fa-bacon"
-                },
-                "singularity_pull_docker_container": {
-                    "type": "boolean",
-                    "description": "Instead of directly downloading Singularity images for use with Singularity, force the workflow to pull and convert Docker containers instead.",
-                    "hidden": true,
-                    "fa_icon": "fas fa-toolbox",
-                    "help_text": "This may be useful for example if you are unable to directly pull Singularity containers to run the pipeline due to http/https proxy issues."
                 }
             }
         }
     },
     "allOf": [
-        {
-            "$ref": "#/definitions/input_output_options"
-        },
-        {
-            "$ref": "#/definitions/reference_genome_options"
-        },
-        {
-            "$ref": "#/definitions/institutional_config_options"
-        },
-        {
-            "$ref": "#/definitions/max_job_request_options"
-        },
-        {
-            "$ref": "#/definitions/process_skipping_options"
-        },
-        {
-            "$ref": "#/definitions/circdna_identifier_options"
-        },
-        {
-            "$ref": "#/definitions/amplicon_architect_options"
-        },
-        {
-            "$ref": "#/definitions/read_trimming_options"
-        },
-        {
-            "$ref": "#/definitions/generic_options"
-        }
+        { "$ref": "#/definitions/input_output_options" },
+        { "$ref": "#/definitions/reference_genome_options" },
+        { "$ref": "#/definitions/institutional_config_options" },
+        { "$ref": "#/definitions/max_job_request_options" },
+        { "$ref": "#/definitions/process_skipping_options" },
+        { "$ref": "#/definitions/circdna_identifier_options" },
+        { "$ref": "#/definitions/amplicon_architect_options" },
+        { "$ref": "#/definitions/read_trimming_options" },
+        { "$ref": "#/definitions/generic_options" }
     ]
 }

@@ -1,5 +1,9 @@
 .nextflow*
 work/
+data/
 results/
 .DS_Store
-__pycache__
+testing/
+testing*
+*.pyc
+null
