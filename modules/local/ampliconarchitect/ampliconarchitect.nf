@@ -2,10 +2,10 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
     tag "$meta.id"
     label 'process_low'
 
-    conda (params.enable_conda ? "conda-forge::python=2.7 bioconda::pysam=0.17.0 anaconda::flask=1.1.2 anaconda::cython=0.29.14 anaconda::numpy=1.16.6 anaconda::scipy=1.2.1 conda-forge::matplotlib=2.2.5 mosek::mosek=8.0.60" : null)
+    conda (params.enable_conda ? "conda-forge::python=2.7 bioconda::pysam=0.15.2 anaconda::flask=1.1.2 anaconda::cython=0.29.14 anaconda::numpy=1.16.6 anaconda::scipy=1.2.1 conda-forge::matplotlib=2.2.5 mosek::mosek=8.0.60 anaconda::future=0.18.2" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/mulled-v2-e4ce28f95c8ecbae44279615eb9417eac6ea0435:a4e86eb8f7a079b09d50aebf541291772ea0f931-0':
-        'quay.io/biocontainers/mulled-v2-e4ce28f95c8ecbae44279615eb9417eac6ea0435:a4e86eb8f7a079b09d50aebf541291772ea0f931-0' }"
+        'https://depot.galaxyproject.org/singularity/mulled-v2-6eefa51f13933d65b4f8155ca2f8cd81dea474ba:baa777f7c4e89a2ec4d1eab7d424a1f46503bac7-0':
+        'quay.io/biocontainers/mulled-v2-6eefa51f13933d65b4f8155ca2f8cd81dea474ba:baa777f7c4e89a2ec4d1eab7d424a1f46503bac7-0' }"
 
     input:
     tuple val(meta), path(bam), path(bai), path(bed)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 # This software is Copyright 2017 The Regents of the University of California. All Rights Reserved. Permission to copy, modify, and distribute this software and its documentation for educational, research and non-profit purposes, without fee, and without a written agreement is hereby granted, provided that the above copyright notice, this paragraph and the following three paragraphs appear in all copies. Permission to make commercial use of this software may be obtained by contacting:
 #
@@ -19,42 +19,35 @@
 
 # Author: Viraj Deshpande
 # Contact: virajbdeshpande@gmail.com
+# Maintained by Jens Luebeck, jluebeck@ucsd.edu
 
 
-from time import clock, time
+from time import time
 
-TSTART = clock()
+TSTART = time()
 import pysam
 import argparse
-import math
-from collections import defaultdict
-from cStringIO import StringIO
 import sys
 import os
-import numpy as np
 import matplotlib
 import copy
 
 matplotlib.use("Agg")
-import matplotlib.pyplot as plt
-from matplotlib.patches import Ellipse
 import logging
+from functools import reduce
 
 # plt.rc('text', usetex=True)
 # plt.rc('font', family='serif')
 
 if sys.version_info >= (3, 0):
-    sys.stderr.write(
-        "AA must be run with python2. Python3 support is under development.\n"
-    )
-    sys.exit(1)
-
+    from io import StringIO
 else:
-    from sets import Set
+    from cStringIO import StringIO
+
 
 import global_names
 
-__version__ = "1.2"
+__version__ = "1.3_r1"
 
 parser = argparse.ArgumentParser(
     description="Reconstruct Amplicons connected to listed intervals."
@@ -66,16 +59,19 @@ parser.add_argument(
     metavar="FILE",
     action="store",
     type=str,
+    required=True,
 )
 parser.add_argument(
     "--bam",
     dest="bam",
-    help="Coordinate sorted BAM file with index mapped to hg19 or hg38 reference genome",
+    help="Coordinate sorted BAM file with index.",
     metavar="FILE",
     action="store",
     type=str,
+    required=True,
 )
 parser.add_argument(
+    "-o",
     "--out",
     dest="outName",
     help="Prefix for output files",
@@ -83,6 +79,7 @@ parser.add_argument(
     action="store",
     type=str,
     nargs=1,
+    required=True,
 )
 parser.add_argument(
     "--runmode",
@@ -123,11 +120,12 @@ parser.add_argument(
 parser.add_argument(
     "--ref",
     dest="ref",
-    help='Values: [hg19, GRCh37, GRCh38, None]. "hg19"(default), "GRCh38" : chr1, .. chrM etc / "GRCh37" : \'1\', \'2\', .. \'MT\' etc/ "None" : Do not use any annotations. AA can tolerate additional chromosomes not stated but accuracy and annotations may be affected. Default: hg19',
+    help='Values: [hg19, GRCh37, GRCh38, mm10, GRCm38]. "hg19", "GRCh38", "mm10" : chr1, .. chrM etc / "GRCh37", "GRCm38" : \'1\', \'2\', .. \'MT\' etc/ "None" : Do not use any annotations. AA can tolerate additional chromosomes not stated but accuracy and annotations may be affected.',
     metavar="STR",
     action="store",
     type=str,
-    default="hg19",
+    choices=["hg19", "GRCh37", "GRCh38", "mm10", "GRCm38"],
+    required=True,
 )
 parser.add_argument(
     "--downsample",
@@ -157,6 +155,31 @@ parser.add_argument(
     default=None,
 )
 parser.add_argument(
+    "--insert_sdevs",
+    dest="insert_sdevs",
+    help="Number of standard deviations around the insert size. May need to increase for sequencing runs with high variance after insert size selection step. (default 3.0)",
+    metavar="FLOAT",
+    action="store",
+    type=float,
+    default=3,
+)
+parser.add_argument(
+    "--pair_support_min",
+    dest="pair_support_min",
+    help="Number of read pairs for minimum breakpoint support (default 2 but typically becomes higher due to coverage-scaled cutoffs)",
+    metavar="INT",
+    action="store",
+    type=int,
+    default=2,
+)
+parser.add_argument(
+    "--no_cstats",
+    dest="no_cstats",
+    help="Do not re-use coverage statistics from coverage.stats.",
+    action="store_true",
+    default=False,
+)
+parser.add_argument(
     "-v",
     "--version",
     action="version",
@@ -164,8 +187,8 @@ parser.add_argument(
 )
 
 args = parser.parse_args()
-
 global_names.REF = args.ref
+global_names.TSTART = TSTART
 
 logging.basicConfig(filename=args.outName[0] + ".log", level=logging.DEBUG)
 # # output logs to stdout
@@ -201,6 +224,7 @@ for arg in sys.argv:
 logging.info(commandstring)
 
 logging.info("AmpliconArchitect version " + __version__ + "\n")
+logging.info("Python version " + sys.version + "\n")
 rdAlts = args.rdAlts
 if os.path.splitext(args.bam)[-1] == ".cram":
     bamFile = pysam.Samfile(args.bam, "rc")
@@ -219,14 +243,14 @@ try:
 except:
     logging.warning(
         "#TIME "
-        + "%.3f\t" % (clock() - TSTART)
+        + "%.3f\t" % (time() - TSTART)
         + "unable to set AA_DATA_REPO variable. Setting to working directory"
     )
     DATA_REPO = "."
 if DATA_REPO == "." or DATA_REPO == "":
     logging.warning(
         "#TIME "
-        + "%.3f\t" % (clock() - TSTART)
+        + "%.3f\t" % (time() - TSTART)
         + "AA_DATA_REPO not set or empy. Setting to working directory"
     )
     DATA_REPO = "."
@@ -234,17 +258,17 @@ if DATA_REPO == "." or DATA_REPO == "":
 
 logging.info(
     "#TIME "
-    + "%.3f\t" % (clock() - TSTART)
+    + "%.3f\t" % (time() - TSTART)
     + "Loading libraries and reference annotations for: "
     + args.ref
 )
-import hg19util as hg
+import ref_util as hg
 import bam_to_breakpoint as b2b
 
 
 logging.info(
     "#TIME "
-    + "%.3f\t" % (clock() - TSTART)
+    + "%.3f\t" % (time() - TSTART)
     + "Initiating bam_to_breakpoint object for: "
     + args.bam
 )
@@ -253,14 +277,44 @@ rdList = hg.interval_list([r for r in rdList0])
 cb = bamFile
 if cbam is not None:
     cb = cbam
+
 cstats = None
-if os.path.exists(os.path.join(hg.DATA_REPO, "coverage.stats")):
+if args.no_cstats:
+    logging.info(
+        "#TIME "
+        + "%.3f\t" % (time() - TSTART)
+        + "--no_cstats was set. Will not attempt to re-use coverage.stats info"
+    )
+
+if os.path.exists(os.path.join(hg.DATA_REPO, "coverage.stats")) and not args.no_cstats:
     coverage_stats_file = open(os.path.join(hg.DATA_REPO, "coverage.stats"))
     for l in coverage_stats_file:
         ll = l.strip().split()
-        if ll[0] == os.path.abspath(cb.filename):
+        bamfile_pathname = str(cb.filename.decode())
+        bamfile_filesize = os.path.getsize(bamfile_pathname)
+        if ll[0] == os.path.abspath(bamfile_pathname):
             cstats = tuple(map(float, ll[1:]))
+            if len(cstats) < 15 or int(round(cstats[11])) < args.pair_support_min:
+                cstats = None
+            elif cstats[13] != args.insert_sdevs or bamfile_filesize != int(cstats[14]):
+                cstats = None
+
     coverage_stats_file.close()
+
+if cstats:
+    logging.info(
+        "#TIME "
+        + "%.3f\t" % (time() - TSTART)
+        + "Reusing cstats from "
+        + str(os.path.join(hg.DATA_REPO, "coverage.stats"))
+    )
+else:
+    logging.debug(
+        "#TIME "
+        + "%.3f\t" % (time() - TSTART)
+        + "cstats not found, generating coverage statistics... "
+    )
+
 coverage_windows = None
 if cbed is not None:
     coverage_windows = hg.interval_list(cbed, "bed")
@@ -269,6 +323,8 @@ if cstats is None and cbam is not None:
     cbam2b = b2b.bam_to_breakpoint(
         cbam,
         sample_name=outName,
+        num_sdevs=args.insert_sdevs,
+        pair_support_min=args.pair_support_min,
         coverage_stats=cstats,
         coverage_windows=coverage_windows,
     )
@@ -276,6 +332,8 @@ if cstats is None and cbam is not None:
 bamFileb2b = b2b.bam_to_breakpoint(
     bamFile,
     sample_name=outName,
+    num_sdevs=args.insert_sdevs,
+    pair_support_min=args.pair_support_min,
     coverage_stats=cstats,
     coverage_windows=coverage_windows,
     downsample=args.downsample,
@@ -296,7 +354,7 @@ segments = []
 if args.extendmode == "VIRAL":
     logging.info(
         "#TIME "
-        + "%.3f\t" % (clock() - TSTART)
+        + "%.3f\t" % (time() - TSTART)
         + "Finding integration sites: "
         + str(rdList[0])
     )
@@ -339,12 +397,12 @@ if args.extendmode == "VIRAL":
 all_ilist = copy.copy(rdList)
 irdhops = []
 irddict = {}
-irdSets = Set([Set([ird]) for ird in rdList])
-irdgroupdict = {ird: Set([ird]) for ird in rdList}
+irdSets = set([frozenset([ird]) for ird in rdList])
+irdgroupdict = {ird: frozenset([ird]) for ird in rdList}
 if args.extendmode == "EXPLORE" or args.extendmode == "VIRAL":
     for ird in rdList:
         logging.info(
-            "#TIME " + "%.3f\t" % (clock() - TSTART) + "Exploring interval: " + str(ird)
+            "#TIME " + "%.3f\t" % (time() - TSTART) + "Exploring interval: " + str(ird)
         )
         old_stdout = sys.stdout
         sys.stdout = mystdout = StringIO()
@@ -375,14 +433,14 @@ if args.extendmode == "EXPLORE" or args.extendmode == "VIRAL":
     allhops.sort()
     allmerge = allhops.merge_clusters()
     for am in allmerge:
-        nset = Set([])
+        nset = set()
         for ami in am[1]:
             nset.update(irdgroupdict[irddict[ami]])
             if irdgroupdict[irddict[ami]] in irdSets:
                 irdSets.remove(irdgroupdict[irddict[ami]])
         for ird in nset:
             irdgroupdict[ird] = nset
-        irdSets.add(nset)
+        irdSets.add(frozenset(nset))
     irdgroups = []
     for nset in irdSets:
         ngroup = hg.interval_list([])
@@ -391,6 +449,13 @@ if args.extendmode == "EXPLORE" or args.extendmode == "VIRAL":
                 ngroup.append(am[0])
         ngroup.sort()
         irdgroups.append(ngroup)
+
+    # TODO: Sort the irdgroups by minimum chrom and minimum coord here
+    irdgroups.sort()
+    # irdgroup_min_chrom_pos = []
+    # for group in irdgroups:
+    #     for x
+
 elif args.extendmode == "CLUSTERED" or args.extendmode == "VIRAL_CLUSTERED":
     irdgroups = [rdList]
 else:
@@ -398,9 +463,7 @@ else:
 
 
 logging.info(
-    "#TIME "
-    + "%.3f\t" % (clock() - TSTART)
-    + "Interval sets for amplicons determined: "
+    "#TIME " + "%.3f\t" % (time() - TSTART) + "Interval sets for amplicons determined: "
 )
 for il in enumerate(irdgroups):
     logging.info(
@@ -438,7 +501,7 @@ for ig in irdgroups:
     summary_logger.info("Intervals = " + str(istr))
     oncolist = (
         ",".join(
-            Set([a[1].info["Name"] for a in ilist1.intersection(hg.oncogene_list)])
+            set([a[1].info["Name"] for a in ilist1.intersection(hg.oncogene_list)])
         )
         + ","
     )
@@ -447,7 +510,7 @@ for ig in irdgroups:
     if args.runmode in ["FULL", "CYCLES", "BPGRAPH"]:
         logging.info(
             "#TIME "
-            + "%.3f\t" % (clock() - TSTART)
+            + "%.3f\t" % (time() - TSTART)
             + "Reconstructing amplicon"
             + str(amplicon_id)
         )
@@ -463,7 +526,7 @@ for ig in irdgroups:
     if args.runmode in ["FULL", "SVVIEW"]:
         logging.info(
             "#TIME "
-            + "%.3f\t" % (clock() - TSTART)
+            + "%.3f\t" % (time() - TSTART)
             + "Plotting SV View for amplicon"
             + str(amplicon_id)
         )
@@ -493,7 +556,7 @@ if (args.extendmode in ["VIRAL", "VIRAL_CLUSTERED"]) and (
             continue
         logging.info(
             "#TIME "
-            + "%.3f\t" % (clock() - TSTART)
+            + "%.3f\t" % (time() - TSTART)
             + "Plotting viral view for interval "
             + str(i)
         )
@@ -506,4 +569,4 @@ if (args.extendmode in ["VIRAL", "VIRAL_CLUSTERED"]) and (
         amplicon_id += 1
 
 
-logging.info("#TIME " + "%.3f\t" % (clock() - TSTART) + "Total Runtime")
+logging.info("#TIME " + "%.3f\t" % (time() - TSTART) + "Total Runtime")

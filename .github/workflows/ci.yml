@@ -48,4 +48,24 @@ jobs:
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker --outdir ./results
 
+  ampliconarchitect:
+    if: "${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/circdna') }}"
+    runs-on: ubuntu-latest
+    name:
+      Run pipeline with test_AA to test functionality of AmpliconArchitect
+      # For example: adding multiple test runs with different parameters
+      # Remember that you can parallelise this by using strategy.matrix
+    steps:
+      - name: Check out pipeline code
+        uses: actions/checkout@v2
+
+      - name: Install Nextflow
+        run: |
+          wget -qO- get.nextflow.io | bash
+          sudo mv nextflow /usr/local/bin/
+
+      - name: Run pipeline with AmpliconArchitect
+        run: |
+          nextflow run ${GITHUB_WORKSPACE} -profile test_AA,docker --outdir ./results
+
 #

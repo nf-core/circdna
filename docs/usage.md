@@ -147,6 +147,9 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
 - `test`
   - A profile with a complete configuration for automated testing
   - Includes links to test data so needs no other parameters
+- `test_AA`
+  - A profile with a complete configuration for automated testing of the AmpliconArchitect branch
+  - Includes links to test data so needs no other parameters
 
 ### `-resume`
 

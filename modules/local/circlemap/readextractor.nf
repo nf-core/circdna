@@ -18,12 +18,12 @@ process CIRCLEMAP_READEXTRACTOR {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    Circle-Map ReadExtractor -i $qname_bam \\
+    circle_map.py ReadExtractor -i $qname_bam \\
         -o ${prefix}.circular_read_candidates.bam
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        Circle-Map: \$(echo \$(Circle-Map --help 2<&1 | grep -o "version=[0-9].[0-9].[0-9]" | sed 's/version=//g'))
+        Circle-Map: \$(echo \$(circle_map.py --help 2<&1 | grep -o "version=[0-9].[0-9].[0-9]" | sed 's/version=//g'))
     END_VERSIONS
     """
 }

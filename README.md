@@ -3,7 +3,8 @@
 [![GitHub Actions CI Status](https://github.com/nf-core/circdna/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/circdna/actions?query=workflow%3A%22nf-core+CI%22)
 [![GitHub Actions Linting Status](https://github.com/nf-core/circdna/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/circdna/actions?query=workflow%3A%22nf-core+linting%22)
 [![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/circdna/results)
-[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)
+
+<!--[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.XXXXXXX-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.XXXXXXX)-->
 
 [![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A521.10.3-23aa62.svg?labelColor=000000)](https://www.nextflow.io/)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
@@ -34,7 +35,7 @@ On release, automated continuous integration tests run the pipeline on a [full-s
    1. [`Circle-Map ReadExtractor`](https://github.com/iprada/Circle-Map) -> [`Circle-Map Repeats`](https://github.com/iprada/Circle-Map)
    1. [`CIRCexplorer2`](https://circexplorer2.readthedocs.io/en/latest/)
    1. [`Samblaster`](https://github.com/GregoryFaust/samblaster) -> [`Circle_finder`](https://github.com/pk7zuva/Circle_finder)
-   1. Identification of circular amplicons [`AmpliconArchitect`](https://github.com/virajbdeshpande/AmpliconArchitect)
+   1. Identification of circular amplicons [`AmpliconArchitect`](https://github.com/jluebeck/AmpliconArchitect)
    1. DeNovo Assembly of circular DNAs [`Unicycler`](https://github.com/rrwick/Unicycler) -> [`Minimap2`](https://github.com/lh3/minimap2)
 7. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
@@ -56,6 +57,12 @@ A graphical view of the pipeline and its diverse branches can be seen below.
 
    ```console
    nextflow run nf-core/circdna -profile test,YOURPROFILE --outdir <OUTDIR>
+   ```
+
+   To test the `ampliconarchitect` branch functionality, please use the following command:
+
+   ```console
+   nextflow run nf-core/circdna -profile test_AA,YOURPROFILE --outdir <OUTDIR>
    ```
 
    Note that some form of configuration will be needed so that Nextflow knows how to fetch the required software. This is usually done in the form of a config profile (`YOURPROFILE` in the example command above). You can chain multiple config profiles in a comma-separated string.
@@ -87,7 +94,7 @@ Please specify the parameter `circle_identifier` depending on the pipeline branc
 
 ### Identification of circular amplicons with WGS data
 
-> `ampliconarchitect` uses [AmpliconArchitect](https://github.com/virajbdeshpande/AmpliconArchitect)
+> `ampliconarchitect` uses [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect)
 
 ### De novo assembly of circular DNAs with Circle-Seq data
 
@@ -95,7 +102,7 @@ Please specify the parameter `circle_identifier` depending on the pipeline branc
 
 ### Example Usage
 
-The user can specify either one or multiple comma-separated `circle_identifier` (see below).
+The user can specify either one or multiple `circle_identifier` in a comma-separated string (see below).
 
 ```console
 nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 -profile docker --circle_identifier circle_map_realign,unicycler
