@@ -126,13 +126,11 @@ We thank the following people for their extensive assistance in the development 
 
 This pipeline has been developed by Daniel Schreyer as part of the PRECODE project. PRECODE received funding from the European Union’s Horizon 2020 Research and Innovation Program under the Marie Skłodowska-Curie grant agreement No 861196.
 
-### Contributions and Support
+## Contributions and Support
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
 
 For further information or help, don't hesitate to get in touch on the [Slack `#circdna` channel](https://nfcore.slack.com/channels/circdna) (you can join with [this invite](https://nf-co.re/join/slack)).
-
-### Funding
 
 ## Citations
 
