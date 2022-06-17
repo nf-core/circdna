@@ -76,7 +76,6 @@ Such files are intermediate and not kept in the final files delivered to users.
 
 [samtools stats](https://www.htslib.org/doc/samtools.html) collects statistics from `BAM` files and outputs in a text format.
 
-
 <details markdown="1">
 <summary>Output files</summary>
 
