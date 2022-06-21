@@ -9,7 +9,6 @@ process CIRCLEMAP_REALIGN {
     input:
     tuple val(meta), path(re_bam), path(re_bai), path(qname), path(sbam), path(sbai)
     path fasta
-    tuple val(fai_meta), path(fai)
 
     output:
     tuple val(meta), path("*.bed"), emit: bed, optional: true

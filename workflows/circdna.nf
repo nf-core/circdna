@@ -107,9 +107,6 @@ include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FILTER     }   from '../modules/nf-core
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_FILTERED   }   from '../modules/nf-core/modules/samtools/sort/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FILTERED }   from '../modules/nf-core/modules/samtools/index/main'
 
-// SAMTOOLS SORT & INDEX
-include { SAMTOOLS_FAIDX                            }   from '../modules/nf-core/modules/samtools/faidx/main'
-
 // SAMTOOLS STATISTICS
 include { SAMTOOLS_STATS                            }   from '../modules/nf-core/modules/samtools/stats/main'
 
@@ -448,7 +445,7 @@ workflow CIRCDNA {
 
 
         SAMTOOLS_SORT_RE (
-            CIRCLEMAP_READEXTRACTOR.out.circ_bam
+            CIRCLEMAP_READEXTRACTOR.out.bam
         )
         ch_versions = ch_versions.mix(SAMTOOLS_SORT_RE.out.versions)
 
@@ -477,21 +474,12 @@ workflow CIRCDNA {
         //
         if (run_circle_map_realign) {
 
-            Channel.of(ch_fasta).map { fasta -> [ [], fasta ] }.set { ch_fasta_faidx }
-
-            SAMTOOLS_FAIDX (
-                ch_fasta_faidx
-            )
-            ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
-
-            ch_fasta_index = SAMTOOLS_FAIDX.out.fai
             CIRCLEMAP_REALIGN (
                 ch_re_sorted_bam.join(ch_re_sorted_bai).
                     join(ch_qname_sorted_bam).
                     join(ch_bam_sorted).
                     join(ch_bam_sorted_bai),
-                ch_fasta,
-                ch_fasta_index
+                ch_fasta
             )
             ch_versions = ch_versions.mix(CIRCLEMAP_REALIGN.out.versions)
         }
