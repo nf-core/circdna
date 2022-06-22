@@ -11,7 +11,7 @@ process CIRCLEMAP_READEXTRACTOR {
     tuple val(meta), path(qname_bam)
 
     output:
-    tuple val(meta), path("*.circular_read_candidates.bam"), emit: circ_bam
+    tuple val(meta), path("*.circular_read_candidates.bam"), emit: bam
     path "versions.yml"            , emit: versions
 
     script:

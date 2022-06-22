@@ -51,7 +51,7 @@ def check_samplesheet(file_in, file_out, input_format):
     SAMPLE_PE,SAMPLE_PE_RUN2.bam
 
     For an example see:
-    https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/samplesheet/samplesheet_test_illumina_amplicon.csv
+    https://raw.githubusercontent.com/nf-core/test-datasets/circdna/samplesheet/samplesheet.csv
     """
 
     sample_mapping_dict = {}
