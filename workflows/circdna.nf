@@ -304,6 +304,7 @@ workflow CIRCDNA {
         BAM_STATS_SAMTOOLS_RAW (
             ch_bam_sorted.join(ch_bam_sorted_bai)
         )
+        ch_versions = ch_versions.mix(BAM_STATS_SAMTOOLS_RAW.out.versions)
         ch_samtools_stats               = BAM_STATS_SAMTOOLS_RAW.out.stats
         ch_samtools_flagstat            = BAM_STATS_SAMTOOLS_RAW.out.flagstat
         ch_samtools_idxstats            = BAM_STATS_SAMTOOLS_RAW.out.idxstats
@@ -382,15 +383,17 @@ workflow CIRCDNA {
         AMPLICONARCHITECT_AMPLICONCLASSIFIER (
             ch_aa_cycles.join(ch_aa_graphs)
         )
+        ch_versions = ch_versions.mix(AMPLICONARCHITECT_AMPLICONCLASSIFIER.out.versions)
         AMPLICONARCHITECT_AMPLICONSIMILARITY (
             ch_aa_cycles.join(ch_aa_graphs)
         )
         aa_summary_ch = AMPLICONARCHITECT_AMPLICONARCHITECT.out.summary
-        ch_versions = ch_versions.mix(AMPLICONARCHITECT_AMPLICONCLASSIFIER.out.versions)
+        ch_versions = ch_versions.mix(AMPLICONARCHITECT_AMPLICONSIMILARITY.out.versions)
 
         SUMMARISE_AA (
             aa_summary_ch.join(AMPLICONARCHITECT_AMPLICONCLASSIFIER.out.class_tsv)
         )
+        ch_versions = ch_versions.mix(SUMMARISE_AA.out.versions)
     }
 
 
@@ -423,6 +426,7 @@ workflow CIRCDNA {
         CIRCLEFINDER (
             ch_b2b_split.join(ch_b2b_sorted)
         )
+        ch_versions = ch_versions.mix(CIRCLEFINDER.out.versions)
     }
 
     //
@@ -431,7 +435,6 @@ workflow CIRCDNA {
 
     if (run_circle_map_realign ||
             run_circle_map_repeats) {
-
 
         SAMTOOLS_SORT_QNAME_CM (
             ch_bam_sorted
@@ -442,7 +445,6 @@ workflow CIRCDNA {
             SAMTOOLS_SORT_QNAME_CM.out.bam
         )
         ch_versions = ch_versions.mix(CIRCLEMAP_READEXTRACTOR.out.versions)
-
 
         SAMTOOLS_SORT_RE (
             CIRCLEMAP_READEXTRACTOR.out.bam
@@ -508,6 +510,7 @@ workflow CIRCDNA {
         GETCIRCULARREADS (
             SEQTK_SEQ.out.fastq
         )
+        ch_versions = ch_versions.mix(GETCIRCULARREADS.out.versions)
 
         GETCIRCULARREADS.out.fastq
             .map { meta, fastq -> [ meta + [single_end: true], fastq ] }
@@ -530,7 +533,6 @@ workflow CIRCDNA {
     //
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
-
     )
 
     //
