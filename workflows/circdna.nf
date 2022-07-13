@@ -426,7 +426,6 @@ workflow CIRCDNA {
         CIRCLEFINDER (
             ch_b2b_split.join(ch_b2b_sorted)
         )
-        ch_versions = ch_versions.mix(CIRCLEFINDER.out.versions)
     }
 
     //
@@ -510,7 +509,6 @@ workflow CIRCDNA {
         GETCIRCULARREADS (
             SEQTK_SEQ.out.fastq
         )
-        ch_versions = ch_versions.mix(GETCIRCULARREADS.out.versions)
 
         GETCIRCULARREADS.out.fastq
             .map { meta, fastq -> [ meta + [single_end: true], fastq ] }
