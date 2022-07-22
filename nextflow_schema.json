@@ -490,6 +490,9 @@
         { "$ref": "#/definitions/max_job_request_options" },
         { "$ref": "#/definitions/process_skipping_options" },
         { "$ref": "#/definitions/circdna_identifier_options" },
+        { "$ref": "#/definitions/circle_map_options" },
+        { "$ref": "#/definitions/circle_finder_options" },
+        { "$ref": "#/definitions/unicycler_options" },
         { "$ref": "#/definitions/amplicon_architect_options" },
         { "$ref": "#/definitions/read_trimming_options" },
         { "$ref": "#/definitions/generic_options" }
