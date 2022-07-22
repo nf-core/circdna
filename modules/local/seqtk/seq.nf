@@ -23,7 +23,7 @@ process SEQTK_SEQ {
         $args \\
         -F "#" \\
         $fasta | \\
-        gzip -c > ${prefix}.unicycler.fastq.gz
+        gzip -c > ${prefix}.fastq.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

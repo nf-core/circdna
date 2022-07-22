@@ -31,7 +31,7 @@ process BEDTOOLS_SPLITBAM2BED {
         awk 'BEGIN{FS=OFS=" "} {if ((\$9=="M" && \$NF=="H") || \
         (\$9=="M" && \$NF=="S"))  {printf ("%s\tfirst\\n",\$0)} else if ((\$9=="S" && \$NF=="M") || \
         (\$9=="H" && \$NF=="M")) {printf ("%s\tsecond\\n",\$0)} }' | \
-        awk 'BEGIN{FS=OFS="\t"} {gsub(" ", "", \$8)} 1' > '${prefix}.split.txt'
+        awk 'BEGIN{FS=OFS="\t"} {gsub(" ", "", \$8)} 1' > '${prefix}.txt'
 
     # Software Version
     cat <<-END_VERSIONS > versions.yml

@@ -17,7 +17,7 @@ process GETCIRCULARREADS {
         cat temp.fastq | grep -A3 "circular=true" | \\
             grep -v "^--" | \\
             gzip --no-name > \\
-            ${prefix}.unicycler.circular.fastq.gz
+            ${prefix}.fastq.gz
     fi
     rm temp.fastq
     """
