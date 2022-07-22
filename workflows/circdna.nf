@@ -30,6 +30,10 @@ if (!(run_unicycler | run_circle_map_realign | run_circle_map_repeats | run_circ
     exit 1, 'circle_identifier param not valid. Please check!'
 }
 
+if (run_unicycler && !params.input_format == "FASTQ") {
+        exit 1, 'Unicycler needs FastQ input. Please specify input_format == "FASTQ", if possible, or don`t run unicycler.'
+}
+
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 
 // Check if BWA Index is given
@@ -522,10 +526,7 @@ workflow CIRCDNA {
             false
         )
         ch_versions = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
-    } else if (run_unicycler && !params.input_format == "FASTQ") {
-        exit 1, 'Unicycler needs FastQ input. Please specify input_format == "FASTQ", if possible, or don`t run unicycler.'
     }
-
     //
     // MODULE: Pipeline reporting
     //
