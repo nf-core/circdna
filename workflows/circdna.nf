@@ -106,7 +106,7 @@ include { SAMTOOLS_SORT as SAMTOOLS_SORT_BAM        }   from '../modules/nf-core
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_BAM      }   from '../modules/nf-core/modules/samtools/index/main'
 
 // PICARD
-include { MARK_DUPLICATES_PICARD                    } from '../subworkflows/nf-core/mark_duplicates_picard'
+include { MARK_DUPLICATES_PICARD                    }   from '../subworkflows/nf-core/mark_duplicates_picard'
 include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FILTER     }   from '../modules/nf-core/modules/samtools/view/main'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_FILTERED   }   from '../modules/nf-core/modules/samtools/sort/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FILTERED }   from '../modules/nf-core/modules/samtools/index/main'
