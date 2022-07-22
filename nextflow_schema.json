@@ -232,34 +232,48 @@
             "title": "circle-map options",
             "type": "object",
             "fa_icon": "fas fa-circle-notch",
-            "description": "parameters used to run circle-map.",
+            "description": "Parameters used to run Circle-Map.",
             "properties": {
-                    "save_circlemap_intermediate": {
-                        "type": "boolean",
-                        "default": false,
-                        "fa_icon": "fas fa-save",
-                        "help_text": "set this parameter to save bam file with reads extracted by circle-map readextractor.",
-                        "description": "Store bam file with read candidates for circle-map circular dna calling."
-                    }
+                "save_circle_map_intermediate": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fas fa-save",
+                    "help_text": "Set this parameter to save bam file with reads extracted by circle-map readextractor.",
+                    "description": "Store bam file with read candidates for circle-map circular dna calling."
                 }
             }
         },
         "circle_finder_options": {
-            "title": "circle_finder options",
+            "title": "Circle_finder options",
             "type": "object",
             "fa_icon": "fas fa-circle-notch",
-            "description": "parameters used to run circle-map.",
+            "description": "Parameters used to run Circle_finder.",
             "properties": {
-                    "save_circlefinder_intermediate": {
-                        "type": "boolean",
-                        "default": false,
-                        "fa_icon": "fas fa-save",
-                        "help_text": "Set this parameter to save Circle_finder intermediate files.",
-                        "description": "Store bed files created during Circle_finder run."
-                    }
+                "save_circle_finder_intermediate": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fas fa-save",
+                    "help_text": "Set this parameter to save Circle_finder intermediate files.",
+                    "description": "Store bed files created during Circle_finder run."
                 }
             }
         },
+        "unicycler_options": {
+            "title": "Unicycler options",
+            "type": "object",
+            "fa_icon": "fas fa-circle-notch",
+            "description": "Parameters used to run Unicycler.",
+            "properties": {
+                "save_unicycler_intermediate": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fas fa-save",
+                    "help_text": "Set this parameter to save Uniycler intermediate files.",
+                    "description": "Store fastq intermediate files created during Uniycler run."
+                }
+            }
+        },
+
         "amplicon_architect_options": {
             "title": "ampliconarchitect options",
             "type": "object",
