@@ -153,7 +153,7 @@
                     "type": "boolean",
                     "default": false,
                     "fa_icon": "fas fa-save",
-                    "help_text": "Set this parameter to save bam file with marked duplicate reads..",
+                    "help_text": "Set this parameter to save bam file with marked duplicate reads.",
                     "description": "Store bam with marked duplicate reads."
                 }
             }
@@ -228,11 +228,43 @@
                 }
             }
         },
-        "amplicon_architect_options": {
-            "title": "AmpliconArchitect options",
+        "circle_map_options": {
+            "title": "circle-map options",
             "type": "object",
             "fa_icon": "fas fa-circle-notch",
-            "description": "Parameters used to run AmpliconArchitect. The software needs additional data files not included in ",
+            "description": "parameters used to run circle-map.",
+            "properties": {
+                    "save_circlemap_intermediate": {
+                        "type": "boolean",
+                        "default": false,
+                        "fa_icon": "fas fa-save",
+                        "help_text": "set this parameter to save bam file with reads extracted by circle-map readextractor.",
+                        "description": "Store bam file with read candidates for circle-map circular dna calling."
+                    }
+                }
+            }
+        },
+        "circle_finder_options": {
+            "title": "circle_finder options",
+            "type": "object",
+            "fa_icon": "fas fa-circle-notch",
+            "description": "parameters used to run circle-map.",
+            "properties": {
+                    "save_circlefinder_intermediate": {
+                        "type": "boolean",
+                        "default": false,
+                        "fa_icon": "fas fa-save",
+                        "help_text": "Set this parameter to save Circle_finder intermediate files.",
+                        "description": "Store bed files created during Circle_finder run."
+                    }
+                }
+            }
+        },
+        "amplicon_architect_options": {
+            "title": "ampliconarchitect options",
+            "type": "object",
+            "fa_icon": "fas fa-circle-notch",
+            "description": "parameters used to run ampliconarchitect. The software needs additional data files not included in ",
             "properties": {
                 "aa_data_repo": {
                     "type": "string",
