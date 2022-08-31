@@ -14,6 +14,9 @@ process AMPLIFIED_INTERVALS {
     tuple val(meta), path("*CNV_SEEDS.bed"), emit: bed
     path "versions.yml"           , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"

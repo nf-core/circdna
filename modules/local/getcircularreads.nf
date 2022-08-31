@@ -7,6 +7,9 @@ process GETCIRCULARREADS {
     output:
     tuple val(meta), path("*unicycler.circular.fastq.gz"), optional: true, emit: fastq
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"

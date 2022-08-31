@@ -7,7 +7,10 @@ process CIRCLEFINDER {
 
     output:
     tuple val(meta), path("*.microDNA-JT.txt")              , optional: true, emit: circdna
-    tuple val(meta), path("*.circle_finder_exit_log.txt")   , optional: true
+    tuple val(meta), path("*.circle_finder_exit_log.txt")   , optional: true, emit: log
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
