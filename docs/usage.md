@@ -18,7 +18,7 @@ Depending on the branch (circle_identifier) used in the pipeline, different inpu
 
 You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with either 2 or 3 columns (depending on the input format), and a header row as shown in the examples below.
 
-```console
+```bash
 --input '[path to samplesheet file]'
 ```
 
@@ -28,7 +28,7 @@ The two input formats accepted by the pipeline are "FASTQ" and "BAM". If not spe
 
 ### FASTQ
 
-```console
+```bash
 sample,fastq_1,fastq_2
 circdna_1,circdna_1_R1.fastq.gz,circdna_1_R2.fastq.gz
 circdna_2,circdna_2_R1.fastq.gz,circdna_2_R2.fastq.gz
@@ -45,7 +45,7 @@ An [example samplesheet fastq](../assets/samplesheet.csv) has been provided with
 
 ### BAM
 
-```console
+```bash
 sample,bam
 circdna_1,circdna_1.bam
 circdna_2,circdna_2.bam
@@ -63,7 +63,7 @@ An [example samplesheet bam](../assets/samplesheet_bam.csv) has been provided wi
 
 If using FASTQ input, the `sample` identifiers have to be the same when you have re-sequenced the same sample more than once e.g. to increase sequencing depth. The pipeline will concatenate the raw reads before performing any downstream analysis. Below is an example for the same sample sequenced across 3 lanes:
 
-```console
+```bash
 sample,fastq_1,fastq_2
 CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
 CONTROL_REP1,AEG588A1_S1_L003_R1_001.fastq.gz,AEG588A1_S1_L003_R2_001.fastq.gz
@@ -82,7 +82,7 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 
 The typical command for running the pipeline is as follows:
 
-```console
+```bash
 nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 -profile docker --circle_identifier <CIRCLE_IDENTIFIER_STRING>
 ```
 
@@ -90,7 +90,7 @@ This will launch the pipeline with the `docker` configuration profile. See below
 
 Note that the pipeline will create the following files in your working directory:
 
-```console
+```bash
 work                # Directory containing the nextflow working files
 <OUTDIR>            # Finished results in specified location (defined with --outdir)
 .nextflow_log       # Log file from Nextflow
@@ -101,7 +101,7 @@ work                # Directory containing the nextflow working files
 
 When you run the above command, Nextflow automatically pulls the pipeline code from GitHub and stores it as a cached version. When running the pipeline after this, it will always use the cached version if available - even if the pipeline has been updated since. To make sure that you're running the latest version of the pipeline, make sure that you regularly update the cached version of the pipeline:
 
-```console
+```bash
 nextflow pull nf-core/circdna
 ```
 
@@ -169,7 +169,7 @@ Whilst the default requirements set within the pipeline will hopefully work for 
 
 For example, if the nf-core/rnaseq pipeline is failing after multiple re-submissions of the `STAR_ALIGN` process due to an exit code of `137` this would indicate that there is an out of memory issue:
 
-```console
+```bash
 [62/149eb0] NOTE: Process `NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN (WT_REP1)` terminated with an error exit status (137) -- Execution is retried (1)
 Error executing process > 'NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN (WT_REP1)'
 
@@ -280,6 +280,6 @@ Some HPC setups also allow you to run nextflow within a cluster job submitted yo
 In some cases, the Nextflow Java virtual machines can start to request a large amount of memory.
 We recommend adding the following line to your environment to limit this (typically in `~/.bashrc` or `~./bash_profile`):
 
-```console
+```bash
 NXF_OPTS='-Xms1g -Xmx4g'
 ```
