@@ -41,8 +41,13 @@ process AMPLICONARCHITECT_AMPLICONCLASSIFIER {
         --input ${meta.id}.AmpliconClassifier.input \\
         > ${meta.id}.classifier_stdout.log
 
-    mv ${meta.id}_classification_bed_files/* ./
-    mv ${meta.id}_annotated_cycles_files/* ./
+    # Move files if files exist
+    if [ "\$(ls -A ${meta.id}_classification_bed_files)" ]; then
+        mv ${meta.id}_classification_bed_files/* ./
+    fi
+    if [ "\$(ls -A ${meta.id}_annotated_cycles_files)" ]; then
+        mv ${meta.id}_annotated_cycles_files/* ./
+    fi
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
