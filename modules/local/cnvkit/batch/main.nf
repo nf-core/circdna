@@ -10,6 +10,7 @@ process CNVKIT_BATCH {
     input:
     tuple val(meta), path(bam), path(bai)
     path  fasta
+    path  cnn
 
     output:
     tuple val(meta), path("*.bed"), emit: bed
@@ -23,9 +24,8 @@ process CNVKIT_BATCH {
 
     script:
     def args = task.ext.args ?: ''
-    def reference = params.aa_data_repo + "/" + params.reference_build + "/" + params.reference_build + "_cnvkit_filtered_ref.cnn"
     def fasta_args = reference ? "" : "--fasta $fasta"
-    def reference_args = reference ? "--reference $reference" : ""
+    def reference_args = reference ? "--reference $cnn" : ""
 
     """
     cnvkit.py \\

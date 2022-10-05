@@ -356,7 +356,8 @@ workflow CIRCDNA {
     if (run_ampliconarchitect) {
         CNVKIT_BATCH (
             ch_bam_sorted.join(ch_bam_sorted_bai),
-            ch_fasta
+            ch_fasta,
+            ch_cnvkit_reference
         )
         ch_versions = ch_versions.mix(CNVKIT_BATCH.out.versions)
 
