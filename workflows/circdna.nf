@@ -55,7 +55,12 @@ if (run_ampliconarchitect) {
     if (params.reference_build != "hg19" & params.reference_build != "GRCh38" & params.reference_build != "GRCh37"){
         exit 1, "Reference Build not given! Please specify --reference_build 'hg19', 'GRCh38', or 'GRCh37'."
     }
-    ch_cnvkit_reference = Channel.fromPath(params.aa_data_repo + "/" + params.reference_build + "/" + params.reference_build + "_cnvkit_filtered_ref.cnn")
+
+    if (!params.cnvkit_cnn) {
+        ch_cnvkit_reference = file(params.aa_data_repo + "/" + params.reference_build + "/" + params.reference_build + "_cnvkit_filtered_ref.cnn", checkIfExists: true)
+    } else {
+        ch_cnvkit_reference = file(params.cnvkit_cnn)
+    }
 }
 
 
