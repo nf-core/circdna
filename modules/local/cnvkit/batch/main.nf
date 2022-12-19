@@ -47,7 +47,7 @@ process CNVKIT_BATCH {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def reference = params.aa_data_repo + "/" + params.reference_build + "/" + params.reference_build + "_cnvkit_filtered_ref.cnn"
     def fasta_args = reference ? "" : "--fasta $fasta"
-    def reference_args = reference ? "--reference $reference" : ""
+    def reference_args = reference ? "--reference $cnn" : ""
 
     """
     touch ${prefix}.bed
