@@ -308,7 +308,7 @@
                     "type": "string",
                     "mimetype": "text/plain",
                     "fa_icon": "fas fa-book",
-                    "description": "When running AmpliconArchitect, specify reference build ['GRCh37', 'GRCh38]. This is *mandatory* to match fasta and AA reference build!",
+                    "description": "When running AmpliconArchitect, specify reference build ['GRCh37', 'GRCh38', 'mm10']. This is *mandatory* to match fasta and AA reference build!",
                     "help_text": "Specify the reference genome build used for alignment of the WGS reads.",
                     "default": "GRCh38"
                 }
