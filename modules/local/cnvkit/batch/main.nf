@@ -24,8 +24,9 @@ process CNVKIT_BATCH {
 
     script:
     def args = task.ext.args ?: ''
-    def fasta_args = reference ? "" : "--fasta $fasta"
-    def reference_args = reference ? "--reference $cnn" : ""
+    def reference_args = cnn ? "--reference $cnn" : ""
+    def fasta_args = cnn ? "" : "--fasta $fasta"
+""
 
     """
     cnvkit.py \\
@@ -45,9 +46,8 @@ process CNVKIT_BATCH {
     stub:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def reference = params.aa_data_repo + "/" + params.reference_build + "/" + params.reference_build + "_cnvkit_filtered_ref.cnn"
-    def fasta_args = reference ? "" : "--fasta $fasta"
-    def reference_args = reference ? "--reference $cnn" : ""
+    def fasta_args = cnn ? "" : "--fasta $fasta"
+    def reference_args = cnn ? "--reference $cnn" : ""
 
     """
     touch ${prefix}.bed
