@@ -1092,7 +1092,8 @@ def get_longest_soft_clipped_bases(read):
 def background_freqs(seq):
     """Function that takes as input the sequence of the nucletide frequencies in the realignment interval"""
 
-    return {nucleotide: seq.count(nucleotide) / len(seq) for nucleotide in "ATCG"}
+    # return{nucleotide: seq.count(nucleotide)/len(seq) for nucleotide in 'ATCG'}
+    return{nucleotide: max(1,seq.count(nucleotide))/len(seq) for nucleotide in 'ATCG'}
 
 
 def realign(
