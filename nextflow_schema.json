@@ -151,7 +151,7 @@
                 },
                 "save_markduplicates_bam": {
                     "type": "boolean",
-                    "default": false,
+                    "default": true,
                     "fa_icon": "fas fa-save",
                     "help_text": "Set this parameter to save bam file with marked duplicate reads.",
                     "description": "Store bam with marked duplicate reads."
@@ -311,6 +311,13 @@
                     "description": "When running AmpliconArchitect, specify reference build ['GRCh37', 'GRCh38', 'mm10']. This is *mandatory* to match fasta and AA reference build!",
                     "help_text": "Specify the reference genome build used for alignment of the WGS reads.",
                     "default": "GRCh38"
+                },
+                "cnvkit_cnn": {
+                    "type": "string",
+                    "mimetype": "text/plain",
+                    "fa_icon": "fas fa-file-code",
+                    "description": "Path to cnn file inside the AmpliconArchitect Data Repository of the respective reference genome. By default it uses the 'aa_data_repo' and the 'reference_build' input to construct the file path.",
+                    "help_text": "Specify path to cnvkit cnn file inside AmpliconArchitect Data Repository."
                 }
             }
         },
