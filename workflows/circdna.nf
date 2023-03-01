@@ -332,24 +332,25 @@ workflow CIRCDNA {
             ch_markduplicates_multiqc   = MARK_DUPLICATES_PICARD.out.metrics
 
             // FILTER BAM FILES USING SAMTOOLS VIEW
-            SAMTOOLS_VIEW_FILTER (
-                ch_bam_sorted.join(ch_bam_sorted_bai),
-                ch_fasta
-            )
-            ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FILTER.out.versions)
+            if (!params.keep_duplicates) {
+                SAMTOOLS_VIEW_FILTER (
+                    ch_bam_sorted.join(ch_bam_sorted_bai),
+                    ch_fasta
+                )
+                ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FILTER.out.versions)
+                SAMTOOLS_SORT_FILTERED (
+                    SAMTOOLS_VIEW_FILTER.out.bam
+                )
+                ch_versions = ch_versions.mix(SAMTOOLS_SORT_FILTERED.out.versions)
+                ch_bam_sorted = SAMTOOLS_SORT_FILTERED.out.bam
 
-            SAMTOOLS_SORT_FILTERED (
-                SAMTOOLS_VIEW_FILTER.out.bam
-            )
-            ch_versions = ch_versions.mix(SAMTOOLS_SORT_FILTERED.out.versions)
-            ch_bam_sorted = SAMTOOLS_SORT_FILTERED.out.bam
+                SAMTOOLS_INDEX_FILTERED (
+                    ch_bam_sorted
+                )
+                ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FILTERED.out.versions)
 
-            SAMTOOLS_INDEX_FILTERED (
-                ch_bam_sorted
-            )
-            ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FILTERED.out.versions)
-
-            ch_bam_sorted_bai = SAMTOOLS_INDEX_FILTERED.out.bai
+                ch_bam_sorted_bai = SAMTOOLS_INDEX_FILTERED.out.bai
+            }
         } else {
             ch_markduplicates_stats         = Channel.empty()
             ch_markduplicates_flagstat      = Channel.empty()

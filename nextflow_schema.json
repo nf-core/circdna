@@ -144,7 +144,7 @@
                 },
                 "keep_duplicates": {
                     "type": "boolean",
-                    "default": false,
+                    "default": true,
                     "fa_icon": "fas fa-save",
                     "help_text": "Set this parameter to skip filtering of duplicates marked by Picard Markduplicates.",
                     "description": "Keep read duplications marked by picard MarkDuplicates."
