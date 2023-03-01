@@ -2,64 +2,98 @@
     "name": "nf-core/circdna",
     "homePage": "https://github.com/nf-core/circdna",
     "repos": {
-        "nf-core/modules": {
-            "git_url": "https://github.com/nf-core/modules.git",
+        "https://github.com/nf-core/modules.git": {
             "modules": {
-                "bwa/index": {
-                    "branch": "master",
-                    "git_sha": "e745e167c1020928ef20ea1397b6b4d230681b4d"
-                },
-                "bwa/mem": {
-                    "branch": "master",
-                    "git_sha": "4f5274c3de0c9521f5033893ff61057a74c45ba9"
-                },
-                "cat/fastq": {
-                    "branch": "master",
-                    "git_sha": "b034029b59b1198075da8019074bc02051a6100e"
-                },
-                "custom/dumpsoftwareversions": {
-                    "branch": "master",
-                    "git_sha": "e5b44499efcf6f7fb24874886bac60591c5d94dd"
-                },
-                "fastqc": {
-                    "branch": "master",
-                    "git_sha": "49b18b1639f4f7104187058866a8fab33332bdfe"
-                },
-                "minimap2/align": {
-                    "branch": "master",
-                    "git_sha": "1a5a9e7b4009dcf34e6867dd1a5a1d9a718b027b"
-                },
-                "picard/markduplicates": {
-                    "branch": "master",
-                    "git_sha": "682f789f93070bd047868300dd018faf3d434e7c"
-                },
-                "samtools/flagstat": {
-                    "branch": "master",
-                    "git_sha": "bbb99cb8d679555cc01c98766de7869f83283545"
-                },
-                "samtools/idxstats": {
-                    "branch": "master",
-                    "git_sha": "ecece498f10b47b7c9d06f53a310cea5811b4c5f"
-                },
-                "samtools/index": {
-                    "branch": "master",
-                    "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
-                },
-                "samtools/sort": {
-                    "branch": "master",
-                    "git_sha": "1ad73f1b2abdea9398680d6d20014838135c9a35"
-                },
-                "samtools/stats": {
-                    "branch": "master",
-                    "git_sha": "f4eab7945952dc4934224309701a49913ea05ae6"
-                },
-                "samtools/view": {
-                    "branch": "master",
-                    "git_sha": "6b64f9cb6c3dd3577931cc3cd032d6fb730000ce"
-                },
-                "trimgalore": {
-                    "branch": "master",
-                    "git_sha": "85ec13ff1fc2196c5a507ea497de468101baabed"
+                "nf-core": {
+                    "bwa/index": {
+                        "branch": "master",
+                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": ["modules"]
+                    },
+                    "bwa/mem": {
+                        "branch": "master",
+                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": ["modules"]
+                    },
+                    "cat/fastq": {
+                        "branch": "master",
+                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": ["modules"]
+                    },
+                    "custom/dumpsoftwareversions": {
+                        "branch": "master",
+                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": ["modules"]
+                    },
+                    "fastqc": {
+                        "branch": "master",
+                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": ["modules"]
+                    },
+                    "minimap2/align": {
+                        "branch": "master",
+                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": ["modules"]
+                    },
+                    "picard/markduplicates": {
+                        "branch": "master",
+                        "git_sha": "2f88b26e9804b99e98f7cd08e74c3f88288a3358",
+                        "installed_by": ["modules", "bam_markduplicates_picard"]
+                    },
+                    "samtools/faidx": {
+                        "branch": "master",
+                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": ["modules"]
+                    },
+                    "samtools/flagstat": {
+                        "branch": "master",
+                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": ["modules", "bam_stats_samtools"]
+                    },
+                    "samtools/idxstats": {
+                        "branch": "master",
+                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": ["modules", "bam_stats_samtools"]
+                    },
+                    "samtools/index": {
+                        "branch": "master",
+                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": ["modules", "bam_markduplicates_picard"]
+                    },
+                    "samtools/sort": {
+                        "branch": "master",
+                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": ["modules"]
+                    },
+                    "samtools/stats": {
+                        "branch": "master",
+                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": ["modules", "bam_stats_samtools"]
+                    },
+                    "samtools/view": {
+                        "branch": "master",
+                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "installed_by": ["modules"]
+                    },
+                    "trimgalore": {
+                        "branch": "master",
+                        "git_sha": "72ffbd7128015a1d4b65b95ff8d37be8fee2f981",
+                        "installed_by": ["modules"]
+                    }
+                }
+            },
+            "subworkflows": {
+                "nf-core": {
+                    "bam_markduplicates_picard": {
+                        "branch": "master",
+                        "git_sha": "6daac2bc63f4847e0c7cc661f4f5b043ac13faaf",
+                        "installed_by": ["subworkflows"]
+                    },
+                    "bam_stats_samtools": {
+                        "branch": "master",
+                        "git_sha": "92eb5091ae5368a60cda58b3a0ced8b36d715b0f",
+                        "installed_by": ["subworkflows", "bam_markduplicates_picard"]
+                    }
                 }
             }
         }
