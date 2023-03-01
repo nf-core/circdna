@@ -15,8 +15,11 @@ def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
 // Check mandatory parameters
-if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
-if (params.fasta) { ch_fasta = file(params.fasta) } else { exit 1, 'Fasta reference genome not specified!' }
+if (params.input) { ch_input =  Channel.fromPath(params.input) } else { exit 1, 'Input samplesheet not specified!' }
+if (params.fasta) { ch_fasta =  Channel.fromPath(params.fasta) } else { exit 1, 'Fasta reference genome not specified!' }
+
+// Modify fasta channel to include meta data
+ch_fasta = ch_fasta.map{ it -> [[id:it[0].baseName], it] }
 
 branch = params.circle_identifier.split(",")
 run_circexplorer2 = ("circexplorer2" in branch)
@@ -90,48 +93,49 @@ include { INPUT_CHECK           } from '../subworkflows/local/input_check'
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/modules/custom/dumpsoftwareversions/main'
+include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 
 
 // CONCATENATE FASTQ
-include { CAT_FASTQ     }     from '../modules/nf-core/modules/cat/fastq/main'
+include { CAT_FASTQ     }     from '../modules/nf-core/cat/fastq/main'
 
 // QUALITY CONTROL
-include { FASTQC        }     from '../modules/nf-core/modules/fastqc/main'
+include { FASTQC        }     from '../modules/nf-core/fastqc/main'
 
 // TRIMMING
-include { TRIMGALORE    }    from '../modules/nf-core/modules/trimgalore/main'
+include { TRIMGALORE    }    from '../modules/nf-core/trimgalore/main'
 
 // Genome Preparation
-include { BWA_INDEX     }   from '../modules/nf-core/modules/bwa/index/main'
+include { BWA_INDEX     }   from '../modules/nf-core/bwa/index/main'
 
 // Alignment
-include { BWA_MEM                                   }   from '../modules/nf-core/modules/bwa/mem/main'
-include { SAMTOOLS_SORT as SAMTOOLS_SORT_BAM        }   from '../modules/nf-core/modules/samtools/sort/main'
-include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_BAM      }   from '../modules/nf-core/modules/samtools/index/main'
+include { BWA_MEM                                   }   from '../modules/nf-core/bwa/mem/main'
+include { SAMTOOLS_SORT as SAMTOOLS_SORT_BAM        }   from '../modules/nf-core/samtools/sort/main'
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_BAM      }   from '../modules/nf-core/samtools/index/main'
 
 // PICARD
-include { MARK_DUPLICATES_PICARD                    }   from '../subworkflows/nf-core/mark_duplicates_picard'
-include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FILTER     }   from '../modules/nf-core/modules/samtools/view/main'
-include { SAMTOOLS_SORT as SAMTOOLS_SORT_FILTERED   }   from '../modules/nf-core/modules/samtools/sort/main'
-include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FILTERED }   from '../modules/nf-core/modules/samtools/index/main'
+include { SAMTOOLS_FAIDX                            }   from '../modules/nf-core/samtools/faidx/main'
+include { BAM_MARKDUPLICATES_PICARD                 }   from '../subworkflows/nf-core/bam_markduplicates_picard/main'
+include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FILTER     }   from '../modules/nf-core/samtools/view/main'
+include { SAMTOOLS_SORT as SAMTOOLS_SORT_FILTERED   }   from '../modules/nf-core/samtools/sort/main'
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FILTERED }   from '../modules/nf-core/samtools/index/main'
 
 // SAMTOOLS STATISTICS
-include { SAMTOOLS_STATS                            }   from '../modules/nf-core/modules/samtools/stats/main'
+include { SAMTOOLS_STATS                            }   from '../modules/nf-core/samtools/stats/main'
 
 // BAM STATS
-include { BAM_STATS_SAMTOOLS as BAM_STATS_SAMTOOLS_RAW }   from '../subworkflows/nf-core/bam_stats_samtools.nf'
+include { BAM_STATS_SAMTOOLS as BAM_STATS_SAMTOOLS_RAW }   from '../subworkflows/nf-core/bam_stats_samtools/main'
 
 // CIRCLE-MAP
 include { CIRCLEMAP_READEXTRACTOR                   }   from '../modules/local/circlemap/readextractor.nf'
-include { SAMTOOLS_SORT as SAMTOOLS_SORT_RE         }   from '../modules/nf-core/modules/samtools/sort/main'
-include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_RE       }   from '../modules/nf-core/modules/samtools/index/main'
-include { SAMTOOLS_SORT as SAMTOOLS_SORT_QNAME_CM   }   from '../modules/nf-core/modules/samtools/sort/main'
+include { SAMTOOLS_SORT as SAMTOOLS_SORT_RE         }   from '../modules/nf-core/samtools/sort/main'
+include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_RE       }   from '../modules/nf-core/samtools/index/main'
+include { SAMTOOLS_SORT as SAMTOOLS_SORT_QNAME_CM   }   from '../modules/nf-core/samtools/sort/main'
 include { CIRCLEMAP_REALIGN                         }   from '../modules/local/circlemap/realign.nf'
 include { CIRCLEMAP_REPEATS                         }   from '../modules/local/circlemap/repeats.nf'
 
 // CIRCLE_FINDER
-include { SAMTOOLS_SORT as SAMTOOLS_SORT_QNAME_CF   }   from '../modules/nf-core/modules/samtools/sort/main'
+include { SAMTOOLS_SORT as SAMTOOLS_SORT_QNAME_CF   }   from '../modules/nf-core/samtools/sort/main'
 include { SAMBLASTER                }     from '../modules/local/samblaster.nf'
 include { BEDTOOLS_SORTEDBAM2BED    }     from '../modules/local/bedtools/sortedbam2bed.nf'
 include { BEDTOOLS_SPLITBAM2BED     }     from '../modules/local/bedtools/splitbam2bed.nf'
@@ -154,7 +158,7 @@ include { SUMMARISE_AA                              }     from '../modules/local
 include { UNICYCLER           }     from '../modules/local/unicycler/main.nf'
 include { SEQTK_SEQ           }     from '../modules/local/seqtk/seq.nf'
 include { GETCIRCULARREADS    }     from '../modules/local/getcircularreads.nf'
-include { MINIMAP2_ALIGN      }     from '../modules/nf-core/modules/minimap2/align/main.nf'
+include { MINIMAP2_ALIGN      }     from '../modules/nf-core/minimap2/align/main.nf'
 
 
 // MULTIQC
@@ -271,6 +275,7 @@ workflow CIRCDNA {
             true
         )
         ch_bam_sorted   = BWA_MEM.out.bam
+        ch_full_bam_sorted   = BWA_MEM.out.bam
         ch_bwa_sorted   = BWA_MEM.out.bam
         ch_versions = ch_versions.mix(BWA_MEM.out.versions)
 
@@ -294,6 +299,7 @@ workflow CIRCDNA {
             ch_bam_sorted       = SAMTOOLS_SORT_BAM.out.bam
         } else {
             ch_bam_sorted       = INPUT_CHECK.out.reads
+            ch_full_bam_sorted = INPUT_CHECK.out.reads
             ch_bwa_sorted       = INPUT_CHECK.out.reads
         }
         // SAMTOOLS INDEX SORTED BAM
@@ -306,12 +312,15 @@ workflow CIRCDNA {
         ch_trimgalore_multiqc_log   = Channel.empty()
     }
 
+    // Define Index channel
+    ch_bam_sorted_bai = SAMTOOLS_INDEX_BAM.out.bai
+    ch_full_bam_sorted_bai = SAMTOOLS_INDEX_BAM.out.bai
+
     if (run_ampliconarchitect | run_circexplorer2 | run_circle_finder |
         run_circle_map_realign | run_circle_map_repeats) {
-        ch_bam_sorted_bai       = SAMTOOLS_INDEX_BAM.out.bai
 
         BAM_STATS_SAMTOOLS_RAW (
-            ch_bam_sorted.join(ch_bam_sorted_bai)
+            ch_bam_sorted,ch_bam_sorted_bai
         )
         ch_versions = ch_versions.mix(BAM_STATS_SAMTOOLS_RAW.out.versions)
         ch_samtools_stats               = BAM_STATS_SAMTOOLS_RAW.out.stats
@@ -320,16 +329,22 @@ workflow CIRCDNA {
 
         // PICARD MARK_DUPLICATES
         if (!params.skip_markduplicates) {
-            MARK_DUPLICATES_PICARD (
-                ch_bam_sorted
+            // Index Fasta File for Markduplicates
+            SAMTOOLS_FAIDX ( ch_fasta )
+            ch_fai = SAMTOOLS_FAIDX.out.fai
+
+            BAM_MARKDUPLICATES_PICARD (
+                ch_bam_sorted,ch_fasta,ch_fai
             )
-            ch_versions = ch_versions.mix(MARK_DUPLICATES_PICARD.out.versions)
-            ch_bam_sorted               = MARK_DUPLICATES_PICARD.out.bam
-            ch_bam_sorted_bai           = MARK_DUPLICATES_PICARD.out.bai
-            ch_markduplicates_stats     = MARK_DUPLICATES_PICARD.out.stats
-            ch_markduplicates_flagstat  = MARK_DUPLICATES_PICARD.out.flagstat
-            ch_markduplicates_idxstats  = MARK_DUPLICATES_PICARD.out.idxstats
-            ch_markduplicates_multiqc   = MARK_DUPLICATES_PICARD.out.metrics
+            ch_versions = ch_versions.mix(BAM_MARKDUPLICATES_PICARD.out.versions)
+            ch_bam_sorted               = BAM_MARKDUPLICATES_PICARD.out.bam
+            ch_bam_sorted_bai           = BAM_MARKDUPLICATES_PICARD.out.bai
+            ch_full_bam_sorted               = BAM_MARKDUPLICATES_PICARD.out.bam
+            ch_full_bam_sorted_bai           = BAM_MARKDUPLICATES_PICARD.out.bai
+            ch_markduplicates_stats     = BAM_MARKDUPLICATES_PICARD.out.stats
+            ch_markduplicates_flagstat  = BAM_MARKDUPLICATES_PICARD.out.flagstat
+            ch_markduplicates_idxstats  = BAM_MARKDUPLICATES_PICARD.out.idxstats
+            ch_markduplicates_multiqc   = BAM_MARKDUPLICATES_PICARD.out.metrics
 
             // FILTER BAM FILES USING SAMTOOLS VIEW
             if (!params.keep_duplicates) {
@@ -413,7 +428,7 @@ workflow CIRCDNA {
     //
     if (run_circle_finder) {
         SAMTOOLS_SORT_QNAME_CF (
-            ch_bam_sorted
+            ch_full_bam_sorted
         )
         ch_versions = ch_versions.mix(SAMTOOLS_SORT_QNAME_CF.out.versions)
 
@@ -428,7 +443,7 @@ workflow CIRCDNA {
         ch_versions = ch_versions.mix(BEDTOOLS_SPLITBAM2BED.out.versions)
 
         BEDTOOLS_SORTEDBAM2BED (
-            ch_bam_sorted.join(ch_bam_sorted_bai)
+            ch_full_bam_sorted.join(ch_full_bam_sorted_bai)
         )
         ch_versions = ch_versions.mix(BEDTOOLS_SORTEDBAM2BED.out.versions)
 
