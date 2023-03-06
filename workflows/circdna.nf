@@ -416,17 +416,19 @@ workflow CIRCDNA {
         )
         ch_versions = ch_versions.mix(AMPLICONARCHITECT_AMPLICONARCHITECT.out.versions)
 
-        ch_aa_cycles = AMPLICONARCHITECT_AMPLICONARCHITECT.out.cycles
-        ch_aa_graphs = AMPLICONARCHITECT_AMPLICONARCHITECT.out.graph
+        ch_aa_cycles = AMPLICONARCHITECT_AMPLICONARCHITECT.out.cycles.
+            map {meta, path -> [path]}
+        ch_aa_graphs = AMPLICONARCHITECT_AMPLICONARCHITECT.out.graph.
+            map {meta, path -> [path]}
 
-//        AMPLICONCLASSIFIER_MAKEINPUT (
-//            ch_aa_cycles,
-//            ch_aa_graphs
-//        )
+        AMPLICONCLASSIFIER_MAKEINPUT (
+            ch_aa_graphs.flatten().collect().ifEmpty([]),
+            ch_aa_cycles.flatten().collect().ifEmpty([])
+        )
 
-//        AMPLICONCLASSIFIER_AMPLICONCLASSIFIER (
-//            ch_aa_cycles.join(ch_aa_graphs)
-//        )
+        AMPLICONCLASSIFIER_AMPLICONCLASSIFIER (
+            AMPLICONCLASSIFIER_MAKEINPUT.out.input
+        )
 //        ch_versions = ch_versions.mix(AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.versions)
 //        AMPLICONCLASSIFIER_AMPLICONSIMILARITY (
 //            ch_aa_cycles.join(ch_aa_graphs)
