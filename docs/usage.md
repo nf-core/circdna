@@ -18,10 +18,10 @@ Depending on the branch (circle_identifier) used in the pipeline, different inpu
 
 You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with either 2 or 3 columns (depending on the input format), and a header row as shown in the examples below.
 
-```bash
+````bash
 ```bash
 --input '[path to samplesheet file]'
-```
+````
 
 ## Input Formats
 
@@ -113,13 +113,13 @@ This will launch the pipeline with the `docker` configuration profile. See below
 
 Note that the pipeline will create the following files in your working directory:
 
-```bash
+````bash
 ```bash
 work                # Directory containing the nextflow working files
 <OUTDIR>            # Finished results in specified location (defined with --outdir)
 .nextflow_log       # Log file from Nextflow
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
-```
+````
 
 ### Updating the pipeline
 
