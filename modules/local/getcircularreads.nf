@@ -6,6 +6,7 @@ process GETCIRCULARREADS {
 
     output:
     tuple val(meta), path("*unicycler.circular.fastq.gz"), optional: true, emit: fastq
+    path "versions.yml"         , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -23,5 +24,10 @@ process GETCIRCULARREADS {
             ${prefix}.fastq.gz
     fi
     rm temp.fastq
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        cat: \$(echo \$(cat --version 2>&1) | sed 's/^.*coreutils) //; s/ .*\$//')
+    END_VERSIONS
     """
 }
