@@ -150,10 +150,10 @@ include { CNVKIT_SEGMENT                            }     from '../modules/local
 include { COLLECT_SEEDS                             }     from '../modules/local/collect_seeds.nf'
 include { AMPLIFIED_INTERVALS                       }     from '../modules/local/amplified_intervals.nf'
 include { AMPLICONARCHITECT_AMPLICONARCHITECT       }     from '../modules/local/ampliconarchitect/ampliconarchitect.nf'
-include { AMPLICONCLASSIFIER_AMPLICONCLASSIFIER      }     from '../modules/local/ampliconclassifier/ampliconclassifier.nf'
-include { AMPLICONCLASSIFIER_AMPLICONSIMILARITY      }     from '../modules/local/ampliconclassifier/ampliconsimilarity.nf'
-include { AMPLICONCLASSIFIER_MAKEINPUT               }     from '../modules/local/ampliconclassifier/makeinput.nf'
-include { AMPLICONCLASSIFIER_MAKERESULTSTABLE        }     from '../modules/local/ampliconclassifier/makeresultstable.nf'
+include { AMPLICONCLASSIFIER_AMPLICONCLASSIFIER     }     from '../modules/local/ampliconclassifier/ampliconclassifier.nf'
+include { AMPLICONCLASSIFIER_AMPLICONSIMILARITY     }     from '../modules/local/ampliconclassifier/ampliconsimilarity.nf'
+include { AMPLICONCLASSIFIER_MAKEINPUT              }     from '../modules/local/ampliconclassifier/makeinput.nf'
+include { AMPLICONCLASSIFIER_MAKERESULTSTABLE       }     from '../modules/local/ampliconclassifier/makeresultstable.nf'
 
 // Unicycler
 include { UNICYCLER           }     from '../modules/local/unicycler/main.nf'
@@ -429,17 +429,31 @@ workflow CIRCDNA {
         AMPLICONCLASSIFIER_AMPLICONCLASSIFIER (
             AMPLICONCLASSIFIER_MAKEINPUT.out.input
         )
-//        ch_versions = ch_versions.mix(AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.versions)
-//        AMPLICONCLASSIFIER_AMPLICONSIMILARITY (
-//            ch_aa_cycles.join(ch_aa_graphs)
-//        )
-//        aa_summary_ch = AMPLICONARCHITECT_AMPLICONARCHITECT.out.summary
-//        ch_versions = ch_versions.mix(AMPLICONCLASSIFIER_AMPLICONSIMILARITY.out.versions)
+        ac_input_ch = AMPLICONCLASSIFIER_MAKEINPUT.out.input
+        ch_versions = ch_versions.mix(AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.versions)
+        AMPLICONCLASSIFIER_AMPLICONSIMILARITY (
+            ac_input_ch
+        )
+        ch_versions = ch_versions.mix(AMPLICONCLASSIFIER_AMPLICONSIMILARITY.out.versions)
 
-//        AMPLICONCLASSIFIER_MAKERESULTSTABLE (
-//            aa_summary_ch.join(AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.class_tsv)
-//        )
-//        ch_versions = ch_versions.mix(SUMMARISE_AA.out.versions)
+        ac_input_ch.
+            map {file -> ["group", file]}.
+            set {ac_results_input_ch}
+        AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.class_tsv.
+            map {file -> ["group", file]}.
+            set {ac_class_ch}
+        //  ac_results_input_ch.join(ac_class_ch).
+        //  map{group, input_file, class_file -> [input_file, class_file]}
+
+        AMPLICONCLASSIFIER_MAKERESULTSTABLE (
+            ac_input_ch,
+            AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.class_tsv,
+            AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.gene_list,
+            AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.entropy,
+            AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.basic_properties,
+            AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.bed_files
+        )
+        ch_versions = ch_versions.mix(AMPLICONCLASSIFIER_MAKERESULTSTABLE.out.versions)
     }
 
 
