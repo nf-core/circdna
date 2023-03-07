@@ -122,7 +122,6 @@ class realignment:
         self.pid = pid
 
     def print_parameters(self):
-
         print("Running realignment\n")
         print(
             "Probabilistic realignment parameters:\n"
@@ -188,7 +187,6 @@ class realignment:
             only_discordants = []
 
             for index, interval in peaks_pd.iterrows():
-
                 if (
                     check_size_and_write(
                         results,
@@ -205,7 +203,6 @@ class realignment:
                     only_discordants = []
 
                 try:
-
                     # find out the prior distribution (mate alignment positions).
                     candidate_mates = get_mate_intervals(
                         ecc_dna,
@@ -216,7 +213,6 @@ class realignment:
                     )
 
                     if len(candidate_mates) > 0 or candidate_mates != None:
-
                         realignment_interval_extended = get_realignment_intervals(
                             candidate_mates, extension, self.interval_p, self.verbose
                         )
@@ -231,7 +227,6 @@ class realignment:
                             index,
                             mate_interval,
                         ) in realignment_interval_extended.iterrows():
-
                             iteration += 1
 
                             # sample realignment intervals
@@ -280,14 +275,10 @@ class realignment:
                                 int(interval["end"]),
                                 multiple_iterators=True,
                             ):
-
                                 if is_soft_clipped(read):
-
                                     if read.mapq >= self.mapq_cutoff:
-
                                         # no need to realignment
                                         if read.has_tag("SA") and self.remap != True:
-
                                             # check realignment from SA tag
                                             support = circle_from_SA(read, self.mapq_cutoff, mate_interval)
 
@@ -295,9 +286,7 @@ class realignment:
                                                 pass
 
                                             else:
-
                                                 if support["support"] == True:
-
                                                     score = len(get_longest_soft_clipped_bases(read)["seq"]) * (
                                                         1
                                                         - phred_to_prob(
@@ -319,7 +308,6 @@ class realignment:
 
                                                     # I store the read name to the output, so that a read counts as 1 no matter it is SC in 2 pieces
                                                     if read.reference_start < support["leftmost"]:
-
                                                         iteration_results.append(
                                                             [
                                                                 interval["chrom"],
@@ -332,7 +320,6 @@ class realignment:
                                                         )
 
                                                     elif read.reference_start > support["leftmost"]:
-
                                                         iteration_results.append(
                                                             [
                                                                 interval["chrom"],
@@ -362,7 +349,6 @@ class realignment:
                                                 )
                                                 == True
                                             ):
-
                                                 if sc_len >= self.min_sc_length:
                                                     edits_allowed = adaptative_myers_k(sc_len, self.edit_distance_frac)
                                                     # realignment
@@ -381,7 +367,6 @@ class realignment:
                                                     )
 
                                                     if realignment_dict == None:
-
                                                         pass
 
                                                     else:
@@ -394,7 +379,6 @@ class realignment:
                                                             prob >= self.prob_cutoff
                                                             and realignment_dict["alignments"][1][3] <= edits_allowed
                                                         ):
-
                                                             # here I have to retrieve the nucleotide mapping positions. Which should be the
                                                             # the left sampling pysam coordinate - edlib coordinates
 
@@ -414,7 +398,6 @@ class realignment:
                                                             if read.reference_start < int(mate_interval["start"]) + int(
                                                                 realignment_dict["alignments"][1][0][0]
                                                             ):
-
                                                                 iteration_results.append(
                                                                     [
                                                                         interval["chrom"],
@@ -431,7 +414,6 @@ class realignment:
                                                                 + int(mate_interval["start"])
                                                                 + int(realignment_dict["alignments"][1][0][0])
                                                             ):
-
                                                                 iteration_results.append(
                                                                     [
                                                                         interval["chrom"],
@@ -450,7 +432,6 @@ class realignment:
                                                         else:
                                                             pass
                                             else:
-
                                                 pass
 
                                     else:
@@ -488,7 +469,6 @@ class realignment:
 
                         # second pass to add discordant read info
                         if len(iteration_results) > 0:
-
                             results = results + assign_discordants(
                                 iteration_results,
                                 iteration_discordants,
@@ -523,7 +503,6 @@ class realignment:
                                 )
 
                 except BaseException as e:
-
                     traceback.print_exc(file=sys.stdout)
                     warnings.warn("Failed on interval %s due to the error %s" % (str(interval), str(e)))
                     return [1, 1]

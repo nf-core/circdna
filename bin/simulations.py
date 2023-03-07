@@ -99,7 +99,6 @@ def sim_ecc_reads(
     begin = time.time()
     # simulated reads
     while n_of_reads < reads + 1:
-
         # sample weighted chromosome
         # set random seed, important for paralell
         np.random.seed()
@@ -158,11 +157,8 @@ def sim_ecc_reads(
 
             # simulation rounds
             for each_sim in range(0, round(int(rounds_of_sim))):
-
                 if errors == True:
-
                     if (n_of_reads_it + 1) != 1000:
-
                         # sim the read
                         get_seq = new_read.simulate_read()
                         # put it in fastq format
@@ -190,7 +186,6 @@ def sim_ecc_reads(
                             continue
 
                     else:
-
                         # simulate reads and save to disk
                         get_seq = new_read.simulate_read()
                         simulated_reads = sim_paired_end.simulate_read_with_errors(
@@ -255,9 +250,7 @@ def sim_ecc_reads(
                         n_of_reads_it = 1
 
                 else:
-
                     if (n_of_reads_it + 1) != 10000:
-
                         # sim the read
                         get_seq = new_read.simulate_read()
                         # put it in fastq format
@@ -338,7 +331,6 @@ def sim_ecc_reads(
 
 
 class sim_paired_end:
-
     # init the class
     def __init__(
         self,
@@ -560,13 +552,11 @@ class sim_paired_end:
 
         # sometimes the reading fails. I introduce this to capture it
         try:
-
             right_record = SeqIO.read(StringIO(right_read), "fastq")
             left_record = SeqIO.read(StringIO(left_read), "fastq")
             os.chdir(dir)
             return (left_record, right_record)
         except ValueError as v:
-
             warnings.warn("Catched ValueError in a sampling round. Skipping")
             os.chdir(dir)
             return None

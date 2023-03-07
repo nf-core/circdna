@@ -69,7 +69,8 @@ class abstract_edge(object):
     def __init__(self, v1, v2, eid=0, graph=None, update_vertices=True):
         """Initiate edge
         Arguments: v1, v2, (optional)eid, (optional) graph.
-        update_vertices: (optional True/False) to update vertices to include edge in v1.elist, v2.elist. (default=True)"""
+        update_vertices: (optional True/False) to update vertices to include edge in v1.elist, v2.elist. (default=True)
+        """
         self.v1, self.v2 = v1, v2
         self.eid = eid
         self.graph = graph

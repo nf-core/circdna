@@ -64,7 +64,6 @@ class readExtractor:
         self.parser = parser
 
     def extract_sv_circleReads(self):
-
         """Function that extracts Structural Variant reads that indicate circular DNA,
         The programme with extract soft-clipped reads and R2F1 (<- ->) oriented reads"""
 
@@ -75,7 +74,6 @@ class readExtractor:
 
         # HD the tag for the header line. SO indicates sorting order of the alignements
         if "HD" in raw_bam.header:
-
             if raw_bam.header["HD"]["SO"] != "queryname":
                 sys.stderr.write(
                     "The input bam header says that bam is not sorted by queryname. It is sorted by %s\n\n"
@@ -90,7 +88,6 @@ class readExtractor:
                 self.parser.print_help()
                 sys.exit(1)
         else:
-
             if self.verbose >= 2:
                 warnings.warn(
                     "WARNING:Circle-Map does not know if the input bam is queryname sorted\n Please check that, the output would be unexpected otherwise"
@@ -118,7 +115,6 @@ class readExtractor:
         processed_reads = 0
 
         for read in raw_bam:
-
             if self.verbose >= 3:
                 processed_reads += 1
 
@@ -141,21 +137,15 @@ class readExtractor:
 
                     # both reads need to be mapped
                     if read1.is_unmapped == False and read2.is_unmapped == False:
-
                         if read2.is_reverse and read1.is_reverse == False:
-
                             # read2 leftmost mapping position smaller than read1 leftmost mapping position
                             if read2.reference_start < read1.reference_start:
-
                                 # aligned to the same chromosome
                                 if read1.reference_id == read2.reference_id:
-
                                     if read1.mapq >= self.mapq_cutoff and read2.mapq >= self.mapq_cutoff:
-
                                         # is discordant extraction turn off?
 
                                         if self.no_discordants == False:
-
                                             # add mate mapping quality info
                                             read1.tags += [("MQ", read2.mapq)]
                                             read2.tags += [("MQ", read1.mapq)]
@@ -163,10 +153,8 @@ class readExtractor:
                                             circle_sv_reads.write(read1)
                                             circle_sv_reads.write(read2)
                                         else:
-
                                             pass
                                     else:
-
                                         # extract soft-clipped if the mapq is high enough
                                         write_clipped_read(
                                             circle_sv_reads,
@@ -187,7 +175,6 @@ class readExtractor:
                                         )
 
                                 else:
-
                                     write_clipped_read(
                                         circle_sv_reads,
                                         read1,
@@ -207,7 +194,6 @@ class readExtractor:
                                     )
 
                             else:
-
                                 # if the leftmost mapping condition is not met check if they are soft-clipped
                                 write_clipped_read(
                                     circle_sv_reads,
@@ -228,7 +214,6 @@ class readExtractor:
                                 )
 
                         else:
-
                             # check soft-clipped if R2F1 orientation is not True
 
                             write_clipped_read(
@@ -250,7 +235,6 @@ class readExtractor:
                             )
 
                     else:
-
                         # check read 1 and read two for independent unmaps
                         if read1.is_unmapped == False:
                             write_clipped_read(
@@ -283,7 +267,6 @@ class readExtractor:
         circle_sv_reads.close()
 
         if self.verbose >= 3:
-
             print("finished extracting reads. Elapsed time:", (end - begin) / 60, "mins")
 
             print("Thanks for using Circle-Map")

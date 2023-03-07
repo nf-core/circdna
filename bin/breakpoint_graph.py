@@ -100,7 +100,8 @@ class breakpoint_edge(abstract_edge):
         edge_type: " = "discordant"/"breakpoint" or "concordant" : genomic connectivity or source; "sequence": genomic interval
         Required:
         If edge_type = "sequence": v1.chrom = v2.chrom, v1.pos > v2.pos else if equal v1.strand > v2.strand
-        If edge_type = "concordant": v1.chrom = v2.chrom, |v1.pos - v2.pos| = 1 and the smaller has strand = 1 else -1"""
+        If edge_type = "concordant": v1.chrom = v2.chrom, |v1.pos - v2.pos| = 1 and the smaller has strand = 1 else -1
+        """
         if type(v1) == str:
             estr = v1
             v1 = breakpoint_vertex(estr.split(">")[0][:-1])
@@ -430,7 +431,6 @@ class breakpoint_graph(abstract_graph):
         return None
 
     def cycle_decomposition(self, w, s):
-
         """
         Decompose breakpoint_graph into 'simple' cycles.
         Simple cycles may contain a sequence edge atmost once along each strand.

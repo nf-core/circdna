@@ -8,6 +8,7 @@ import argparse
 from datetime import datetime
 from subprocess import call
 
+
 # Read the CNVkit .cns files
 def collect_seeds(sample, cns):
     with open(cns) as infile, open(sample + "_CNV_GAIN.bed", "w") as outfile:

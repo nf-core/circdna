@@ -29,7 +29,6 @@ class coverage:
     """Class for managing the coverage metrics of circle-map"""
 
     def __init__(self, sorted_bam, eccdna_bed, extension, mapq, inside_length, directory):
-
         self.bam = ps.AlignmentFile(directory + "/" + sorted_bam, "rb")
         self.bed = eccdna_bed
 
@@ -56,7 +55,6 @@ class coverage:
         merged_bed = self.bed.sort().merge()
 
         for interval in merged_bed:
-
             coverage_dict = {}
             if interval.start - self.ext < 0:
                 start = 0
@@ -81,7 +79,6 @@ class coverage:
             yield (coverage_dict, header_dict)
 
     def compute_coverage(self, cov_generator):
-
         """Function that takes as input generator returning  coverage numpy arrays and  file with summarized statistics
         of the coverage within the intervals"""
 
@@ -91,11 +88,9 @@ class coverage:
         output = []
         for cov_dict, header_dict in cov_generator:
             for key, value in cov_dict.items():
-
                 overlaps = bt.BedTool(self.bed.all_hits(key))
 
                 for interval in overlaps:
-
                     # compute array slicing indices
                     start = interval.start - key.start
                     end = interval.end - key.start
@@ -115,7 +110,6 @@ class coverage:
                     region_array = value[start:end]
 
                     try:
-
                         mean = np.mean(region_array)
                         sd = np.std(region_array)
 
@@ -123,14 +117,12 @@ class coverage:
                         interval.append(str(sd))
 
                     except:
-
                         interval.append("NA")
                         interval.append("NA")
 
                     # compute ratios
 
                     try:
-
                         start_coverage_ratio = np.sum(region_array[0 : self.ilen]) / np.sum(
                             ext_array[0 : (self.ilen + self.ext)]
                         )
@@ -142,17 +134,14 @@ class coverage:
                         interval.append(str(end_coverage_ratio))
 
                     except:
-
                         interval.append("NA")
                         interval.append("NA")
 
                     try:
-
                         zero_frac = np.count_nonzero(region_array == 0) / len(region_array)
                         interval.append(str(zero_frac))
 
                     except:
-
                         interval.append("NA")
                     output.append(interval)
 

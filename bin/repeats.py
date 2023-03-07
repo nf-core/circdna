@@ -39,7 +39,6 @@ class repeat:
         self.number = read_number
 
     def find_circles(self):
-
         begin = time.time()
 
         os.chdir("%s" % self.dir)
@@ -50,7 +49,6 @@ class repeat:
 
         output = []
         for read in bam:
-
             try:
                 if read.has_tag("XA"):
                     tag = read.get_tag("XA").split(";")[:-1]
@@ -58,16 +56,13 @@ class repeat:
                     read_edit_distance = read.get_tag("NM")
 
                     if read_edit_distance <= self.mismatch and len(tag) == 1:
-
                         read_chrom = bam.get_reference_name(read.reference_id)
                         chrom = tag[0].split(",")[0]
 
                         if chrom == read_chrom:
-
                             aln = int(tag[0].split(",")[1][1:])
 
                             if aln < read.reference_start:
-
                                 interval = [
                                     chrom,
                                     aln,
@@ -78,7 +73,6 @@ class repeat:
                                 output.append(interval)
 
                             else:
-
                                 interval = [
                                     chrom,
                                     read.reference_start,

@@ -5,7 +5,6 @@ import os
 results = {}
 version_files = [x for x in os.listdir(".") if x.endswith(".version.txt")]
 for version_file in version_files:
-
     software = version_file.replace(".version.txt", "")
     if software == "pipeline":
         software = "nf-core/circdna"

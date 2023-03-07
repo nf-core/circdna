@@ -41,7 +41,6 @@ import datetime
 
 
 def is_soft_clipped(read):
-
     """Function that checks the CIGAR string of the sam file and returns true if the read is soft-clipped"""
 
     # cigar 4 equals to S in pysam sam representation
@@ -60,7 +59,6 @@ def is_soft_clipped(read):
 
 
 def is_hard_clipped(read):
-
     """Function that checks the CIGAR string of the sam file and returns true if the read is hard-clipped"""
 
     # cigar 5 equals to H in pysam sam representation
@@ -85,7 +83,6 @@ def rightmost_from_read(read):
 
     # matches, deletions and ref skip consume reference
     for cigar in read.cigar:
-
         if cigar[0] == 0:
             rightmost += cigar[1]
 
@@ -126,7 +123,6 @@ def rightmost_from_sa(leftmost, sa_cigar):
 
 
 def aligned_bases(read):
-
     """Function that counts the number of aligned bases from the CIGAR string and returns and integer"""
 
     aligned = 0
@@ -141,7 +137,6 @@ def aligned_bases(read):
 
 
 def aligned_bases_from_sa(sa_cigar):
-
     """Function that gets as input the SA tag CIGAR and reports the number of bases that where matched to the genome"""
 
     cigar = ["".join(g) for _, g in it.groupby(sa_cigar, str.isalpha)]
@@ -165,7 +160,6 @@ def aligned_bases_from_sa(sa_cigar):
 
 
 def genome_alignment_from_cigar(sa_cigar):
-
     """Function that gets as input the SA tag CIGAR and returns the length of the alignment interval in the genome it
     will look at the number of matches and deletions in the CIGAR, as they are the elements that will explain the genome
     alignment
@@ -189,7 +183,6 @@ def genome_alignment_from_cigar(sa_cigar):
             aligned += int(cigar[index - 1])
 
     if "D" in cigar == True:
-
         deletion_index = cigar.index("D")
 
         # if only one hit
@@ -226,14 +219,12 @@ def bam_circ_sv_peaks(bam, input_bam_name, cores, verbose, pid, clusters):
             sys.exit()
 
         elif bam.header["HD"]["SO"] == "unsorted":
-
             bam.close()
 
             print("Bam is unsorted, exiting")
             sys.exit()
 
         elif bam.header["HD"]["SO"] == "coordinate":
-
             bam.close()
             # this handles Circle-Map bam2bam
             if input_bam_name != None:
@@ -250,7 +241,6 @@ def bam_circ_sv_peaks(bam, input_bam_name, cores, verbose, pid, clusters):
                 )
 
     else:
-
         if verbose < 2:
             print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S:"))
             warnings.warn(
@@ -300,12 +290,10 @@ def bam_circ_sv_peaks(bam, input_bam_name, cores, verbose, pid, clusters):
 
 
 def get_mate_intervals(sorted_bam, interval, mapq_cutoff, verbose, only_discordants):
-
     """Function that takes as input a sorted bam, an interval and the mapq cutoff and returns the mate alignment positions
     (the realignment prior) intervals"""
 
     try:
-
         candidate_mates = []
         for read in sorted_bam.fetch(
             interval["chrom"],
@@ -313,13 +301,10 @@ def get_mate_intervals(sorted_bam, interval, mapq_cutoff, verbose, only_discorda
             int(interval["end"]),
             multiple_iterators=True,
         ):
-
             if read.mapq >= mapq_cutoff:
-
                 # create mate interval based on the soft-clipped SA alignments
                 if is_soft_clipped(read) == True and read.has_tag("SA"):
                     if only_discordants != True:
-
                         read_chr = sorted_bam.get_reference_name(read.reference_id)
                         suplementary = read.get_tag("SA")
 
@@ -327,16 +312,13 @@ def get_mate_intervals(sorted_bam, interval, mapq_cutoff, verbose, only_discorda
                         supl_info = [x.strip() for x in suplementary.split(",")]
 
                         if read_chr == supl_info[0] and int(supl_info[4]) >= mapq_cutoff:
-
                             # split read with the same orientation
                             if (read.is_reverse == True and supl_info[2] == "-") or (
                                 read.is_reverse == False and supl_info[2] == "+"
                             ):
-
                                 # SA is downstream, the interval is start, start+read length
 
                                 if read.reference_start > int(supl_info[1]):
-
                                     ref_alignment_length = genome_alignment_from_cigar(supl_info[3])
 
                                     # ref_alignment_length * 2 is done for extending the realignment region
@@ -356,7 +338,6 @@ def get_mate_intervals(sorted_bam, interval, mapq_cutoff, verbose, only_discorda
 
                                 # SA is upstream, the interval is end - read length, end
                                 elif read.reference_start < int(supl_info[1]):
-
                                     ref_alignment_length = genome_alignment_from_cigar(supl_info[3])
 
                                     # ref_alignment_length * 2 is done for extending the realignment region, "SA" means that the realignment prior has been generated
@@ -377,13 +358,10 @@ def get_mate_intervals(sorted_bam, interval, mapq_cutoff, verbose, only_discorda
 
                 # check discordant reads (R2F1 orientation)
                 elif read.is_unmapped == False and read.mate_is_unmapped == False:
-
                     # check R2F1 orientation,when the R2 read
                     if read.is_reverse == True and read.mate_is_reverse == False:
-
                         # R2F1 order
                         if read.reference_start < read.next_reference_start:
-
                             if read.reference_id == read.next_reference_id:
                                 # create mate interval
                                 read_length = read.infer_query_length()
@@ -403,9 +381,7 @@ def get_mate_intervals(sorted_bam, interval, mapq_cutoff, verbose, only_discorda
 
                     # R2F1 when iterating trough F1 read
                     elif read.is_reverse == False and read.mate_is_reverse == True:
-
                         if read.next_reference_start < read.reference_start:
-
                             if read.reference_id == read.next_reference_id:
                                 # create mate interval
                                 read_length = read.infer_query_length()
@@ -422,7 +398,6 @@ def get_mate_intervals(sorted_bam, interval, mapq_cutoff, verbose, only_discorda
                                 ]
                                 candidate_mates.append(mate_interval)
                     else:
-
                         if only_discordants != True:
                             # soft clipped without and SA and hard clipped reads (secondary)
 
@@ -430,9 +405,7 @@ def get_mate_intervals(sorted_bam, interval, mapq_cutoff, verbose, only_discorda
                                 # mate interval is whole chromosome
 
                                 if "SQ" in sorted_bam.header:
-
                                     for reference in sorted_bam.header["SQ"]:
-
                                         if reference["SN"] == sorted_bam.get_reference_name(read.reference_id):
                                             # LR is added just not to crash the program
 
@@ -448,20 +421,16 @@ def get_mate_intervals(sorted_bam, interval, mapq_cutoff, verbose, only_discorda
                                             candidate_mates.append(mate_interval)
 
                                 else:
-
                                     if verbose < 2:
-
                                         warnings.warn(
                                             "WARNING: the bam file does not have a SQ tag. Circle-Map cannot check the reference length for realigning\n"
                                             "soft clipped reads without a SA tag, hence, skipping. Please, check if your bam file is truncated"
                                         )
 
                             elif is_hard_clipped(read):
-
                                 # all hard clipped reads have SA tag with bwa, but just as sanity
 
                                 if read.has_tag("SA"):
-
                                     read_chr = sorted_bam.get_reference_name(read.reference_id)
 
                                     suplementary = read.get_tag("SA")
@@ -470,16 +439,13 @@ def get_mate_intervals(sorted_bam, interval, mapq_cutoff, verbose, only_discorda
                                     supl_info = [x.strip() for x in suplementary.split(",")]
 
                                     if read_chr == supl_info[0] and int(supl_info[4]) >= mapq_cutoff:
-
                                         # SA alignment with the same orientation
                                         if (read.is_reverse == True and supl_info[2] == "-") or (
                                             read.is_reverse == False and supl_info[2] == "+"
                                         ):
-
                                             # SA is downstream, the interval is start, start+read length
 
                                             if read.reference_start > int(supl_info[1]):
-
                                                 ref_alignment_length = genome_alignment_from_cigar(supl_info[3])
 
                                                 # ref_alignment_length * 2 is done for extending the realignment region
@@ -499,7 +465,6 @@ def get_mate_intervals(sorted_bam, interval, mapq_cutoff, verbose, only_discorda
 
                                             # SA is upstream, the interval is end - read length, end
                                             elif read.reference_start < int(supl_info[1]):
-
                                                 ref_alignment_length = genome_alignment_from_cigar(supl_info[3])
 
                                                 # ref_alignment_length * 2 is done for extending the realignment region, "SA" means that the realignment prior has been generated
@@ -527,7 +492,6 @@ def get_mate_intervals(sorted_bam, interval, mapq_cutoff, verbose, only_discorda
         return candidate_mates
 
     except BaseException as e:
-
         warnings.warn(
             "WARNING: Could not get mate interval priors for the interval %s due to the following error %s \n Skipping interval"
             % (str(interval), str(e))
@@ -548,7 +512,6 @@ def insert_size_dist(sample_size, mapq_cutoff, qname_bam):
     # this is similar to the code of read extractor. I save the first read in memory and then I operate
     # in both reads together
     for read in whole_bam:
-
         if read.is_read1:
             read1 = read
         # Checks for initialization read1 = '' by looking for read1 type == string.
@@ -584,13 +547,11 @@ def normalize_probability_matrix(pandas_df):
 
 
 def get_realignment_intervals(bed_prior, interval_extension, interval_p_cutoff, verbose):
-
     """Function that takes as input a bed file with the read type information and will remove the soft-clipped if there
     are more informative priors (DR,SA). If there are only soft-clipped reads, they will be saved to a bed file to attemp
     lonely soft-clipped read rescue"""
 
     try:
-
         labels = ["chrom", "start", "end", "read_type", "orientation", "probability"]
         candidate_mates_dataframe = pd.DataFrame.from_records(bed_prior, columns=labels)
 
@@ -601,7 +562,6 @@ def get_realignment_intervals(bed_prior, interval_extension, interval_p_cutoff, 
         sum = 0
 
         if np.any(read_types == "SC") == False:
-
             # nothing. Sort and merge
 
             candidate_mates_dataframe = candidate_mates_dataframe.sort_values(
@@ -666,9 +626,7 @@ def get_realignment_intervals(bed_prior, interval_extension, interval_p_cutoff, 
             ]
 
             for item, row in candidate_mates.iterrows():
-
                 if ("LR" in orientation) or ("L" and "R" in orientation):
-
                     start = row["start"] - interval_extension
 
                     end = row["end"] + interval_extension
@@ -694,7 +652,6 @@ def get_realignment_intervals(bed_prior, interval_extension, interval_p_cutoff, 
                         )
 
                 elif "L" in orientation:
-
                     start = row["start"] - interval_extension
 
                     if start < 0:
@@ -718,7 +675,6 @@ def get_realignment_intervals(bed_prior, interval_extension, interval_p_cutoff, 
                         )
 
                 elif "R" in orientation:
-
                     end = row["end"] + interval_extension
 
                     extended.append(
@@ -733,15 +689,11 @@ def get_realignment_intervals(bed_prior, interval_extension, interval_p_cutoff, 
                 return pd.DataFrame.from_records(extended, columns=["chrom", "start", "end", "probability"])
 
         else:
-
             for index, interval in candidate_mates.iterrows():
-
                 # small pseudocount to denominator to avoid div by zero
 
                 if interval["probability"] >= interval_p_cutoff:
-
                     if ("LR" in orientation) or ("L" and "R" in orientation):
-
                         start = interval["start"] - interval_extension
 
                         end = interval["end"] + interval_extension
@@ -767,7 +719,6 @@ def get_realignment_intervals(bed_prior, interval_extension, interval_p_cutoff, 
                             )
 
                     elif "L" in orientation:
-
                         start = interval["start"] - interval_extension
 
                         if start < 0:
@@ -791,7 +742,6 @@ def get_realignment_intervals(bed_prior, interval_extension, interval_p_cutoff, 
                             )
 
                     elif "R" in orientation:
-
                         end = interval["end"] + interval_extension
 
                         extended.append(
@@ -808,7 +758,6 @@ def get_realignment_intervals(bed_prior, interval_extension, interval_p_cutoff, 
             )
 
     except BaseException as e:
-
         warnings.warn(
             "WARNING: Could not compute the probability for the mate interval priors %s due to the following error %s \n Skipping intervals"
             % (str(bed_prior), str(e))
@@ -816,7 +765,6 @@ def get_realignment_intervals(bed_prior, interval_extension, interval_p_cutoff, 
 
 
 def circle_from_SA(read, mapq_cutoff, mate_interval):
-
     """Function that takes as input a read (soft-clipped) with a Suplementary alignment the mapping quality cut-off
     and the mate intervals and checks if it fits the conditions to call a circle. Will return True if the supplementary
     alignment matches the interval"""
@@ -833,7 +781,6 @@ def circle_from_SA(read, mapq_cutoff, mate_interval):
         if supl_info[0] == mate_interval["chrom"]:
             # aligned to the mate interval
             if int(mate_interval["start"]) < int(supl_info[1]) < int(mate_interval["end"]):
-
                 # orientation
                 if read.is_reverse == True and supl_info[2] == "-":
                     return {
@@ -843,7 +790,6 @@ def circle_from_SA(read, mapq_cutoff, mate_interval):
                     }
 
                 elif read.is_reverse == False and supl_info[2] == "+":
-
                     return {
                         "support": True,
                         "leftmost": int(supl_info[1]),
@@ -851,11 +797,9 @@ def circle_from_SA(read, mapq_cutoff, mate_interval):
                     }
 
             else:
-
                 return {"support": False}
 
         else:
-
             return {"support": False}
 
     else:
@@ -896,11 +840,8 @@ def check_compatibility(seq1, seq2):
     in common. This due to an old bug in edlib"""
 
     for base in seq1:
-
         for base2 in seq2:
-
             if base == base2:
-
                 return True
 
     return False
@@ -924,7 +865,6 @@ def get_longest_soft_clipped_bases(read):
 
     # soft-clipped in only one side
     if len(match_index) == 1:
-
         # return first n soft-clipped
         if match_index == [0]:
             return {
@@ -935,7 +875,6 @@ def get_longest_soft_clipped_bases(read):
 
         # return last n nucleotides
         elif match_index[0] == (len(read_cigar) - 1):
-
             return {
                 "seq": read.seq[-read_cigar[match_index[0]][1] :],
                 "qual": read.query_qualities[-read_cigar[match_index[0]][1] :],
@@ -944,16 +883,13 @@ def get_longest_soft_clipped_bases(read):
 
     # soft-clipped in both sides of the read
     else:
-
         # make sure that is soft-clipped on both sides
 
         try:
-
             assert read_cigar[0][0] == 4 and read_cigar[-1][0] == 4
 
             # longest soft-clipped are first n nucleotides
             if read_cigar[0][1] >= read_cigar[-1][1]:
-
                 return {
                     "seq": read.seq[0 : read_cigar[0][1]],
                     "qual": read.query_qualities[0 : read_cigar[0][1]],
@@ -961,7 +897,6 @@ def get_longest_soft_clipped_bases(read):
                 }
 
             else:
-
                 return {
                     "seq": read.seq[-read_cigar[-1][1] :],
                     "qual": read.query_qualities[-read_cigar[-1][1] :],
@@ -969,7 +904,6 @@ def get_longest_soft_clipped_bases(read):
                 }
 
         except AssertionError as e:
-
             print(e)
 
 
@@ -992,7 +926,6 @@ def realign(
     verbose,
     max_edit,
 ):
-
     """Function that takes as input a read, the number of hits to find and the plus and minus strand and will return
     the number of hits, the sequencing qualities for that read and the g+c content of the realignment interval"""
 
@@ -1010,16 +943,13 @@ def realign(
     top_hits = {}
 
     if read.is_reverse:
-
         while hits < n_hits and min_score >= -10:
-
             alignment = edlib.align(soft_clipped_read["seq"], minus_strand, mode="HW", task="path")
             if hits == 0:
                 if alignment["editDistance"] > max_edit:
                     return None
 
             for location in alignment["locations"]:
-
                 mask_bases = "X" * (location[1] - location[0])
 
                 minus_strand = minus_strand[: location[0]] + mask_bases + minus_strand[location[1] :]
@@ -1056,7 +986,6 @@ def realign(
         # min socre stops the search if the score is orders of magnitude smaller that the top score given the edit
         # distance
         while hits < n_hits and min_score >= -10:
-
             alignment = edlib.align(soft_clipped_read["seq"], plus_strand, mode="HW", task="path")
             # stop search if edit distance is to high
             if hits == 0:
@@ -1064,7 +993,6 @@ def realign(
                     return None
 
             for location in alignment["locations"]:
-
                 mask_bases = "X" * (location[1] - location[0])
 
                 plus_strand = plus_strand[: location[0]] + mask_bases + plus_strand[location[1] :]
@@ -1094,7 +1022,6 @@ def realign(
                 )
 
         else:
-
             hits += n_hits
 
     return {"alignments": top_hits, "mapq_prior": soft_clipped_read["mapq"]}
@@ -1140,7 +1067,6 @@ def pssm(
 
     # iterate trough CIGAR operations
     for index in range(0, len(iterable_cigar[0])):
-
         operation_length = iterable_cigar[0][index]
         end = operation_length + seq_pos
 
@@ -1148,51 +1074,37 @@ def pssm(
 
         # match, 1 minus prob(base called wrong)
         if operation == nuc_and_ops[4]:
-
             for nucleotide in range(seq_pos, end):
-
                 if seq_nucl[nucleotide] == nuc_and_ops[0]:
-
                     seq_prob[nucleotide] = np.log2((1 - (seq_prob[nucleotide])) / base_freqs[0])
 
                 elif seq_nucl[nucleotide] == nuc_and_ops[1]:
-
                     seq_prob[nucleotide] = np.log2((1 - (seq_prob[nucleotide])) / base_freqs[1])
 
                 elif seq_nucl[nucleotide] == nuc_and_ops[2]:
-
                     seq_prob[nucleotide] = np.log2((1 - (seq_prob[nucleotide])) / base_freqs[2])
 
                 elif seq_nucl[nucleotide] == nuc_and_ops[3]:
-
                     seq_prob[nucleotide] = np.log2((1 - (seq_prob[nucleotide])) / base_freqs[3])
 
             seq_pos += operation_length
 
         elif operation == nuc_and_ops[5]:
-
             for nucleotide in range(seq_pos, end):
-
                 if seq_nucl[nucleotide] == nuc_and_ops[0]:
-
                     seq_prob[nucleotide] = np.log2((seq_prob[nucleotide] / 3) / base_freqs[0])
 
                 elif seq_nucl[nucleotide] == nuc_and_ops[1]:
-
                     seq_prob[nucleotide] = np.log2((seq_prob[nucleotide] / 3) / base_freqs[1])
 
                 elif seq_nucl[nucleotide] == nuc_and_ops[2]:
-
                     seq_prob[nucleotide] = np.log2((seq_prob[nucleotide] / 3) / base_freqs[2])
 
                 elif seq_nucl[nucleotide] == nuc_and_ops[3]:
-
                     seq_prob[nucleotide] = np.log2((seq_prob[nucleotide] / 3) / base_freqs[3])
 
                 elif seq_nucl[nucleotide] == nuc_and_ops[6]:
-
                     if verbose < 2:
-
                         seq_prob[nucleotide] = 0
                         print(
                             "Warning:Ambiguous base found in nucleotide sequence. Assigning score of 0 in the log2 pssm"
@@ -1201,7 +1113,6 @@ def pssm(
             seq_pos += operation_length
 
         elif operation == nuc_and_ops[6]:
-
             # affine gap scoring model
             indel_penalty += gap_open + gap_extend * (operation_length - 1)
 
@@ -1364,7 +1275,6 @@ def iteration_merge(
 
 
 def merge_final_output(bam, results, begin, splits, dir, fraction, pid):
-
     """Function that takes as input the final results, and merge reciprocal intervals (this is done to combine the output
     of different clusters)"""
 
@@ -1417,7 +1327,6 @@ def merge_final_output(bam, results, begin, splits, dir, fraction, pid):
 
     filtered = []
     for interval in unfiltered_output:
-
         if (int(interval[4]) + int(interval[3])) >= splits:
             if int(interval[1]) != 0:
                 interval[1] = int(interval[1]) + 1
@@ -1446,7 +1355,6 @@ def merge_final_output(bam, results, begin, splits, dir, fraction, pid):
 
 
 def write_to_disk(partial_bed, output, locker, dir, pid):
-
     """function that writes to disk the results of every worker thread"""
 
     locker.acquire()
@@ -1532,7 +1440,6 @@ def check_size_and_write(results, only_discortants, output, lock, directory, fra
         return False
 
     else:
-
         partial_bed = iteration_merge(only_discortants, results, fraction)
 
         print(
@@ -1545,7 +1452,6 @@ def check_size_and_write(results, only_discortants, output, lock, directory, fra
 
 
 def merge_coverage_bed(results, frac, number):
-
     """Function that takes as bed file containing the coordinates of the double mapped reads and
     returns the merged bed file containing the information about the clusters"""
 
@@ -1611,7 +1517,6 @@ def filter_by_ratio(eccdna_bed, cutoff):
         ]
     )
     for item, row in unparsed_pd.iterrows():
-
         if float(row[8]) > cutoff or float(row[9]) > cutoff:
             circle_list.append(
                 [
@@ -1795,9 +1700,7 @@ def write_clipped_read(bam, read, mate, no_soft_clipped, no_hard_clipped, mapq_c
     # If mate is unmapped, own mapq is set to true and the read will get its own mapq
     if read.has_tag("MQ"):
         if is_soft_clipped(read) == True:
-
             if no_soft_clipped == False:
-
                 # gets its on mapq since mate is unmapped
                 if read.mapq >= mapq_cutoff:
                     bam.write(read)
@@ -1810,11 +1713,8 @@ def write_clipped_read(bam, read, mate, no_soft_clipped, no_hard_clipped, mapq_c
                     bam.write(read)
 
     else:
-
         if is_soft_clipped(read) == True:
-
             if no_soft_clipped == False:
-
                 # gets its on mapq since mate is unmapped
                 if read.mapq >= mapq_cutoff:
                     if own_mapq == True:

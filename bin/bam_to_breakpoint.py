@@ -622,6 +622,7 @@ class bam_to_breakpoint:
             jj = [hg.interval(i.chrom, k, k + window_size) for k in j]
             i2 = hg.interval(i.chrom, s2, e2)
             cov = [c for c in self.window_coverage(i2, window_size, gcc, exact=False)]
+
             # cov = [self.interval_coverage(k) for k in jj]
         # print window_size, len(cov), str(cov[0][0]).strip(), cov[0][1], str(cov[1][0]).strip(), cov[1][1]
         def hr(wi):

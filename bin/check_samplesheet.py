@@ -56,7 +56,6 @@ def check_samplesheet(file_in, file_out, input_format):
 
     sample_mapping_dict = {}
     with open(file_in, "r") as fin:
-
         if input_format == "FASTQ":
             ## Check header
             MIN_COLS = 2
@@ -186,7 +185,6 @@ def check_samplesheet(file_in, file_out, input_format):
                 if input_format == "FASTQ":
                     fout.write(",".join(["sample", "single_end", "fastq_1", "fastq_2"]) + "\n")
                     for sample in sorted(sample_mapping_dict.keys()):
-
                         ## Check that multiple runs of the same sample are of the same datatype
                         if not all(x[0] == sample_mapping_dict[sample][0][0] for x in sample_mapping_dict[sample]):
                             print_error(
@@ -199,7 +197,6 @@ def check_samplesheet(file_in, file_out, input_format):
                 elif input_format == "BAM":
                     fout.write(",".join(["sample", "idx", "bam"]) + "\n")
                     for sample in sorted(sample_mapping_dict.keys()):
-
                         for idx, val in enumerate(sample_mapping_dict[sample]):
                             fout.write(",".join(["{}".format(sample)] + val) + "\n")
 

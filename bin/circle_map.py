@@ -55,7 +55,6 @@ import datetime
 
 class circle_map:
     def __getpid__(self):
-
         pid = os.getpid()
         return pid
 
@@ -123,7 +122,6 @@ Commands:
 
         else:
             if sys.argv[1] == "ReadExtractor":
-
                 self.subprogram = self.args_readextractor()
                 self.args = self.subprogram.parse_args(sys.argv[2:])
 
@@ -229,7 +227,6 @@ Commands:
 
                 # compute coverage statistics
                 if self.args.no_coverage == False:
-
                     coverage_object = coverage(
                         self.args.sbam,
                         output,
@@ -340,7 +337,6 @@ Commands:
                 print("Done")
 
             elif sys.argv[1] == "Repeats":
-
                 self.subprogram = self.args_repeats()
                 self.args = self.subprogram.parse_args(sys.argv[2:])
 
@@ -375,7 +371,6 @@ Commands:
                 )
 
             elif sys.argv[1] == "Simulate":
-
                 self.subprogram = self.args_simulate()
                 self.args = self.subprogram.parse_args(sys.argv[2:])
 
@@ -453,7 +448,6 @@ Commands:
                 sys.exit(0)
 
     def args_readextractor(self):
-
         parser = self.readextractor
 
         parser._action_groups.pop()
@@ -1519,7 +1513,6 @@ Commands:
         return parser
 
     def args_repeats(self):
-
         parser = self.repeats
 
         parser._action_groups.pop()
@@ -1531,7 +1524,6 @@ Commands:
         required.add_argument("-i", metavar="", help="Input: coordinate name sorted bam file")
 
         if "-i" in sys.argv:
-
             optional.add_argument(
                 "-o",
                 "--output",
@@ -1611,7 +1603,6 @@ Commands:
             )
 
         else:
-
             optional.add_argument(
                 "-o",
                 "--output",
@@ -1709,7 +1700,6 @@ Commands:
         return parser
 
     def args_simulate(self):
-
         parser = self.simulate
 
         parser._action_groups.pop()
