@@ -1,5 +1,5 @@
 process AMPLICONCLASSIFIER_MAKEINPUT {
-    tag 'Amplicons'
+    tag 'AA Amplicons'
     label 'process_low'
 
     conda (params.enable_conda ? "bioconda::ampliconclassifier=0.4.14" : null)
@@ -12,8 +12,8 @@ process AMPLICONCLASSIFIER_MAKEINPUT {
     path(cycles)
 
     output:
-    path "*.input", emit: input
-    path "versions.yml"           , emit: versions
+    path "*.input"      , emit: input
+    path "versions.yml" , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
