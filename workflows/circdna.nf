@@ -19,7 +19,7 @@ if (params.input) { ch_input =  Channel.fromPath(params.input) } else { exit 1, 
 if (params.fasta) { ch_fasta =  Channel.fromPath(params.fasta) } else { exit 1, 'Fasta reference genome not specified!' }
 
 if (!(params.input_format == "FASTQ" | params.input_format == "BAM")) {
-    exit 1, 'Please specifiy --input_format "FASTQ" or "BAM" in capittal letters, depending on the input file format.'
+    exit 1, 'Please specifiy --input_format "FASTQ" or "BAM" in capital letters, depending on the input file format.'
 }
 
 // Modify fasta channel to include meta data
