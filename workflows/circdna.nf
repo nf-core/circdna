@@ -496,8 +496,6 @@ workflow CIRCDNA {
 
     if (run_circle_map_realign ||
             run_circle_map_repeats) {
-        ch_bam_sorted_bai.view()
-        ch_bam_sorted.view()
         SAMTOOLS_SORT_QNAME_CM (
             ch_bam_sorted
         )
