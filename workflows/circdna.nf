@@ -18,6 +18,10 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 if (params.input) { ch_input =  Channel.fromPath(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 if (params.fasta) { ch_fasta =  Channel.fromPath(params.fasta) } else { exit 1, 'Fasta reference genome not specified!' }
 
+if (!(params.input_format == "FASTQ" | params.input_format == "BAM")) {
+    exit 1, 'Please specifiy --input_format "FASTQ" or "BAM" in capittal letters, depending on the input file format.'
+}
+
 // Modify fasta channel to include meta data
 ch_fasta_meta = ch_fasta.map{ it -> [[id:it[0].baseName], it] }
 
