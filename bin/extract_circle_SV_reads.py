@@ -99,9 +99,7 @@ class readExtractor:
                     "As sanity check, sort your bam file queryname with the following command:\n\n\tsamtools sort -n -o output.bam input.bam"
                 )
 
-        circle_sv_reads = ps.AlignmentFile(
-            self.working_dir + "/" + self.output_bam, "wb", template=raw_bam
-        )
+        circle_sv_reads = ps.AlignmentFile(self.working_dir + "/" + self.output_bam, "wb", template=raw_bam)
 
         # modify the tag to unsorted
         if "HD" in raw_bam.header == True:
@@ -127,10 +125,7 @@ class readExtractor:
                 if (processed_reads / 1000000).is_integer() == True:
                     partial_timer = time.time()
                     partial_time = (partial_timer - begin) / 60
-                    print(
-                        "Processed %s reads in %s mins"
-                        % (processed_reads, round(partial_time, 3))
-                    )
+                    print("Processed %s reads in %s mins" % (processed_reads, round(partial_time, 3)))
 
             if read.is_read1:
                 read1 = read
@@ -155,10 +150,7 @@ class readExtractor:
                                 # aligned to the same chromosome
                                 if read1.reference_id == read2.reference_id:
 
-                                    if (
-                                        read1.mapq >= self.mapq_cutoff
-                                        and read2.mapq >= self.mapq_cutoff
-                                    ):
+                                    if read1.mapq >= self.mapq_cutoff and read2.mapq >= self.mapq_cutoff:
 
                                         # is discordant extraction turn off?
 
@@ -284,9 +276,7 @@ class readExtractor:
 
                 else:
                     # reads are not queryname sorted and cannot be processed in paired mode
-                    warnings.warn(
-                        "Unpaired reads found. Is your bam file queryname sorted?"
-                    )
+                    warnings.warn("Unpaired reads found. Is your bam file queryname sorted?")
 
         end = time.time()
 
@@ -294,8 +284,6 @@ class readExtractor:
 
         if self.verbose >= 3:
 
-            print(
-                "finished extracting reads. Elapsed time:", (end - begin) / 60, "mins"
-            )
+            print("finished extracting reads. Elapsed time:", (end - begin) / 60, "mins")
 
             print("Thanks for using Circle-Map")

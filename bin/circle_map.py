@@ -156,9 +156,7 @@ Commands:
 
                 sorted_bam.close()
                 # get global insert size prior
-                metrics = insert_size_dist(
-                    self.args.sample_size, self.args.insert_mapq, self.args.qbam
-                )
+                metrics = insert_size_dist(self.args.sample_size, self.args.insert_mapq, self.args.qbam)
 
                 # pool based parallel of religment
                 m = mp.Manager()
@@ -203,9 +201,7 @@ Commands:
 
                 # progress bar
                 with tqdm(total=len(splitted)) as pbar:
-                    for i, exits in tqdm(
-                        enumerate(pool.imap_unordered(object.realign, splitted))
-                    ):
+                    for i, exits in tqdm(enumerate(pool.imap_unordered(object.realign, splitted))):
                         pbar.update()
                         # kill if process returns 1,1
                         if exits == [1, 1]:
@@ -244,9 +240,7 @@ Commands:
                     )
 
                     # Generator function for the coverage calculations
-                    output = coverage_object.compute_coverage(
-                        coverage_object.get_wg_coverage()
-                    )
+                    output = coverage_object.compute_coverage(coverage_object.get_wg_coverage())
                     filtered_output = filter_by_ratio(output, self.args.ratio)
                     filtered_output.to_csv(
                         r"%s" % self.args.output,
@@ -274,15 +268,11 @@ Commands:
                 )
 
                 # create output bam
-                circle_sv_reads = ps.AlignmentFile(
-                    self.args.output, "wb", template=sorted_bam
-                )
+                circle_sv_reads = ps.AlignmentFile(self.args.output, "wb", template=sorted_bam)
 
                 sorted_bam.close()
                 # get global insert size prior
-                metrics = insert_size_dist(
-                    self.args.sample_size, self.args.insert_mapq, self.args.qbam
-                )
+                metrics = insert_size_dist(self.args.sample_size, self.args.insert_mapq, self.args.qbam)
 
                 manager = mp.Manager()
 
@@ -321,16 +311,12 @@ Commands:
                 pool = mp.Pool(processes=self.args.threads)
                 # create writer process
 
-                writer_p = mp.Process(
-                    target=object.listener_writer, args=(circle_sv_reads,)
-                )
+                writer_p = mp.Process(target=object.listener_writer, args=(circle_sv_reads,))
                 writer_p.daemon = True
                 writer_p.start()
                 # progress bar
                 with tqdm(total=len(splitted)) as pbar:
-                    for i, exits in tqdm(
-                        enumerate(pool.imap_unordered(object.realign, splitted))
-                    ):
+                    for i, exits in tqdm(enumerate(pool.imap_unordered(object.realign, splitted))):
                         pbar.update()
                         # kill if process returns 1,1
                         if exits == [1, 1]:
@@ -377,9 +363,7 @@ Commands:
                     self.args.directory,
                 )
 
-                output = coverage_object.compute_coverage(
-                    coverage_object.get_wg_coverage()
-                )
+                output = coverage_object.compute_coverage(coverage_object.get_wg_coverage())
 
                 filtered_output = filter_by_ratio(output, self.args.ratio)
                 filtered_output.to_csv(
@@ -454,17 +438,11 @@ Commands:
                 # kill the process
                 for p in jobs:
                     p.join()
+                print("Skipped %s circles, that overlapped the provided regions to exclude" % skipped_circles.value)
                 print(
-                    "Skipped %s circles, that overlapped the provided regions to exclude"
-                    % skipped_circles.value
+                    "Simulated %s circles across %s parallel processes" % (correct_circles.value, self.args.processes)
                 )
-                print(
-                    "Simulated %s circles across %s parallel processes"
-                    % (correct_circles.value, self.args.processes)
-                )
-                print(
-                    "Writting to disk bed file containing the simulated circle coordinates"
-                )
+                print("Writting to disk bed file containing the simulated circle coordinates")
 
                 bt.BedTool(list(circle_list)).saveas(self.args.output)
 
@@ -484,9 +462,7 @@ Commands:
         # prefixing the argument with -- means it's optional
         # input and output
 
-        required.add_argument(
-            "-i", metavar="", help="Input: query name sorted bam file"
-        )
+        required.add_argument("-i", metavar="", help="Input: query name sorted bam file")
 
         if "-i" in sys.argv:
             optional.add_argument(
@@ -651,15 +627,9 @@ Commands:
             metavar="",
             help="Input: bam file containing the reads extracted by ReadExtractor",
         )
-        io_options.add_argument(
-            "-qbam", metavar="", help="Input: query name sorted bam file"
-        )
-        io_options.add_argument(
-            "-sbam", metavar="", help="Input: coordinate sorted bam file"
-        )
-        io_options.add_argument(
-            "-fasta", metavar="", help="Input: Reference genome fasta file"
-        )
+        io_options.add_argument("-qbam", metavar="", help="Input: query name sorted bam file")
+        io_options.add_argument("-sbam", metavar="", help="Input: coordinate sorted bam file")
+        io_options.add_argument("-fasta", metavar="", help="Input: Reference genome fasta file")
 
         if "-i" and "-qbam" and "-fasta" in sys.argv:
             # output
@@ -1168,8 +1138,7 @@ Commands:
 
             time.sleep(0.01)
             sys.stderr.write(
-                "\nInput does not match. Check that you provide the -i, -qbam and -fasta options"
-                "\nExiting\n"
+                "\nInput does not match. Check that you provide the -i, -qbam and -fasta options" "\nExiting\n"
             )
             sys.exit(0)
 
@@ -1197,12 +1166,8 @@ Commands:
             metavar="",
             help="Input: bam file containing the reads extracted by ReadExtractor",
         )
-        io_options.add_argument(
-            "-qbam", metavar="", help="Input: query name sorted bam file"
-        )
-        io_options.add_argument(
-            "-fasta", metavar="", help="Input: Reference genome fasta file"
-        )
+        io_options.add_argument("-qbam", metavar="", help="Input: query name sorted bam file")
+        io_options.add_argument("-fasta", metavar="", help="Input: Reference genome fasta file")
         io_options.add_argument("-o", "--output", metavar="", help="Output BAM name")
 
         if "-i" and "-qbam" and "-fasta" and "-o" in sys.argv:
@@ -1541,8 +1506,7 @@ Commands:
 
             time.sleep(0.01)
             sys.stderr.write(
-                "\nInput does not match. Check that you provide the -i, -qbam and -fasta options"
-                "\nExiting\n"
+                "\nInput does not match. Check that you provide the -i, -qbam and -fasta options" "\nExiting\n"
             )
             sys.exit(0)
 
@@ -1564,9 +1528,7 @@ Commands:
         # prefixing the argument with -- means it's optional
         # input and output
 
-        required.add_argument(
-            "-i", metavar="", help="Input: coordinate name sorted bam file"
-        )
+        required.add_argument("-i", metavar="", help="Input: coordinate name sorted bam file")
 
         if "-i" in sys.argv:
 
@@ -1732,8 +1694,7 @@ Commands:
 
             time.sleep(0.01)
             sys.stderr.write(
-                "\nNo input input given to Repeats, be sure that you are providing the flag '-i'"
-                "\nExiting\n"
+                "\nNo input input given to Repeats, be sure that you are providing the flag '-i'" "\nExiting\n"
             )
             sys.exit(0)
 
@@ -1770,9 +1731,7 @@ Commands:
                 metavar="",
                 help="Number of reads to simulate",
             )
-            optional.add_argument(
-                "-o", "--output", default="simulated.bed", help="Output file name"
-            )
+            optional.add_argument("-o", "--output", default="simulated.bed", help="Output file name")
             optional.add_argument(
                 "-dir",
                 "--directory",
@@ -1831,8 +1790,7 @@ Commands:
                 "-v",
                 "--variants",
                 action="store_true",
-                help="If set to true, introduce mutations in the reference genome prior to simulating"
-                "reads.",
+                help="If set to true, introduce mutations in the reference genome prior to simulating" "reads.",
             )
             optional.add_argument(
                 "-S",
@@ -1921,9 +1879,7 @@ Commands:
                 metavar="",
                 help="Number of reads to simulate",
             )
-            optional.add_argument(
-                "-o", "--output", default="simulated.bed", help="Output file name"
-            )
+            optional.add_argument("-o", "--output", default="simulated.bed", help="Output file name")
             optional.add_argument(
                 "-dir",
                 "--directory",
@@ -1984,8 +1940,7 @@ Commands:
                 "-v",
                 "--variants",
                 action="store_true",
-                help="If set to true, introduce mutations in the reference genome prior to simulating"
-                "reads.",
+                help="If set to true, introduce mutations in the reference genome prior to simulating" "reads.",
             )
             optional.add_argument(
                 "-S",

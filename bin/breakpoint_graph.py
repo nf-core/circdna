@@ -66,10 +66,7 @@ class breakpoint_vertex(abstract_vertex):
 
     def __gt__(self, y):
         """Order vertices by absolute position (See hg19util.absPos) + strand"""
-        return (
-            hg.absPos(self.chrom, self.pos) + 0.4 * self.strand
-            > hg.absPos(y.chrom, y.pos) + 0.4 * y.strand
-        )
+        return hg.absPos(self.chrom, self.pos) + 0.4 * self.strand > hg.absPos(y.chrom, y.pos) + 0.4 * y.strand
 
 
 class breakpoint_edge(abstract_edge):
@@ -111,31 +108,20 @@ class breakpoint_edge(abstract_edge):
         abstract_edge.__init__(self, v1, v2, eid, graph, update_vertices)
         if edge_type in ["concordant", "sequence"]:
             if v1.chrom != v2.chrom:
-                raise Exception(
-                    "Edge of type " + edge_type + " connects different chromosomes."
-                )
+                raise Exception("Edge of type " + edge_type + " connects different chromosomes.")
         if edge_type in ["concordant", "sequence"]:
             if v1.strand == v2.strand:
                 raise Exception("Edge of type " + edge_type + " connects same strand.")
         if edge_type == "concordant":
-            if (v1.strand == 1 and v1.pos + 1 != v2.pos) or (
-                v2.strand == 1 and v2.pos + 1 != v1.pos
-            ):
-                raise Exception(
-                    "Edge of type " + edge_type + " connects non-adjacent positions."
-                )
+            if (v1.strand == 1 and v1.pos + 1 != v2.pos) or (v2.strand == 1 and v2.pos + 1 != v1.pos):
+                raise Exception("Edge of type " + edge_type + " connects non-adjacent positions.")
         if edge_type == "sequence":
             if v1.strand == -1 and v1.pos > v2.pos:
                 raise Exception(
-                    "Start position for sequence edge greater than end position:"
-                    + str(v1)
-                    + "->"
-                    + str(v2)
+                    "Start position for sequence edge greater than end position:" + str(v1) + "->" + str(v2)
                 )
             if v1.strand == 1 and v2.pos > v1.pos:
-                raise Exception(
-                    "Start position for sequence edge greater than end position"
-                )
+                raise Exception("Start position for sequence edge greater than end position")
         self.edge_type = edge_type
         self.hom = hom
         self.hom_seq = hom_seq
@@ -145,13 +131,9 @@ class breakpoint_edge(abstract_edge):
             seq = hg.interval(self.v1.chrom, self.v1.pos, self.v2.pos).sequence()
             if flank_size > 0:
                 seq = (
-                    hg.interval(
-                        self.v1.chrom, self.v1.pos - flank_size + 1, self.v1.pos
-                    ).sequence()
+                    hg.interval(self.v1.chrom, self.v1.pos - flank_size + 1, self.v1.pos).sequence()
                     + seq
-                    + hg.interval(
-                        self.v2.chrom, self.v2.pos, self.v2.pos + flank_size - 1
-                    ).sequence()
+                    + hg.interval(self.v2.chrom, self.v2.pos, self.v2.pos + flank_size - 1).sequence()
                 )
         else:
             if self.hom == None:
@@ -324,9 +306,7 @@ class breakpoint_graph(abstract_graph):
         Arguments:
         v1,v2: breakpoint_vertex (These need to be vertices(objects) from current breakpoint graph)
         edge_type = "breakpoint"/"discordant"/"concordant"/"source"/"sequence" """
-        return breakpoint_edge(
-            v1, v2, graph=self, edge_type=edge_type, hom=hom, hom_seq=hom_seq
-        )
+        return breakpoint_edge(v1, v2, graph=self, edge_type=edge_type, hom=hom, hom_seq=hom_seq)
 
     def add_vertex(self, v):
         """Create and add new vertex to graph if no similar vertex exists"""
@@ -344,9 +324,7 @@ class breakpoint_graph(abstract_graph):
             v2 = self.has_vertex(e.v2.chrom, e.v2.pos, e.v2.strand)
             if v1 is None or v2 is None:
                 return None
-            return self.new_edge(
-                v1, v2, edge_type=edge_type, hom=e.hom, hom_seq=e.hom_seq
-            )
+            return self.new_edge(v1, v2, edge_type=edge_type, hom=e.hom, hom_seq=e.hom_seq)
         return e
 
     def load_graphfile(self, graphfile):
@@ -424,16 +402,12 @@ class breakpoint_graph(abstract_graph):
                     if min_c < min_count:
                         continue
                 en_seq, en_seqstrand = [
-                    (es, 1 if v_seq == es.v1 else -1)
-                    for es in v_seq.elist
-                    if es.edge_type == "sequence"
+                    (es, 1 if v_seq == es.v1 else -1) for es in v_seq.elist if es.edge_type == "sequence"
                 ][0]
                 min_c = min(min_c, self.copy_count[en_seq])
                 if min_c < min_count:
                     continue
-                if (en_seq, en_seqstrand) in path and not (
-                    en_seq == e1 and e1 == e2 and en_seqstrand == v1.strand
-                ):
+                if (en_seq, en_seqstrand) in path and not (en_seq == e1 and e1 == e2 and en_seqstrand == v1.strand):
                     continue
                 if (en_seq, -1 * en_seqstrand) in path:
                     min_c = min(self.copy_count[en_seq] / 2.0, min_c)
@@ -539,9 +513,7 @@ class breakpoint_graph(abstract_graph):
             #     print v2, tc
             return tc, hdict[hce[1].v1][0]
 
-        total_amplicon_content = sum(
-            [(e.v2.pos - e.v1.pos) * w[e] for e in w if e.edge_type == "sequence"]
-        )
+        total_amplicon_content = sum([(e.v2.pos - e.v1.pos) * w[e] for e in w if e.edge_type == "sequence"])
         amplicon_content_covered = 0
         w2 = w.copy()
         cycle_number = 1
@@ -632,9 +604,7 @@ class breakpoint_graph(abstract_graph):
                         break
                     v1 = v2
                 ci = 0
-                while (
-                    tc[ci].type() == "concordant" or tc[ci - 1].type() == "concordant"
-                ):
+                while tc[ci].type() == "concordant" or tc[ci - 1].type() == "concordant":
                     ci -= 1
                 tc = tc[ci:] + tc[:ci]
 
@@ -693,17 +663,9 @@ class breakpoint_graph(abstract_graph):
             if v0 is not None:
                 print(v0, "->", v0c)
                 cycle_edge_list.append((v0, v0c))
-            if amplicon_content_covered <= 0.9 * total_amplicon_content or (
-                tcw > 0.2 * cycle_list[0][1]
-            ):
+            if amplicon_content_covered <= 0.9 * total_amplicon_content or (tcw > 0.2 * cycle_list[0][1]):
                 cycle_list.append([cycle_number, tcw, tc, cycle_edge_list])
-                acc = tcw * sum(
-                    [
-                        abs(e[1].pos - e[0].pos)
-                        for e in cycle_edge_list
-                        if -1 not in [e[0].pos, e[1].pos]
-                    ]
-                )
+                acc = tcw * sum([abs(e[1].pos - e[0].pos) for e in cycle_edge_list if -1 not in [e[0].pos, e[1].pos]])
                 amplicon_content_covered += acc
             cycle_number += 1
             # print tcw, tc
@@ -721,12 +683,8 @@ class breakpoint_graph(abstract_graph):
             max_segi = 0
             segi = 0
             for e in c[3]:
-                if (
-                    -1 in (max_segment[0].pos, max_segment[1].pos)
-                    and -1 not in (e[0].pos, e[1].pos)
-                ) or (
-                    abs(e[0].pos - e[1].pos)
-                    >= abs(max_segment[0].pos - max_segment[1].pos)
+                if (-1 in (max_segment[0].pos, max_segment[1].pos) and -1 not in (e[0].pos, e[1].pos)) or (
+                    abs(e[0].pos - e[1].pos) >= abs(max_segment[0].pos - max_segment[1].pos)
                 ):
                     max_segment = e
                     max_segi = segi
@@ -744,10 +702,7 @@ class breakpoint_graph(abstract_graph):
             if max_orientation == "+":
                 c[3] = c[3][max_segi:] + c[3][:max_segi]
             else:
-                c[3] = [
-                    (e[1], e[0])
-                    for e in c[3][: max_segi + 1][::-1] + c[3][max_segi + 1 :][::-1]
-                ]
+                c[3] = [(e[1], e[0]) for e in c[3][: max_segi + 1][::-1] + c[3][max_segi + 1 :][::-1]]
 
         segment_list.sort()
         segi = 1
@@ -760,10 +715,7 @@ class breakpoint_graph(abstract_graph):
             segment_index[s] = 0
         for s in [ss for ss in segment_list if ss[0].pos != -1 and ss[1].pos != -1]:
             cycle_logger.info(
-                "Segment\t"
-                + "\t".join(
-                    [str(segment_index[s]), s[0].chrom, str(s[0].pos), str(s[1].pos)]
-                )
+                "Segment\t" + "\t".join([str(segment_index[s]), s[0].chrom, str(s[0].pos), str(s[1].pos)])
             )
         for c in cycle_list:
             seglist = []
@@ -781,9 +733,7 @@ class breakpoint_graph(abstract_graph):
                 + ";Copy_count="
                 + str(c[1])
                 + ";Segments="
-                + ",".join(
-                    [str(e[0]) + str(e[1]) for e in zip(seglist, orientation_list)]
-                )
+                + ",".join([str(e[0]) + str(e[1]) for e in zip(seglist, orientation_list)])
             )
 
         return None
@@ -833,15 +783,10 @@ class graph_decomposition(object):
                             cl.append((s[:-1], -1))
                     self.cycle_dict[ci] = (ci, cn, cl)
                 elif "Interval" == l[0]:
-                    self.ilist.append(
-                        hg.interval(l[2], int(l[3]), int(l[4]), info=[l[1]])
-                    )
+                    self.ilist.append(hg.interval(l[2], int(l[3]), int(l[4]), info=[l[1]]))
         elif cycle_list is None:
             segment_set = hg.interval_list(
-                [
-                    hg.interval(ss[0], ss[1], ss[2])
-                    for ss in {(s.chrom, s.start, s.end) for s in segment_list}
-                ]
+                [hg.interval(ss[0], ss[1], ss[2]) for ss in {(s.chrom, s.start, s.end) for s in segment_list}]
             )
             segment_set.sort()
             self.segment_list = segment_set
@@ -857,9 +802,7 @@ class graph_decomposition(object):
                 s = self.segment_list[ii]
                 s.info = [seg_id[(s.chrom, s.start, s.end)]]
             self.cycle_dict = {"1": ("1", 1, cl)}
-            self.ilist = hg.interval_list(
-                [s[0] for s in segment_set.merge_clusters(extend=1)]
-            )
+            self.ilist = hg.interval_list([s[0] for s in segment_set.merge_clusters(extend=1)])
             for ii in range(len(self.ilist)):
                 self.ilist[ii].info = [str(ii)]
         else:
@@ -869,9 +812,7 @@ class graph_decomposition(object):
             if ilist is not None:
                 self.ilist = ilist
             else:
-                self.ilist = hg.interval_list(
-                    [s[0] for s in segment_list.merge_clusters(extend=1)]
-                )
+                self.ilist = hg.interval_list([s[0] for s in segment_list.merge_clusters(extend=1)])
                 for ii in range(len(self.ilist)):
                     self.ilist[ii].info = [str(ii)]
 
@@ -900,9 +841,7 @@ class graph_decomposition(object):
             if si1 == 0 or si1 == len(cycle1[2]) - 1:
                 raise Exception("Cannot use source segment for merging")
         # check if segments overlap
-        if not self.segment_dict[cycle1[2][si1][0]].intersects(
-            self.segment_dict[cycle2[2][si2][0]]
-        ):
+        if not self.segment_dict[cycle1[2][si1][0]].intersects(self.segment_dict[cycle2[2][si2][0]]):
             raise Exception(
                 "Segments do not overlap"
                 + str(self.segment_dict[cycle1[2][si1][0]])
@@ -957,25 +896,17 @@ class graph_decomposition(object):
             ns1 = self.next_seg_id()
             overlap1 = (ns1, cycle1[2][si1][1])
             if cycle1[2][si1][1] == 1:
-                self.segment_dict[ns1] = hg.interval(
-                    seg1.chrom, seg1.start, seg2.end, info=[ns1]
-                )
+                self.segment_dict[ns1] = hg.interval(seg1.chrom, seg1.start, seg2.end, info=[ns1])
             else:
-                self.segment_dict[ns1] = hg.interval(
-                    seg1.chrom, seg2.start, seg1.end, info=[ns1]
-                )
+                self.segment_dict[ns1] = hg.interval(seg1.chrom, seg2.start, seg1.end, info=[ns1])
             self.segment_list.append(self.segment_dict[ns1])
         if not seg2_found:
             ns2 = self.next_seg_id()
             overlap2 = (ns2, cycle1[2][si1][1])
             if cycle1[2][si1][1] == 1:
-                self.segment_dict[ns2] = hg.interval(
-                    seg1.chrom, seg2.start, seg1.end, info=[ns2]
-                )
+                self.segment_dict[ns2] = hg.interval(seg1.chrom, seg2.start, seg1.end, info=[ns2])
             else:
-                self.segment_dict[ns2] = hg.interval(
-                    seg1.chrom, seg1.start, seg2.end, info=[ns2]
-                )
+                self.segment_dict[ns2] = hg.interval(seg1.chrom, seg1.start, seg2.end, info=[ns2])
             self.segment_list.append(self.segment_dict[ns2])
         cycle1_init = cycle1[2][:si1]
         if not cycle1[2][si1][1]:
@@ -983,10 +914,7 @@ class graph_decomposition(object):
         if cycle1[2][si1][1] == cycle2[2][si2][1]:
             cycle2_span = cycle2[2][si2 + 1 :] + cycle2[2][:si2]
         else:
-            cycle2_span = [
-                (s[0], -1 * s[1])
-                for s in cycle2[2][:si2][::-1] + cycle2[2][si2 + 1 :][::-1]
-            ]
+            cycle2_span = [(s[0], -1 * s[1]) for s in cycle2[2][:si2][::-1] + cycle2[2][si2 + 1 :][::-1]]
         cycle1_final = cycle1[2][si1 + 1 :]
         mcycle = cycle1_init + [overlap1] + cycle2_span + [overlap2] + cycle1_final
         mcycle_id = self.next_cycle_id()
@@ -998,9 +926,7 @@ class graph_decomposition(object):
     def pivot(self, c1, si1, si2):
         cycle1 = self.cycle_dict[c1]
         # check if segments overlap
-        if not self.segment_dict[cycle1[2][si1][0]].intersects(
-            self.segment_dict[cycle1[2][si2][0]]
-        ):
+        if not self.segment_dict[cycle1[2][si1][0]].intersects(self.segment_dict[cycle1[2][si2][0]]):
             raise Exception("Segments do not overlap")
         # check if segments have opposite orientation
         if cycle1[2][si1][1] == cycle1[2][si2][1]:
@@ -1021,16 +947,12 @@ class graph_decomposition(object):
         if not seg1_found:
             ns1 = self.next_seg_id()
             overlap1 = (ns1, cycle1[2][si1][1])
-            self.segment_dict[ns1] = hg.interval(
-                seg1.chrom, seg1.start, seg2.end, info=[ns1]
-            )
+            self.segment_dict[ns1] = hg.interval(seg1.chrom, seg1.start, seg2.end, info=[ns1])
             self.segment_list.append(self.segment_dict[ns1])
         if not seg2_found:
             ns2 = self.next_seg_id()
             overlap2 = (ns2, cycle1[2][si2][1])
-            self.segment_dict[ns2] = hg.interval(
-                seg1.chrom, seg2.start, seg1.end, info=[ns2]
-            )
+            self.segment_dict[ns2] = hg.interval(seg1.chrom, seg2.start, seg1.end, info=[ns2])
             self.segment_list.append(self.segment_dict[ns2])
         cycle1_init = cycle1[2][:si1]
         if cycle1[2][si1][1] == -1:
@@ -1065,12 +987,7 @@ class graph_decomposition(object):
                     + " Copy_count="
                     + str(self.cycle_dict[c][1])
                     + ";Segments="
-                    + ",".join(
-                        [
-                            seg[0] + ("+" if seg[1] == 1 else "-")
-                            for seg in self.cycle_dict[c][2]
-                        ]
-                    )
+                    + ",".join([seg[0] + ("+" if seg[1] == 1 else "-") for seg in self.cycle_dict[c][2]])
                     + "\n"
                 )
             else:
@@ -1080,12 +997,7 @@ class graph_decomposition(object):
                     + " Copy_count="
                     + str(self.cycle_dict[c][1])
                     + ";Segments="
-                    + ",".join(
-                        [
-                            seg[0] + ("+" if seg[1] == 1 else "-")
-                            for seg in self.cycle_dict[c][2]
-                        ]
-                    )
+                    + ",".join([seg[0] + ("+" if seg[1] == 1 else "-") for seg in self.cycle_dict[c][2]])
                     + "\n"
                 )
             for s in self.cycle_dict[c][2]:
@@ -1093,26 +1005,14 @@ class graph_decomposition(object):
                     continue
                 if s[1] == 1:
                     if outfasta is None:
-                        fseq += self.segment_dict[s[0]].sequence(
-                            new_fa_file=self.fa_file
-                        )
+                        fseq += self.segment_dict[s[0]].sequence(new_fa_file=self.fa_file)
                     else:
-                        outfile.write(
-                            self.segment_dict[s[0]].sequence(new_fa_file=self.fa_file)
-                        )
+                        outfile.write(self.segment_dict[s[0]].sequence(new_fa_file=self.fa_file))
                 else:
                     if outfasta is None:
-                        fseq += hg.reverse_complement(
-                            self.segment_dict[s[0]].sequence(new_fa_file=self.fa_file)
-                        )
+                        fseq += hg.reverse_complement(self.segment_dict[s[0]].sequence(new_fa_file=self.fa_file))
                     else:
-                        outfile.write(
-                            hg.reverse_complement(
-                                self.segment_dict[s[0]].sequence(
-                                    new_fa_file=self.fa_file
-                                )
-                            )
-                        )
+                        outfile.write(hg.reverse_complement(self.segment_dict[s[0]].sequence(new_fa_file=self.fa_file)))
             if outfasta is None:
                 fseq += "\n"
             else:
@@ -1124,15 +1024,9 @@ class graph_decomposition(object):
     def __repr__(self):
         s = ""
         for i in self.ilist:
-            s += (
-                "\t".join(["Interval", i.info[0], i.chrom, str(i.start), str(i.end)])
-                + "\n"
-            )
+            s += "\t".join(["Interval", i.info[0], i.chrom, str(i.start), str(i.end)]) + "\n"
         for i in self.segment_list:
-            s += (
-                "\t".join(["Segment", i.info[0], i.chrom, str(i.start), str(i.end)])
-                + "\n"
-            )
+            s += "\t".join(["Segment", i.info[0], i.chrom, str(i.start), str(i.end)]) + "\n"
         ccnlist = [(c[1], c[0]) for c in self.cycle_dict.values()]
         ccnlist.sort(reverse=True)
         for c in ccnlist:
@@ -1142,12 +1036,7 @@ class graph_decomposition(object):
                 + ";Copy_count="
                 + str(c[0])
                 + ";Segments="
-                + ",".join(
-                    [
-                        seg[0] + ("+" if seg[1] == 1 else "-")
-                        for seg in self.cycle_dict[c[1]][2]
-                    ]
-                )
+                + ",".join([seg[0] + ("+" if seg[1] == 1 else "-") for seg in self.cycle_dict[c[1]][2]])
                 + "\n"
             )
         return s

@@ -49,9 +49,7 @@ import global_names
 
 __version__ = "1.3_r1"
 
-parser = argparse.ArgumentParser(
-    description="Reconstruct Amplicons connected to listed intervals."
-)
+parser = argparse.ArgumentParser(description="Reconstruct Amplicons connected to listed intervals.")
 parser.add_argument(
     "--bed",
     dest="rdAlts",
@@ -242,36 +240,22 @@ try:
     DATA_REPO = os.environ["AA_DATA_REPO"]
 except:
     logging.warning(
-        "#TIME "
-        + "%.3f\t" % (time() - TSTART)
-        + "unable to set AA_DATA_REPO variable. Setting to working directory"
+        "#TIME " + "%.3f\t" % (time() - TSTART) + "unable to set AA_DATA_REPO variable. Setting to working directory"
     )
     DATA_REPO = "."
 if DATA_REPO == "." or DATA_REPO == "":
     logging.warning(
-        "#TIME "
-        + "%.3f\t" % (time() - TSTART)
-        + "AA_DATA_REPO not set or empy. Setting to working directory"
+        "#TIME " + "%.3f\t" % (time() - TSTART) + "AA_DATA_REPO not set or empy. Setting to working directory"
     )
     DATA_REPO = "."
 
 
-logging.info(
-    "#TIME "
-    + "%.3f\t" % (time() - TSTART)
-    + "Loading libraries and reference annotations for: "
-    + args.ref
-)
+logging.info("#TIME " + "%.3f\t" % (time() - TSTART) + "Loading libraries and reference annotations for: " + args.ref)
 import ref_util as hg
 import bam_to_breakpoint as b2b
 
 
-logging.info(
-    "#TIME "
-    + "%.3f\t" % (time() - TSTART)
-    + "Initiating bam_to_breakpoint object for: "
-    + args.bam
-)
+logging.info("#TIME " + "%.3f\t" % (time() - TSTART) + "Initiating bam_to_breakpoint object for: " + args.bam)
 rdList0 = hg.interval_list(rdAlts, "bed", exclude_info_string=True)
 rdList = hg.interval_list([r for r in rdList0])
 cb = bamFile
@@ -281,9 +265,7 @@ if cbam is not None:
 cstats = None
 if args.no_cstats:
     logging.info(
-        "#TIME "
-        + "%.3f\t" % (time() - TSTART)
-        + "--no_cstats was set. Will not attempt to re-use coverage.stats info"
+        "#TIME " + "%.3f\t" % (time() - TSTART) + "--no_cstats was set. Will not attempt to re-use coverage.stats info"
     )
 
 if os.path.exists(os.path.join(hg.DATA_REPO, "coverage.stats")) and not args.no_cstats:
@@ -309,11 +291,7 @@ if cstats:
         + str(os.path.join(hg.DATA_REPO, "coverage.stats"))
     )
 else:
-    logging.debug(
-        "#TIME "
-        + "%.3f\t" % (time() - TSTART)
-        + "cstats not found, generating coverage statistics... "
-    )
+    logging.debug("#TIME " + "%.3f\t" % (time() - TSTART) + "cstats not found, generating coverage statistics... ")
 
 coverage_windows = None
 if cbed is not None:
@@ -352,12 +330,7 @@ segments = []
 
 
 if args.extendmode == "VIRAL":
-    logging.info(
-        "#TIME "
-        + "%.3f\t" % (time() - TSTART)
-        + "Finding integration sites: "
-        + str(rdList[0])
-    )
+    logging.info("#TIME " + "%.3f\t" % (time() - TSTART) + "Finding integration sites: " + str(rdList[0]))
     de = bamFileb2b.interval_discordant_edges(rdList)
     old_stdout = sys.stdout
     sys.stdout = mystdout = StringIO()
@@ -372,11 +345,7 @@ if args.extendmode == "VIRAL":
         [
             i[0]
             for i in alist.merge_clusters(extend=5000000)
-            if len(
-                hg.interval_list([i[0]]).intersection(amplist)
-                + hg.interval_list([i[0]]).intersection(rdList)
-            )
-            > 0
+            if len(hg.interval_list([i[0]]).intersection(amplist) + hg.interval_list([i[0]]).intersection(rdList)) > 0
         ]
     )
     rdList = hg.interval_list(
@@ -401,9 +370,7 @@ irdSets = set([frozenset([ird]) for ird in rdList])
 irdgroupdict = {ird: frozenset([ird]) for ird in rdList}
 if args.extendmode == "EXPLORE" or args.extendmode == "VIRAL":
     for ird in rdList:
-        logging.info(
-            "#TIME " + "%.3f\t" % (time() - TSTART) + "Exploring interval: " + str(ird)
-        )
+        logging.info("#TIME " + "%.3f\t" % (time() - TSTART) + "Exploring interval: " + str(ird))
         old_stdout = sys.stdout
         sys.stdout = mystdout = StringIO()
         ilist = bamFileb2b.interval_hops(ird, rdlist=all_ilist)
@@ -411,14 +378,7 @@ if args.extendmode == "EXPLORE" or args.extendmode == "VIRAL":
         for i in ilist:
             irddict[i] = ird
         iout = open(
-            outName
-            + "."
-            + ird.chrom
-            + ":"
-            + str(ird.start)
-            + "-"
-            + str(ird.end)
-            + ".out",
+            outName + "." + ird.chrom + ":" + str(ird.start) + "-" + str(ird.end) + ".out",
             "w",
         )
         iout.write(mystdout.getvalue())
@@ -427,9 +387,7 @@ if args.extendmode == "EXPLORE" or args.extendmode == "VIRAL":
         all_ilist += ilist
         all_ilist.sort()
 
-    allhops = hg.interval_list(
-        reduce(lambda x, y: x + y, [irdh[1] for irdh in irdhops], [])
-    )
+    allhops = hg.interval_list(reduce(lambda x, y: x + y, [irdh[1] for irdh in irdhops], []))
     allhops.sort()
     allmerge = allhops.merge_clusters()
     for am in allmerge:
@@ -462,9 +420,7 @@ else:
     irdgroups = [hg.interval_list([r]) for r in rdList]
 
 
-logging.info(
-    "#TIME " + "%.3f\t" % (time() - TSTART) + "Interval sets for amplicons determined: "
-)
+logging.info("#TIME " + "%.3f\t" % (time() - TSTART) + "Interval sets for amplicons determined: ")
 for il in enumerate(irdgroups):
     logging.info(
         "[amplicon"
@@ -474,9 +430,7 @@ for il in enumerate(irdgroups):
     )
 
 summary_logger.info("#Amplicons = " + str(len(irdgroups)))
-summary_logger.info(
-    "-----------------------------------------------------------------------------------------"
-)
+summary_logger.info("-----------------------------------------------------------------------------------------")
 
 if args.extendmode == "VIRAL":
     amplicon_id = 0
@@ -489,9 +443,7 @@ for ig in irdgroups:
     old_stdout = sys.stdout
     sys.stdout = mystdout = StringIO()
     adapter = PrefixAdapter(summary_logger, {"prefix": str(amplicon_id)})
-    summaryFormatter = logging.Formatter(
-        "[amplicon" + str(amplicon_id) + "] %(message)s"
-    )
+    summaryFormatter = logging.Formatter("[amplicon" + str(amplicon_id) + "] %(message)s")
     for handler in summary_logger.handlers:
         handler.setFormatter(summaryFormatter)
     summary_logger.info("AmpliconID = " + str(amplicon_id))
@@ -499,43 +451,22 @@ for ig in irdgroups:
     ilist1 = hg.interval_list([a[0] for a in ilist.merge_clusters()])
     istr = ",".join([i.chrom + ":" + str(i.start) + "-" + str(i.end) for i in ilist1])
     summary_logger.info("Intervals = " + str(istr))
-    oncolist = (
-        ",".join(
-            set([a[1].info["Name"] for a in ilist1.intersection(hg.oncogene_list)])
-        )
-        + ","
-    )
+    oncolist = ",".join(set([a[1].info["Name"] for a in ilist1.intersection(hg.oncogene_list)])) + ","
     summary_logger.info("OncogenesAmplified = " + str(oncolist))
     amplicon_name = outName + "_amplicon" + str(amplicon_id)
     if args.runmode in ["FULL", "CYCLES", "BPGRAPH"]:
-        logging.info(
-            "#TIME "
-            + "%.3f\t" % (time() - TSTART)
-            + "Reconstructing amplicon"
-            + str(amplicon_id)
-        )
+        logging.info("#TIME " + "%.3f\t" % (time() - TSTART) + "Reconstructing amplicon" + str(amplicon_id))
         graph_handler = logging.FileHandler(amplicon_name + "_graph.txt", "w")
         cycle_handler = logging.FileHandler(amplicon_name + "_cycles.txt", "w")
         graph_logger.addHandler(graph_handler)
         cycle_logger.addHandler(cycle_handler)
-        bamFileb2b.interval_filter_vertices(
-            ilist, amplicon_name=amplicon_name, runmode=args.runmode
-        )
+        bamFileb2b.interval_filter_vertices(ilist, amplicon_name=amplicon_name, runmode=args.runmode)
         graph_logger.removeHandler(graph_handler)
         cycle_logger.removeHandler(cycle_handler)
     if args.runmode in ["FULL", "SVVIEW"]:
-        logging.info(
-            "#TIME "
-            + "%.3f\t" % (time() - TSTART)
-            + "Plotting SV View for amplicon"
-            + str(amplicon_id)
-        )
-        bamFileb2b.plot_segmentation(
-            ilist, amplicon_name, segments=segments, font=args.plotstyle
-        )
-    summary_logger.info(
-        "-----------------------------------------------------------------------------------------"
-    )
+        logging.info("#TIME " + "%.3f\t" % (time() - TSTART) + "Plotting SV View for amplicon" + str(amplicon_id))
+        bamFileb2b.plot_segmentation(ilist, amplicon_name, segments=segments, font=args.plotstyle)
+    summary_logger.info("-----------------------------------------------------------------------------------------")
     iout = open(amplicon_name + "_logs.txt", "w")
     iout.write(mystdout.getvalue())
     iout.close()
@@ -544,22 +475,12 @@ for ig in irdgroups:
     continue
 
 
-if (args.extendmode in ["VIRAL", "VIRAL_CLUSTERED"]) and (
-    args.runmode in ["FULL", "SVVIEW", "VIRALVIEW"]
-):
+if (args.extendmode in ["VIRAL", "VIRAL_CLUSTERED"]) and (args.runmode in ["FULL", "SVVIEW", "VIRALVIEW"]):
     amplicon_id = 1
     for i in irdgroups[0]:
-        if (
-            i.intersects(rdList0[-1])
-            or len(hg.interval_list([i]).intersection(rdList)) == 0
-        ):
+        if i.intersects(rdList0[-1]) or len(hg.interval_list([i]).intersection(rdList)) == 0:
             continue
-        logging.info(
-            "#TIME "
-            + "%.3f\t" % (time() - TSTART)
-            + "Plotting viral view for interval "
-            + str(i)
-        )
+        logging.info("#TIME " + "%.3f\t" % (time() - TSTART) + "Plotting viral view for interval " + str(i))
         bamFileb2b.plot_segmentation(
             hg.interval_list([i, rdList0[-1]]),
             outName + "_amplicon" + str(amplicon_id),

@@ -41,16 +41,12 @@ try:
     DATA_REPO = os.environ["AA_DATA_REPO"]
 except:
     logging.warning(
-        "#TIME "
-        + "%.3f\t" % (time() - TSTART)
-        + " Unable to set AA_DATA_REPO variable. Setting to working directory"
+        "#TIME " + "%.3f\t" % (time() - TSTART) + " Unable to set AA_DATA_REPO variable. Setting to working directory"
     )
     DATA_REPO = "."
 if DATA_REPO == "." or DATA_REPO == "":
     logging.warning(
-        "#TIME "
-        + "%.3f\t" % (time() - TSTART)
-        + " AA_DATA_REPO not set or empy. Setting to working directory"
+        "#TIME " + "%.3f\t" % (time() - TSTART) + " AA_DATA_REPO not set or empy. Setting to working directory"
     )
     DATA_REPO = "."
 
@@ -89,16 +85,12 @@ except:
 
 chrLen_filename = DATA_REPO + "/" + REF + "/" + REF_files["chrLen_file"]
 duke35_filename = DATA_REPO + "/" + REF + "/" + REF_files["duke35_filename"]
-wgexclude_filename = (
-    DATA_REPO + "/" + REF + "/" + REF_files["mapability_exclude_filename"]
-)
+wgexclude_filename = DATA_REPO + "/" + REF + "/" + REF_files["mapability_exclude_filename"]
 gene_filename = DATA_REPO + "/" + REF + "/" + REF_files["gene_filename"]
 exon_filename = DATA_REPO + "/" + REF + "/" + REF_files["exon_file"]
 oncogene_filename = DATA_REPO + "/" + REF + "/" + REF_files["oncogene_filename"]
 centromere_filename = DATA_REPO + "/" + REF + "/" + REF_files["centromere_filename"]
-conserved_regions_filename = (
-    DATA_REPO + "/" + REF + "/" + REF_files["conserved_regions_filename"]
-)
+conserved_regions_filename = DATA_REPO + "/" + REF + "/" + REF_files["conserved_regions_filename"]
 segdup_filename = DATA_REPO + "/" + REF + "/" + REF_files["segdup_filename"]
 complementary_nucleotide = defaultdict(
     lambda: "N",
@@ -121,9 +113,7 @@ duke35_exists = [True]
 # Handling chromosome names, lengths, sorting, positions and addition of new chromosomes
 chr_id = {}
 chrName = {}
-chromList = [str(x) for x in range(1, 23)] + [
-    "X" + "Y"
-]  # must be updated if including an organism with more chroms.
+chromList = [str(x) for x in range(1, 23)] + ["X" + "Y"]  # must be updated if including an organism with more chroms.
 
 
 def chrNum(chrname, mode="append"):
@@ -146,11 +136,7 @@ try:
         chrLen[chrNum(ll[0], mode="init")] = int(ll[1])
 except:
     logging.warning(
-        "#TIME "
-        + "%.3f\t" % (time() - TSTART)
-        + ' Unable to open chromosome lengths file: "'
-        + chrLen_filename
-        + '"'
+        "#TIME " + "%.3f\t" % (time() - TSTART) + ' Unable to open chromosome lengths file: "' + chrLen_filename + '"'
     )
 
 chrOffset = {}
@@ -242,34 +228,23 @@ class interval(object):
             else:
                 self.strand = -1
             if not exclude_info_string:
-                self.info = {
-                    r[0 : r.find("=")]: r[r.find("=") + 1 :]
-                    for r in ll[8].strip().strip(";").split(";")
-                }
+                self.info = {r[0 : r.find("=")]: r[r.find("=") + 1 :] for r in ll[8].strip().strip(";").split(";")}
                 self.info["Variant"] = ll[5]
         elif file_format == "bed":
             ll = line.strip().split()
             self.chrom = ll[0]
-            if (
-                REF == "hg19" or REF == "GRCh38" or REF == "mm10" or REF == "GRCm38"
-            ) and 0 < len(self.chrom) < 3:
+            if (REF == "hg19" or REF == "GRCh38" or REF == "mm10" or REF == "GRCm38") and 0 < len(self.chrom) < 3:
                 try:
                     ci = int(self.chrom)
                     if 0 < ci < 23:
                         self.chrom = "chr" + self.chrom
-                        logging.info(
-                            "Corrected chromosome name (appended 'chr') "
-                            + self.chrom
-                            + " \n"
-                        )
+                        logging.info("Corrected chromosome name (appended 'chr') " + self.chrom + " \n")
 
                 except ValueError:
                     if self.chrom in {"M", "X", "Y"}:
                         self.chrom = "chr" + self.chrom
                     else:
-                        logging.warning(
-                            "Chromosome name " + self.chrom + " may be incompatible"
-                        )
+                        logging.warning("Chromosome name " + self.chrom + " may be incompatible")
 
             self.start, self.end = sorted([int(float(ll[1])), int(float(ll[2]))])
             if int(float(ll[2])) >= int(float(ll[1])):
@@ -300,9 +275,7 @@ class interval(object):
         if line.reference_end is not None:
             self.end = line.reference_end
         else:
-            logging.warning(
-                "Reference_end for " + str(self) + " was NoneType. Setting to 0."
-            )
+            logging.warning("Reference_end for " + str(self) + " was NoneType. Setting to 0.")
 
         if line.is_reverse:
             self.strand = -1
@@ -324,15 +297,12 @@ class interval(object):
         if len(str(self.info)) == 0:
             return "\t".join(map(str, [self.chrom, self.start, self.end]))
         elif type(self.info) == list:
-            return "\t".join(
-                map(str, [self.chrom, self.start, self.end] + list(self.info))
-            )
+            return "\t".join(map(str, [self.chrom, self.start, self.end] + list(self.info)))
         elif type(self.info) == dict:
             return "\t".join(
                 map(
                     str,
-                    [self.chrom, self.start, self.end]
-                    + [str(s) + "=" + str(self.info[s]) for s in self.info],
+                    [self.chrom, self.start, self.end] + [str(s) + "=" + str(self.info[s]) for s in self.info],
                 )
             )
         else:
@@ -345,9 +315,7 @@ class interval(object):
         #     exit()
         if len(seq) == 0:
             return 0.5
-        return float(
-            seq.count("G") + seq.count("C") + seq.count("g") + seq.count("c")
-        ) / len(seq)
+        return float(seq.count("G") + seq.count("C") + seq.count("g") + seq.count("c")) / len(seq)
 
     def sequence(self, new_fa_file=None):
         if new_fa_file is not None:
@@ -363,15 +331,11 @@ class interval(object):
         if margin > 0.0:
             if self.intersects(
                 interval(n.chrom, n.start, n.end - (1 - margin) * (n.end - n.start))
-            ) and self.intersects(
-                interval(n.chrom, n.start + (1 - margin) * (n.end - n.start)), n.end
-            ):
+            ) and self.intersects(interval(n.chrom, n.start + (1 - margin) * (n.end - n.start)), n.end):
                 return True
             else:
                 s = self
-                if n.intersects(
-                    interval(s.chrom, s.start, s.end - (1 - margin) * (s.end - s.start))
-                ) and n.intersects(
+                if n.intersects(interval(s.chrom, s.start, s.end - (1 - margin) * (s.end - s.start))) and n.intersects(
                     interval(s.chrom, s.start + (1 - margin) * (s.end - s.start)), s.end
                 ):
                     return True
@@ -407,13 +371,9 @@ class interval(object):
         if il[0].intersects(il[1]):
             ilint = il[0].intersection(il[1])
             if il[0].start < il[1].start:
-                ilr.append(
-                    (interval(il[0].chrom, il[0].start, ilint.start - 1), [il[0]])
-                )
+                ilr.append((interval(il[0].chrom, il[0].start, ilint.start - 1), [il[0]]))
             elif il[1].start < il[0].start:
-                ilr.append(
-                    (interval(il[1].chrom, il[1].start, ilint.start - 1), [il[1]])
-                )
+                ilr.append((interval(il[1].chrom, il[1].start, ilint.start - 1), [il[1]]))
             ilr.append((ilint, il))
             if il[0].end > il[1].end:
                 ilr.append((interval(il[0].chrom, ilint.end + 1, il[0].end), [il[0]]))
@@ -434,8 +394,7 @@ class interval(object):
                 z = y
             if (
                 self.intersects(interval(x, y, z))
-                and self.intersection(interval(x, y, z)).size()
-                == interval(x, y, z).size()
+                and self.intersection(interval(x, y, z)).size() == interval(x, y, z).size()
             ):
                 return True
         return False
@@ -548,9 +507,7 @@ class interval(object):
 
 
 class interval_list(list, object):
-    def __init__(
-        self, ilist=None, file_format=None, sort=True, exclude_info_string=False
-    ):
+    def __init__(self, ilist=None, file_format=None, sort=True, exclude_info_string=False):
         if ilist == None:
             ilist = []
         self.file_format = file_format
@@ -654,11 +611,7 @@ class interval_list(list, object):
         l2j = len(l2) - 1
         il = []
         while si >= 0:
-            while (
-                l2i >= 0
-                and l2[l2i] > self[si]
-                and not self[si].intersects(l2[l2i], extend=extend)
-            ):
+            while l2i >= 0 and l2[l2i] > self[si] and not self[si].intersects(l2[l2i], extend=extend):
                 l2i -= 1
             l2j = l2i
             while l2j >= 0 and self[si].intersects(l2[l2j], extend=extend):
@@ -682,19 +635,12 @@ class interval_list(list, object):
             # else:
             #     print "%%", i, j, [],  [str(aa[0]) for aa in atomlist]
             if c is not None:
-                if (
-                    i < len(self)
-                    and self[i] not in c[1]
-                    and (self[i].intersects(c[0], -1) or c[0] > self[i])
-                ):
+                if i < len(self) and self[i] not in c[1] and (self[i].intersects(c[0], -1) or c[0] > self[i]):
                     atm = self[i].atomize(c[0])
                     atm = [
                         (
                             aa[0],
-                            [
-                                (lambda x: c[1][0] if x == c[0] else x)(aai)
-                                for aai in aa[1]
-                            ],
+                            [(lambda x: c[1][0] if x == c[0] else x)(aai) for aai in aa[1]],
                         )
                         for aa in atm
                     ]
@@ -702,20 +648,13 @@ class interval_list(list, object):
                     c = atm[-1]
                     i += 1
                     atomlist += atm[:-1]
-                elif (
-                    j < len(h2)
-                    and h2[j] not in c[1]
-                    and (h2[j].intersects(c[0], -1) or c[0] > h2[j])
-                ):
+                elif j < len(h2) and h2[j] not in c[1] and (h2[j].intersects(c[0], -1) or c[0] > h2[j]):
                     # print j, str(h2[j]), str(c[0]), c[0] > h2[j]
                     atm = c[0].atomize(h2[j])
                     atm = [
                         (
                             aa[0],
-                            [
-                                (lambda x: c[1][0] if x == c[0] else x)(aai)
-                                for aai in aa[1]
-                            ],
+                            [(lambda x: c[1][0] if x == c[0] else x)(aai) for aai in aa[1]],
                         )
                         for aa in atm
                     ]
@@ -767,17 +706,13 @@ class interval_list(list, object):
                 if not duke_int.intersects(self[i]) and self[i] > duke_int:
                     continue
                 j = i
-                repc = (
-                    5.0 if float(duke_int.info[0]) == 0 else 1 / float(duke_int.info[0])
-                )
+                repc = 5.0 if float(duke_int.info[0]) == 0 else 1 / float(duke_int.info[0])
                 while j < len(self) and self[j].intersects(duke_int):
                     sum_duke[j] += self[j].intersection(duke_int).size() * repc
                     len_duke[j] += self[j].intersection(duke_int).size()
                     j += 1
             duke35_file.close()
-            return {
-                self[i]: sum_duke[i] / len_duke[i] for i in range(len(interval_list))
-            }
+            return {self[i]: sum_duke[i] / len_duke[i] for i in range(len(interval_list))}
         except:
             logging.warning(
                 "#TIME "
@@ -798,9 +733,7 @@ class interval_list(list, object):
 
         vlist = [i for i in self if chrNum(i.chrom) >= 100 and i.chrom[:3] != "chr"]
         hlist = [i for i in self if chrNum(i.chrom) < 100 or i.chrom[:3] == "chr"]
-        v_count = len(
-            [i for i in self if chrNum(i.chrom) >= 100 and i.chrom[:3] != "chr"]
-        )
+        v_count = len([i for i in self if chrNum(i.chrom) >= 100 and i.chrom[:3] != "chr"])
         h_count = len(self) - v_count
         h_sum = sum([i.size() for i in hlist])
         v_sum = sum([i.size() for i in vlist])
@@ -845,9 +778,7 @@ class interval_list(list, object):
         for i in self:
             if i.intersects(interval(chrom, max(0, pos - 1), pos)):
                 o = offset[i]
-                return (o[1] * (pos - i.start) + o[0] * (i.end - pos)) / (
-                    i.end - i.start
-                )
+                return (o[1] * (pos - i.start) + o[0] * (i.end - pos)) / (i.end - i.start)
         return None
 
     def offset_breaks(self):
@@ -857,9 +788,7 @@ class interval_list(list, object):
 
         vlist = [i for i in self if chrNum(i.chrom) >= 100 and i.chrom[:3] != "chr"]
         hlist = [i for i in self if chrNum(i.chrom) < 100 or i.chrom[:3] == "chr"]
-        v_count = len(
-            [i for i in self if chrNum(i.chrom) >= 100 and i.chrom[:3] != "chr"]
-        )
+        v_count = len([i for i in self if chrNum(i.chrom) >= 100 and i.chrom[:3] != "chr"])
         h_count = len(self) - v_count
         h_sum = sum([i.size() for i in hlist])
         v_sum = sum([i.size() for i in vlist])
@@ -914,23 +843,14 @@ def load_exons():
             if (
                 len(j.strip()) > 0
                 and j.strip()[0] != "#"
-                and {
-                    r.split("=")[0]: r.split("=")[1]
-                    for r in j.strip().split()[8].strip(";").split(";")
-                }["color"]
+                and {r.split("=")[0]: r.split("=")[1] for r in j.strip().split()[8].strip(";").split(";")}["color"]
                 == "000080"
             )
         ]
         exon_file.close()
         exon_list.extend((exonFields))
     except:
-        logging.warning(
-            "#TIME "
-            + "%.3f\t" % (time() - TSTART)
-            + 'unable to load exon file: "'
-            + exon_filename
-            + '"'
-        )
+        logging.warning("#TIME " + "%.3f\t" % (time() - TSTART) + 'unable to load exon file: "' + exon_filename + '"')
 
 
 conserved_regions = interval_list(conserved_regions_filename, "bed")
@@ -941,9 +861,7 @@ wgexclude.sort()
 
 centromere_list = interval_list(centromere_filename, "bed")
 centromere_list.sort()
-centromere_list = interval_list(
-    [i[0] for i in centromere_list.merge_clusters(extend=1)]
-)
+centromere_list = interval_list([i[0] for i in centromere_list.merge_clusters(extend=1)])
 
 
 segdup_list = interval_list(segdup_filename, "bed")

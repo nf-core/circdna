@@ -63,11 +63,7 @@ def check_samplesheet(file_in, file_out, input_format):
             HEADER = ["sample", "fastq_1", "fastq_2"]
             header = [x.strip('"') for x in fin.readline().strip().split(",")]
             if header[: len(HEADER)] != HEADER:
-                print(
-                    "ERROR: Please check samplesheet header -> {} != {}".format(
-                        ",".join(header), ",".join(HEADER)
-                    )
-                )
+                print("ERROR: Please check samplesheet header -> {} != {}".format(",".join(header), ",".join(HEADER)))
                 sys.exit(1)
 
             ## Check sample entries
@@ -84,9 +80,7 @@ def check_samplesheet(file_in, file_out, input_format):
                 num_cols = len([x for x in lspl if x])
                 if num_cols < MIN_COLS:
                     print_error(
-                        "Invalid number of populated columns (minimum = {})!".format(
-                            MIN_COLS
-                        ),
+                        "Invalid number of populated columns (minimum = {})!".format(MIN_COLS),
                         "Line",
                         line,
                     )
@@ -102,9 +96,7 @@ def check_samplesheet(file_in, file_out, input_format):
                     if fastq:
                         if fastq.find(" ") != -1:
                             print_error("FastQ file contains spaces!", "Line", line)
-                        if not fastq.endswith(".fastq.gz") and not fastq.endswith(
-                            ".fq.gz"
-                        ):
+                        if not fastq.endswith(".fastq.gz") and not fastq.endswith(".fq.gz"):
                             print_error(
                                 "FastQ file does not have extension '.fastq.gz' or '.fq.gz'!",
                                 "Line",
@@ -117,18 +109,14 @@ def check_samplesheet(file_in, file_out, input_format):
                 elif sample and fastq_1 and not fastq_2:  ## Single-end short reads
                     sample_info = ["1", fastq_1, fastq_2]
                 else:
-                    print_error(
-                        "Invalid combination of columns provided!", "Line", line
-                    )
+                    print_error("Invalid combination of columns provided!", "Line", line)
 
                 ## Create sample mapping dictionary = { sample: [ single_end, fastq_1, fastq_2 ] }
                 if sample not in sample_mapping_dict:
                     sample_mapping_dict[sample] = [sample_info]
                 else:
                     if sample_info in sample_mapping_dict[sample]:
-                        print_error(
-                            "Samplesheet contains duplicate rows!", "Line", line
-                        )
+                        print_error("Samplesheet contains duplicate rows!", "Line", line)
                     else:
                         sample_mapping_dict[sample].append(sample_info)
 
@@ -137,11 +125,7 @@ def check_samplesheet(file_in, file_out, input_format):
             HEADER = ["sample", "bam"]
             header = [x.strip('"') for x in fin.readline().strip().split(",")]
             if header[: len(HEADER)] != HEADER:
-                print(
-                    "ERROR: Please check samplesheet header -> {} != {}".format(
-                        ",".join(header), ",".join(HEADER)
-                    )
-                )
+                print("ERROR: Please check samplesheet header -> {} != {}".format(",".join(header), ",".join(HEADER)))
                 sys.exit(1)
 
             ## Check sample entries
@@ -158,9 +142,7 @@ def check_samplesheet(file_in, file_out, input_format):
                 num_cols = len([x for x in lspl if x])
                 if num_cols < MIN_COLS:
                     print_error(
-                        "Invalid number of populated columns (minimum = {})!".format(
-                            MIN_COLS
-                        ),
+                        "Invalid number of populated columns (minimum = {})!".format(MIN_COLS),
                         "Line",
                         line,
                     )
@@ -188,9 +170,7 @@ def check_samplesheet(file_in, file_out, input_format):
                     sample_mapping_dict[sample] = [sample_info]
                 else:
                     if sample_info in sample_mapping_dict[sample]:
-                        print_error(
-                            "Samplesheet contains duplicate rows!", "Line", line
-                        )
+                        print_error("Samplesheet contains duplicate rows!", "Line", line)
                     else:
                         sample_mapping_dict[sample].append(sample_info)
 
@@ -204,26 +184,18 @@ def check_samplesheet(file_in, file_out, input_format):
             make_dir(out_dir)
             with open(file_out, "w") as fout:
                 if input_format == "FASTQ":
-                    fout.write(
-                        ",".join(["sample", "single_end", "fastq_1", "fastq_2"]) + "\n"
-                    )
+                    fout.write(",".join(["sample", "single_end", "fastq_1", "fastq_2"]) + "\n")
                     for sample in sorted(sample_mapping_dict.keys()):
 
                         ## Check that multiple runs of the same sample are of the same datatype
-                        if not all(
-                            x[0] == sample_mapping_dict[sample][0][0]
-                            for x in sample_mapping_dict[sample]
-                        ):
+                        if not all(x[0] == sample_mapping_dict[sample][0][0] for x in sample_mapping_dict[sample]):
                             print_error(
                                 "Multiple runs of a sample must be of the same datatype!",
                                 "Sample: {}".format(sample),
                             )
 
                         for idx, val in enumerate(sample_mapping_dict[sample]):
-                            fout.write(
-                                ",".join(["{}_T{}".format(sample, idx + 1)] + val)
-                                + "\n"
-                            )
+                            fout.write(",".join(["{}_T{}".format(sample, idx + 1)] + val) + "\n")
                 elif input_format == "BAM":
                     fout.write(",".join(["sample", "idx", "bam"]) + "\n")
                     for sample in sorted(sample_mapping_dict.keys()):

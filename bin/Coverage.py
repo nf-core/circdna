@@ -28,9 +28,7 @@ import numpy as np
 class coverage:
     """Class for managing the coverage metrics of circle-map"""
 
-    def __init__(
-        self, sorted_bam, eccdna_bed, extension, mapq, inside_length, directory
-    ):
+    def __init__(self, sorted_bam, eccdna_bed, extension, mapq, inside_length, directory):
 
         self.bam = ps.AlignmentFile(directory + "/" + sorted_bam, "rb")
         self.bed = eccdna_bed
@@ -71,18 +69,13 @@ class coverage:
             else:
                 end = interval.end
 
-            cov = self.bam.count_coverage(
-                contig=interval.chrom, start=start, end=end, quality_threshold=self.mapq
-            )
+            cov = self.bam.count_coverage(contig=interval.chrom, start=start, end=end, quality_threshold=self.mapq)
             summarized_cov = np.array([cov[0], cov[1], cov[2], cov[3]]).sum(axis=0)
 
             # save memory, convert to uint32.
             summ_cov = np.uint32(summarized_cov)
 
-            print(
-                "Computing coverage on interval %s:%s-%s"
-                % (interval.chrom, interval.start, interval.end)
-            )
+            print("Computing coverage on interval %s:%s-%s" % (interval.chrom, interval.start, interval.end))
             coverage_dict[bt.Interval(interval.chrom, start, end)] = summ_cov
 
             yield (coverage_dict, header_dict)
@@ -138,12 +131,12 @@ class coverage:
 
                     try:
 
-                        start_coverage_ratio = np.sum(
-                            region_array[0 : self.ilen]
-                        ) / np.sum(ext_array[0 : (self.ilen + self.ext)])
-                        end_coverage_ratio = np.sum(
-                            region_array[-self.ilen :]
-                        ) / np.sum(ext_array[-(self.ilen + self.ext) :])
+                        start_coverage_ratio = np.sum(region_array[0 : self.ilen]) / np.sum(
+                            ext_array[0 : (self.ilen + self.ext)]
+                        )
+                        end_coverage_ratio = np.sum(region_array[-self.ilen :]) / np.sum(
+                            ext_array[-(self.ilen + self.ext) :]
+                        )
 
                         interval.append(str(start_coverage_ratio))
                         interval.append(str(end_coverage_ratio))
@@ -155,9 +148,7 @@ class coverage:
 
                     try:
 
-                        zero_frac = np.count_nonzero(region_array == 0) / len(
-                            region_array
-                        )
+                        zero_frac = np.count_nonzero(region_array == 0) / len(region_array)
                         interval.append(str(zero_frac))
 
                     except:

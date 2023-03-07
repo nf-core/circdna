@@ -128,10 +128,7 @@ def sim_ecc_reads(
         # if user of provides regions to exclude, check within it is on the region. and skip it
         if (
             exclude_regions != None
-            and bt.BedTool(exclude_regions)
-            .sort()
-            .any_hits(bt.Interval(chr, chr_pos_start, chr_pos_end))
-            != 0
+            and bt.BedTool(exclude_regions).sort().any_hits(bt.Interval(chr, chr_pos_start, chr_pos_end)) != 0
         ):
             # hit in a gap region
             # shared memory object between processes. It is use to track the number of skipped circles
@@ -386,18 +383,12 @@ class sim_paired_end:
 
                 # the error could be here
                 left_split_read = fastafile.fetch(self.chr, start, self.chr_pos_end)
-                right_split_read = fastafile.fetch(
-                    self.chr, self.chr_pos_start, (self.chr_pos_start + right_dntps)
-                )
+                right_split_read = fastafile.fetch(self.chr, self.chr_pos_start, (self.chr_pos_start + right_dntps))
                 left_read = left_split_read + right_split_read
 
                 # right_read
-                right_start = self.chr_pos_start + int(
-                    round(self.insert_size - left_dntps - self.read_length)
-                )
-                right_read = fastafile.fetch(
-                    self.chr, right_start, (right_start + self.read_length)
-                )
+                right_start = self.chr_pos_start + int(round(self.insert_size - left_dntps - self.read_length))
+                right_read = fastafile.fetch(self.chr, right_start, (right_start + self.read_length))
 
                 # assertion to check the error here
 
@@ -416,13 +407,9 @@ class sim_paired_end:
             else:
                 if right_start > self.chr_pos_end:
                     # insert spanning split read scenario
-                    left_read = fastafile.fetch(
-                        self.chr, start, (start + self.read_length)
-                    )
+                    left_read = fastafile.fetch(self.chr, start, (start + self.read_length))
                     right_start = self.chr_pos_start + (right_start - self.chr_pos_end)
-                    right_read = fastafile.fetch(
-                        self.chr, right_start, (right_start + self.read_length)
-                    )
+                    right_read = fastafile.fetch(self.chr, right_start, (right_start + self.read_length))
                     common_id = "%s|%s|%s:%s|%s:%s|3|%s" % (
                         self.read_number,
                         self.chr,
@@ -436,19 +423,13 @@ class sim_paired_end:
                     # right split read scenario
                     assert right_start <= self.chr_pos_end
                     assert (right_start + self.read_length) > self.chr_pos_end
-                    left_read = fastafile.fetch(
-                        self.chr, start, (start + self.read_length)
-                    )
+                    left_read = fastafile.fetch(self.chr, start, (start + self.read_length))
 
                     # compute right dntps
                     left_dntps = self.chr_pos_end - right_start
                     right_dntps = self.read_length - left_dntps
-                    left_split_read = fastafile.fetch(
-                        self.chr, right_start, self.chr_pos_end
-                    )
-                    right_split_read = fastafile.fetch(
-                        self.chr, self.chr_pos_start, (self.chr_pos_start + right_dntps)
-                    )
+                    left_split_read = fastafile.fetch(self.chr, right_start, self.chr_pos_end)
+                    right_split_read = fastafile.fetch(self.chr, self.chr_pos_start, (self.chr_pos_start + right_dntps))
                     right_read = left_split_read + right_split_read
                     common_id = "%s|%s|%s:%s|%s:%s-%s:%s|2|%s" % (
                         self.read_number,
@@ -466,9 +447,7 @@ class sim_paired_end:
             # non split read scenario
             left_read = fastafile.fetch(self.chr, start, (start + self.read_length))
             # correct right read start
-            right_read = fastafile.fetch(
-                self.chr, right_start, (right_start + self.read_length)
-            )
+            right_read = fastafile.fetch(self.chr, right_start, (right_start + self.read_length))
             common_id = "%s|%s|%s:%s|%s:%s|0|%s" % (
                 self.read_number,
                 self.chr,
@@ -549,11 +528,7 @@ class sim_paired_end:
         )
 
         with open("left%s.fq" % (self.process), "r") as left:
-            left_read = (
-                left.read()
-                .replace("space", "   ")
-                .replace("1:N:0:CGCTGTG-1", "1:N:0:CGCTGTG")
-            )
+            left_read = left.read().replace("space", "   ").replace("1:N:0:CGCTGTG-1", "1:N:0:CGCTGTG")
 
         # get the reverse complement of the right read
         right_read = Seq(right_read, generic_dna)
@@ -581,11 +556,7 @@ class sim_paired_end:
         )
 
         with open("right%s.fq" % (self.process), "r") as right:
-            right_read = (
-                right.read()
-                .replace("space", "   ")
-                .replace("1:N:0:CGCTGTG-1", "2:N:0:CGCTGTG")
-            )
+            right_read = right.read().replace("space", "   ").replace("1:N:0:CGCTGTG-1", "2:N:0:CGCTGTG")
 
         # sometimes the reading fails. I introduce this to capture it
         try:

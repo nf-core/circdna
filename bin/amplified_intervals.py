@@ -117,8 +117,7 @@ if rdList0:
     try:
         if len(rdList0[0].info) == 0:
             sys.stderr.write(
-                "ERROR: CNV estimate bed file had too few columns.\n"
-                "Must contain: chr  pos1  pos2  cnv_estimate\n"
+                "ERROR: CNV estimate bed file had too few columns.\n" "Must contain: chr  pos1  pos2  cnv_estimate\n"
             )
             sys.exit(1)
         _ = float(rdList0[0].info[-1])
@@ -139,10 +138,7 @@ if args.bam != "":
 
     cstats = None
     cb = bamFile
-    if (
-        os.path.exists(os.path.join(hg.DATA_REPO, "coverage.stats"))
-        and not args.no_cstats
-    ):
+    if os.path.exists(os.path.join(hg.DATA_REPO, "coverage.stats")) and not args.no_cstats:
         coverage_stats_file = open(os.path.join(hg.DATA_REPO, "coverage.stats"))
         for l in coverage_stats_file:
             ll = l.strip().split()
@@ -150,11 +146,7 @@ if args.bam != "":
             bamfile_filesize = os.path.getsize(bamfile_pathname)
             if ll[0] == os.path.abspath(bamfile_pathname):
                 cstats = tuple(map(float, ll[1:]))
-                if (
-                    len(cstats) < 15
-                    or cstats[13] != 3
-                    or bamfile_filesize != int(cstats[14])
-                ):
+                if len(cstats) < 15 or cstats[13] != 3 or bamfile_filesize != int(cstats[14]):
                     cstats = None
 
         coverage_stats_file.close()
@@ -163,9 +155,7 @@ if args.bam != "":
     pre_int_list = []
     for r in rdList:
         try:
-            chrom_cov_ratio = (
-                bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0]
-            )
+            chrom_cov_ratio = bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0]
             # print("chrom ratio " + r.chrom + " " + str(chrom_cov_ratio))
             if (
                 float(r.info[-1])
@@ -173,13 +163,10 @@ if args.bam != "":
                 + 2
                 * max(
                     1.0,
-                    bamFileb2b.median_coverage(refi=r)[0]
-                    / bamFileb2b.median_coverage()[0],
+                    bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0],
                 )
                 - 2
-                and bamFileb2b.median_coverage(refi=r)[0]
-                / bamFileb2b.median_coverage()[0]
-                > 0
+                and bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0] > 0
             ):
                 if r.size() < 10000000 or float(r.info[-1]) > 1.5 * GAIN:
                     pre_int_list.append(r)
@@ -200,22 +187,9 @@ for a in amplicon_listl:
         or a.size()
         > max(
             1000000,
-            10
-            * sum(
-                [
-                    a.intersection(ci[1]).size()
-                    for ci in hg.interval_list([a]).intersection(cr)
-                ]
-            ),
+            10 * sum([a.intersection(ci[1]).size() for ci in hg.interval_list([a]).intersection(cr)]),
         )
-        or a.size()
-        - sum(
-            [
-                a.intersection(ci[1]).size()
-                for ci in hg.interval_list([a]).intersection(cr)
-            ]
-        )
-        > 2000000
+        or a.size() - sum([a.intersection(ci[1]).size() for ci in hg.interval_list([a]).intersection(cr)]) > 2000000
     ):
         if (len(hg.interval_list([a]).intersection(cr))) == 0:
             uc_list.append(a)
@@ -224,19 +198,13 @@ for a in amplicon_listl:
             cpos = a.start
             for crai in cra:
                 if cpos < crai[1].start - 1000000:
-                    uc_list.append(
-                        hg.interval(a.chrom, cpos, crai[1].start - 1000000, info=a.info)
-                    )
+                    uc_list.append(hg.interval(a.chrom, cpos, crai[1].start - 1000000, info=a.info))
                 cpos = crai[1].end + 1000000
             if a.end > cpos:
                 uc_list.append(hg.interval(a.chrom, cpos, a.end, info=a.info))
 
 uc_list = hg.interval_list(
-    [
-        a
-        for a in uc_list
-        if float(a.info[-1]) * a.segdup_uniqueness() > GAIN and a.rep_content() < 2.5
-    ]
+    [a for a in uc_list if float(a.info[-1]) * a.segdup_uniqueness() > GAIN and a.rep_content() < 2.5]
 )
 uc_merge = uc_list.merge_clusters(extend=300000)
 
@@ -247,10 +215,7 @@ with open(outname, "w") as outfile:
                 "\t".join(
                     [
                         str(a[0]),
-                        str(
-                            sum([ai.size() * float(ai.info[-1]) for ai in a[1]])
-                            / sum([ai.size() for ai in a[1]])
-                        ),
+                        str(sum([ai.size() * float(ai.info[-1]) for ai in a[1]]) / sum([ai.size() for ai in a[1]])),
                         rdAlts,
                     ]
                 )

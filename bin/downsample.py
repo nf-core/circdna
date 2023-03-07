@@ -42,9 +42,7 @@ import hashlib
 
 import global_names
 
-parser = argparse.ArgumentParser(
-    description="Reconstruct Amplicons connected to listed intervals."
-)
+parser = argparse.ArgumentParser(description="Reconstruct Amplicons connected to listed intervals.")
 parser.add_argument(
     "--bam",
     dest="bam",
@@ -135,9 +133,7 @@ for l in coverage_stats_file:
     bamfile_filesize = os.path.getsize(bamfile_pathname)
     if ll[0] == os.path.abspath(bamfile_pathname):
         cstats = tuple(map(float, ll[1:]))
-        if (
-            len(cstats) < 15 or cstats[13] != 3 or bamfile_filesize != int(cstats[14])
-        ):  # 3 is default sdevs
+        if len(cstats) < 15 or cstats[13] != 3 or bamfile_filesize != int(cstats[14]):  # 3 is default sdevs
             cstats = None
 
 coverage_stats_file.close()
@@ -146,14 +142,10 @@ if cbed is not None:
     coverage_windows = hg.interval_list(cbed, "bed")
     coverage_windows.sort()
 if cstats is None and cbam is not None:
-    cbam2b = b2b.bam_to_breakpoint(
-        cbam, coverage_stats=cstats, coverage_windows=coverage_windows
-    )
+    cbam2b = b2b.bam_to_breakpoint(cbam, coverage_stats=cstats, coverage_windows=coverage_windows)
     cstats = cbam2b.basic_stats
 elif cstats is None:
-    bamFileb2b = b2b.bam_to_breakpoint(
-        bamFile, coverage_stats=cstats, coverage_windows=coverage_windows
-    )
+    bamFileb2b = b2b.bam_to_breakpoint(bamFile, coverage_stats=cstats, coverage_windows=coverage_windows)
     cstats = bamFileb2b.basic_stats
 
 

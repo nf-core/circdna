@@ -140,11 +140,7 @@ class bam2bam:
 
     def beta_version_warning(self):
         """Warn the user that this is experimental"""
-        print(
-            datetime.datetime.now().strftime(
-                "%Y-%m-%d %H:%M:%S: You are using a beta version feature"
-            )
-        )
+        print(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S: You are using a beta version feature"))
         warnings.warn(
             "The bam2bam feature on Circle-Map is experimental. The development of this feature is active, but"
             " have in mind that it might produce unintended results. Check https://github.com/iprada/Circle-Map"
@@ -157,9 +153,7 @@ class bam2bam:
 
         # open files for every process
         try:
-            peaks_pd = pd.DataFrame.from_records(
-                peaks, columns=["chrom", "start", "end"]
-            )
+            peaks_pd = pd.DataFrame.from_records(peaks, columns=["chrom", "start", "end"])
             genome_fa = ps.FastaFile(self.genome_fa)
             ecc_dna = ps.AlignmentFile(self.ecc_dna_str, "rb")
 
@@ -213,9 +207,7 @@ class bam2bam:
                                 int(int(mate_interval["end"]) + 1),
                             ).upper()
                             interval_length = len(plus_coding_interval)
-                            minus_coding_interval = str(
-                                Seq(plus_coding_interval).complement()
-                            )
+                            minus_coding_interval = str(Seq(plus_coding_interval).complement())
 
                             # precompute the denominators of the error model. They will be constants for every interval
                             plus_base_freqs = background_freqs(plus_coding_interval)
@@ -260,9 +252,7 @@ class bam2bam:
                                         if read.has_tag("SA") and self.remap != True:
 
                                             # check realignment from SA tag
-                                            support = circle_from_SA(
-                                                read, self.mapq_cutoff, mate_interval
-                                            )
+                                            support = circle_from_SA(read, self.mapq_cutoff, mate_interval)
 
                                             if support is None:
                                                 pass
@@ -278,11 +268,7 @@ class bam2bam:
 
                                         else:
                                             # sc length
-                                            sc_len = len(
-                                                get_longest_soft_clipped_bases(read)[
-                                                    "seq"
-                                                ]
-                                            )
+                                            sc_len = len(get_longest_soft_clipped_bases(read)["seq"])
 
                                             if (
                                                 non_colinearity(
@@ -295,9 +281,7 @@ class bam2bam:
                                                 == True
                                             ):
                                                 if sc_len >= self.min_sc_length:
-                                                    edits_allowed = adaptative_myers_k(
-                                                        sc_len, self.edit_distance_frac
-                                                    )
+                                                    edits_allowed = adaptative_myers_k(sc_len, self.edit_distance_frac)
                                                     # realignment
 
                                                     realignment_dict = realign(
@@ -325,54 +309,29 @@ class bam2bam:
                                                         )
                                                         if (
                                                             prob >= self.prob_cutoff
-                                                            and realignment_dict[
-                                                                "alignments"
-                                                            ][1][3]
-                                                            <= edits_allowed
+                                                            and realignment_dict["alignments"][1][3] <= edits_allowed
                                                         ):
 
                                                             # here I have to retrieve the nucleotide mapping positions. Which should be the
                                                             # the left sampling pysam coordinate - edlib coordinates
 
-                                                            read_end = (
-                                                                rightmost_from_read(
-                                                                    read
-                                                                )
-                                                            )
+                                                            read_end = rightmost_from_read(read)
 
                                                             # aln start on the reference
-                                                            soft_clip_start = int(
-                                                                mate_interval["start"]
-                                                            ) + int(
-                                                                realignment_dict[
-                                                                    "alignments"
-                                                                ][1][0][0]
+                                                            soft_clip_start = int(mate_interval["start"]) + int(
+                                                                realignment_dict["alignments"][1][0][0]
                                                             )
 
-                                                            soft_clip_end = int(
-                                                                mate_interval["start"]
-                                                            ) + int(
-                                                                realignment_dict[
-                                                                    "alignments"
-                                                                ][1][0][1]
+                                                            soft_clip_end = int(mate_interval["start"]) + int(
+                                                                realignment_dict["alignments"][1][0][1]
                                                             )
 
                                                             score = sc_len * prob
 
                                                             # I store the read name to the output, so that a read counts as 1 no matter it is SC in 2 pieces
                                                             # Soft-clipped aligned upstream. Primary aligned downstream
-                                                            if (
-                                                                read.reference_start
-                                                                < int(
-                                                                    mate_interval[
-                                                                        "start"
-                                                                    ]
-                                                                )
-                                                                + int(
-                                                                    realignment_dict[
-                                                                        "alignments"
-                                                                    ][1][0][0]
-                                                                )
+                                                            if read.reference_start < int(mate_interval["start"]) + int(
+                                                                realignment_dict["alignments"][1][0][0]
                                                             ):
                                                                 # construct tag
                                                                 sa_tag = realignment_read_to_SA_string(
@@ -384,23 +343,13 @@ class bam2bam:
 
                                                                 # read.tags += [('SA', sa_tag)]
 
-                                                                self.queue.put(
-                                                                    read.to_string()
-                                                                )
+                                                                self.queue.put(read.to_string())
 
                                                             # soft-clipped aligned downstream primary alignment is upstream
                                                             elif (
                                                                 read.reference_start
-                                                                + int(
-                                                                    mate_interval[
-                                                                        "start"
-                                                                    ]
-                                                                )
-                                                                + int(
-                                                                    realignment_dict[
-                                                                        "alignments"
-                                                                    ][1][0][0]
-                                                                )
+                                                                + int(mate_interval["start"])
+                                                                + int(realignment_dict["alignments"][1][0][0])
                                                             ):
 
                                                                 sa_tag = realignment_read_to_SA_string(
@@ -410,13 +359,9 @@ class bam2bam:
                                                                     soft_clip_start,
                                                                 )
 
-                                                                read.tags += [
-                                                                    ("SA", sa_tag)
-                                                                ]
+                                                                read.tags += [("SA", sa_tag)]
 
-                                                                self.queue.put(
-                                                                    read.to_string()
-                                                                )
+                                                                self.queue.put(read.to_string())
 
                                                             else:
                                                                 # uninformative read
@@ -435,10 +380,7 @@ class bam2bam:
 
                 except BaseException as e:
                     traceback.print_exc(file=sys.stdout)
-                    warnings.warn(
-                        "Failed on interval %s due to the error %s"
-                        % (str(interval), str(e))
-                    )
+                    warnings.warn("Failed on interval %s due to the error %s" % (str(interval), str(e)))
                     return [1, 1]
 
             ecc_dna.close()
