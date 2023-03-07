@@ -41,4 +41,18 @@ process AMPLICONCLASSIFIER_MAKERESULTSTABLE {
         AmpliconClassifier: \$(echo \$(amplicon_classifier.py --version | sed 's/amplicon_classifier //g' | sed 's/ .*//g'))
     END_VERSIONS
     """
+
+    stub:
+    def args = task.ext.args ?: ''
+
+    """
+    touch ampliconclasifier_result_data.json
+    touch ampliconclasifier_result_table.tsv
+    touch index.html
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        AmpliconClassifier: \$(echo \$(amplicon_classifier.py --version | sed 's/amplicon_classifier //g' | sed 's/ .*//g'))
+    END_VERSIONS
+    """
 }
