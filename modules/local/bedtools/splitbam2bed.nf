@@ -2,12 +2,10 @@ process BEDTOOLS_SPLITBAM2BED {
     tag "$meta.id"
     label 'process_medium'
 
-    conda (params.enable_conda ? "bioconda::bedtools=2.30.0" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/bedtools:2.30.0--h7d7f7ad_1"
-    } else {
-        container "quay.io/biocontainers/bedtools:2.30.0--h7d7f7ad_2"
-    }
+    conda "bioconda::bedtools=2.30.0"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/bedtools:2.30.0--h7d7f7ad_1' :
+        'quay.io/biocontainers/bedtools:2.30.0--h7d7f7ad_2'}"
 
     input:
     tuple val(meta), path(split_bam)

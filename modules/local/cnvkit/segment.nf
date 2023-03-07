@@ -1,42 +1,30 @@
-process CNVKIT_BATCH {
+process CNVKIT_SEGMENT {
     tag "$meta.id"
     label 'process_low'
 
-    conda 'bioconda::cnvkit=0.9.9'
+    conda (params.enable_conda ? 'bioconda::cnvkit=0.9.9' : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/cnvkit:0.9.9--pyhdfd78af_0' :
         'quay.io/biocontainers/cnvkit:0.9.9--pyhdfd78af_0' }"
 
     input:
-    tuple val(meta), path(bam), path(bai)
-    path  fasta
-    path  cnn
+    tuple val(meta), path(cnr)
 
     output:
-    tuple val(meta), path("*.bed"), emit: bed
-    tuple val(meta), path("*.cnn"), emit: cnn, optional: true
-    tuple val(meta), path("*.cnr"), emit: cnr, optional: true
-    tuple val(meta), path("*.cns"), emit: cns, optional: true
+    tuple val(meta), path("*.cns"), emit: cns
     path "versions.yml"           , emit: versions
-
-    when:
-    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
-    def reference_args = cnn ? "--reference $cnn" : ""
-    def fasta_args = cnn ? "" : "--fasta $fasta"
-""
+    def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
     cnvkit.py \\
-        batch \\
-        $bam \\
-        $fasta_args \\
-        $reference_args \\
-        --processes $task.cpus \\
-        $args
-
+        segment \\
+        $cnr \\
+        -p $task.cpus \\
+        -m "cbs" \\
+        -o ${prefix}.cnvkit.segment.cns
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         cnvkit: \$(cnvkit.py version | sed -e "s/cnvkit v//g")
@@ -46,14 +34,9 @@ process CNVKIT_BATCH {
     stub:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def fasta_args = cnn ? "" : "--fasta $fasta"
-    def reference_args = cnn ? "--reference $cnn" : ""
 
     """
-    touch ${prefix}.bed
-    touch ${prefix}.cnn
-    touch ${prefix}.cnr
-    touch ${prefix}.cns
+    touch ${prefix}.cnvkit.segment.cns
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

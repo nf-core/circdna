@@ -2,7 +2,7 @@ process SAMPLESHEET_CHECK {
     tag "$samplesheet"
     label 'process_low'
 
-    conda "conda-forge::python=3.8.3"
+    conda (params.enable_conda ? "conda-forge::python=3.8.3" : null)
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/python:3.8.3' :
         'quay.io/biocontainers/python:3.8.3' }"
@@ -21,7 +21,8 @@ process SAMPLESHEET_CHECK {
     """
     check_samplesheet.py \\
         $samplesheet \\
-        samplesheet.valid.csv
+        samplesheet.valid.csv \\
+        $params.input_format
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

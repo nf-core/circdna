@@ -104,7 +104,7 @@ process CIRCLEFINDER {
 
     awk <<-END_VERSIONS > versions.yml
     "${task.process}":
-        awk: \$(echo \$(awk --version 2>&1 | grep "GNU Awk" |sed 's/^GNU Awk //; s/, .*\$//'))
+        awk: \$(echo \$(awk --version) | grep "GNU Awk" | sed 's/^GNU Awk //; s/, .*\$//')
     END_VERSIONS
     """
 }

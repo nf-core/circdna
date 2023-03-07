@@ -9,14 +9,25 @@ workflow INPUT_CHECK {
     samplesheet // file: /path/to/samplesheet.csv
 
     main:
-    SAMPLESHEET_CHECK ( samplesheet )
-        .csv
-        .splitCsv ( header:true, sep:',' )
-        .map { create_fastq_channel(it) }
-        .set { reads }
+    if ( params.input_format == "FASTQ" ) {
+        SAMPLESHEET_CHECK ( samplesheet )
+            .csv
+            .splitCsv ( header:true, sep:',' )
+            .map { create_fastq_channels(it) }
+            .set { reads }
+    } else if ( params.input_format == "BAM" ) {
+        SAMPLESHEET_CHECK ( samplesheet )
+            .csv
+            .splitCsv ( header:true, sep:',' )
+            .map { create_bam_channels(it) }
+            .set { reads }
+    } else {
+
+    }
 
     emit:
-    reads                                     // channel: [ val(meta), [ reads ] ]
+    reads   // channel: [ val(meta), [ reads ] ] OR
+            // channel: [ val(meta),  bam  ]
     versions = SAMPLESHEET_CHECK.out.versions // channel: [ versions.yml ]
 }
 
@@ -37,6 +48,22 @@ def create_fastq_channels(LinkedHashMap row) {
             exit 1, "ERROR: Please check input samplesheet -> Read 2 FastQ file does not exist!\n${row.fastq_2}"
         }
         array = [ meta, [ file(row.fastq_1), file(row.fastq_2) ] ]
+    }
+    return array
+}
+
+// Function to get list of [ meta, bam ]
+def create_bam_channels(LinkedHashMap row) {
+    def meta = [:]
+    meta.id             = row.sample
+    meta.single_end     = false
+
+    def array = []
+    if (!file(row.bam).exists()) {
+        exit 1, "ERROR: Please check input samplesheet -> BAM file does not exist!\n${row.bam}"
+    }
+    else {
+        array = [ meta, file(row.bam) ]
     }
     return array
 }

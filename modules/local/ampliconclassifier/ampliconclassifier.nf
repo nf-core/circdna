@@ -2,7 +2,7 @@ process AMPLICONCLASSIFIER_AMPLICONCLASSIFIER {
     tag "AA Amplicons"
     label 'process_low'
 
-    conda (params.enable_conda ? "bioconda::ampliconclassifier=0.4.14" : null)
+    conda "bioconda::ampliconclassifier=0.4.14"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/ampliconclassifier:0.4.14--hdfd78af_0':
         'quay.io/biocontainers/ampliconclassifier:0.4.14--hdfd78af_0' }"

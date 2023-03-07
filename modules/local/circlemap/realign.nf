@@ -1,7 +1,8 @@
 process CIRCLEMAP_REALIGN {
     tag "$meta.id"
     label 'process_high'
-    conda (params.enable_conda ? "bioconda::circle-map=1.1.4=pyh5e36f6f_2" : null)
+
+    conda "bioconda::circle-map=1.1.4=pyh5e36f6f_2"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/circle-map:1.1.4--pyh5e36f6f_2':
         'quay.io/biocontainers/circle-map:1.1.4--pyh5e36f6f_2' }"
