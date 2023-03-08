@@ -54,8 +54,8 @@ process AMPLICONCLASSIFIER_AMPLICONCLASSIFIER {
     export AA_SRC=${projectDir}/bin
     REF=${params.reference_build}
 
-    touch "${prefix}.amplicon_classification_profiles.tsv"
-    touch "${prefix}.classifier_stdout.log"
+    touch "ampliconclassifier_amplicon_classification_profiles.tsv"
+    touch "ampliconclassifier_classifier_stdout.log"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -43,7 +43,7 @@ process AMPLICONCLASSIFIER_AMPLICONSIMILARITY {
     export AA_DATA_REPO=${params.aa_data_repo}
     export AA_SRC=${projectDir}/bin
 
-    touch "${prefix}.similarity_scores.tsv"
+    touch "ampliconclassifier_similarity_scores.tsv"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
