@@ -115,7 +115,7 @@ include { TRIMGALORE    }    from '../modules/nf-core/trimgalore/main'
 include { BWA_INDEX     }   from '../modules/nf-core/bwa/index/main'
 
 // Alignment
-include { BWA_MEM                                   }   from '../modules/nf-core/bwa/mem/main'
+include { BWA_MEM                                   }   from '../modules/local/bwa/mem/main'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_BAM        }   from '../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_BAM      }   from '../modules/nf-core/samtools/index/main'
 
