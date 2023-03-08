@@ -36,6 +36,10 @@
 
   > Wick RR, Judd LM, Gorrie CL, Holt KE. Unicycler: Resolving bacterial genome assemblies from short and long sequencing reads. PLoS Comput Biol. 2017 Jun 8;13(6):e1005595. doi: 10.1371/journal.pcbi.1005595. PMID: 28594827; PMCID: PMC5481147.
 
+- [CNVKit](https://github.com/etal/cnvkit) 
+
+  > Talevich E, Shain AH, Botton T, Bastian BC. Cnvkit: genome-wide copy number detection and visualization from targeted dna sequencing. PLoS Comput Biol. 2016;12(4):e1004873. doi: 10.1371/journal.pcbi.1004873. PMID: 27100738; PMCID: PMC4839673.
+
 - [PrepareAA](https://github.com/jluebeck/PrepareAA)
 
 - [AmpliconArchitect](https://github.com/virajbdeshpande/AmpliconArchitect)
