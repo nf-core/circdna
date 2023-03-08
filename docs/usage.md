@@ -18,7 +18,6 @@ Depending on the branch (circle_identifier) used in the pipeline, different inpu
 
 You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with either 2 or 3 columns (depending on the input format), and a header row as shown in the examples below.
 
-````bash
 ```bash
 --input '[path to samplesheet file]'
 ````
