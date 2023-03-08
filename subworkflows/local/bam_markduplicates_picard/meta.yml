@@ -27,6 +27,10 @@ input:
       type: file
       description: Reference genome fasta file
       pattern: "*.{fasta,fa}"
+  - fai:
+    type: file
+    description: Reference genome fasta index file
+    pattern: "*.{fai}"
 
 output:
   - meta:
@@ -34,6 +38,10 @@ output:
       description: |
         Groovy Map containing sample information
         e.g. [ id:'test' ]
+  - bam:
+    type: file
+    description: BAM file with duplicate reads marked/removed
+    pattern: "*.{bam}"
   - bai:
       type: file
       description: BAM/CRAM/SAM samtools index
