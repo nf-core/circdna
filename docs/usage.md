@@ -20,7 +20,7 @@ You will need to create a samplesheet with information about the samples you wou
 
 ```bash
 --input '[path to samplesheet file]'
-````
+```
 
 ## Input Formats
 
@@ -112,7 +112,7 @@ This will launch the pipeline with the `docker` configuration profile. See below
 
 Note that the pipeline will create the following files in your working directory:
 
-```bash
+````bash
 work                # Directory containing the nextflow working files
 <OUTDIR>            # Finished results in specified location (defined with --outdir)
 .nextflow_log       # Log file from Nextflow
@@ -124,7 +124,7 @@ When you run the above command, Nextflow automatically pulls the pipeline code f
 
 ```bash
 nextflow pull nf-core/circdna
-```
+````
 
 ### Reproducibility
 
