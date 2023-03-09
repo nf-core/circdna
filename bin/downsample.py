@@ -16,8 +16,8 @@
 #
 # IN NO EVENT SHALL THE UNIVERSITY OF CALIFORNIA BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE UNIVERSITY OF CALIFORNIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. THE UNIVERSITY OF CALIFORNIA SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE SOFTWARE PROVIDED HEREUNDER IS ON AN "AS IS" BASIS, AND THE UNIVERSITY OF CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-#Author: Viraj Deshpande
-#Contact: virajbdeshpande@gmail.com
+# Author: Viraj Deshpande
+# Contact: virajbdeshpande@gmail.com
 
 
 import pysam
@@ -29,37 +29,74 @@ import sys
 import os
 import numpy as np
 import matplotlib
-matplotlib.use('Agg')
+
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
 import logging
 import random
 import hashlib
-#plt.rc('text', usetex=True)
-#plt.rc('font', family='serif')
+
+# plt.rc('text', usetex=True)
+# plt.rc('font', family='serif')
 
 import global_names
 
-parser = argparse.\
-ArgumentParser(description="Reconstruct Amplicons connected to listed intervals.")
-parser.add_argument('--bam', dest='bam',
-                    help="Coordinate sorted BAM file with index", metavar='FILE',
-                    action='store', type=str, nargs=1)
-parser.add_argument('--final', dest='final',
-                    help="Optional Final coverage. Default is 10. If initial coverage is less than final, do nothing.", metavar='FLOAT',
-                    action='store', type=float, default=10.0)
-parser.add_argument('--downsample_dir', dest='downsample_dir',
-                    help="Optional directory to output. Default is same as original bamfile", metavar='DIR',
-                    action='store', type=str, default='')
-parser.add_argument('--cbam', dest='cbam',
-                    help="Optional bamfile to use for coverage calculation. Also generates new coverage bam file in downsample_dir.", metavar='FILE',
-                    action='store', type=str, default=None)
-parser.add_argument('--cbed', dest='cbed',
-                    help="Optional bedfile defining 1000 10kbp genomic windows for coverage calcualtion", metavar='FILE',
-                    action='store', type=str, default=None)
-parser.add_argument('--ref', dest='ref',
-                    help="Values: [hg19, GRCh37, GRCh38, mm10, None]. \"hg19\", \"mm10\", \"GRCh38\" : chr1, .. chrM etc / \"GRCh37\" : '1', '2', .. 'MT' etc/ \"None\" : Do not use any annotations. AA can tolerate additional chromosomes not stated but accuracy and annotations may be affected.", metavar='STR',
-                    action='store', type=str, required=True)
+parser = argparse.ArgumentParser(description="Reconstruct Amplicons connected to listed intervals.")
+parser.add_argument(
+    "--bam",
+    dest="bam",
+    help="Coordinate sorted BAM file with index",
+    metavar="FILE",
+    action="store",
+    type=str,
+    nargs=1,
+)
+parser.add_argument(
+    "--final",
+    dest="final",
+    help="Optional Final coverage. Default is 10. If initial coverage is less than final, do nothing.",
+    metavar="FLOAT",
+    action="store",
+    type=float,
+    default=10.0,
+)
+parser.add_argument(
+    "--downsample_dir",
+    dest="downsample_dir",
+    help="Optional directory to output. Default is same as original bamfile",
+    metavar="DIR",
+    action="store",
+    type=str,
+    default="",
+)
+parser.add_argument(
+    "--cbam",
+    dest="cbam",
+    help="Optional bamfile to use for coverage calculation. Also generates new coverage bam file in downsample_dir.",
+    metavar="FILE",
+    action="store",
+    type=str,
+    default=None,
+)
+parser.add_argument(
+    "--cbed",
+    dest="cbed",
+    help="Optional bedfile defining 1000 10kbp genomic windows for coverage calcualtion",
+    metavar="FILE",
+    action="store",
+    type=str,
+    default=None,
+)
+parser.add_argument(
+    "--ref",
+    dest="ref",
+    help='Values: [hg19, GRCh37, GRCh38, mm10, None]. "hg19", "mm10", "GRCh38" : chr1, .. chrM etc / "GRCh37" : \'1\', \'2\', .. \'MT\' etc/ "None" : Do not use any annotations. AA can tolerate additional chromosomes not stated but accuracy and annotations may be affected.',
+    metavar="STR",
+    action="store",
+    type=str,
+    required=True,
+)
 
 args = parser.parse_args()
 
@@ -71,16 +108,16 @@ import bam_to_breakpoint as b2b
 from breakpoint_graph import *
 
 
-if os.path.splitext(args.bam[0])[-1] == '.cram':
-    bamFile = pysam.Samfile(args.bam[0], 'rc')
+if os.path.splitext(args.bam[0])[-1] == ".cram":
+    bamFile = pysam.Samfile(args.bam[0], "rc")
 else:
-    bamFile = pysam.Samfile(args.bam[0], 'rb')
+    bamFile = pysam.Samfile(args.bam[0], "rb")
 cbam = None
 if args.cbam is not None:
-    if os.path.splitext(args.cbam[0])[-1] == '.cram':
-        cbam = pysam.Samfile(args.cbam, 'rc')
+    if os.path.splitext(args.cbam[0])[-1] == ".cram":
+        cbam = pysam.Samfile(args.cbam, "rc")
     else:
-        cbam = pysam.Samfile(args.cbam, 'rb')
+        cbam = pysam.Samfile(args.cbam, "rb")
 cbed = args.cbed
 
 
@@ -100,9 +137,9 @@ for l in coverage_stats_file:
             cstats = None
 
 coverage_stats_file.close()
-coverage_windows=None
+coverage_windows = None
 if cbed is not None:
-    coverage_windows=hg.interval_list(cbed, 'bed')
+    coverage_windows = hg.interval_list(cbed, "bed")
     coverage_windows.sort()
 if cstats is None and cbam is not None:
     cbam2b = b2b.bam_to_breakpoint(cbam, coverage_stats=cstats, coverage_windows=coverage_windows)
@@ -115,17 +152,21 @@ elif cstats is None:
 final = args.final
 
 if cstats[0] <= final:
-    exit()    
+    exit()
 ratio = float(final) / float(cstats[0])
 
 downsample_dir = os.path.dirname(os.path.abspath(args.bam[0]))
-if args.downsample_dir != '':
+if args.downsample_dir != "":
     downsample_dir = args.downsample_dir
 
-i=0
+i = 0
 rulist = []
 t0 = time()
-b2 = pysam.Samfile(downsample_dir + '/' + os.path.basename(args.bam[0])[:-4] + '.DS.bam', 'wb', template = bamFile)
+b2 = pysam.Samfile(
+    downsample_dir + "/" + os.path.basename(args.bam[0])[:-4] + ".DS.bam",
+    "wb",
+    template=bamFile,
+)
 for a in bamFile.fetch():
     random.seed(a.query_name + str(t0))
     random.uniform(0, 1)
@@ -133,7 +174,7 @@ for a in bamFile.fetch():
     if ru < ratio:
         b2.write(a)
 b2.close()
-pysam.index(downsample_dir + '/' + os.path.basename(args.bam[0])[:-4] + '.DS.bam')
+pysam.index(downsample_dir + "/" + os.path.basename(args.bam[0])[:-4] + ".DS.bam")
 print("Downsampling:", args.bam[0], float(cstats[0]), final, ratio)
 
 # if args.cbam is not None and not os.path.exists(downsample_dir + '/' + os.path.basename(args.cbam)[:-4] + '.DS.bam'):
@@ -144,5 +185,3 @@ print("Downsampling:", args.bam[0], float(cstats[0]), final, ratio)
 #             c2.write(a)
 #     c2.close()
 #     pysam.index(downsample_dir + '/' + os.path.basename(args.cbam)[:-4] + '.DS.bam')
-
-

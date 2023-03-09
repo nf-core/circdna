@@ -35,12 +35,8 @@ df_summary = pd.DataFrame.from_dict(d)
 df_summary.insert(loc=0, column="id", value=args.id)
 
 df_class = pd.read_table(args.class_file, sep="\t")
-df_class["amplicon_number"] = df_class["amplicon_number"].str.replace(
-    "amplicon", "", regex=False
-)
-df_class = df_class.rename(
-    columns={"sample_name": "id", "amplicon_number": "AmpliconID"}
-)
+df_class["amplicon_number"] = df_class["amplicon_number"].str.replace("amplicon", "", regex=False)
+df_class = df_class.rename(columns={"sample_name": "id", "amplicon_number": "AmpliconID"})
 
 df_full = pd.merge(df_class, df_summary)
 df_full.to_csv(args.output, sep="\t", index=False)

@@ -2,7 +2,7 @@ process CNVKIT_BATCH {
     tag "$meta.id"
     label 'process_low'
 
-    conda (params.enable_conda ? 'bioconda::cnvkit=0.9.9' : null)
+    conda 'bioconda::cnvkit=0.9.9'
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/cnvkit:0.9.9--pyhdfd78af_0' :
         'quay.io/biocontainers/cnvkit:0.9.9--pyhdfd78af_0' }"
@@ -10,6 +10,7 @@ process CNVKIT_BATCH {
     input:
     tuple val(meta), path(bam), path(bai)
     path  fasta
+    path  cnn
 
     output:
     tuple val(meta), path("*.bed"), emit: bed
@@ -23,9 +24,9 @@ process CNVKIT_BATCH {
 
     script:
     def args = task.ext.args ?: ''
-    def reference = params.aa_data_repo + "/" + params.reference_build + "/" + params.reference_build + "_cnvkit_filtered_ref.cnn"
-    def fasta_args = reference ? "" : "--fasta $fasta"
-    def reference_args = reference ? "--reference $reference" : ""
+    def reference_args = cnn ? "--reference $cnn" : ""
+    def fasta_args = cnn ? "" : "--fasta $fasta"
+""
 
     """
     cnvkit.py \\
@@ -45,9 +46,8 @@ process CNVKIT_BATCH {
     stub:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    def reference = params.aa_data_repo + "/" + params.reference_build + "/" + params.reference_build + "_cnvkit_filtered_ref.cnn"
-    def fasta_args = reference ? "" : "--fasta $fasta"
-    def reference_args = reference ? "--reference $reference" : ""
+    def fasta_args = cnn ? "" : "--fasta $fasta"
+    def reference_args = cnn ? "--reference $cnn" : ""
 
     """
     touch ${prefix}.bed

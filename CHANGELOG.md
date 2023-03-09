@@ -3,6 +3,29 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.0.2 - [2023-03-07]
+
+### `Added`
+
+- ampliconclassifier/makeinput module added -> Generates the input file used for ampliconclassifier functions
+- ampliconclassifier/makeresultstable added -> Generates results table from AmpliconArchitect and AmpliconClassifier
+- CNN Reference File For AmpliconArchitect
+- mm10 option for AmpliconArchitect
+- stub runs for AmpliconArchitect processes
+- New module versions
+- nf-core template 2.7.2
+
+### `Fixed`
+
+- Fixed ZeroDivisionError by Circle-Map
+- Fixed keep_duplicates and skip_markduplicates parameter bug
+
+### `Dependencies`
+
+### `Deprecated`
+
+- AmpliconArchitect Summary Process was deprecated
+
 ## v1.0.1 - [2022-06-22]
 
 ### `Added`

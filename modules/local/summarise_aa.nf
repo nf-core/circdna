@@ -2,7 +2,7 @@ process SUMMARISE_AA {
     tag "$meta.id"
     label 'process_low'
 
-    conda (params.enable_conda ? "pandas=1.1.5" : null)
+    conda "pandas=1.1.5"
         container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
             'https://depot.galaxyproject.org/singularity/pandas:1.1.5' :
             'quay.io/biocontainers/pandas:1.1.5' }"
@@ -13,6 +13,9 @@ process SUMMARISE_AA {
     output:
     tuple val(meta), path("*aa_results_summary.tsv"), emit: txt
     path  "versions.yml"          , emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''

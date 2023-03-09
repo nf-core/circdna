@@ -82,15 +82,6 @@
                     "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
                     "fa_icon": "far fa-file-code"
                 },
-                "bwa_index": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/plain",
-                    "pattern": "^\\S+\\.\\{alt,amb,ann,bwt,pac,sa\\}$",
-                    "description": "Path to BWA Index genome file.",
-                    "help_text": "This parameter is *optional*. If you don't have a BWA index available this will be generated for you automatically.",
-                    "fa_icon": "far fa-file-code"
-                },
                 "igenomes_base": {
                     "type": "string",
                     "format": "directory-path",
@@ -112,6 +103,15 @@
                     "description": "Save the index reference fasta in the results directory.",
                     "help_text": "By default, indexed reference genome files will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
                     "fa_icon": "fas fa-save"
+                },
+                "bwa_index": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.\\{amb,ann,bwt,pac,sa\\}$",
+                    "description": "Path to BWA Index genome file.",
+                    "help_text": "This parameter is *optional*. If you don't have a BWA index available this will be generated for you automatically.",
+                    "fa_icon": "far fa-file-code"
                 }
             }
         },
@@ -144,16 +144,16 @@
                 },
                 "keep_duplicates": {
                     "type": "boolean",
-                    "default": false,
+                    "default": true,
                     "fa_icon": "fas fa-save",
                     "help_text": "Set this parameter to skip filtering of duplicates marked by Picard Markduplicates.",
                     "description": "Keep read duplications marked by picard MarkDuplicates."
                 },
                 "save_markduplicates_bam": {
                     "type": "boolean",
-                    "default": false,
+                    "default": true,
                     "fa_icon": "fas fa-save",
-                    "help_text": "Set this parameter to save bam file with marked duplicate reads..",
+                    "help_text": "Set this parameter to save bam file with marked duplicate reads.",
                     "description": "Store bam with marked duplicate reads."
                 }
             }
@@ -228,11 +228,57 @@
                 }
             }
         },
-        "amplicon_architect_options": {
-            "title": "AmpliconArchitect options",
+        "circle_map_options": {
+            "title": "circle-map options",
             "type": "object",
             "fa_icon": "fas fa-circle-notch",
-            "description": "Parameters used to run AmpliconArchitect. The software needs additional data files not included in ",
+            "description": "Parameters used to run Circle-Map.",
+            "properties": {
+                "save_circle_map_intermediate": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fas fa-save",
+                    "help_text": "Set this parameter to save bam file with reads extracted by circle-map readextractor.",
+                    "description": "Store bam file with read candidates for circle-map circular dna calling."
+                }
+            }
+        },
+        "circle_finder_options": {
+            "title": "Circle_finder options",
+            "type": "object",
+            "fa_icon": "fas fa-circle-notch",
+            "description": "Parameters used to run Circle_finder.",
+            "properties": {
+                "save_circle_finder_intermediate": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fas fa-save",
+                    "help_text": "Set this parameter to save Circle_finder intermediate files.",
+                    "description": "Store bed files created during Circle_finder run."
+                }
+            }
+        },
+        "unicycler_options": {
+            "title": "Unicycler options",
+            "type": "object",
+            "fa_icon": "fas fa-circle-notch",
+            "description": "Parameters used to run Unicycler.",
+            "properties": {
+                "save_unicycler_intermediate": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fas fa-save",
+                    "help_text": "Set this parameter to save Uniycler intermediate files.",
+                    "description": "Store fastq intermediate files created during Uniycler run."
+                }
+            }
+        },
+
+        "amplicon_architect_options": {
+            "title": "ampliconarchitect options",
+            "type": "object",
+            "fa_icon": "fas fa-circle-notch",
+            "description": "parameters used to run ampliconarchitect. The software needs additional data files not included in ",
             "properties": {
                 "aa_data_repo": {
                     "type": "string",
@@ -262,9 +308,16 @@
                     "type": "string",
                     "mimetype": "text/plain",
                     "fa_icon": "fas fa-book",
-                    "description": "When running AmpliconArchitect, specify reference build ['GRCh37', 'GRCh38]. This is *mandatory* to match fasta and AA reference build!",
+                    "description": "When running AmpliconArchitect, specify reference build ['GRCh37', 'GRCh38', 'mm10']. This is *mandatory* to match fasta and AA reference build!",
                     "help_text": "Specify the reference genome build used for alignment of the WGS reads.",
                     "default": "GRCh38"
+                },
+                "cnvkit_cnn": {
+                    "type": "string",
+                    "mimetype": "text/plain",
+                    "fa_icon": "fas fa-file-code",
+                    "description": "Path to cnn file inside the AmpliconArchitect Data Repository of the respective reference genome. By default it uses the 'aa_data_repo' and the 'reference_build' input to construct the file path.",
+                    "help_text": "Specify path to cnvkit cnn file inside AmpliconArchitect Data Repository."
                 }
             }
         },
@@ -364,6 +417,12 @@
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 },
+                "version": {
+                    "type": "boolean",
+                    "description": "Display version and exit.",
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true
+                },
                 "publish_dir_mode": {
                     "type": "string",
                     "default": "copy",
@@ -401,11 +460,29 @@
                     "fa_icon": "fas fa-palette",
                     "hidden": true
                 },
+                "hook_url": {
+                    "type": "string",
+                    "description": "Incoming hook URL for messaging service",
+                    "fa_icon": "fas fa-people-group",
+                    "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
+                    "hidden": true
+                },
                 "multiqc_config": {
                     "type": "string",
                     "description": "Custom config file to supply to MultiQC.",
                     "fa_icon": "fas fa-cog",
                     "hidden": true
+                },
+                "multiqc_logo": {
+                    "type": "string",
+                    "description": "Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file",
+                    "fa_icon": "fas fa-image",
+                    "hidden": true
+                },
+                "multiqc_methods_description": {
+                    "type": "string",
+                    "description": "Custom MultiQC yaml file containing HTML including a methods description.",
+                    "fa_icon": "fas fa-cog"
                 },
                 "tracedir": {
                     "type": "string",
@@ -427,12 +504,6 @@
                     "description": "Show all params when using `--help`",
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
-                },
-                "enable_conda": {
-                    "type": "boolean",
-                    "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
-                    "hidden": true,
-                    "fa_icon": "fas fa-bacon"
                 }
             }
         }
@@ -444,6 +515,9 @@
         { "$ref": "#/definitions/max_job_request_options" },
         { "$ref": "#/definitions/process_skipping_options" },
         { "$ref": "#/definitions/circdna_identifier_options" },
+        { "$ref": "#/definitions/circle_map_options" },
+        { "$ref": "#/definitions/circle_finder_options" },
+        { "$ref": "#/definitions/unicycler_options" },
         { "$ref": "#/definitions/amplicon_architect_options" },
         { "$ref": "#/definitions/read_trimming_options" },
         { "$ref": "#/definitions/generic_options" }

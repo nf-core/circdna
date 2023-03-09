@@ -11,9 +11,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input", metavar="", help="Input bam file")
 # parser.add_argument('-o', '--output', metavar='',
 #                                   help="Output bam file")
-parser.add_argument(
-    "-b", "--bed", metavar="", help="CIRCexplorer parse output in bed format"
-)
+parser.add_argument("-b", "--bed", metavar="", help="CIRCexplorer parse output in bed format")
 parser.add_argument(
     "-q",
     "--mapq",
@@ -45,8 +43,6 @@ bam_file = os.path.basename(args.input)
 input_file, input_file_extension = os.path.splitext(os.path.basename(args.input))
 output = directory + "/" + input_file + "_coverage.bed"
 
-coverage_object = coverage(
-    bam_file, bt.BedTool(args.bed), args.bases, args.mapq, args.extension, directory
-)
+coverage_object = coverage(bam_file, bt.BedTool(args.bed), args.bases, args.mapq, args.extension, directory)
 bed_coverage = coverage_object.compute_coverage(coverage_object.get_wg_coverage())
 bt.BedTool(bed_coverage).saveas(output)

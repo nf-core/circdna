@@ -2,12 +2,10 @@ process BEDTOOLS_SPLITBAM2BED {
     tag "$meta.id"
     label 'process_medium'
 
-    conda (params.enable_conda ? "bioconda::bedtools=2.30.0" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/bedtools:2.30.0--h7d7f7ad_1"
-    } else {
-        container "quay.io/biocontainers/bedtools:2.30.0--h7d7f7ad_2"
-    }
+    conda "bioconda::bedtools=2.30.0"
+    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+        'https://depot.galaxyproject.org/singularity/bedtools:2.30.0--h7d7f7ad_1' :
+        'quay.io/biocontainers/bedtools:2.30.0--h7d7f7ad_2'}"
 
     input:
     tuple val(meta), path(split_bam)
@@ -31,7 +29,7 @@ process BEDTOOLS_SPLITBAM2BED {
         awk 'BEGIN{FS=OFS=" "} {if ((\$9=="M" && \$NF=="H") || \
         (\$9=="M" && \$NF=="S"))  {printf ("%s\tfirst\\n",\$0)} else if ((\$9=="S" && \$NF=="M") || \
         (\$9=="H" && \$NF=="M")) {printf ("%s\tsecond\\n",\$0)} }' | \
-        awk 'BEGIN{FS=OFS="\t"} {gsub(" ", "", \$8)} 1' > '${prefix}.split.txt'
+        awk 'BEGIN{FS=OFS="\t"} {gsub(" ", "", \$8)} 1' > '${prefix}.txt'
 
     # Software Version
     cat <<-END_VERSIONS > versions.yml

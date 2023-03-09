@@ -7,6 +7,6 @@ lint:
     - assets/email_template.html
 
 update:
-  nf-core/modules:
+  nf-core:
     samtools/sort: "1ad73f1b2abdea9398680d6d20014838135c9a35"
     samtools/index: "1ad73f1b2abdea9398680d6d20014838135c9a35"

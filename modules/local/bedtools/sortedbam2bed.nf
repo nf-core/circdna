@@ -2,7 +2,7 @@ process BEDTOOLS_SORTEDBAM2BED {
     tag "$meta.id"
     label 'process_medium'
 
-    conda (params.enable_conda ? "bioconda::bedtools=2.30.0" : null)
+    conda "bioconda::bedtools=2.30.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bedtools:2.30.0--h7d7f7ad_1':
         'quay.io/biocontainers/bedtools:2.30.0--h7d7f7ad_2' }"

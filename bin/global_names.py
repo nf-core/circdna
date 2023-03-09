@@ -1,2 +1,2 @@
-REF="hg19"
-TSTART=0
+REF = "hg19"
+TSTART = 0

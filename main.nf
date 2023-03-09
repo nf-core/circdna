@@ -4,6 +4,7 @@
     nf-core/circdna
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     Github : https://github.com/nf-core/circdna
+
     Website: https://nf-co.re/circdna
     Slack  : https://nfcore.slack.com/channels/circdna
 ----------------------------------------------------------------------------------------
@@ -55,6 +56,7 @@ workflow NFCORE_CIRCDNA {
 workflow {
     NFCORE_CIRCDNA ()
 }
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     THE END
