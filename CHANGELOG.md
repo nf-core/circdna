@@ -7,7 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- AmpliconClassifier MakeInput and MakeResultsTable process
+- ampliconclassifier/makeinput module added -> Generates the input file used for ampliconclassifier functions
+- ampliconclassifier/makeresultstable added -> Generates results table from AmpliconArchitect and AmpliconClassifier
 - CNN Reference File For AmpliconArchitect
 - mm10 option for AmpliconArchitect
 - stub runs for AmpliconArchitect processes
