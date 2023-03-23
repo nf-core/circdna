@@ -57,6 +57,8 @@ process AMPLICONCLASSIFIER_AMPLICONCLASSIFIER {
     touch "ampliconclassifier_amplicon_classification_profiles.tsv"
     touch "ampliconclassifier_classifier_stdout.log"
 
+    amplicon_classifier.py --help
+
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         AmpliconClassifier: \$(echo \$(amplicon_classifier.py --version | sed 's/amplicon_classifier //g' | sed 's/ .*//g'))

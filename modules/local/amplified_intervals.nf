@@ -51,6 +51,8 @@ process AMPLIFIED_INTERVALS {
     export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
     REF=${params.reference_build}
 
+    amplified_intervals.py --help
+
     touch ${prefix}_AA_CNV_SEEDS.bed
 
     cat <<-END_VERSIONS > versions.yml
