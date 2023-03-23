@@ -33,7 +33,6 @@ process AMPLICONCLASSIFIER_MAKEINPUT {
     stub:
     def args = task.ext.args ?: ''
     """
-    make_input.py --help
     touch "ampliconclassifier.input"
 
     cat <<-END_VERSIONS > versions.yml
