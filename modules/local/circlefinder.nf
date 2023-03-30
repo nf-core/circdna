@@ -31,12 +31,12 @@ process CIRCLEFINDER {
     " > ${prefix}.circle_finder_exit_log.txt && exit
     }
 
-    awk '{print \$4}' ${split} | sort | uniq -c > ${prefix}.split.id-freq.txt
+    awk '{print \$4}' ${split} | sort -T ./ | uniq -c > ${prefix}.split.id-freq.txt
     #This file "${prefix}.split.id-freq.txt" will be used for collecting split id that have frequency equal to 4.
     awk '\$1=="2" {print \$2}' ${prefix}.split.id-freq.txt > ${prefix}.split.id-freq2.txt
     # awk '\$1=="4" {print \$2}' ${prefix}.split.id-freq.txt > ${prefix}.split.id-freq4.txt
 
-    awk '{print \$4}' ${concordant} | sort | uniq -c > ${prefix}.concordant.id-freq.txt
+    awk '{print \$4}' ${concordant} | sort -T ./ | uniq -c > ${prefix}.concordant.id-freq.txt
     #The following command will chose (may not be always true) one concordant and 2 split read
 
     awk '\$1=="3" {print \$2}' ${prefix}.concordant.id-freq.txt > ${prefix}.concordant.id-freq3.txt
@@ -82,7 +82,7 @@ process CIRCLEFINDER {
             else  {printf ("%s\\tconfusing\\n",\$0)}}' | \
         awk 'BEGIN{FS=OFS="\\t"} {gsub(" ", "", \$8)} 1' | \
         awk '{printf ("%s\\t%d\\n",\$0,(\$3-\$2)+1)}' | \
-        sort -k4,4 -k10,10n | sed 'N;N;s/\\n/\\t/g' | \
+        sort -T ./ -k4,4 -k10,10n | sed 'N;N;s/\\n/\\t/g' | \
         awk '{if (\$5==\$15) {print \$0}  \
             else if ((\$5=="1" && \$15=="2" && \$25=="1") || (\$5=="2" && \$15=="1" && \$25=="2")) \
                 {printf ("%s\\t%d\\t%d\\t%s\\t%d\\t%d\\t%s\\t%s\\t%s\\t%d\\t%s\\t%d\\t%d\\t%s\\t%d\\t%d\\t%s\\t%s\\t%s\\t%d\\t%s\\t%d\\t%d\\t%s\\t%d\\t%d\\t%s\\t%s\\t%s\\t%d\\n", \$1,\$2,\$3,\$4,\$5,\$6,\$7,\$8,\$9,\$10,\$21,\$22,\$23,\$24,\$25,\$26,\$27,\$28,\$29,\$30,\$11,\$12,\$13,\$14,\$15,\$16,\$17,\$18,\$19,\$20)} \
@@ -99,6 +99,6 @@ process CIRCLEFINDER {
             else if (\$7=="+" && \$9=="second" && \$2<\$12 && \$22>=\$2 && \$23<=\$13) {printf ("%s\\t%d\\t%d\\n",\$1,\$2,\$13)} \
             else if (\$17=="-" && \$19=="second" && \$12<\$2 && \$22>=\$12 && \$23<=\$3) {printf ("%s\\t%d\\t%d\\n",\$1,\$12,\$3)} \
         else if (\$7=="-" && \$9=="second" && \$2<\$12 && \$22>=\$2 && \$23<=\$13) {printf ("%s\\t%d\\t%d\\n",\$1,\$2,\$13)} }' | \
-        sort | uniq -c | awk '{printf ("%s\\t%d\\t%d\\t%d\\n",\$2,\$3,\$4,\$1)}' > ${prefix}.microDNA-JT.txt
+        sort -T ./ | uniq -c | awk '{printf ("%s\\t%d\\t%d\\t%d\\n",\$2,\$3,\$4,\$1)}' > ${prefix}.microDNA-JT.txt
     """
 }
