@@ -313,16 +313,23 @@ Commands:
                 writer_p.start()
                 # progress bar
                 with tqdm(total=len(splitted)) as pbar:
-                    for i, exits in tqdm(enumerate(pool.imap_unordered(object.realign, splitted))):
+                    for i, item in enumerate(splitted):
+                        try:
+                            result = object.realign(item)
+                        except Exception as e:
+                            print(f"Error occurred at index {i}: {e}")
+                            continue
+
                         pbar.update()
+
                         # kill if process returns 1,1
-                        if exits == [1, 1]:
+                        if result == [1, 1]:
                             pool.close()
                             pool.terminate()
                             pbar.close()
                             print(
                                 datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S:"),
-                                "An error happenend during execution. Exiting",
+                                "An error happened during execution. Exiting",
                             )
                             sys.exit()
 
