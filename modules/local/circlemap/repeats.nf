@@ -18,7 +18,7 @@ process CIRCLEMAP_REPEATS {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    circle_map.py \\
+    Circle-Map \\
         Repeats \\
         $args \\
         -i $bam \\
