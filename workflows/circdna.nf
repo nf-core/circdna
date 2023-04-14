@@ -154,8 +154,6 @@ include { CIRCEXPLORER2_PARSE       }     from '../modules/local/circexplorer2/p
 include { CNVKIT_BATCH                              }     from '../modules/local/cnvkit/batch/main.nf'
 include { CNVKIT_SEGMENT                            }     from '../modules/local/cnvkit/segment.nf'
 include { PREPAREAA                                 }     from '../modules/local/prepareaa.nf'
-include { COLLECT_SEEDS                             }     from '../modules/local/collect_seeds.nf'
-include { AMPLIFIED_INTERVALS                       }     from '../modules/local/amplified_intervals.nf'
 include { AMPLICONARCHITECT_AMPLICONARCHITECT       }     from '../modules/local/ampliconarchitect/ampliconarchitect.nf'
 include { AMPLICONCLASSIFIER_AMPLICONCLASSIFIER     }     from '../modules/local/ampliconclassifier/ampliconclassifier.nf'
 include { AMPLICONCLASSIFIER_AMPLICONSIMILARITY     }     from '../modules/local/ampliconclassifier/ampliconsimilarity.nf'
