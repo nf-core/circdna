@@ -60,7 +60,7 @@ if (run_ampliconarchitect) {
     }
     if (!params.aa_data_repo) { exit 1, "AmpliconArchitect Data Repository Missing! Please see https://github.com/jluebeck/AmpliconArchitect for more information and specify its absolute path using --aa_data_repo." }
     if (params.reference_build != "hg19" & params.reference_build != "GRCh38" & params.reference_build != "GRCh37" & params.reference_build != "mm10"){
-        exit 1, "Reference Build not given! Please specify --reference_build 'mm10', 'hg19', 'GRCh38', or 'GRCh37'."
+        exit 1, "dfjjkeference Build not given! Please specify --reference_build 'mm10', 'hg19', 'GRCh38', or 'GRCh37'."
     }
 
     if (!params.cnvkit_cnn) {
@@ -153,6 +153,7 @@ include { CIRCEXPLORER2_PARSE       }     from '../modules/local/circexplorer2/p
 // AmpliconArchitect
 include { CNVKIT_BATCH                              }     from '../modules/local/cnvkit/batch/main.nf'
 include { CNVKIT_SEGMENT                            }     from '../modules/local/cnvkit/segment.nf'
+include { PREPAREAA                                 }     from '../modules/local/prepareaa.nf'
 include { COLLECT_SEEDS                             }     from '../modules/local/collect_seeds.nf'
 include { AMPLIFIED_INTERVALS                       }     from '../modules/local/amplified_intervals.nf'
 include { AMPLICONARCHITECT_AMPLICONARCHITECT       }     from '../modules/local/ampliconarchitect/ampliconarchitect.nf'
@@ -405,20 +406,14 @@ workflow CIRCDNA {
         )
         ch_versions = ch_versions.mix(CNVKIT_SEGMENT.out.versions)
 
-        COLLECT_SEEDS (
-            CNVKIT_SEGMENT.out.cns
+        PREPAREAA (
+            ch_bam_sorted.join(CNVKIT_SEGMENT.out.cns)
         )
-        ch_versions = ch_versions.mix(COLLECT_SEEDS.out.versions)
-
-        ch_aa_seeds = COLLECT_SEEDS.out.bed
-        AMPLIFIED_INTERVALS (
-            ch_aa_seeds.join(ch_bam_sorted).join(ch_bam_sorted_bai)
-        )
-        ch_versions = ch_versions.mix(AMPLIFIED_INTERVALS.out.versions)
+        ch_versions = ch_versions.mix(PREPAREAA.out.versions)
 
         AMPLICONARCHITECT_AMPLICONARCHITECT (
             ch_bam_sorted.join(ch_bam_sorted_bai).
-                join(AMPLIFIED_INTERVALS.out.bed)
+                join(PREPAREAA.out.bed)
         )
         ch_versions = ch_versions.mix(AMPLICONARCHITECT_AMPLICONARCHITECT.out.versions)
 
