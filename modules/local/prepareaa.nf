@@ -6,9 +6,9 @@ process PREPAREAA {
     //conda "conda-forge::python=2.7 bioconda::pysam=0.15.2 anaconda::flask=1.1.2 anaconda::cython=0.29.14 anaconda::numpy=1.16.6 anaconda::scipy=1.2.1 conda-forge::matplotlib=2.2.5 mosek::mosek=8.0.60 anaconda::future=0.18.2 anaconda::intervaltree=3.0.2"
     //conda "conda-forge::python=2.7 bioconda::pysam=0.15.2 anaconda::numpy=1.16.6 conda-forge::matplotlib=2.2.5 mosek::mosek=8.0.60 anaconda::intervaltree=3.0.2 anaconda::scipy=1.2.1"
 
-    conda "conda-forge::python=2.7 bioconda::pysam=0.20.0 anaconda::flask=1.1.2 conda-forge::numpy=1.16.5 conda-forge::matplotlib=2.2.4 anaconda::scipy=1.2.0 mosek::mosek=8.0.60 anaconda::intervaltree=3.0.2 anaconda::future=0.18.2"
+    conda "conda-forge::python=3.7 bioconda::pysam=0.16.0 anaconda::flask=2.2.2 conda-forge::numpy=1.21.6 conda-forge::matplotlib=3.2.2 anaconda::scipy=1.7.3 mosek::mosek=8.1.83 anaconda::intervaltree=3.1.0 anaconda::future=0.18.2"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/mulled-v2-6eefa51f13933d65b4f8155ca2f8cd81dea474ba:baa777f7c4e89a2ec4d1eab7d424a1f46503bac7-0':
+        'https://depot.gala3hhhhhhhhhorg/singularity/mulled-v2-6eefa51f13933d65b4f8155ca2f8cd81dea474ba:baa777f7c4e89a2ec4d1eab7d424a1f46503bac7-0':
         'quay.io/biocontainers/mulled-v2-6eefa51f13933d65b4f8155ca2f8cd81dea474ba:baa777f7c4e89a2ec4d1eab7d424a1f46503bac7-0' }"
 
 
