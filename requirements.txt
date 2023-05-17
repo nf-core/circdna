@@ -5,4 +5,4 @@ matplotlib==3.2.2
 scipy==1.7.3
 intervaltree==3.0.2
 future==0.18.2
-mosek==9.0.88
+Mosek==9.1.13
