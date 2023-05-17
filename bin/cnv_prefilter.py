@@ -19,7 +19,7 @@ def merge_intervals(usort_intd, cn_cut=4.5, tol=1, require_same_cn=False):
             pass_cn_check = True
             if require_same_cn and not ival[2] == mi[-1][2]:
                 pass_cn_check = False
-                
+
             if ival[0] <= mi[-1][1] + tol and pass_cn_check:
                 ui = (mi[-1][0], max(ival[1], mi[-1][1]), mi[-1][2])
                 mi[-1] = ui
@@ -45,17 +45,17 @@ def ivald_to_ilist(ivald):
 
 # takes list of tuples (chrom, start, end, cn)
 def compute_cn_median(cnlist, armlen):
-    cnsum = sum([x[2]-x[1] for x in cnlist])
+    cnsum = sum([x[2] - x[1] for x in cnlist])
     if cnsum < 0.5 * armlen:
         return 2.0
 
-    halfn = cnsum/2.0
+    halfn = cnsum / 2.0
     scns = sorted(cnlist, key=lambda x: x[3])
     rt = 0
     ccn = 0
     for x in scns:
         ccn = x[3]
-        rt += (x[2] - x[1])
+        rt += x[2] - x[1]
         if rt >= halfn:
             break
 
@@ -106,14 +106,14 @@ def get_continuous_high_regions(bedfile, cngain):
             fields = line.rstrip().rsplit("\t")
             c, s, e = fields[0], int(fields[1]), int(fields[2]) + 1
             cn = float(fields[-1])
-            raw_input[c].append((s,e,cn))
+            raw_input[c].append((s, e, cn))
 
     return merge_intervals(raw_input, cn_cut=cngain, tol=300000)
 
 
 # take CNV calls (as bed?) - have to update to not do CNV_GAIN
-#input bed file, centromere_dict
-#output: path of prefiltered bed file
+# input bed file, centromere_dict
+# output: path of prefiltered bed file
 def prefilter_bed(bedfile, ref, centromere_dict, chr_sizes, cngain, outdir):
     # interval to arm lookup
     region_ivald = defaultdict(IntervalTree)
@@ -138,7 +138,7 @@ def prefilter_bed(bedfile, ref, centromere_dict, chr_sizes, cngain, outdir):
                 continue
 
             cn = float(fields[-1])
-            a = region_ivald[c][(s + e)//2]
+            a = region_ivald[c][(s + e) // 2]
             if not a:
                 a = region_ivald[c][s:e]
 
@@ -160,7 +160,7 @@ def prefilter_bed(bedfile, ref, centromere_dict, chr_sizes, cngain, outdir):
         med_cn = compute_cn_median(init_cns, arm2lens[a])
         for x in init_cns:
             ccg = cngain
-            continuous_high_hits = continuous_high_region_ivald[x[0]][x[1]:x[2]]
+            continuous_high_hits = continuous_high_region_ivald[x[0]][x[1] : x[2]]
             if continuous_high_hits:
                 for y in continuous_high_hits:
                     if y.end - y.begin > 10000000:
@@ -189,7 +189,7 @@ def prefilter_bed(bedfile, ref, centromere_dict, chr_sizes, cngain, outdir):
     merged_filt_ivald = merge_intervals(filt_ivald, cn_cut=cngain, require_same_cn=True)
     final_filt_entries = ivald_to_ilist(merged_filt_ivald)
     bname = outdir + "/" + bedfile.rsplit("/")[-1].rsplit(".bed")[0] + "_pre_filtered.bed"
-    with open(bname, 'w') as outfile:
+    with open(bname, "w") as outfile:
         for entry in final_filt_entries:
             outfile.write("\t".join([str(x) for x in entry]) + "\n")
 
