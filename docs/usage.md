@@ -14,6 +14,8 @@ Depending on the branch (circle_identifier) used in the pipeline, different inpu
 
 > The circle_identifier `ampliconarchitect` only works with WGS data.
 
+> Important note: the pipeline is recommended to be used with Circle-Seq or WGS data. Only use ATAC-seq data with caution as false positives can be identified.
+
 ## Samplesheet input
 
 You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with either 2 or 3 columns (depending on the input format), and a header row as shown in the examples below.

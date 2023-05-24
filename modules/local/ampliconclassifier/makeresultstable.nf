@@ -46,6 +46,8 @@ process AMPLICONCLASSIFIER_MAKERESULTSTABLE {
     def args = task.ext.args ?: ''
 
     """
+    make_results_table.py --help
+
     touch ampliconclasifier_result_data.json
     touch ampliconclasifier_result_table.tsv
     touch index.html

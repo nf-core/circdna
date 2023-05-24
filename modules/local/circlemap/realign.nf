@@ -12,8 +12,8 @@ process CIRCLEMAP_REALIGN {
     path fasta
 
     output:
-    tuple val(meta), path("*.bed"), emit: bed, optional: true
-    path "versions.yml"            , emit: versions
+    tuple val(meta), path("*.bed"), emit: bed
+    path "versions.yml"           , emit: versions
 
     script:
     def args = task.ext.args ?: ''
