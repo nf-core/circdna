@@ -40,7 +40,7 @@ def get_ref_seq_lens(ref_genome_size_file):
 
 # read bam header and store info
 def get_bam_header(bamf):
-    cmd = 'samtools view -H ' + bamf
+    cmd = "samtools view -H " + bamf
     return subprocess.check_output(cmd, shell=True).decode("utf-8")
 
 
@@ -67,7 +67,7 @@ def match_ref(bamSeqLenD, ref_len_d):
             return False
 
         elif len == bamSeqLenD[chrom]:
-            overlaps+=1
+            overlaps += 1
 
     return overlaps
 
@@ -79,17 +79,21 @@ def check_properly_paired(bamf):
     logging.info("\n" + bamf + ": " + t.rstrip())
     ppp = float(t.rsplit("(")[-1].rsplit("%")[0])
     if t.startswith("0 + 0"):
-        logging.error("\nERROR: IMPROPERLY GENERATED BAM FILE! No properly-paired reads were found. The most common "
-                         "reason for this behavior is that the reference genome contained alt contigs that were not "
-                         "indicated to the aligner. You must re-align to use AA (and many other bioinformatic tools) on"
-                         " this data.\n\n")
+        logging.error(
+            "\nERROR: IMPROPERLY GENERATED BAM FILE! No properly-paired reads were found. The most common "
+            "reason for this behavior is that the reference genome contained alt contigs that were not "
+            "indicated to the aligner. You must re-align to use AA (and many other bioinformatic tools) on"
+            " this data.\n\n"
+        )
         sys.exit(1)
 
     elif ppp < 95:
-        logging.warning("WARNING: BAM FILE PROPERLY PAIRED RATE IS BELOW 95%.\nQuality of data may be insufficient for AA "
-              "analysis. Poorly controlled insert size distribution during sample prep can cause high fractions of read"
-              " pairs to be marked as discordant during alignment. Artifactual short SVs and long runtimes may occur!"
-              "\n")
+        logging.warning(
+            "WARNING: BAM FILE PROPERLY PAIRED RATE IS BELOW 95%.\nQuality of data may be insufficient for AA "
+            "analysis. Poorly controlled insert size distribution during sample prep can cause high fractions of read"
+            " pairs to be marked as discordant during alignment. Artifactual short SVs and long runtimes may occur!"
+            "\n"
+        )
 
 
 # check if the BAM reference matches to sequence names & lengths in a dictionary of .fai files
@@ -116,10 +120,12 @@ def check_ref(bamf, ref_to_fai_dict):
         return bestref
 
     logging.error("ERROR: Could not match BAM to a known AA reference genome!\n")
-    logging.error("This may happen if 1) The value provided to optional argument '--ref' does not match the "
-                    "reference the BAM is aligned to, or 2) The corresponding AA data repo folder for this reference "
-                    "is not present, or 3) The BAM uses a different chromosome naming convention (e.g. accession "
-                    "numbers instead of chromosome names). Consider inspecting the header of the BAM file and the AA "
-                    "data repo directory.\n")
+    logging.error(
+        "This may happen if 1) The value provided to optional argument '--ref' does not match the "
+        "reference the BAM is aligned to, or 2) The corresponding AA data repo folder for this reference "
+        "is not present, or 3) The BAM uses a different chromosome naming convention (e.g. accession "
+        "numbers instead of chromosome names). Consider inspecting the header of the BAM file and the AA "
+        "data repo directory.\n"
+    )
 
     return None
