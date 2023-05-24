@@ -224,7 +224,7 @@ Whilst the default requirements set within the pipeline will hopefully work for 
 
 To change the resource requests, please see the [max resources](https://nf-co.re/docs/usage/configuration#max-resources) and [tuning workflow resources](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources) section of the nf-core website.
 
-```bash
+````bash
 [62/149eb0] NOTE: Process `NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN (WT_REP1)` terminated with an error exit status (137) -- Execution is retried (1)
 Error executing process > 'NFCORE_RNASEQ:RNASEQ:ALIGN_STAR:STAR_ALIGN (WT_REP1)'
 
@@ -270,4 +270,4 @@ We recommend adding the following line to your environment to limit this (typica
 
 ```bash
 NXF_OPTS='-Xms1g -Xmx4g'
-```
+````
