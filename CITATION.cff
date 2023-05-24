@@ -2,23 +2,23 @@ cff-version: 1.2.0
 message: "If you use `nf-core tools` in your work, please cite the `nf-core` publication"
 authors:
     - family-names: Ewels
-      given-names: Philip
+        given-names: Philip
     - family-names: Peltzer
-      given-names: Alexander
+        given-names: Alexander
     - family-names: Fillinger
-      given-names: Sven
+        given-names: Sven
     - family-names: Patel
-      given-names: Harshil
+        given-names: Harshil
     - family-names: Alneberg
-      given-names: Johannes
+        given-names: Johannes
     - family-names: Wilm
-      given-names: Andreas
+        given-names: Andreas
     - family-names: Ulysse Garcia
-      given-names: Maxime
+        given-names: Maxime
     - family-names: Di Tommaso
-      given-names: Paolo
+        given-names: Paolo
     - family-names: Nahnsen
-      given-names: Sven
+        given-names: Sven
 title: "The nf-core framework for community-curated bioinformatics pipelines."
 version: 2.4.1
 doi: 10.1038/s41587-020-0439-x
@@ -28,23 +28,23 @@ prefered-citation:
     type: article
     authors:
         - family-names: Ewels
-          given-names: Philip
+            given-names: Philip
         - family-names: Peltzer
-          given-names: Alexander
+            given-names: Alexander
         - family-names: Fillinger
-          given-names: Sven
+            given-names: Sven
         - family-names: Patel
-          given-names: Harshil
+            given-names: Harshil
         - family-names: Alneberg
-          given-names: Johannes
+            given-names: Johannes
         - family-names: Wilm
-          given-names: Andreas
+            given-names: Andreas
         - family-names: Ulysse Garcia
-          given-names: Maxime
+            given-names: Maxime
         - family-names: Di Tommaso
-          given-names: Paolo
+            given-names: Paolo
         - family-names: Nahnsen
-          given-names: Sven
+            given-names: Sven
     doi: 10.1038/s41587-020-0439-x
     journal: nature biotechnology
     start: 276
