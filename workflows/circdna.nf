@@ -153,7 +153,7 @@ include { CIRCEXPLORER2_PARSE       }     from '../modules/local/circexplorer2/p
 // AmpliconArchitect
 include { CNVKIT_BATCH                              }     from '../modules/local/cnvkit/batch/main.nf'
 include { CNVKIT_SEGMENT                            }     from '../modules/local/cnvkit/segment.nf'
-include { PREPAREAA                                 }     from '../modules/local/prepareaa.nf'
+include { PREPAREAA                                 }     from '../modules/local/ampliconsuite/prepareaa.nf'
 include { COLLECT_SEEDS                             }     from '../modules/local/collect_seeds.nf'
 include { AMPLIFIED_INTERVALS                       }     from '../modules/local/amplified_intervals.nf'
 include { AMPLICONARCHITECT_AMPLICONARCHITECT       }     from '../modules/local/ampliconarchitect/ampliconarchitect.nf'
