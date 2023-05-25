@@ -81,9 +81,9 @@ Now, you can run the pipeline using:
 
 ## Available circular DNA identifiers
 
-Please specify the parameter `circle_identifier` depending on the pipeline branch used for ecDNA identifaction. Please note that some branches/software are only tested with specific NGS data sets.
+Please specify the parameter `circle_identifier` depending on the pipeline branch used for circular DNA identifaction. Please note that some branches/software are only tested with specific NGS data sets.
 
-### Identification of putative ecDNA junctions with ATAC-seq or Circle-seq data
+### Identification of putative circular DNA junctions with ATAC-seq or Circle-seq data
 
 > `circle_finder` uses [Circle_finder](https://github.com/pk7zuva/Circle_finder) > `circexplorer2` uses [CIRCexplorer2](https://circexplorer2.readthedocs.io/en/latest/) > `circle_map_realign` uses [Circle-Map Realign](https://github.com/iprada/Circle-Map) > `circle_map_repeats` uses [Circle-Map Repeats](https://github.com/iprada/Circle-Map) for the identification of repetetive circular DNA
 
