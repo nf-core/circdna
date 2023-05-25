@@ -81,10 +81,7 @@ Please specify the parameter `circle_identifier` depending on the pipeline branc
 
 ### Identification of putative eccDNA junctions with ATAC-seq or Circle-seq data
 
-> `circle_finder` uses [Circle_finder](https://github.com/pk7zuva/Circle_finder)
-> `circexplorer2` uses [CIRCexplorer2](https://circexplorer2.readthedocs.io/en/latest/)
-> `circle_map_realign` uses [Circle-Map Realign](https://github.com/iprada/Circle-Map)
-> `circle_map_repeats` uses [Circle-Map Repeats](https://github.com/iprada/Circle-Map) for the identification of repetetive eccDNA
+> `circle_finder` uses [Circle_finder](https://github.com/pk7zuva/Circle_finder) > `circexplorer2` uses [CIRCexplorer2](https://circexplorer2.readthedocs.io/en/latest/) > `circle_map_realign` uses [Circle-Map Realign](https://github.com/iprada/Circle-Map) > `circle_map_repeats` uses [Circle-Map Repeats](https://github.com/iprada/Circle-Map) for the identification of repetetive eccDNA
 
 ### Identification of circular amplicons with WGS data
 
