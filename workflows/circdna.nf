@@ -334,7 +334,7 @@ workflow CIRCDNA {
         BAM_STATS_SAMTOOLS_RAW (
             ch_bam_sorted.join(ch_bam_sorted_bai).
                 map { meta, bam, bai -> [meta, bam, bai] },
-                ch_fasta
+                ch_fasta_meta
         )
         ch_versions = ch_versions.mix(BAM_STATS_SAMTOOLS_RAW.out.versions)
         ch_samtools_stats               = BAM_STATS_SAMTOOLS_RAW.out.stats
@@ -344,7 +344,7 @@ workflow CIRCDNA {
         // PICARD MARK_DUPLICATES
         if (!params.skip_markduplicates) {
             // Index Fasta File for Markduplicates
-            SAMTOOLS_FAIDX ( ch_fasta_meta )
+            SAMTOOLS_FAIDX ( ch_fasta_meta, Channel.empty() )
             ch_fai = SAMTOOLS_FAIDX.out.fai.map {meta, fai -> fai }.collect()
 
             // MARK DUPLICATES IN BAM FILE
