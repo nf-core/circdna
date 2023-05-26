@@ -121,7 +121,7 @@ include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_BAM      }   from '../modules/nf-core
 
 // PICARD
 include { SAMTOOLS_FAIDX                            }   from '../modules/nf-core/samtools/faidx/main'
-include { BAM_MARKDUPLICATES_PICARD                 }   from '../subworkflows/local/bam_markduplicates_picard/main'
+include { BAM_MARKDUPLICATES_PICARD                 }   from '../subworkflows/nf-core/bam_markduplicates_picard/main'
 include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FILTER     }   from '../modules/nf-core/samtools/view/main'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_FILTERED   }   from '../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FILTERED }   from '../modules/nf-core/samtools/index/main'
@@ -130,7 +130,7 @@ include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FILTERED }   from '../modules/nf-core
 include { SAMTOOLS_STATS                            }   from '../modules/nf-core/samtools/stats/main'
 
 // BAM STATS
-include { BAM_STATS_SAMTOOLS as BAM_STATS_SAMTOOLS_RAW }   from '../subworkflows/local/bam_stats_samtools/main'
+include { BAM_STATS_SAMTOOLS as BAM_STATS_SAMTOOLS_RAW }   from '../subworkflows/nf-core/bam_stats_samtools/main'
 
 // CIRCLE-MAP
 include { CIRCLEMAP_READEXTRACTOR                   }   from '../modules/local/circlemap/readextractor.nf'
@@ -295,7 +295,7 @@ workflow CIRCDNA {
             ch_versions = ch_versions.mix(SAMTOOLS_INDEX_BAM.out.versions)
         }
     } else if (params.input_format == "BAM") {
-    // Use BAM Files as input
+        // Use BAM Files as input
         INPUT_CHECK (
             ch_input
         )
@@ -322,13 +322,14 @@ workflow CIRCDNA {
 
 
 
-    // Define Index channel and additional bam sorted channels for Circle_finder - not usable with duplicates removed
-    ch_bam_sorted_bai       = SAMTOOLS_INDEX_BAM.out.bai
-    ch_full_bam_sorted      = ch_bam_sorted
-    ch_full_bam_sorted_bai  = SAMTOOLS_INDEX_BAM.out.bai
 
     if (run_ampliconarchitect | run_circexplorer2 | run_circle_finder |
         run_circle_map_realign | run_circle_map_repeats) {
+
+        // Define Index channel and additional bam sorted channels for Circle_finder - not usable with duplicates removed
+        ch_bam_sorted_bai       = SAMTOOLS_INDEX_BAM.out.bai
+        ch_full_bam_sorted      = ch_bam_sorted
+        ch_full_bam_sorted_bai  = SAMTOOLS_INDEX_BAM.out.bai
 
         ch_fasta = ch_fasta_meta.map{ meta, index -> [index] }.collect()
         BAM_STATS_SAMTOOLS_RAW (
@@ -344,19 +345,27 @@ workflow CIRCDNA {
         // PICARD MARK_DUPLICATES
         if (!params.skip_markduplicates) {
             // Index Fasta File for Markduplicates
-            SAMTOOLS_FAIDX ( ch_fasta_meta, Channel.empty() )
-            ch_fai = SAMTOOLS_FAIDX.out.fai.map {meta, fai -> fai }.collect()
+            SAMTOOLS_FAIDX (
+                ch_fasta_meta,
+                [[], []]
+            )
+            //ch_fai = SAMTOOLS_FAIDX.out.fai.map {meta, fai -> fai }.collect()
+            ch_bam_sorted.view()
+            ch_fasta_meta.view()
+            SAMTOOLS_FAIDX.out.fai.view()
 
             // MARK DUPLICATES IN BAM FILE
             BAM_MARKDUPLICATES_PICARD (
-                ch_bam_sorted, ch_fasta, ch_fai
+                ch_bam_sorted,
+                ch_fasta_meta,
+                SAMTOOLS_FAIDX.out.fai.collect()
             )
 
             // FILTER DUPLICATES IN BAM FILES USING SAMTOOLS VIEW
             if (!params.keep_duplicates) {
                 SAMTOOLS_VIEW_FILTER (
                     ch_bam_sorted.join(ch_bam_sorted_bai),
-                    ch_fasta,
+                    ch_fasta_meta,
                     []
                 )
                 ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FILTER.out.versions)
@@ -507,7 +516,6 @@ workflow CIRCDNA {
     //
     // SUBWORKFLOW: RUN CIRCLE-MAP REALIGN or REPEATS PIPELINE
     //
-
     if (run_circle_map_realign ||
             run_circle_map_repeats) {
         SAMTOOLS_SORT_QNAME_CM (
@@ -598,6 +606,7 @@ workflow CIRCDNA {
         )
         ch_versions = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
     }
+
     //
     // MODULE: Pipeline reporting
     //
