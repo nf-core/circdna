@@ -126,11 +126,8 @@ include { SAMTOOLS_VIEW as SAMTOOLS_VIEW_FILTER     }   from '../modules/nf-core
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_FILTERED   }   from '../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FILTERED }   from '../modules/nf-core/samtools/index/main'
 
-// SAMTOOLS STATISTICS
-include { SAMTOOLS_STATS                            }   from '../modules/nf-core/samtools/stats/main'
-
 // BAM STATS
-include { BAM_STATS_SAMTOOLS as BAM_STATS_SAMTOOLS_RAW }   from '../subworkflows/nf-core/bam_stats_samtools/main'
+include { BAM_STATS_SAMTOOLS                        }   from '../subworkflows/nf-core/bam_stats_samtools/main'
 
 // CIRCLE-MAP
 include { CIRCLEMAP_READEXTRACTOR                   }   from '../modules/local/circlemap/readextractor.nf'
@@ -332,15 +329,19 @@ workflow CIRCDNA {
         ch_full_bam_sorted_bai  = SAMTOOLS_INDEX_BAM.out.bai
 
         ch_fasta = ch_fasta_meta.map{ meta, index -> [index] }.collect()
-        BAM_STATS_SAMTOOLS_RAW (
-            ch_bam_sorted.join(ch_bam_sorted_bai).
-                map { meta, bam, bai -> [meta, bam, bai] },
-                ch_fasta_meta
-        )
-        ch_versions = ch_versions.mix(BAM_STATS_SAMTOOLS_RAW.out.versions)
-        ch_samtools_stats               = BAM_STATS_SAMTOOLS_RAW.out.stats
-        ch_samtools_flagstat            = BAM_STATS_SAMTOOLS_RAW.out.flagstat
-        ch_samtools_idxstats            = BAM_STATS_SAMTOOLS_RAW.out.idxstats
+
+        // Stub run is not yet implemented into BAM_STATS_SAMTOOLS subworkflow -> Will be skipped when stub is active
+        if (!workflow.stubRun) {
+            BAM_STATS_SAMTOOLS (
+                ch_bam_sorted.join(ch_bam_sorted_bai).
+                    map { meta, bam, bai -> [meta, bam, bai] },
+                    ch_fasta_meta
+            )
+            ch_versions = ch_versions.mix(BAM_STATS_SAMTOOLS.out.versions)
+            ch_samtools_stats               = BAM_STATS_SAMTOOLS.out.stats
+            ch_samtools_flagstat            = BAM_STATS_SAMTOOLS.out.flagstat
+            ch_samtools_idxstats            = BAM_STATS_SAMTOOLS.out.idxstats
+        }
 
         // PICARD MARK_DUPLICATES
         if (!params.skip_markduplicates) {
