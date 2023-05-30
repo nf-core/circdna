@@ -20,111 +20,73 @@
 # Contact: virajbdeshpande@gmail.com
 # Maintained by Jens Luebeck jluebeck@ucsd.edu
 
-import copy
-from collections import defaultdict
+import argparse
+import logging
+import os
 import sys
+
 import numpy as np
-import re
+import pysam
+
+import global_names
 
 sys.setrecursionlimit(10000)
-import argparse
-import os
-import pysam
-import global_names
 
 GAIN = 4.5
 CNSIZE_MIN = 50000
 
 
-parser = argparse.ArgumentParser(description="Filter and merge amplified intervals")
-parser.add_argument(
-    "--bed",
-    dest="bed",
-    help="Input bed file with list of amplified intervals",
-    metavar="FILE",
-    action="store",
-    type=str,
-    required=True,
-)
-parser.add_argument(
-    "--out",
-    dest="out",
-    help="OPTIONAL: Prefix filename for output bed file. Default: <INPUT_BED_BASENAME>_amplified.bed",
-    metavar="FILE",
-    action="store",
-    type=str,
-    default="",
-)
-parser.add_argument(
-    "--bam",
-    dest="bam",
-    help="OPTIONAL: Bamfile, used to avoid large aneuploidies",
-    metavar="FILE",
-    action="store",
-    type=str,
-    default="",
-)
-parser.add_argument(
-    "--gain",
-    dest="gain",
-    help="OPTIONAL: CN gain threshold for interval to be considered as a seed. Default: 5",
-    action="store",
-    type=float,
-    default=GAIN,
-)
-parser.add_argument(
-    "--cnsize_min",
-    dest="cnsize_min",
-    help="OPTIONAL: Minimum size (in bp) for interval to be considered as a seed. Default: 100000",
-    action="store",
-    type=int,
-    default=CNSIZE_MIN,
-)
-parser.add_argument(
-    "--ref",
-    dest="ref",
-    help='Values: [hg19, GRCh37, GRCh38, GRCh38_viral, mm10, GRCm38]. "hg19", "GRCh38", "mm10" : chr1, .. chrM etc / "GRCh37", "GRCm38" : \'1\', \'2\', .. \'MT\' etc/ "None" : Do not use any annotations. AA can tolerate additional chromosomes not stated but accuracy and annotations may be affected.',
-    metavar="STR",
-    action="store",
-    type=str,
-    choices=["hg19", "GRCh37", "GRCh38", "GRCh38_viral", "mm10", "GRCm38"],
-    required=True,
-)
-parser.add_argument(
-    "--no_cstats",
-    dest="no_cstats",
-    help="Do not re-use coverage statistics from coverage.stats.",
-    action="store_true",
-    default=False,
-)
+parser = argparse. \
+    ArgumentParser(description="Filter and merge amplified intervals")
+parser.add_argument('--bed', dest='bed',
+                    help="Input bed file with list of amplified intervals", metavar='FILE',
+                    action='store', type=str, required=True)
+parser.add_argument('--out', dest='out',
+                    help="OPTIONAL: Prefix filename for output bed file. Default: <INPUT_BED_BASENAME>_amplified.bed",
+                    metavar='FILE',
+                    action='store', type=str, default='')
+parser.add_argument('--bam', dest='bam',
+                    help="OPTIONAL: Bamfile, used to avoid large aneuploidies", metavar='FILE',
+                    action='store', type=str, default='')
+parser.add_argument('--gain', dest='gain',
+                    help="OPTIONAL: CN gain threshold for interval to be considered as a seed. Default: 5",
+                    action='store', type=float, default=GAIN)
+parser.add_argument('--cnsize_min', dest='cnsize_min',
+                    help="OPTIONAL: Minimum size (in bp) for interval to be considered as a seed. Default: 100000",
+                    action='store', type=int, default=CNSIZE_MIN)
+parser.add_argument('--ref', dest='ref',
+                    help="Values: [hg19, GRCh37, GRCh38, GRCh38_viral, mm10, GRCm38]. \"hg19\", \"GRCh38\", \"mm10\" : chr1, .. chrM etc / \"GRCh37\", \"GRCm38\" : '1', '2', .. 'MT' etc/ \"None\" : Do not use any annotations. AA can tolerate additional chromosomes not stated but accuracy and annotations may be affected.", metavar='STR',
+                    action='store', type=str, choices=["hg19", "GRCh37", "GRCh38", "GRCh38_viral", "mm10", "GRCm38"], required=True)
+parser.add_argument('--no_cstats', dest='no_cstats', help="Do not re-use coverage statistics from coverage.stats.",
+                    action='store_true', default=False)
 
 args = parser.parse_args()
 
 global_names.REF = args.ref
 import ref_util as hg
 
-if args.bed != "":
+if args.bed != '':
     rdAlts = args.bed
 
-if args.out != "":
+if args.out != '':
     outname = args.out + ".bed"
 else:
     outname = os.path.splitext(rdAlts)[0] + "_amplified.bed"
 
 GAIN, CNSIZE_MIN = args.gain, args.cnsize_min
 
-rdList0 = hg.interval_list(rdAlts, "bed")
+rdList0 = hg.interval_list(rdAlts, 'bed')
 if rdList0:
     try:
         if len(rdList0[0].info) == 0:
-            sys.stderr.write(
-                "ERROR: CNV estimate bed file had too few columns.\n" "Must contain: chr  pos1  pos2  cnv_estimate\n"
-            )
+            logging.error("ERROR: CNV estimate bed file had too few columns.\n"
+                             "Must contain: chr  pos1  pos2  cnv_estimate\n")
             sys.exit(1)
+
         _ = float(rdList0[0].info[-1])
 
     except ValueError:
-        sys.stderr.write("ERROR: CNV estimates must be in last column of bed file.\n")
+        logging.error("ERROR: CNV estimates must be in last column of bed file.\n")
         sys.exit(1)
 
 tempL = []
@@ -141,11 +103,10 @@ rdList = hg.interval_list(tempL)
 
 if args.bam != "":
     import bam_to_breakpoint as b2b
-
-    if os.path.splitext(args.bam)[-1] == ".cram":
-        bamFile = pysam.Samfile(args.bam, "rc")
+    if os.path.splitext(args.bam)[-1] == '.cram':
+        bamFile = pysam.Samfile(args.bam, 'rc')
     else:
-        bamFile = pysam.Samfile(args.bam, "rb")
+        bamFile = pysam.Samfile(args.bam, 'rb')
 
     cstats = None
     cb = bamFile
@@ -153,14 +114,18 @@ if args.bam != "":
         coverage_stats_file = open(os.path.join(hg.DATA_REPO, "coverage.stats"))
         for l in coverage_stats_file:
             ll = l.strip().split()
+            if not ll:
+                continue
             bamfile_pathname = str(cb.filename.decode())
-            bamfile_filesize = os.path.getsize(bamfile_pathname)
             if ll[0] == os.path.abspath(bamfile_pathname):
+                bamfile_filesize = os.path.getsize(bamfile_pathname)
+
                 cstats = tuple(map(float, ll[1:]))
                 if len(cstats) < 15 or cstats[13] != 3 or bamfile_filesize != int(cstats[14]) or any(np.isnan(cstats)):
                     cstats = None
 
         coverage_stats_file.close()
+
 
     bamFileb2b = b2b.bam_to_breakpoint(bamFile, coverage_stats=cstats)
     pre_int_list = []
@@ -168,19 +133,17 @@ if args.bam != "":
         try:
             chrom_cov_ratio = bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0]
             # print("chrom ratio " + r.chrom + " " + str(chrom_cov_ratio))
-            if (
-                float(r.info[-1])
-                > GAIN + 2 * max(1.0, bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0]) - 2
-                and bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0] > 0
-            ):
-                if r.size() < 10000000 or float(r.info[-1]) > 1.5 * GAIN:
+            if float(r.info[-1]) > GAIN + 2 * max(1.0, bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0]) - 2 and \
+                    bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0] > 0:
+                if r.size() < 10000000 or float(r.info[-1]) > 1.5*GAIN:
                     pre_int_list.append(r)
 
             elif float(r.info[-1]) > 1 and args.ref == "GRCh38_viral" and not r.chrom.startswith("chr"):
                 pre_int_list.append(r)
 
         except ZeroDivisionError:
-            print(r.chrom, args.ref, float(r.info[-1]))
+            logging.error("zero division error", r.chrom, args.ref, float(r.info[-1]))
+
             # if float(r.info[-1]) > 1 and args.ref == "GRCh38_viral" and not r.chrom.startswith("chr"):
             #     pre_int_list.append(r)
             #
@@ -193,12 +156,10 @@ amplicon_listl = rdList
 cr = hg.conserved_regions
 uc_list = hg.interval_list([])
 for a in amplicon_listl:
-    if (
-        len(hg.interval_list([a]).intersection(cr)) == 0
-        or a.size()
-        > max(1000000, 10 * sum([a.intersection(ci[1]).size() for ci in hg.interval_list([a]).intersection(cr)]))
-        or a.size() - sum([a.intersection(ci[1]).size() for ci in hg.interval_list([a]).intersection(cr)]) > 2000000
-    ):
+    if (len(hg.interval_list([a]).intersection(cr)) == 0 or
+            a.size() > max(1000000,
+                           10 * sum([a.intersection(ci[1]).size() for ci in hg.interval_list([a]).intersection(cr)])) or
+            a.size() - sum([a.intersection(ci[1]).size() for ci in hg.interval_list([a]).intersection(cr)]) > 2000000):
         if (len(hg.interval_list([a]).intersection(cr))) == 0:
             uc_list.append(a)
         else:
@@ -229,13 +190,6 @@ with open(outname, "w") as outfile:
             is_viral = True
 
         if sum([ai.size() for ai in a[1]]) > CNSIZE_MIN or is_viral:
-            outfile.write(
-                "\t".join(
-                    [
-                        str(a[0]),
-                        str(sum([ai.size() * float(ai.info[-1]) for ai in a[1]]) / sum([ai.size() for ai in a[1]])),
-                        rdAlts,
-                    ]
-                )
-                + "\n"
-            )
+            outfile.write('\t'.join(
+                [str(a[0]), str(sum([ai.size() * float(ai.info[-1]) for ai in a[1]]) / sum([ai.size() for ai in a[1]])),
+                 rdAlts]) + '\n')

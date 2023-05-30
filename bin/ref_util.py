@@ -14,8 +14,8 @@
 #
 # IN NO EVENT SHALL THE UNIVERSITY OF CALIFORNIA BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE UNIVERSITY OF CALIFORNIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. THE UNIVERSITY OF CALIFORNIA SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE SOFTWARE PROVIDED HEREUNDER IS ON AN "AS IS" BASIS, AND THE UNIVERSITY OF CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 
-# Author: Viraj Deshpande
-# Contact: virajbdeshpande@gmail.com
+#Author: Viraj Deshpande
+#Contact: virajbdeshpande@gmail.com
 
 
 ##This is a suite to load reference genome (not just hg19, as filename implies), genes, exons, repeat content and perform operations on this genome, compare variants
@@ -40,87 +40,53 @@ print("Global ref name is " + REF)
 try:
     DATA_REPO = os.environ["AA_DATA_REPO"]
 except:
-    logging.warning(
-        "#TIME " + "%.3f\t" % (time() - TSTART) + " Unable to set AA_DATA_REPO variable. Setting to working directory"
-    )
-    DATA_REPO = "."
-if DATA_REPO == "." or DATA_REPO == "":
-    logging.warning(
-        "#TIME " + "%.3f\t" % (time() - TSTART) + " AA_DATA_REPO not set or empy. Setting to working directory"
-    )
-    DATA_REPO = "."
+    logging.warning("#TIME " + '%.3f\t'%(time() - TSTART) + " Unable to set AA_DATA_REPO variable. Setting to working directory")
+    DATA_REPO = '.'
+if DATA_REPO == '.' or DATA_REPO == '':
+    logging.warning("#TIME " + '%.3f\t'%(time() - TSTART) + " AA_DATA_REPO not set or empy. Setting to working directory")
+    DATA_REPO = '.'
 
-REF_files = defaultdict(lambda: "", {})
+REF_files = defaultdict(lambda: '', {})
 try:
-    for l in open(DATA_REPO + "/" + REF + "/file_list.txt"):
+    for l in open(DATA_REPO + '/' + REF + '/file_list.txt'):
         REF_files[l.strip().split()[0]] = l.strip().split()[1]
 except:
-    logging.warning(
-        "#TIME "
-        + "%.3f\t" % (time() - TSTART)
-        + " Unable to find reference in $AA_DATA_REPO/REF/file_list.txt. Setting to empty."
-    )
+    logging.warning("#TIME " + '%.3f\t'%(time() - TSTART) + " Unable to find reference in $AA_DATA_REPO/REF/file_list.txt. Setting to empty.")
 
 
 class fake_fasta(object):
     def fetch(self, a=None, b=0, c=0):
-        return "".join(["N" for i in range(c - b + 1)])
-
-
+        return ''.join(['N' for i in range(c - b + 1)])
 try:
-    fa_file = pysam.Fastafile(DATA_REPO + "/" + REF + "/" + REF_files["fa_file"])
+    fa_file = pysam.Fastafile(DATA_REPO + '/' + REF + '/' + REF_files['fa_file'])
 except:
-    logging.warning(
-        "#TIME "
-        + "%.3f\t" % (time() - TSTART)
-        + ' Unable to open fasta file: "'
-        + DATA_REPO
-        + "/"
-        + REF
-        + "/"
-        + REF_files["fa_file"]
-        + '". Reference sequences will be set to N.'
-    )
+    logging.warning("#TIME " + '%.3f\t'%(time() - TSTART) + " Unable to open fasta file: \"" + DATA_REPO + '/' + REF + '/' + REF_files['fa_file'] + "\". Reference sequences will be set to N.")
     fa_file = fake_fasta()
 
-chrLen_filename = DATA_REPO + "/" + REF + "/" + REF_files["chrLen_file"]
-duke35_filename = DATA_REPO + "/" + REF + "/" + REF_files["duke35_filename"]
-wgexclude_filename = DATA_REPO + "/" + REF + "/" + REF_files["mapability_exclude_filename"]
-gene_filename = DATA_REPO + "/" + REF + "/" + REF_files["gene_filename"]
-exon_filename = DATA_REPO + "/" + REF + "/" + REF_files["exon_file"]
-oncogene_filename = DATA_REPO + "/" + REF + "/" + REF_files["oncogene_filename"]
-centromere_filename = DATA_REPO + "/" + REF + "/" + REF_files["centromere_filename"]
-conserved_regions_filename = DATA_REPO + "/" + REF + "/" + REF_files["conserved_regions_filename"]
-segdup_filename = DATA_REPO + "/" + REF + "/" + REF_files["segdup_filename"]
-complementary_nucleotide = defaultdict(
-    lambda: "N",
-    {
-        "A": "T",
-        "C": "G",
-        "G": "C",
-        "T": "A",
-        "a": "t",
-        "c": "g",
-        "g": "c",
-        "t": "a",
-        "n": "n",
-        "N": "N",
-    },
-)
+chrLen_filename = DATA_REPO + '/' + REF + '/' + REF_files['chrLen_file']
+duke35_filename = DATA_REPO + '/' + REF + '/' + REF_files['duke35_filename']
+wgexclude_filename = DATA_REPO + '/' + REF + '/' + REF_files['mapability_exclude_filename']
+gene_filename = DATA_REPO + '/' + REF + '/' + REF_files['gene_filename']
+exon_filename = DATA_REPO + '/' + REF + '/' + REF_files['exon_file']
+oncogene_filename = DATA_REPO + '/' + REF + '/' + REF_files['oncogene_filename']
+centromere_filename = DATA_REPO + '/' + REF + '/' + REF_files['centromere_filename']
+conserved_regions_filename = DATA_REPO + '/' + REF + '/' + REF_files['conserved_regions_filename']
+segdup_filename = DATA_REPO + '/' + REF + '/' + REF_files['segdup_filename']
+complementary_nucleotide = defaultdict(lambda: 'N', {'A':'T', 'C':'G', 'G':'C', 'T':'A', 'a':'t', 'c':'g', 'g':'c', 't':'a', 'n':'n', 'N':'N'})
 duke35 = []
 duke35_exists = [True]
 
 # Handling chromosome names, lengths, sorting, positions and addition of new chromosomes
 chr_id = {}
 chrName = {}
-chromList = [str(x) for x in range(1, 23)] + ["X" + "Y"]  # must be updated if including an organism with more chroms.
+chromList = [str(x) for x in range(1, 23)] + ['X'+'Y']  # must be updated if including an organism with more chroms.
 
 
-def chrNum(chrname, mode="append"):
+def chrNum(chrname, mode='append'):
     if chrname in chr_id:
         return chr_id[chrname]
     else:
-        if mode == "init":
+        if mode == 'init':
             cnum = len(chr_id)
         else:
             cnum = 1000000 + len(chr_id)
@@ -128,20 +94,15 @@ def chrNum(chrname, mode="append"):
         chrName[cnum] = chrname
         return chr_id[chrname]
 
-
 chrLen = defaultdict(lambda: 0, {})
 try:
     for line in open(chrLen_filename):
         ll = line.strip().split()
-        chrLen[chrNum(ll[0], mode="init")] = int(ll[1])
+        chrLen[chrNum(ll[0], mode='init')] = int(ll[1])
 except:
-    logging.warning(
-        "#TIME " + "%.3f\t" % (time() - TSTART) + ' Unable to open chromosome lengths file: "' + chrLen_filename + '"'
-    )
+    logging.warning("#TIME " + '%.3f\t'%(time() - TSTART) + " Unable to open chromosome lengths file: \"" + chrLen_filename + "\"")
 
 chrOffset = {}
-
-
 def absPos(chrname, pos=0):
     cnum = chrNum(chrname)
     if chrNum(chrname) not in chrOffset:
@@ -153,19 +114,16 @@ def absPos(chrname, pos=0):
                 sumlen += chrLen[chrkeys[i]]
             if cnum < chrkeys[i]:
                 break
-    return chrOffset[chrNum(chrname)] + pos
-
+    return chrOffset[chrNum(chrname)] + pos 
 
 for c in chrLen:
-    ap = absPos(chrName[c])
-
+    ap = absPos(chrName[c]) 
 
 def chrPos(abspos):
     for c in chrOffset:
         if chrOffset[c] < abspos and chrOffset[c] + chrLen[c] >= abspos:
             return (chrName[c], abspos - chrOffset[c])
     return None
-
 
 def update_chrLen(len_list):
     for l in len_list:
@@ -174,22 +132,15 @@ def update_chrLen(len_list):
         cpos = absPos(l[0], 1)
 
 
+
 def reverse_complement(seq):
-    return "".join([complementary_nucleotide[a] for a in seq][::-1])
+    return ''.join([complementary_nucleotide[a] for a in seq][::-1])
+
 
 
 class interval(object):
-    def __init__(
-        self,
-        line,
-        start=-1,
-        end=-1,
-        strand=1,
-        file_format="",
-        bamfile=None,
-        info="",
-        exclude_info_string=False,
-    ):
+    def __init__(self, line, start=-1, end=-1, strand=1,
+        file_format='', bamfile=None, info='', exclude_info_string=False):
         self.info = ""
         self.file_format = file_format
         if type(line) == pysam.AlignedRead or type(line) == pysam.AlignedSegment:
@@ -204,45 +155,46 @@ class interval(object):
             self.info = info
 
     def load_line(self, line, file_format, exclude_info_string=False):
-        if file_format == "":
+        if file_format == '':
             if len(line.strip().split()) == 1:
-                self.chrom = line.split(":")[0]
-                self.start = int(line.split(":")[1].split("-")[0])
-                if "-" not in line:
-                    self.end = int(line.split(":")[1].split("-")[0])
+                self.chrom = line.split(':')[0]
+                self.start = int(line.split(':')[1].split('-')[0])
+                if '-' not in line:
+                    self.end = int(line.split(':')[1].split('-')[0])
                 else:
-                    self.end = int(line.split(":")[1].split("-")[1])
+                    self.end = int(line.split(':')[1].split('-')[1])
                 if self.start < self.end:
                     self.strand = 1
                 else:
                     self.strand = -1
                 return
             else:
-                file_format = "bed"
-        if file_format == "gff":
+                 file_format = 'bed'
+        if file_format=='gff':
             ll = line.strip().split()
             self.chrom = ll[0]
             self.start, self.end = sorted([int(float(ll[3])), int(float(ll[4]))])
-            if ll[6] == "+":
+            if ll[6] =='+':
                 self.strand = 1
             else:
                 self.strand = -1
             if not exclude_info_string:
-                self.info = {r[0 : r.find("=")]: r[r.find("=") + 1 :] for r in ll[8].strip().strip(";").split(";")}
-                self.info["Variant"] = ll[5]
-        elif file_format == "bed":
+                self.info = {r[0: r.find('=')]: r[r.find('=') + 1: ]
+                         for r in ll[8].strip().strip(';').split(';')}
+                self.info['Variant'] = ll[5]
+        elif file_format == 'bed':        
             ll = line.strip().split()
             self.chrom = ll[0]
             if (REF == "hg19" or REF == "GRCh38" or REF == "mm10" or REF == "GRCm38") and 0 < len(self.chrom) < 3:
                 try:
                     ci = int(self.chrom)
                     if 0 < ci < 23:
-                        self.chrom = "chr" + self.chrom
+                        self.chrom = 'chr' + self.chrom
                         logging.info("Corrected chromosome name (appended 'chr') " + self.chrom + " \n")
 
                 except ValueError:
                     if self.chrom in {"M", "X", "Y"}:
-                        self.chrom = "chr" + self.chrom
+                        self.chrom = 'chr' + self.chrom
                     else:
                         logging.warning("Chromosome name " + self.chrom + " may be incompatible")
 
@@ -254,10 +206,10 @@ class interval(object):
             if not exclude_info_string:
                 self.info = ll[3:]
         else:
-            raise (Exception("Invalid interval format" + str(line)))
+            raise(Exception("Invalid interval format" + str(line)))
 
     def load_pos(self, chrom, start, end, strand):
-        self.chrom = chrom
+        self.chrom = chrom 
         self.start = int(start)
         self.end = int(end)
         self.strand = strand
@@ -295,18 +247,13 @@ class interval(object):
 
     def __str__(self):
         if len(str(self.info)) == 0:
-            return "\t".join(map(str, [self.chrom, self.start, self.end]))
+            return '\t'.join(map(str, [self.chrom, self.start, self.end]))
         elif type(self.info) == list:
-            return "\t".join(map(str, [self.chrom, self.start, self.end] + list(self.info)))
+            return '\t'.join(map(str, [self.chrom, self.start, self.end] + list(self.info)))
         elif type(self.info) == dict:
-            return "\t".join(
-                map(
-                    str,
-                    [self.chrom, self.start, self.end] + [str(s) + "=" + str(self.info[s]) for s in self.info],
-                )
-            )
+            return '\t'.join(map(str, [self.chrom, self.start, self.end] + [str(s) + '=' + str(self.info[s]) for s in self.info]))
         else:
-            return "\t".join(map(str, [self.chrom, self.start, self.end, self.info]))
+            return '\t'.join(map(str, [self.chrom, self.start, self.end, self.info]))
 
     def gc_content(self):
         seq = fa_file.fetch(self.chrom, self.start, self.end)
@@ -315,7 +262,7 @@ class interval(object):
         #     exit()
         if len(seq) == 0:
             return 0.5
-        return float(seq.count("G") + seq.count("C") + seq.count("g") + seq.count("c")) / len(seq)
+        return float(seq.count('G') + seq.count('C') + seq.count('g') + seq.count('c')) / len(seq)
 
     def sequence(self, new_fa_file=None):
         if new_fa_file is not None:
@@ -325,32 +272,28 @@ class interval(object):
         if self.strand == 1:
             return seq
         else:
-            return "".join([complementary_nucleotide[a] for a in seq][::-1])
+            return ''.join([complementary_nucleotide[a] for a in seq][::-1])
 
     def intersects(self, n, extend=0, margin=0.0):
         if margin > 0.0:
-            if self.intersects(
-                interval(n.chrom, n.start, n.end - (1 - margin) * (n.end - n.start))
-            ) and self.intersects(interval(n.chrom, n.start + (1 - margin) * (n.end - n.start)), n.end):
+            if self.intersects(interval(n.chrom, n.start, n.end - (1 - margin) * (n.end - n.start))) and self.intersects(interval(n.chrom, n.start + (1 - margin) * (n.end - n.start)), n.end):
                 return True
             else:
                 s = self
-                if n.intersects(interval(s.chrom, s.start, s.end - (1 - margin) * (s.end - s.start))) and n.intersects(
-                    interval(s.chrom, s.start + (1 - margin) * (s.end - s.start)), s.end
-                ):
+                if n.intersects(interval(s.chrom, s.start, s.end - (1 - margin) * (s.end - s.start))) and n.intersects(interval(s.chrom, s.start + (1 - margin) * (s.end - s.start)), s.end):
                     return True
             return False
         a = [self.chrom, max(0, self.start - extend), self.end + extend]
         b = [n.chrom, n.start, n.end]
-        if a[0] != b[0]:
+        if (a[0] != b[0]):
             return False
-        if (int(a[1]) - int(b[1])) * (int(a[2]) - int(b[1])) <= 0:
+        if (int(a[1])-int(b[1]))*(int(a[2])-int(b[1])) <= 0:
             return True
-        if (int(a[1]) - int(b[2])) * (int(a[2]) - int(b[2])) <= 0:
+        if (int(a[1])-int(b[2]))*(int(a[2])-int(b[2])) <= 0:
             return True
-        if (int(a[1]) - int(b[1])) * (int(a[1]) - int(b[2])) <= 0:
+        if (int(a[1])-int(b[1]))*(int(a[1])-int(b[2])) <= 0:
             return True
-        if (int(a[2]) - int(b[1])) * (int(a[2]) - int(b[2])) <= 0:
+        if (int(a[2])-int(b[1]))*(int(a[2])-int(b[2])) <= 0:
             return True
         return False
 
@@ -392,10 +335,7 @@ class interval(object):
         if y != -1:
             if z == -1:
                 z = y
-            if (
-                self.intersects(interval(x, y, z))
-                and self.intersection(interval(x, y, z)).size() == interval(x, y, z).size()
-            ):
+            if self.intersects(interval(x, y, z)) and self.intersection(interval(x, y, z)).size() == interval(x, y, z).size():
                 return True
         return False
 
@@ -410,9 +350,9 @@ class interval(object):
 
     def rep_content(self):
         # logging.info("#TIME " + '%.3f\t'%(time() - TSTART) + " rep_content: init ")
-        if self.chrom == "chrM" or self.chrom == "MT":
+        if self.chrom == 'chrM' or self.chrom == 'MT':
             return 5.0
-        if self.chrom.strip("chr") not in chromList:
+        if self.chrom.strip('chr') not in chromList:
             return 1.0
         s34 = interval(self.chrom, self.start, max(self.start, self.end - 34))
         # logging.info("#TIME " + '%.3f\t'%(time() - TSTART) + " rep_content: to load duke ")
@@ -422,13 +362,7 @@ class interval(object):
                 duke35.extend([l.strip() for l in duke35file])
                 duke35file.close()
             except:
-                logging.warning(
-                    "#TIME "
-                    + "%.3f\t" % (time() - TSTART)
-                    + ' rep_content: Unable to open mapability file "'
-                    + duke35_filename
-                    + '".'
-                )
+                logging.warning("#TIME " + '%.3f\t'%(time() - TSTART) + " rep_content: Unable to open mapability file \"" + duke35_filename + "\"." )
                 duke35_exists[0] = False
                 duke35.extend(["chr_Un  0   1   1"])
         # logging.info("#TIME " + '%.3f\t'%(time() - TSTART) + " rep_content: duke loaded")
@@ -458,18 +392,7 @@ class interval(object):
             if not s34.intersects(m):
                 p += 1
                 if p >= len(duke35) or p <= 0:
-                    raise Exception(
-                        "p index out of range: "
-                        + str(p)
-                        + " "
-                        + str(lo)
-                        + " "
-                        + str(self)
-                        + " "
-                        + str(m)
-                        + " "
-                        + str(interval(duke35[lo]))
-                    )
+                    raise Exception('p index out of range: ' + str(p)+' '+str(lo)+' '+str(self)+' '+str(m) + ' '+str(interval(duke35[lo])))
                 m = interval(duke35[p])
                 continue
             repc = 5.0 if float(m.info[0]) == 0 else 1.0 / float(m.info[0])
@@ -490,20 +413,15 @@ class interval(object):
         if self.chrom not in fa_file.references:
             return self.size()
         seq = fa_file.fetch(self.chrom, self.start, self.end)
-        return len([c for c in seq if c in "ACGT"])
+        return len([c for c in seq if c in 'ACGT'])
 
     def segdup_uniqueness(self):
         sl = interval_list([self]).intersection(segdup_list)
         slsd = sum([self.intersection(i[1]).size() for i in sl])
         return float(self.size()) / (self.size() + slsd)
-
+    
     def extend(self, extend_len=0):
-        return interval(
-            self.chrom,
-            max(0, self.start - extend_len),
-            min(self.end + extend_len, chrLen[chrNum(self.chrom)]),
-            self.strand,
-        )
+        return interval(self.chrom, max(0, self.start - extend_len), min(self.end + extend_len, chrLen[chrNum(self.chrom)]), self.strand)
 
 
 class interval_list(list, object):
@@ -511,10 +429,10 @@ class interval_list(list, object):
         if ilist == None:
             ilist = []
         self.file_format = file_format
-        if file_format in ["bed", "gff"]:
+        if file_format in ['bed', 'gff']:
             self.bed_to_list(ilist, exclude_info_string=exclude_info_string)
         if file_format is None:
-            list.__init__(self, ilist)
+            list.__init__(self,ilist)
         if sort:
             self.sort()
         self.offset = None
@@ -523,27 +441,13 @@ class interval_list(list, object):
         if file_name is not None:
             try:
                 f = open(file_name)
-                list.__init__(
-                    self,
-                    [
-                        interval(
-                            l,
-                            file_format=self.file_format,
-                            exclude_info_string=exclude_info_string,
-                        )
-                        for l in f
-                        if len(l.strip().split()) > 2 and l.strip()[0] != "#"
-                    ],
-                )
+                list.__init__(self, [interval(l, file_format=self.file_format, exclude_info_string=exclude_info_string)
+                              for l in f if len(l.strip().split()) > 2
+                              and l.strip()[0] != '#'])
                 f.close()
             except:
-                logging.error(
-                    "#TIME "
-                    + "%.3f\t" % (time() - TSTART)
-                    + ' interval_list: Unable to open interval file "'
-                    + file_name
-                    + '".'
-                )
+                logging.error("#TIME " + '%.3f\t'%(time() - TSTART) + " interval_list: Unable to open interval file \"" + file_name + "\"." )
+
 
     def merge_clusters(self, extend=0, margin=0.0):
         ml = []
@@ -569,7 +473,7 @@ class interval_list(list, object):
         cstart = 0
         cl = self[cstart:cend]
         if ci is not None:
-            ml.append((ci, cl))
+            ml.append((ci,cl))
         return ml[::-1]
 
     def repeats(self, count=1):
@@ -637,13 +541,7 @@ class interval_list(list, object):
             if c is not None:
                 if i < len(self) and self[i] not in c[1] and (self[i].intersects(c[0], -1) or c[0] > self[i]):
                     atm = self[i].atomize(c[0])
-                    atm = [
-                        (
-                            aa[0],
-                            [(lambda x: c[1][0] if x == c[0] else x)(aai) for aai in aa[1]],
-                        )
-                        for aa in atm
-                    ]
+                    atm = [(aa[0], [(lambda x: c[1][0] if x == c[0] else x)(aai) for aai in aa[1]]) for aa in atm]
                     # print "%i", [len(rr[1]) for rr in atm], [str(rr[0]) for rr in atm]
                     c = atm[-1]
                     i += 1
@@ -651,13 +549,7 @@ class interval_list(list, object):
                 elif j < len(h2) and h2[j] not in c[1] and (h2[j].intersects(c[0], -1) or c[0] > h2[j]):
                     # print j, str(h2[j]), str(c[0]), c[0] > h2[j]
                     atm = c[0].atomize(h2[j])
-                    atm = [
-                        (
-                            aa[0],
-                            [(lambda x: c[1][0] if x == c[0] else x)(aai) for aai in aa[1]],
-                        )
-                        for aa in atm
-                    ]
+                    atm = [(aa[0], [(lambda x: c[1][0] if x == c[0] else x)(aai) for aai in aa[1]]) for aa in atm]
                     # print "%j", [len(rr[1]) for rr in atm], [str(rr[0]) for rr in atm]
                     c = atm[-1]
                     j += 1
@@ -701,7 +593,7 @@ class interval_list(list, object):
             for line in duke35_file:
                 lno += 1
                 duke_int = interval(line)
-                while not (duke_int.intersects(self[i])) and duke_int > self[i]:
+                while not(duke_int.intersects(self[i])) and duke_int > self[i]:
                     i += 1
                 if not duke_int.intersects(self[i]) and self[i] > duke_int:
                     continue
@@ -712,18 +604,12 @@ class interval_list(list, object):
                     len_duke[j] += self[j].intersection(duke_int).size()
                     j += 1
             duke35_file.close()
-            return {self[i]: sum_duke[i] / len_duke[i] for i in range(len(interval_list))}
+            return {self[i]:sum_duke[i] / len_duke[i] for i in range(len(interval_list))}
         except:
-            logging.warning(
-                "#TIME "
-                + "%.3f\t" % (time() - TSTART)
-                + ' get_repeat_content: Unable to open mapability file "'
-                + duke35_filename
-                + '".'
-            )
+            logging.warning("#TIME " + '%.3f\t'%(time() - TSTART) + " get_repeat_content: Unable to open mapability file \"" + duke35_filename + "\"." )
             duke35_exists[0] = False
             duke35.extend(["chr_Un  0   1   1"])
-            return {self[i]: 1.0 for i in range(len(interval_list))}
+            return {self[i]:1.0 for i in range(len(interval_list))}
 
     def offsets(self):
         if self.offset is not None:
@@ -731,9 +617,9 @@ class interval_list(list, object):
         gap = 0.1
         hratio = 0.8
 
-        vlist = [i for i in self if chrNum(i.chrom) >= 100 and i.chrom[:3] != "chr"]
-        hlist = [i for i in self if chrNum(i.chrom) < 100 or i.chrom[:3] == "chr"]
-        v_count = len([i for i in self if chrNum(i.chrom) >= 100 and i.chrom[:3] != "chr"])
+        vlist = [i for i in self if chrNum(i.chrom) >= 100 and i.chrom[:3] != 'chr']
+        hlist = [i for i in self if chrNum(i.chrom) < 100 or i.chrom[:3] == 'chr']
+        v_count = len([i for i in self if chrNum(i.chrom) >= 100 and i.chrom[:3] != 'chr'])
         h_count = len(self) - v_count
         h_sum = sum([i.size() for i in hlist])
         v_sum = sum([i.size() for i in vlist])
@@ -742,11 +628,12 @@ class interval_list(list, object):
         hS = sum([i.size() for i in hlist if i.size() > h_sum * gap / max(1, h_count)])
         min_hsize = hS / (max(1, h_count) / gap - hK)
         h_sum = hS + hK * min_hsize
-
+        
         vK = len([i for i in vlist if i.size() < v_sum * gap / max(1, v_count)])
         vS = sum([i.size() for i in vlist if i.size() > v_sum * gap / max(1, v_count)])
         min_vsize = vS / (max(1, v_count) / gap - vK)
         v_sum = vS + vK * min_vsize
+
 
         offset = {}
 
@@ -786,9 +673,9 @@ class interval_list(list, object):
         gap = 0.1
         hratio = 0.8
 
-        vlist = [i for i in self if chrNum(i.chrom) >= 100 and i.chrom[:3] != "chr"]
-        hlist = [i for i in self if chrNum(i.chrom) < 100 or i.chrom[:3] == "chr"]
-        v_count = len([i for i in self if chrNum(i.chrom) >= 100 and i.chrom[:3] != "chr"])
+        vlist = [i for i in self if chrNum(i.chrom) >= 100 and i.chrom[:3] != 'chr']
+        hlist = [i for i in self if chrNum(i.chrom) < 100 or i.chrom[:3] == 'chr']
+        v_count = len([i for i in self if chrNum(i.chrom) >= 100 and i.chrom[:3] != 'chr'])
         h_count = len(self) - v_count
         h_sum = sum([i.size() for i in hlist])
         v_sum = sum([i.size() for i in vlist])
@@ -806,63 +693,60 @@ class interval_list(list, object):
                 iprev = i
                 continue
             if i in hlist and iprev.chrom == i.chrom:
-                breaks.append((offset[i][0] - hscale * hgap / 2, ":", i.chrom))
+                breaks.append((offset[i][0] - hscale * hgap / 2, ':', i.chrom))
                 print(str(i), str(iprev), i in hlist, iprev.chrom == i.chrom)
             elif i in hlist and iprev.chrom != i.chrom:
-                breaks.append((offset[i][0] - hscale * hgap / 2, "--", i.chrom))
+                breaks.append((offset[i][0] - hscale * hgap / 2, '--', i.chrom))
             elif i in vlist and iprev in hlist:
-                breaks.append((offset[i][0] - vscale * vgap / 2, "-", i.chrom))
+                breaks.append((offset[i][0] - vscale * vgap / 2, '-', i.chrom))
             elif i in vlist and i.chrom == iprev.chrom:
-                breaks.append((offset[i][0] - vscale * vgap / 2, ":", i.chrom))
+                breaks.append((offset[i][0] - vscale * vgap / 2, ':', i.chrom))
             else:
-                breaks.append((offset[i][0] - vscale * vgap / 2, "--", i.chrom))
+                breaks.append((offset[i][0] - vscale * vgap / 2, '--', i.chrom))
 
             iprev = i
         return breaks
 
     def __str__(self):
-        return str(([str(i) for i in self]))
+       return str(([str(i) for i in self]))
 
 
-oncogene_list = interval_list(oncogene_filename, "gff")
+
+oncogene_list = interval_list(oncogene_filename, 'gff')
 oncogene_list.sort()
-gene_list = interval_list(gene_filename, "gff")
+gene_list = interval_list(gene_filename, 'gff')
+
 
 
 exon_list = interval_list([])
-
-
 def load_exons():
     if len(exon_list) > 0:
         return
     try:
         exon_file = open(exon_filename)
-        exonFields = [
-            interval(j, file_format="gff")
-            for j in exon_file.read().strip().split("\n")
-            if (
-                len(j.strip()) > 0
-                and j.strip()[0] != "#"
-                and {r.split("=")[0]: r.split("=")[1] for r in j.strip().split()[8].strip(";").split(";")}["color"]
-                == "000080"
-            )
-        ]
+        exonFields = [interval(j, file_format='gff')
+                      for j in exon_file.read().strip().split('\n')
+                      if (len(j.strip()) > 0 and j.strip()[0] != '#' and
+                          {r.split('=')[0]:r.split('=')[1]
+                           for r in j.strip().split()[8].strip(';').split(';')
+                          }['color'] == '000080')]
         exon_file.close()
         exon_list.extend((exonFields))
     except:
-        logging.warning("#TIME " + "%.3f\t" % (time() - TSTART) + 'unable to load exon file: "' + exon_filename + '"')
+        logging.warning("#TIME " + '%.3f\t'%(time() - TSTART) + "unable to load exon file: \"" + exon_filename + "\"")
 
-
-conserved_regions = interval_list(conserved_regions_filename, "bed")
+conserved_regions = interval_list(conserved_regions_filename, 'bed')
 conserved_regions.sort()
 
-wgexclude = interval_list(wgexclude_filename, "bed")
+wgexclude = interval_list(wgexclude_filename, 'bed')
 wgexclude.sort()
 
-centromere_list = interval_list(centromere_filename, "bed")
+centromere_list = interval_list(centromere_filename, 'bed')
 centromere_list.sort()
 centromere_list = interval_list([i[0] for i in centromere_list.merge_clusters(extend=1)])
 
 
-segdup_list = interval_list(segdup_filename, "bed")
+segdup_list = interval_list(segdup_filename, 'bed')
 segdup_list.sort()
+
+
