@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+
+# Author: Jens Luebeck
+# Contact: jluebeck [at] ucsd.edu
+# License: BSD 2-Clause License
+# Source: https://github.com/AmpliconSuite/AmpliconSuite-pipeline
+# Commit: 0a8a2ff2324b15aab7cb88d310dcc458d06c0bed
+
 # Interface to MOSEK for AmpliconArchitect for Python3
 #
 # Supports all versions of MOSEK >= 8
@@ -121,7 +129,7 @@ subject to   A * x == 0
 
 Comments, compared to MOSEK 8 model:
 
-We ignore the normalizing coefficient h_i from log(g_i * x_i + h_i) and consider only log(g_i * x_i). 
+We ignore the normalizing coefficient h_i from log(g_i * x_i + h_i) and consider only log(g_i * x_i).
 Subject to that change we can also skip g_i since it only changes the constant term in the objective.
 The condition x>=0 is implicit by x appearing in the logarithm.
 """
@@ -173,8 +181,8 @@ subject to   A * x == 0
 
 Comments, compared to MOSEK 10 model:
 
-A simple model in the higher level MOSEK Fusion. Anyhow, we do not expect MOSEK 9 users, really. 
-Either stay with MOSEK 8 or otherwise there is no reason not to upgrade all the way to MOSEK 10. 
+A simple model in the higher level MOSEK Fusion. Anyhow, we do not expect MOSEK 9 users, really.
+Either stay with MOSEK 8 or otherwise there is no reason not to upgrade all the way to MOSEK 10.
 
 This model can be used in MOSEK >= 9, but it invokes the additional Fusion modeling layer,
 which the model from call_mosek_acc skips. If it behaves well though, we could make

@@ -16,6 +16,9 @@
 
 # Author: Viraj Deshpande
 # Contact: virajbdeshpande@gmail.com
+# Maintained by Jens Luebeck, jluebeck@ucsd.edu
+# Source: https://github.com/AmpliconSuite/AmpliconSuite-pipeline
+# Commit: 0a8a2ff2324b15aab7cb88d310dcc458d06c0bed
 
 
 ##This is a suite to load reference genome (not just hg19, as filename implies), genes, exons, repeat content and perform operations on this genome, compare variants
