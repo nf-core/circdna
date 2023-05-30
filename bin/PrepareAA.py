@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 
-# author: Jens Luebeck (jluebeck [at] ucsd.edu)
+# Author: Jens Luebeck
+# Contact: jluebeck [at] ucsd.edu
+# License: BSD 2-Clause License
+# Source: https://github.com/AmpliconSuite/AmpliconSuite-pipeline
+# Commit: 0a8a2ff2324b15aab7cb88d310dcc458d06c0bed
 
 import argparse
 from datetime import datetime
@@ -15,14 +19,14 @@ import time
 import check_reference
 import cnv_prefilter
 
-__version__ = "0.1477.1"
+__version__ = "0.1537.2"
 
 PY3_PATH = "python3"  # updated by command-line arg if specified
 metadata_dict = {}  # stores the run metadata (bioinformatic metadata)
 sample_info_dict = {}  # stores the sample metadata
 
 
-def run_bwa(ref_fasta, fastqs, outdir, sname, nthreads, usingDeprecatedSamtools=False):
+def run_bwa(ref_fasta, fastqs, outdir, sname, nthreads, samtools, usingDeprecatedSamtools=False):
     outname = outdir + sname
     logging.info("Output prefix: " + outname)
     logging.info("Checking for ref index")
@@ -42,25 +46,25 @@ def run_bwa(ref_fasta, fastqs, outdir, sname, nthreads, usingDeprecatedSamtools=
 
     print("\nPerforming alignment and sorting")
     if usingDeprecatedSamtools:
-        cmd = "{{ bwa mem -K 10000000 -t {} {} {} | samtools view -Shu - | samtools sort -m 4G -@4 - {}.cs; }} 2>{}_aln_stage.stderr".format(
-            nthreads, ref_fasta, fastqs, outname, outname
+        cmd = "{{ bwa mem -K 10000000 -t {} {} {} | {} view -Shu - | {} sort -m 4G -@4 - {}.cs; }} 2>{}_aln_stage.stderr".format(
+            nthreads, ref_fasta, fastqs, samtools, samtools, outname, outname
         )
     else:
-        cmd = "{{ bwa mem -K 10000000 -t {} {} {} | samtools view -Shu - | samtools sort -m 4G -@4 -o {}.cs.bam -; }} 2>{}_aln_stage.stderr".format(
-            nthreads, ref_fasta, fastqs, outname, outname
+        cmd = "{{ bwa mem -K 10000000 -t {} {} {} | {} view -Shu - | {} sort -m 4G -@4 -o {}.cs.bam -; }} 2>{}_aln_stage.stderr".format(
+            nthreads, ref_fasta, fastqs, samtools, samtools, outname, outname
         )
 
     logging.info(cmd)
     call(cmd, shell=True)
     metadata_dict["bwa_cmd"] = cmd
     logging.info("\nPerforming duplicate removal & indexing")
-    cmd_list = ["samtools", "rmdup", "-s", "{}.cs.bam".format(outname), "{}.cs.rmdup.bam".format(outname)]
-    # cmd_list = ["samtools", "markdup", "-s", "-@ {}".format(nthreads), "{}.cs.bam".format(outname), {}.cs.rmdup.bam".format(outname)]
+    cmd_list = [samtools, "rmdup", "-s", "{}.cs.bam".format(outname), "{}.cs.rmdup.bam".format(outname)]
+    # cmd_list = [samtools, "markdup", "-s", "-@ {}".format(nthreads), "{}.cs.bam".format(outname), {}.cs.rmdup.bam".format(outname)]
 
     logging.info(" ".join(cmd_list))
     call(cmd_list)
     logging.info("\nRunning samtools index")
-    cmd_list = ["samtools", "index", "{}.cs.rmdup.bam".format(outname)]
+    cmd_list = [samtools, "index", "{}.cs.rmdup.bam".format(outname)]
     logging.info(" ".join(cmd_list))
     call(cmd_list)
     logging.info("Removing temp BAM")
@@ -307,7 +311,7 @@ def run_AA(
 
     metadata_dict["AA_version"] = AA_version
 
-    cmd = "{} {}/AmpliconArchitect.py --ref {} --downsample {} --bed {} --bam {} --runmode {} --extendmode {} --insert_sdevs {} --out {}/{}".format(
+    cmd = "{} {}/AmpliconArchitect.py --ref {} --downsample {} --bed {} --bam {} --runmode {} --extendmode {} --out {}/{}".format(
         AA_interpreter,
         AA_SRC,
         ref,
@@ -316,10 +320,11 @@ def run_AA(
         sorted_bam,
         runmode,
         extendmode,
-        str(insert_sdevs),
         AA_outdir,
         sname,
     )
+    if insert_sdevs is not None:
+        cmd += " --insert_sdevs {}".format(str(insert_sdevs))
 
     logging.info(cmd)
     aa_exit_code = call(cmd, shell=True)
@@ -618,7 +623,7 @@ if __name__ == "__main__":
         "increase for sequencing runs with high variance after insert size selection step. (default "
         "3.0)",
         type=float,
-        default=3.0,
+        default=None,
     )
     parser.add_argument("--normal_bam", help="Path to matched normal bam for CNVKit (optional)")
     parser.add_argument(
@@ -642,10 +647,19 @@ if __name__ == "__main__":
     parser.add_argument(
         "--no_filter", help="Do not run amplified_intervals.py to identify amplified seeds", action="store_true"
     )
-    parser.add_argument("--no_QC", help="Skip QC on the BAM file.", action="store_true")
+    parser.add_argument(
+        "--no_QC",
+        help="Skip QC on the BAM file. Do not adjust AA insert_sdevs for " "poor-quality insert size distribution",
+        action="store_true",
+    )
     parser.add_argument("--sample_metadata", help="Path to a JSON of sample metadata to build on")
     parser.add_argument(
         "-v", "--version", action="version", version="PrepareAA version {version} \n".format(version=__version__)
+    )
+    parser.add_argument(
+        "--samtools_path",
+        help="Path to samtools binary (e.g., /path/to/my/samtools). If unset, will use samtools on system path.",
+        default="",
     )
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument(
@@ -692,6 +706,12 @@ if __name__ == "__main__":
     outdir = args.output_directory
     sample_metadata_filename = args.output_directory + sname + "_sample_metadata.json"
 
+    # set samtools for use, 20230428
+    if not args.samtools_path.endswith("/samtools"):
+        if args.samtools_path and not args.samtools_path.endswith("/"):
+            args.samtools_path += "/"
+        args.samtools_path += "samtools"
+
     # Make and clear necessary directories.
     # make the output directory location if it does not exist
     if not os.path.exists(args.output_directory):
@@ -699,7 +719,7 @@ if __name__ == "__main__":
 
     # initiate logging
     paa_logfile = args.output_directory + sname + ".log"
-    logging.basicConfig(filename=paa_logfile, format="[%(name)s:%(levelname)s]\t%(message)s", level=logging.DEBUG)
+    logging.basicConfig(filename=paa_logfile, format="[%(name)s:%(levelname)s]\t%(message)s", level=logging.INFO)
     logging.getLogger().addHandler(logging.StreamHandler())
     logging.info("Launched on " + launchtime)
     logging.info("AmpiconSuite-pipeline version " + __version__ + "\n")
@@ -711,7 +731,7 @@ if __name__ == "__main__":
         else:
             commandstring += "{} ".format(arg)
 
-    logging.info(commandstring)
+    logging.info(commandstring + "\n")
 
     if "/" in args.sample_name:
         logging.error("Sample name -s cannot be a path. Specify output directory with -o.\n")
@@ -831,16 +851,26 @@ if __name__ == "__main__":
 
     faidict = {}
     if args.sorted_bam:
-        if args.ref:
+        if args.ref and refFnames[args.ref]:
             faidict[args.ref] = AA_REPO + args.ref + "/" + refFnames[args.ref] + ".fai"
+
+        elif args.ref and refFnames[args.ref] is None:
+            em = (
+                "Data repo files for ref " + args.ref + " not found. Please download from "
+                "https://datasets.genepattern.org/?prefix=data/module_support_files/AmpliconArchitect/\n"
+            )
+            logging.error(em)
+            sys.stderr.write(em)
+            sys.exit(1)
 
         else:
             for k, v in refFnames.items():
                 if v:
                     faidict[k] = AA_REPO + k + "/" + v + ".fai"
 
-        determined_ref = check_reference.check_ref(args.sorted_bam, faidict)
+        determined_ref = check_reference.check_ref(args.sorted_bam, faidict, args.samtools_path)
         if not determined_ref and not args.ref:
+            logging.error("Please make sure AA data repo is populated.")
             sys.exit(1)
 
         elif not args.ref:
@@ -881,9 +911,9 @@ if __name__ == "__main__":
     if args.fastqs:
         # Run BWA
         fastqs = " ".join(args.fastqs)
-        logging.info("Running pipeline on " + fastqs)
+        logging.info("Will perform alignment on " + fastqs)
         args.sorted_bam, aln_stage_stderr = run_bwa(
-            ref_fasta, fastqs, outdir, sname, args.nthreads, args.use_old_samtools
+            ref_fasta, fastqs, outdir, sname, args.nthreads, args.samtools_path, args.use_old_samtools
         )
 
     if not args.completed_AA_runs:
@@ -893,12 +923,14 @@ if __name__ == "__main__":
         craiExists = os.path.isfile(args.sorted_bam + ".crai") or os.path.isfile(cramCraiNoExt)
         if not baiExists and not craiExists:
             logging.info(args.sorted_bam + " index not found, calling samtools index")
-            call(["samtools", "index", args.sorted_bam])
+            call([args.samtools_path, "index", args.sorted_bam])
             logging.info("Finished indexing")
 
         bambase = os.path.splitext(os.path.basename(args.sorted_bam))[0]
+        prop_paired_proportion = None
         if not args.no_QC:
-            check_reference.check_properly_paired(args.sorted_bam)
+            logging.debug("samtools path is set to: " + args.samtools_path)
+            prop_paired_proportion = check_reference.check_properly_paired(args.sorted_bam, args.samtools_path)
 
         tb = time.time()
         timing_logfile.write("Alignment, indexing and QC:\t" + "{:.2f}".format(tb - ta) + "\n")
@@ -970,6 +1002,16 @@ if __name__ == "__main__":
             AA_outdir = outdir + sname + "_AA_results/"
             if not os.path.exists(AA_outdir):
                 os.mkdir(AA_outdir)
+
+            # set the insert sdevs if not given by user.
+            if (
+                not args.no_QC
+                and not args.AA_insert_sdevs
+                and prop_paired_proportion is not None
+                and prop_paired_proportion < 90
+            ):
+                logging.info("Properly paired rate less than 90%, setting --insert_sdevs 9.0 for AA")
+                args.AA_insert_sdevs = 9.0
 
             run_AA(
                 args.aa_python_interpreter,

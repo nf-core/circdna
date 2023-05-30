@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+
+# Author: Jens Luebeck
+# Contact: jluebeck [at] ucsd.edu
+# License: BSD 2-Clause License
+# Source: https://github.com/AmpliconSuite/AmpliconSuite-pipeline
+# Commit: 0a8a2ff2324b15aab7cb88d310dcc458d06c0bed
+
 from collections import defaultdict
 import logging
 import os
@@ -5,11 +13,13 @@ import os
 from intervaltree import IntervalTree
 
 
-def merge_intervals(usort_intd, cn_cut=4.5, tol=1, require_same_cn=False):
+def merge_intervals(usort_intd, cn_cut=4.5, tol=1, require_same_cn=False, ref=None):
     merged_intd = defaultdict(IntervalTree)
     for chrom, usort_ints in usort_intd.items():
         # sort ints
-        sort_ints = sorted([x for x in usort_ints if x[2] > cn_cut])
+        sort_ints = sorted(
+            [x for x in usort_ints if x[2] > cn_cut or (ref == "GRCh38_viral" and not chrom.startswith("chr"))]
+        )
         if not sort_ints:
             continue
 
@@ -150,7 +160,7 @@ def prefilter_bed(bedfile, ref, centromere_dict, chr_sizes, cngain, outdir):
 
             else:
                 arm2cns["other"].append((c, s, e, cn))
-                # print("Warning: could not match " + c + ":" + str(s) + "-" + str(e) + " to a known chromosome arm!")
+                logging.debug("Did not match " + c + ":" + str(s) + "-" + str(e) + " to a known chromosome arm!")
 
     continuous_high_region_ivald = get_continuous_high_regions(bedfile, cngain)
     cn_filt_entries = []
@@ -159,17 +169,27 @@ def prefilter_bed(bedfile, ref, centromere_dict, chr_sizes, cngain, outdir):
         init_cns = arm2cns[a]
         med_cn = compute_cn_median(init_cns, arm2lens[a])
         for x in init_cns:
-            ccg = cngain
+            long_seed_region_penalty_mult = 1.0
+            # ignore CN segments over 30 Mbp
+            if x[2] - x[1] > 30000000:
+                continue
+
+            # penalize segments over 20 Mbp
+            elif x[2] - x[1] > 20000000:
+                long_seed_region_penalty_mult = 2.0
+
             continuous_high_hits = continuous_high_region_ivald[x[0]][x[1] : x[2]]
             if continuous_high_hits:
                 for y in continuous_high_hits:
+                    # penalize seeds that overlap a high-CN region of 10 Mbp or more
                     if y.end - y.begin > 10000000:
-                        ccg *= 1.5
-                        break
+                        long_seed_region_penalty_mult = max(1.5, long_seed_region_penalty_mult)
 
+            ccg = cngain * long_seed_region_penalty_mult
             if x[3] > med_cn + ccg - 2:
                 cn_filt_entries.append(x)
-            elif ref == "GRCh38_viral" and not x[0].startswith("chr") and x[3] > 0.1:
+
+            elif ref == "GRCh38_viral" and not x[0].startswith("chr") and x[3] >= 1:
                 cn_filt_entries.append(x)
 
     gain_regions = read_gain_regions(ref)
@@ -186,7 +206,7 @@ def prefilter_bed(bedfile, ref, centromere_dict, chr_sizes, cngain, outdir):
         for p in sorted(cit):
             filt_ivald[x[0]].addi(p[0], p[1], x[3])
 
-    merged_filt_ivald = merge_intervals(filt_ivald, cn_cut=cngain, require_same_cn=True)
+    merged_filt_ivald = merge_intervals(filt_ivald, cn_cut=cngain, require_same_cn=True, ref=ref)
     final_filt_entries = ivald_to_ilist(merged_filt_ivald)
     bname = outdir + "/" + bedfile.rsplit("/")[-1].rsplit(".bed")[0] + "_pre_filtered.bed"
     with open(bname, "w") as outfile:

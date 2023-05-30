@@ -1,3 +1,11 @@
+#!/usr/bin/env python
+
+# Author: Jens Luebeck
+# Contact: jluebeck [at] ucsd.edu
+# License: BSD 2-Clause License
+# Source: https://github.com/AmpliconSuite/AmpliconSuite-pipeline
+# Commit: 0a8a2ff2324b15aab7cb88d310dcc458d06c0bed
+
 from collections import defaultdict
 import logging
 import subprocess
@@ -39,8 +47,8 @@ def get_ref_seq_lens(ref_genome_size_file):
 
 
 # read bam header and store info
-def get_bam_header(bamf):
-    cmd = "samtools view -H " + bamf
+def get_bam_header(bamf, samtools):
+    cmd = samtools + " view -H " + bamf
     return subprocess.check_output(cmd, shell=True).decode("utf-8")
 
 
@@ -73,8 +81,8 @@ def match_ref(bamSeqLenD, ref_len_d):
 
 
 # check properly paired rate on bam file
-def check_properly_paired(bamf):
-    cmd = "samtools flagstat {} | grep 'properly paired'".format(bamf)
+def check_properly_paired(bamf, samtools):
+    cmd = samtools + " flagstat {} | grep 'properly paired'".format(bamf)
     t = str(subprocess.check_output(cmd, shell=True).decode("utf-8"))
     logging.info("\n" + bamf + ": " + t.rstrip())
     ppp = float(t.rsplit("(")[-1].rsplit("%")[0])
@@ -95,11 +103,13 @@ def check_properly_paired(bamf):
             "\n"
         )
 
+    return ppp
+
 
 # check if the BAM reference matches to sequence names & lengths in a dictionary of .fai files
 # returns the name of the reference genome the BAM matches to, or prints error and returns None.
-def check_ref(bamf, ref_to_fai_dict):
-    bam_header = get_bam_header(bamf)
+def check_ref(bamf, ref_to_fai_dict, samtools):
+    bam_header = get_bam_header(bamf, samtools)
     bamSeqLenD = extract_seq_info(bam_header)
     bestref = None
     bestrefhits = 0
@@ -119,13 +129,16 @@ def check_ref(bamf, ref_to_fai_dict):
         logging.info("Matched " + bamf + " to reference genome " + bestref)
         return bestref
 
-    logging.error("ERROR: Could not match BAM to a known AA reference genome!\n")
-    logging.error(
-        "This may happen if 1) The value provided to optional argument '--ref' does not match the "
-        "reference the BAM is aligned to, or 2) The corresponding AA data repo folder for this reference "
-        "is not present, or 3) The BAM uses a different chromosome naming convention (e.g. accession "
-        "numbers instead of chromosome names). Consider inspecting the header of the BAM file and the AA "
-        "data repo directory.\n"
-    )
+    em1 = "ERROR: Could not match BAM to a known AA reference genome!\n"
+    em2 = """This may happen if 1) The value provided to optional argument '--ref' does not match the
+          reference the BAM is aligned to, or 2) The corresponding AA data repo folder for this reference
+          is not present, or 3) The BAM uses a different chromosome naming convention (e.g. accession
+          numbers instead of chromosome names). Consider inspecting the header of the BAM file and the AA
+          data repo directory.\n"""
+
+    logging.error(em1)
+    logging.error(em2)
+    sys.stderr.write(em1)
+    sys.stderr.write(em2)
 
     return None
