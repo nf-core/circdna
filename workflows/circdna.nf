@@ -350,10 +350,6 @@ workflow CIRCDNA {
                 ch_fasta_meta,
                 [[], []]
             )
-            //ch_fai = SAMTOOLS_FAIDX.out.fai.map {meta, fai -> fai }.collect()
-            ch_bam_sorted.view()
-            ch_fasta_meta.view()
-            SAMTOOLS_FAIDX.out.fai.view()
 
             // MARK DUPLICATES IN BAM FILE
             BAM_MARKDUPLICATES_PICARD (
