@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Deprecated`
 
+- Local python scripts not included in the pipeline
 - Local versions of nf-core modules
 
 ## v1.0.2 - [2023-03-07]
