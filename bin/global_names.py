@@ -1,3 +1,3 @@
-REF="hg19"
-TSTART=0
-SEED=0
+REF = "hg19"
+TSTART = 0
+SEED = 0
