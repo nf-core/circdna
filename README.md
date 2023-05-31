@@ -12,7 +12,7 @@
 
 ## Introduction
 
-**nf-core/circdna** is a bioinformatics best-practice analysis pipeline for the identification of extrachromosomal circular DNAs (ecDNAs) in eukaryotic cells. The pipeline is able to process WGS, ATAC-seq data or Circle-Seq data generated from short-read sequencing technologies.
+**nf-core/circdna** is a bioinformatics best-practice analysis pipeline for the identification of extrachromosomal circular DNAs (ecDNAs) in eukaryotic cells. The pipeline is able to process WGS, ATAC-seq data or Circle-Seq data generated from short-read sequencing technologies. Depending on the input data and selected analysis branch, nf-core/circdna is able to identify various types of ecDNAs. This includes the detection of smaller ecDNAs, often referred to as eccDNAs or microDNAs, as well as larger ecDNAs that exhibit amplification. These analyses are facilitated through the use of prominent software tools that are widely recognized in the field of ecDNA or circular DNA research.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
