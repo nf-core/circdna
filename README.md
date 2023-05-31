@@ -12,7 +12,7 @@
 
 ## Introduction
 
-**nf-core/circdna** is a bioinformatics best-practice analysis pipeline for the identification of extrachromosomal circular DNAs (eccDNAs) in eukaryotic cells. The pipeline is able to process WGS, ATAC-seq data or Circle-Seq data generated from short-read sequencing technologies.
+**nf-core/circdna** is a bioinformatics best-practice analysis pipeline for the identification of extrachromosomal circular DNAs (ecDNAs) in eukaryotic cells. The pipeline is able to process WGS, ATAC-seq data or Circle-Seq data generated from short-read sequencing technologies.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
@@ -25,13 +25,13 @@ On release, automated continuous integration tests run the pipeline on a full-si
 3. Adapter and quality trimming ([`Trim Galore!`](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/))
 4. Map reads using BWA-MEM ([`BWA`](https://github.com/lh3/bwa))
 5. Sort and index alignments ([`SAMtools`](https://sourceforge.net/projects/samtools/files/samtools/))
-6. Choice of multiple eccDNA identification routes
+6. Choice of multiple ecDNA identification routes
    1. [`Circle-Map ReadExtractor`](https://github.com/iprada/Circle-Map) -> [`Circle-Map Realign`](https://github.com/iprada/Circle-Map)
    1. [`Circle-Map ReadExtractor`](https://github.com/iprada/Circle-Map) -> [`Circle-Map Repeats`](https://github.com/iprada/Circle-Map)
    1. [`CIRCexplorer2`](https://circexplorer2.readthedocs.io/en/latest/)
    1. [`Samblaster`](https://github.com/GregoryFaust/samblaster) -> [`Circle_finder`](https://github.com/pk7zuva/Circle_finder) **Does not use filtered BAM file, specificied with --keep_duplicates false**
    1. Identification of circular amplicons [`AmpliconArchitect`](https://github.com/jluebeck/AmpliconArchitect)
-   1. De Novo Assembly of eccDNA [`Unicycler`](https://github.com/rrwick/Unicycler) -> [`Minimap2`](https://github.com/lh3/minimap2)
+   1. De Novo Assembly of ecDNAs [`Unicycler`](https://github.com/rrwick/Unicycler) -> [`Minimap2`](https://github.com/lh3/minimap2)
 7. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
 ## Functionality Overview
@@ -75,21 +75,21 @@ Now, you can run the pipeline using:
    nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --circle_identifier <CIRCLE_IDENTIFIER>
 ```
 
-## Available eccDNA identifiers
+## Available ecDNA identifiers
 
 Please specify the parameter `circle_identifier` depending on the pipeline branch used for circular DNA identifaction. Please note that some branches/software are only tested with specific NGS data sets.
 
-### Identification of putative eccDNA junctions with ATAC-seq or Circle-seq data
+### Identification of putative ecDNA junctions with ATAC-seq or Circle-seq data
 
-> `circle_finder` uses [Circle_finder](https://github.com/pk7zuva/Circle_finder) > `circexplorer2` uses [CIRCexplorer2](https://circexplorer2.readthedocs.io/en/latest/) > `circle_map_realign` uses [Circle-Map Realign](https://github.com/iprada/Circle-Map) > `circle_map_repeats` uses [Circle-Map Repeats](https://github.com/iprada/Circle-Map) for the identification of repetetive eccDNA
+> `circle_finder` uses [Circle_finder](https://github.com/pk7zuva/Circle_finder) > `circexplorer2` uses [CIRCexplorer2](https://circexplorer2.readthedocs.io/en/latest/) > `circle_map_realign` uses [Circle-Map Realign](https://github.com/iprada/Circle-Map) > `circle_map_repeats` uses [Circle-Map Repeats](https://github.com/iprada/Circle-Map) for the identification of repetetive ecDNA
 
-### Identification of circular amplicons with WGS data
+### Identification of amplified ecDNAs with WGS data
 
 > `ampliconarchitect` uses [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect)
 
-### De novo assembly of eccDNAs with Circle-seq data
+### De novo assembly of ecDNAs with Circle-seq data
 
-> `unicycler` uses [Unicycler](https://github.com/rrwick/Unicycler) for de novo assembly of eccDNA and [Minimap2](https://github.com/lh3/minimap2) for accurate mapping of the identified circular sequences.
+> `unicycler` uses [Unicycler](https://github.com/rrwick/Unicycler) for de novo assembly of ecDNAs and [Minimap2](https://github.com/lh3/minimap2) for accurate mapping of the identified circular sequences.
 
 > **Warning:**
 > Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
