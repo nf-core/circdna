@@ -15,6 +15,8 @@
 # IN NO EVENT SHALL THE UNIVERSITY OF CALIFORNIA BE LIABLE TO ANY PARTY FOR DIRECT, INDIRECT, SPECIAL, INCIDENTAL, OR CONSEQUENTIAL DAMAGES, INCLUDING LOST PROFITS, ARISING OUT OF THE USE OF THIS SOFTWARE AND ITS DOCUMENTATION, EVEN IF THE UNIVERSITY OF CALIFORNIA HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. THE UNIVERSITY OF CALIFORNIA SPECIFICALLY DISCLAIMS ANY WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE SOFTWARE PROVIDED HEREUNDER IS ON AN "AS IS" BASIS, AND THE UNIVERSITY OF CALIFORNIA HAS NO OBLIGATIONS TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 # Author: Viraj Deshpande
 # Contact: virajbdeshpande@gmail.com
+# Source: https://github.com/jluebeck/AmpliconArchitect
+# Commit: 2172cdfd5b2834f98f60a5ee77f282249e16f527
 
 import sys
 
@@ -80,15 +82,7 @@ class breakpoint_edge(abstract_edge):
     graph = (optional) graph to which edge belongs"""
 
     def __init__(
-        self,
-        v1,
-        v2=None,
-        eid=0,
-        graph=None,
-        update_vertices=True,
-        edge_type="discordant",
-        hom=None,
-        hom_seq=None,
+        self, v1, v2=None, eid=0, graph=None, update_vertices=True, edge_type="discordant", hom=None, hom_seq=None
     ):
         """2 ways to initialize:
         1) v1 = breakpoint_edge string in the format breakpoint_vertex1->breakpoint_vertex2
@@ -151,55 +145,37 @@ class breakpoint_edge(abstract_edge):
                 if self.edge_type == "source":
                     if self.v2.strand == -1:
                         right_seq = hg.interval(
-                            self.v2.chrom,
-                            self.v2.pos + hom,
-                            self.v2.pos + hom + flank_size - 1,
+                            self.v2.chrom, self.v2.pos + hom, self.v2.pos + hom + flank_size - 1
                         ).sequence()
                         left_seq = ""
                     else:
                         left_seq = hg.interval(
-                            self.v2.chrom,
-                            self.v2.pos - hom - flank_size + 1,
-                            self.v2.pos - hom,
+                            self.v2.chrom, self.v2.pos - hom - flank_size + 1, self.v2.pos - hom
                         ).sequence()
                         right_seq = ""
                 elif self.v1.strand == 1:
                     left_seq = hg.interval(
-                        self.v1.chrom,
-                        self.v1.pos - hom - flank_size + 1,
-                        self.v1.pos - hom,
+                        self.v1.chrom, self.v1.pos - hom - flank_size + 1, self.v1.pos - hom
                     ).sequence()
                     if self.v2.strand == -1:
                         right_seq = hg.interval(
-                            self.v2.chrom,
-                            self.v2.pos + hom,
-                            self.v2.pos + hom + flank_size - 1,
+                            self.v2.chrom, self.v2.pos + hom, self.v2.pos + hom + flank_size - 1
                         ).sequence()
                     else:
                         right_seq = hg.interval(
-                            self.v2.chrom,
-                            self.v2.pos - hom - flank_size + 1,
-                            self.v2.pos - hom,
-                            strand=-1,
+                            self.v2.chrom, self.v2.pos - hom - flank_size + 1, self.v2.pos - hom, strand=-1
                         ).sequence()
                 else:
                     right_seq = hg.interval(
-                        self.v1.chrom,
-                        self.v1.pos + hom,
-                        self.v1.pos + hom + flank_size - 1,
+                        self.v1.chrom, self.v1.pos + hom, self.v1.pos + hom + flank_size - 1
                     ).sequence()
                     if self.v2.strand == -1:
                         left_seq = hg.interval(
-                            self.v2.chrom,
-                            self.v2.pos + hom,
-                            self.v2.pos + hom + flank_size - 1,
-                            strand=-1,
+                            self.v2.chrom, self.v2.pos + hom, self.v2.pos + hom + flank_size - 1, strand=-1
                         ).sequence()
                     else:
                         left_seq = hg.interval(
-                            self.v2.chrom,
-                            self.v2.pos - hom - flank_size + 1,
-                            self.v2.pos - hom,
+                            self.v2.chrom, self.v2.pos - hom - flank_size + 1, self.v2.pos - hom
                         ).sequence()
             seq = left_seq + seq + right_seq
         return seq
@@ -421,12 +397,7 @@ class breakpoint_graph(abstract_graph):
                         dd = d + e2.v2.pos - v2.pos
                     return (dd, path + [(en, en_strand), (en_seq, en_seqstrand)], min_c)
                 heapq.heappush(
-                    a,
-                    (
-                        d + en_seq.v2.pos - en_seq.v1.pos + 1,
-                        path + [(en, en_strand), (en_seq, en_seqstrand)],
-                        min_c,
-                    ),
+                    a, (d + en_seq.v2.pos - en_seq.v1.pos + 1, path + [(en, en_strand), (en_seq, en_seqstrand)], min_c)
                 )
         return None
 
@@ -563,10 +534,7 @@ class breakpoint_graph(abstract_graph):
             if -1 in [e.v1.pos for e in tc] + [e.v2.pos for e in tc]:
                 csource = 0
                 for ci in range(len(tc) - 1):
-                    if -1 in [tc[ci].v1.pos, tc[ci].v2.pos] and -1 in [
-                        tc[ci + 1].v1.pos,
-                        tc[ci + 1].v2.pos,
-                    ]:
+                    if -1 in [tc[ci].v1.pos, tc[ci].v2.pos] and -1 in [tc[ci + 1].v1.pos, tc[ci + 1].v2.pos]:
                         csource = ci + 1
                         tc = tc[ci + 1 :] + tc[0 : ci + 1]
                         break
@@ -630,11 +598,7 @@ class breakpoint_graph(abstract_graph):
                 cycle_edge_list.append((v1, v2))
             v1 = v2
             while ci < len(tc):
-                if (tc[ci].v1.chrom, tc[ci].v1.pos, tc[ci].v1.strand) == (
-                    v1.chrom,
-                    v1.pos,
-                    v1.strand,
-                ):
+                if (tc[ci].v1.chrom, tc[ci].v1.pos, tc[ci].v1.strand) == (v1.chrom, v1.pos, v1.strand):
                     v2 = tc[ci].v2
                 else:
                     v2 = tc[ci].v1
@@ -747,14 +711,7 @@ class graph_decomposition(object):
     Provides methods to merge and modify cycles into larger walks to represent architecture of complex rearrangements.
     """
 
-    def __init__(
-        self,
-        segment_list=None,
-        cycle_list=None,
-        ilist=None,
-        file=None,
-        file_content=None,
-    ):
+    def __init__(self, segment_list=None, cycle_list=None, ilist=None, file=None, file_content=None):
         if file is not None or file_content is not None:
             self.segment_list = hg.interval_list([])
             self.segment_dict = {}
@@ -860,35 +817,19 @@ class graph_decomposition(object):
         seg1_found = False
         seg2_found = False
         for i in self.segment_list:
-            if cycle1[2][si1][1] == 1 and (i.chrom, i.start, i.end) == (
-                seg1.chrom,
-                seg1.start,
-                seg2.end,
-            ):
+            if cycle1[2][si1][1] == 1 and (i.chrom, i.start, i.end) == (seg1.chrom, seg1.start, seg2.end):
                 seg1_found = True
                 ns1 = i.info[0]
                 overlap1 = (ns1, cycle1[2][si1][1])
-            elif cycle1[2][si1][1] == -1 and (i.chrom, i.start, i.end) == (
-                seg1.chrom,
-                seg2.start,
-                seg1.end,
-            ):
+            elif cycle1[2][si1][1] == -1 and (i.chrom, i.start, i.end) == (seg1.chrom, seg2.start, seg1.end):
                 seg1_found = True
                 ns1 = i.info[0]
                 overlap1 = (ns1, cycle1[2][si1][1])
-            if cycle1[2][si1][1] == 1 and (i.chrom, i.start, i.end) == (
-                seg1.chrom,
-                seg2.start,
-                seg1.end,
-            ):
+            if cycle1[2][si1][1] == 1 and (i.chrom, i.start, i.end) == (seg1.chrom, seg2.start, seg1.end):
                 seg2_found = True
                 ns2 = i.info[0]
                 overlap2 = (ns2, cycle1[2][si1][1])
-            elif cycle1[2][si1][1] == -1 and (i.chrom, i.start, i.end) == (
-                seg1.chrom,
-                seg1.start,
-                seg2.end,
-            ):
+            elif cycle1[2][si1][1] == -1 and (i.chrom, i.start, i.end) == (seg1.chrom, seg1.start, seg2.end):
                 seg2_found = True
                 ns2 = i.info[0]
                 overlap2 = (ns2, cycle1[2][si1][1])

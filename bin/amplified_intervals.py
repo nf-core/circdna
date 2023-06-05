@@ -19,21 +19,24 @@
 # Author: Viraj Deshpande
 # Contact: virajbdeshpande@gmail.com
 # Maintained by Jens Luebeck jluebeck@ucsd.edu
+# Source: https://github.com/jluebeck/AmpliconArchitect
+# Commit: 2172cdfd5b2834f98f60a5ee77f282249e16f527
 
-import copy
-from collections import defaultdict
+import argparse
+import logging
+import os
 import sys
+
 import numpy as np
-import re
+import pysam
+
+import global_names
 
 sys.setrecursionlimit(10000)
-import argparse
-import os
-import pysam
-import global_names
 
 GAIN = 4.5
 CNSIZE_MIN = 50000
+
 
 parser = argparse.ArgumentParser(description="Filter and merge amplified intervals")
 parser.add_argument(
@@ -82,11 +85,12 @@ parser.add_argument(
 parser.add_argument(
     "--ref",
     dest="ref",
-    help='Values: [hg19, GRCh37, GRCh38, None]. "hg19"(default) & "GRCh38" : chr1, .. chrM etc / "GRCh37" : \'1\', \'2\', .. \'MT\' etc/ "None" : Do not use any annotations. AA can tolerate additional chromosomes not stated but accuracy and annotations may be affected. Default: hg19',
+    help='Values: [hg19, GRCh37, GRCh38, GRCh38_viral, mm10, GRCm38]. "hg19", "GRCh38", "mm10" : chr1, .. chrM etc / "GRCh37", "GRCm38" : \'1\', \'2\', .. \'MT\' etc/ "None" : Do not use any annotations. AA can tolerate additional chromosomes not stated but accuracy and annotations may be affected.',
     metavar="STR",
     action="store",
     type=str,
-    default="hg19",
+    choices=["hg19", "GRCh37", "GRCh38", "GRCh38_viral", "mm10", "GRCm38"],
+    required=True,
 )
 parser.add_argument(
     "--no_cstats",
@@ -95,7 +99,6 @@ parser.add_argument(
     action="store_true",
     default=False,
 )
-
 
 args = parser.parse_args()
 
@@ -116,17 +119,28 @@ rdList0 = hg.interval_list(rdAlts, "bed")
 if rdList0:
     try:
         if len(rdList0[0].info) == 0:
-            sys.stderr.write(
+            logging.error(
                 "ERROR: CNV estimate bed file had too few columns.\n" "Must contain: chr  pos1  pos2  cnv_estimate\n"
             )
             sys.exit(1)
+
         _ = float(rdList0[0].info[-1])
 
     except ValueError:
-        sys.stderr.write("ERROR: CNV estimates must be in last column of bed file.\n")
+        logging.error("ERROR: CNV estimates must be in last column of bed file.\n")
         sys.exit(1)
 
-rdList = hg.interval_list([r for r in rdList0 if float(r.info[-1]) > GAIN])
+tempL = []
+for r in rdList0:
+    if args.ref == "GRCh38_viral" and not r.chrom.endswith("chr"):
+        tempL.append(r)
+
+    elif float(r.info[-1]) > GAIN:
+        tempL.append(r)
+
+rdList = hg.interval_list(tempL)
+
+# rdList = hg.interval_list([r for r in rdList0 if float(r.info[-1]) > GAIN or (args.ref == "GRCh38_viral" and not r.chrom.endswith("chr"))])
 
 if args.bam != "":
     import bam_to_breakpoint as b2b
@@ -142,11 +156,14 @@ if args.bam != "":
         coverage_stats_file = open(os.path.join(hg.DATA_REPO, "coverage.stats"))
         for l in coverage_stats_file:
             ll = l.strip().split()
+            if not ll:
+                continue
             bamfile_pathname = str(cb.filename.decode())
-            bamfile_filesize = os.path.getsize(bamfile_pathname)
             if ll[0] == os.path.abspath(bamfile_pathname):
+                bamfile_filesize = os.path.getsize(bamfile_pathname)
+
                 cstats = tuple(map(float, ll[1:]))
-                if len(cstats) < 15 or cstats[13] != 3 or bamfile_filesize != int(cstats[14]):
+                if len(cstats) < 15 or cstats[13] != 3 or bamfile_filesize != int(cstats[14]) or any(np.isnan(cstats)):
                     cstats = None
 
         coverage_stats_file.close()
@@ -159,24 +176,25 @@ if args.bam != "":
             # print("chrom ratio " + r.chrom + " " + str(chrom_cov_ratio))
             if (
                 float(r.info[-1])
-                > GAIN
-                + 2
-                * max(
-                    1.0,
-                    bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0],
-                )
-                - 2
+                > GAIN + 2 * max(1.0, bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0]) - 2
                 and bamFileb2b.median_coverage(refi=r)[0] / bamFileb2b.median_coverage()[0] > 0
             ):
                 if r.size() < 10000000 or float(r.info[-1]) > 1.5 * GAIN:
                     pre_int_list.append(r)
 
+            elif float(r.info[-1]) > 1 and args.ref == "GRCh38_viral" and not r.chrom.startswith("chr"):
+                pre_int_list.append(r)
+
         except ZeroDivisionError:
+            logging.error("zero division error", r.chrom, args.ref, float(r.info[-1]))
+
+            # if float(r.info[-1]) > 1 and args.ref == "GRCh38_viral" and not r.chrom.startswith("chr"):
+            #     pre_int_list.append(r)
+            #
             continue
 
     rdList = hg.interval_list(pre_int_list)
 
-genome_features = hg.oncogene_list
 amplicon_listl = rdList
 
 cr = hg.conserved_regions
@@ -185,10 +203,7 @@ for a in amplicon_listl:
     if (
         len(hg.interval_list([a]).intersection(cr)) == 0
         or a.size()
-        > max(
-            1000000,
-            10 * sum([a.intersection(ci[1]).size() for ci in hg.interval_list([a]).intersection(cr)]),
-        )
+        > max(1000000, 10 * sum([a.intersection(ci[1]).size() for ci in hg.interval_list([a]).intersection(cr)]))
         or a.size() - sum([a.intersection(ci[1]).size() for ci in hg.interval_list([a]).intersection(cr)]) > 2000000
     ):
         if (len(hg.interval_list([a]).intersection(cr))) == 0:
@@ -203,14 +218,24 @@ for a in amplicon_listl:
             if a.end > cpos:
                 uc_list.append(hg.interval(a.chrom, cpos, a.end, info=a.info))
 
-uc_list = hg.interval_list(
-    [a for a in uc_list if float(a.info[-1]) * a.segdup_uniqueness() > GAIN and a.rep_content() < 2.5]
-)
-uc_merge = uc_list.merge_clusters(extend=300000)
+new_uc_list = []
+for a in uc_list:
+    if args.ref == "GRCh38_viral" and not a.chrom.startswith("chr"):
+        if a.rep_content() < 2.5:
+            new_uc_list.append(a)
+    else:
+        if float(a.info[-1]) * a.segdup_uniqueness() > GAIN and a.rep_content() < 2.5:
+            new_uc_list.append(a)
+
+uc_merge = hg.interval_list(new_uc_list).merge_clusters(extend=300000)
 
 with open(outname, "w") as outfile:
     for a in uc_merge:
-        if sum([ai.size() for ai in a[1]]) > CNSIZE_MIN:
+        is_viral = False
+        if args.ref == "GRCh38_viral" and not a[0].chrom.startswith("chr"):
+            is_viral = True
+
+        if sum([ai.size() for ai in a[1]]) > CNSIZE_MIN or is_viral:
             outfile.write(
                 "\t".join(
                     [

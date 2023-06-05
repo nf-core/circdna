@@ -278,12 +278,12 @@ This pipeline branch `ampliconarchitect` is only usable with WGS data. This bran
 
 #### **CNVkit**
 
-[CNVkit](https://cnvkit.readthedocs.io/en/stable/) uses alignment information to make copy number calls. These copy number calls will be used by AmpliconArchitect to identify circular and other types of amplicons. The Copy Number calls are then connected to seeds and filtered based on the copy number threshold using scripts provided by [PrepareAA](https://github.com/jluebeck/Prepare)
+[CNVkit](https://cnvkit.readthedocs.io/en/stable/) uses alignment information to make copy number calls. These copy number calls will be used by AmpliconArchitect to identify circular and other types of amplicons. The Copy Number calls are then connected to seeds and filtered based on the copy number threshold using scripts provided by [PrepareAA](https://github.com/jluebeck/AmpliconSuite-pipeline)
 
 <details markdown="1">
 <summary>Output files</summary>
 
-**Output directory: `results/ampliconarchitect/cnvkit`**
+**Output directory: `results/cnvkit`**
 
 - `[SAMPLE]_CNV_GAIN.bed`
   - `bed` file containing filtered Copy Number calls
@@ -291,6 +291,8 @@ This pipeline branch `ampliconarchitect` is only usable with WGS data. This bran
   - `bed` file containing filtered and connected amplified regions (seeds). This is used as input for [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect)
 - `[SAMPLE].cnvkit.segment.cns`
   - `cns` file containing copy number calls of CNVkit segment.
+- `[SAMPLE].cnvkit.segment.cnr`
+  - `cns` file containing copy number calls of CNVkit in cnr format.
 
 </details>
 
@@ -323,39 +325,51 @@ This pipeline branch `ampliconarchitect` is only usable with WGS data. This bran
 <details markdown="1">
 <summary>Output files</summary>
 
-**Output directory: `results/ampliconarchitect/ampliconclassifier`**
+**Output directory: `results/ampliconclassifier`**
 
-- `input/[SAMPLE].AmpliconClassifier.input`
+- `makeinput/ampliconclassifier.input`
   - `txt` file containing the input used for `AmpliconClassifier` and `AmpliconSimilarity`.
-- `classification/[SAMPLE]_amplicon_classification_profiles.tsv`
-  - `tsv` file describing the amplicon class of each amplicon in the sample.
-- `ecDNA_counts/[SAMPLE]_ecDNA_counts.tsv`
+- `ampliconclassifier/ampliconclassifier_amplicon_classification_profiles.tsv`
+  - `tsv` file describing the amplicon class of each amplicon for each sample.
+- `ecDNA_counts/ampliconclassifier_ecDNA_counts.tsv`
   - `tsv` file describing if an amplicon is circular [1 = circular, 0 = non-circular].
-- `gene_list/[SAMPLE]_gene_list.tsv`
+- `gene_list/ampliconclassifier_gene_list.tsv`
   - `tsv` file detailing the genes on each amplicon.
-- `log/[SAMPLE].classifier_stdout.log`
+- `log/ampliconclassifier_stdout.log`
   - `log` file
-- `similarity/[SAMPLE]_similarity_scores.tsv`
+- `ampliconsimilarity/ampliconclassifier_similarity_scores.tsv`
   - `tsv` file containing amplicon similarity scores calculated by `AmpliconSimilarity`.
 - `bed/[SAMPLE]_amplicon[AMPLICONID]_[CLASSIFICATION]_[ID]_intervals.bed`
   - `bed` files containing information about the intervals on each amplicon. `unknown` intervals were not identified to be located on the respective amplicon.
+- `resultstable/ampliconclassifier_result_table.[tsv,json]`
+  - `tsv` or `json` file of the results table tenerated by `AmpliconClassifier` which combines the output of `AmpliconArchitect` and `AmpliconClassifier`.
 
 </details>
 
-#### **AmpliconArchitect Summary**
+### Reports
 
-The `Summary` script merges the output of `AmpliconArchitect` and `AmpliconClassifer` to give full information about each amplicon in a sample. Please refer to [AmpliconClassifier](#ampliconclassifier) for more accurate ecDNA interval calling. Some intervals classified in the `AmpliconArchitect` and `Summary` output are not located on ecDNAs.
+#### samtools stats
+
+[samtools stats](https://www.htslib.org/doc/samtools.html) collects statistics from CRAM files and outputs in a text format.
+For further reading and documentation see the [`samtools` manual](https://www.htslib.org/doc/samtools.html#COMMANDS_AND_OPTIONS).
+
+The plots will show:
+
+- Alignment metrics.
 
 <details markdown="1">
-<summary>Output files</summary>
+<summary>Output files for all samples</summary>
 
-**Output directory: `results/ampliconarchitect/summary`**
+**Output directory: `{outdir}/reports/samtools_stats/<sample>`**
 
-- `[SAMPLE].aa_results_summary.tsv`
-  - `tsv` file containing the merged results.
+- `[SAMPLE].flagstat`
+  - Samtools flagstat outpu
+- `[SAMPLE].idxstats`
+  - Samtools idxstats output
+- `[SAMPLE].stats`
+  - Samtools stats output
 
 </details>
-
 ### Pipeline information
 
 <details markdown="1">

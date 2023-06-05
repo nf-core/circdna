@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+
 # This software is Copyright 2017 The Regents of the University of California. All Rights Reserved. Permission to copy, modify, and distribute this software and its documentation for educational, research and non-profit purposes, without fee, and without a written agreement is hereby granted, provided that the above copyright notice, this paragraph and the following three paragraphs appear in all copies. Permission to make commercial use of this software may be obtained by contacting:
 #
 # Office of Innovation and Commercialization
@@ -20,11 +21,14 @@
 # Author: Viraj Deshpande
 # Contact: virajbdeshpande@gmail.com
 # Maintained by Jens Luebeck, jluebeck@ucsd.edu
+# Source: https://github.com/jluebeck/AmpliconArchitect
+# Commit: 2172cdfd5b2834f98f60a5ee77f282249e16f527
 
 
 from time import time
 
 TSTART = time()
+import numpy as np
 import pysam
 import argparse
 import sys
@@ -36,18 +40,15 @@ matplotlib.use("Agg")
 import logging
 from functools import reduce
 
-# plt.rc('text', usetex=True)
-# plt.rc('font', family='serif')
 
 if sys.version_info >= (3, 0):
     from io import StringIO
 else:
     from cStringIO import StringIO
 
-
 import global_names
 
-__version__ = "1.3_r1"
+__version__ = "1.3.r5"
 
 parser = argparse.ArgumentParser(description="Reconstruct Amplicons connected to listed intervals.")
 parser.add_argument(
@@ -118,11 +119,11 @@ parser.add_argument(
 parser.add_argument(
     "--ref",
     dest="ref",
-    help='Values: [hg19, GRCh37, GRCh38, mm10, GRCm38]. "hg19", "GRCh38", "mm10" : chr1, .. chrM etc / "GRCh37", "GRCm38" : \'1\', \'2\', .. \'MT\' etc/ "None" : Do not use any annotations. AA can tolerate additional chromosomes not stated but accuracy and annotations may be affected.',
+    help='Values: [hg19, GRCh37, GRCh38, GRCh38_viral, mm10, GRCm38]. "hg19", "GRCh38", "mm10" : chr1, .. chrM etc / "GRCh37", "GRCm38" : \'1\', \'2\', .. \'MT\' etc/ "None" : Do not use any annotations. AA can tolerate additional chromosomes not stated but accuracy and annotations may be affected.',
     metavar="STR",
     action="store",
     type=str,
-    choices=["hg19", "GRCh37", "GRCh38", "mm10", "GRCm38"],
+    choices=["hg19", "GRCh37", "GRCh38", "GRCh38_viral", "mm10", "GRCm38"],
     required=True,
 )
 parser.add_argument(
@@ -178,17 +179,27 @@ parser.add_argument(
     default=False,
 )
 parser.add_argument(
-    "-v",
-    "--version",
-    action="version",
-    version="AmpliconArchitect version {version} \n".format(version=__version__),
+    "--random_seed",
+    dest="random_seed",
+    help="Set flag to use the numpy default random seed (sets np.random.seed(seed=None)), otherwise will use seed=0",
+    action="store_true",
+    default=False,
+)
+
+parser.add_argument(
+    "-v", "--version", action="version", version="AmpliconArchitect version {version} \n".format(version=__version__)
 )
 
 args = parser.parse_args()
 global_names.REF = args.ref
 global_names.TSTART = TSTART
+if args.random_seed:
+    global_names.SEED = None
+
 
 logging.basicConfig(filename=args.outName[0] + ".log", level=logging.DEBUG)
+logging.getLogger("fontTools.subset").level = logging.WARN
+
 # # output logs to stdout
 root = logging.getLogger()
 # root.setLevel(logging.DEBUG)
@@ -215,9 +226,9 @@ commandstring = "Commandline: "
 
 for arg in sys.argv:
     if " " in arg:
-        commandstring += '"{}"  '.format(arg)
+        commandstring += '"{}" '.format(arg)
     else:
-        commandstring += "{}  ".format(arg)
+        commandstring += "{} ".format(arg)
 
 logging.info(commandstring)
 
@@ -254,7 +265,6 @@ logging.info("#TIME " + "%.3f\t" % (time() - TSTART) + "Loading libraries and re
 import ref_util as hg
 import bam_to_breakpoint as b2b
 
-
 logging.info("#TIME " + "%.3f\t" % (time() - TSTART) + "Initiating bam_to_breakpoint object for: " + args.bam)
 rdList0 = hg.interval_list(rdAlts, "bed", exclude_info_string=True)
 rdList = hg.interval_list([r for r in rdList0])
@@ -272,13 +282,15 @@ if os.path.exists(os.path.join(hg.DATA_REPO, "coverage.stats")) and not args.no_
     coverage_stats_file = open(os.path.join(hg.DATA_REPO, "coverage.stats"))
     for l in coverage_stats_file:
         ll = l.strip().split()
+        if not ll:
+            continue
         bamfile_pathname = str(cb.filename.decode())
-        bamfile_filesize = os.path.getsize(bamfile_pathname)
         if ll[0] == os.path.abspath(bamfile_pathname):
+            bamfile_filesize = os.path.getsize(bamfile_pathname)
             cstats = tuple(map(float, ll[1:]))
             if len(cstats) < 15 or int(round(cstats[11])) < args.pair_support_min:
                 cstats = None
-            elif cstats[13] != args.insert_sdevs or bamfile_filesize != int(cstats[14]):
+            elif cstats[13] != args.insert_sdevs or bamfile_filesize != int(cstats[14]) or any(np.isnan(cstats)):
                 cstats = None
 
     coverage_stats_file.close()
@@ -292,6 +304,7 @@ if cstats:
     )
 else:
     logging.debug("#TIME " + "%.3f\t" % (time() - TSTART) + "cstats not found, generating coverage statistics... ")
+
 
 coverage_windows = None
 if cbed is not None:
@@ -350,11 +363,7 @@ if args.extendmode == "VIRAL":
     )
     rdList = hg.interval_list(
         [
-            hg.interval(
-                i.chrom,
-                max(0, i.start - 10000),
-                min(i.end + 10000, hg.chrLen[hg.chrNum(i.chrom)]),
-            )
+            hg.interval(i.chrom, max(0, i.start - 10000), min(i.end + 10000, hg.chrLen[hg.chrNum(i.chrom)]))
             for i in rdList
         ]
     )
@@ -377,12 +386,9 @@ if args.extendmode == "EXPLORE" or args.extendmode == "VIRAL":
         irdhops.append((ird, ilist))
         for i in ilist:
             irddict[i] = ird
-        iout = open(
-            outName + "." + ird.chrom + ":" + str(ird.start) + "-" + str(ird.end) + ".out",
-            "w",
-        )
-        iout.write(mystdout.getvalue())
-        iout.close()
+        # iout = open(outName + '.' + ird.chrom + ":" + str(ird.start) + '-' + str(ird.end) + '.out', 'w')
+        # iout.write(mystdout.getvalue())
+        # iout.close()
         sys.stdout = old_stdout
         all_ilist += ilist
         all_ilist.sort()

@@ -16,6 +16,9 @@
 
 # Author: Viraj Deshpande
 # Contact: virajbdeshpande@gmail.com
+# Maintained by Jens Luebeck, jluebeck@ucsd.edu
+# Source: https://github.com/AmpliconSuite/AmpliconSuite-pipeline
+# Commit: 0a8a2ff2324b15aab7cb88d310dcc458d06c0bed
 
 
 ##This is a suite to load reference genome (not just hg19, as filename implies), genes, exons, repeat content and perform operations on this genome, compare variants
@@ -93,19 +96,7 @@ centromere_filename = DATA_REPO + "/" + REF + "/" + REF_files["centromere_filena
 conserved_regions_filename = DATA_REPO + "/" + REF + "/" + REF_files["conserved_regions_filename"]
 segdup_filename = DATA_REPO + "/" + REF + "/" + REF_files["segdup_filename"]
 complementary_nucleotide = defaultdict(
-    lambda: "N",
-    {
-        "A": "T",
-        "C": "G",
-        "G": "C",
-        "T": "A",
-        "a": "t",
-        "c": "g",
-        "g": "c",
-        "t": "a",
-        "n": "n",
-        "N": "N",
-    },
+    lambda: "N", {"A": "T", "C": "G", "G": "C", "T": "A", "a": "t", "c": "g", "g": "c", "t": "a", "n": "n", "N": "N"}
 )
 duke35 = []
 duke35_exists = [True]
@@ -180,15 +171,7 @@ def reverse_complement(seq):
 
 class interval(object):
     def __init__(
-        self,
-        line,
-        start=-1,
-        end=-1,
-        strand=1,
-        file_format="",
-        bamfile=None,
-        info="",
-        exclude_info_string=False,
+        self, line, start=-1, end=-1, strand=1, file_format="", bamfile=None, info="", exclude_info_string=False
     ):
         self.info = ""
         self.file_format = file_format
@@ -300,10 +283,7 @@ class interval(object):
             return "\t".join(map(str, [self.chrom, self.start, self.end] + list(self.info)))
         elif type(self.info) == dict:
             return "\t".join(
-                map(
-                    str,
-                    [self.chrom, self.start, self.end] + [str(s) + "=" + str(self.info[s]) for s in self.info],
-                )
+                map(str, [self.chrom, self.start, self.end] + [str(s) + "=" + str(self.info[s]) for s in self.info])
             )
         else:
             return "\t".join(map(str, [self.chrom, self.start, self.end, self.info]))
@@ -526,11 +506,7 @@ class interval_list(list, object):
                 list.__init__(
                     self,
                     [
-                        interval(
-                            l,
-                            file_format=self.file_format,
-                            exclude_info_string=exclude_info_string,
-                        )
+                        interval(l, file_format=self.file_format, exclude_info_string=exclude_info_string)
                         for l in f
                         if len(l.strip().split()) > 2 and l.strip()[0] != "#"
                     ],
@@ -637,13 +613,7 @@ class interval_list(list, object):
             if c is not None:
                 if i < len(self) and self[i] not in c[1] and (self[i].intersects(c[0], -1) or c[0] > self[i]):
                     atm = self[i].atomize(c[0])
-                    atm = [
-                        (
-                            aa[0],
-                            [(lambda x: c[1][0] if x == c[0] else x)(aai) for aai in aa[1]],
-                        )
-                        for aa in atm
-                    ]
+                    atm = [(aa[0], [(lambda x: c[1][0] if x == c[0] else x)(aai) for aai in aa[1]]) for aa in atm]
                     # print "%i", [len(rr[1]) for rr in atm], [str(rr[0]) for rr in atm]
                     c = atm[-1]
                     i += 1
@@ -651,13 +621,7 @@ class interval_list(list, object):
                 elif j < len(h2) and h2[j] not in c[1] and (h2[j].intersects(c[0], -1) or c[0] > h2[j]):
                     # print j, str(h2[j]), str(c[0]), c[0] > h2[j]
                     atm = c[0].atomize(h2[j])
-                    atm = [
-                        (
-                            aa[0],
-                            [(lambda x: c[1][0] if x == c[0] else x)(aai) for aai in aa[1]],
-                        )
-                        for aa in atm
-                    ]
+                    atm = [(aa[0], [(lambda x: c[1][0] if x == c[0] else x)(aai) for aai in aa[1]]) for aa in atm]
                     # print "%j", [len(rr[1]) for rr in atm], [str(rr[0]) for rr in atm]
                     c = atm[-1]
                     j += 1
