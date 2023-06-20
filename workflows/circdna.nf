@@ -156,6 +156,7 @@ include { AMPLIFIED_INTERVALS                       }     from '../modules/local
 include { AMPLICONARCHITECT_AMPLICONARCHITECT       }     from '../modules/local/ampliconarchitect/ampliconarchitect.nf'
 include { AMPLICONCLASSIFIER_AMPLICONCLASSIFIER     }     from '../modules/local/ampliconclassifier/ampliconclassifier.nf'
 include { AMPLICONCLASSIFIER_AMPLICONSIMILARITY     }     from '../modules/local/ampliconclassifier/ampliconsimilarity.nf'
+include { AMPLICONCLASSIFIER_FEATURESIMILARITY      }     from '../modules/local/ampliconclassifier/featuresimilarity.nf'
 include { AMPLICONCLASSIFIER_MAKEINPUT              }     from '../modules/local/ampliconclassifier/makeinput.nf'
 include { AMPLICONCLASSIFIER_MAKERESULTSTABLE       }     from '../modules/local/ampliconclassifier/makeresultstable.nf'
 
@@ -412,10 +413,11 @@ workflow CIRCDNA {
         )
         ch_versions = ch_versions.mix(CNVKIT_SEGMENT.out.versions)
 
-        // PREPAREAA (
-        //     ch_bam_sorted.join(CNVKIT_SEGMENT.out.cns)
-        // )
-        // ch_versions = ch_versions.mix(PREPAREAA.out.versions)
+        PREPAREAA (
+            ch_bam_sorted.join(CNVKIT_SEGMENT.out.cns)
+        )
+        ch_versions = ch_versions.mix(PREPAREAA.out.versions)
+
         COLLECT_SEEDS (
             CNVKIT_SEGMENT.out.cns
         )
@@ -448,15 +450,19 @@ workflow CIRCDNA {
             ch_aa_cycles.flatten().collect().ifEmpty([])
         )
 
-        AMPLICONCLASSIFIER_AMPLICONCLASSIFIER (
-            AMPLICONCLASSIFIER_MAKEINPUT.out.input
-        )
         ac_input_ch = AMPLICONCLASSIFIER_MAKEINPUT.out.input
-        ch_versions = ch_versions.mix(AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.versions)
-        AMPLICONCLASSIFIER_AMPLICONSIMILARITY (
+
+        AMPLICONCLASSIFIER_AMPLICONCLASSIFIER (
             ac_input_ch
         )
-        ch_versions = ch_versions.mix(AMPLICONCLASSIFIER_AMPLICONSIMILARITY.out.versions)
+        ch_versions = ch_versions.mix(AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.versions)
+
+
+        similarity_input = AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.features_to_graph
+        AMPLICONCLASSIFIER_FEATURESIMILARITY (
+            similarity_input
+        )
+        ch_versions = ch_versions.mix(AMPLICONCLASSIFIER_FEATURESIMILARITY.out.versions)
 
         ac_input_ch.
             map {file -> ["group", file]}.

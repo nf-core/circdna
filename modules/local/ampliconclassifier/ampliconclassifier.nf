@@ -19,6 +19,7 @@ process AMPLICONCLASSIFIER_AMPLICONCLASSIFIER {
     path ("*annotated_cycles.txt"           )        , emit: annotated_cycles, optional: true
     path ("*class_radar.{png,pdf}"          )        , emit: radar_plot      , optional: true
     path ("*feature_entropy.tsv"            )        , emit: entropy         , optional: true
+    path ("*features_to_graph.txt"          )        , emit: features_to_graph, optional: true
     path ("*feature_basic_properties.tsv"   )        , emit: basic_properties, optional: true
     path ("*classification_bed_files/*"     )        , emit: bed_files       , optional: true
     path ("*annotated_cycles_files/"        )        , emit: cycles_files    , optional: true
