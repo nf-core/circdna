@@ -1,4 +1,5 @@
-FROM continuumio/miniconda3
+FROM continuumio/miniconda3:4.11.0
 
-# Install Python packages
-RUN conda install -c bioconda -c mosek ampliconsuite mosek
+RUN conda install -c conda-forge mamba
+RUN conda install -c conda-forge mscorefonts
+RUN mamba install -c bioconda ampliconsuite
