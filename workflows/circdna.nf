@@ -23,7 +23,7 @@ if (!(params.input_format == "FASTQ" | params.input_format == "BAM")) {
 }
 
 // Modify fasta channel to include meta data
-ch_fasta_meta = ch_fasta.map{ it -> [[id:it[0].baseName], it] }
+ch_fasta_meta = ch_fasta.map{ it -> [[id:it[0].baseName], it] }.collect()
 
 branch = params.circle_identifier.split(",")
 run_circexplorer2 = ("circexplorer2" in branch)
