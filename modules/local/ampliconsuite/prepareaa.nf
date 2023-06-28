@@ -2,7 +2,8 @@ process PREPAREAA {
     tag "$meta.id"
     label 'process_low'
 
-    conda "conda-forge::python=3.7 bioconda::pysam=0.16.0 anaconda::flask=2.2.2 conda-forge::numpy=1.21.6 conda-forge::matplotlib=3.2.2 anaconda::scipy=1.7.3 conda-forge::intervaltree=3.0.2 anaconda::future=0.18.2 mosek::mosek=9.0.88"
+    conda "bioconda::ampliconsuite=0.1555.2 mosek::mosek=10.1b1"
+    container '/home/local/BICR/dschreye/src/AmpliconSuite-pipeline/docker/test/ampliconsuite.img'
 
     input:
     tuple val(meta), path(bam), path(cns)
@@ -26,21 +27,22 @@ process PREPAREAA {
     """
     export AA_DATA_REPO=${params.aa_data_repo}
     export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
-    export AA_SRC=${projectDir}/bin
+    export AA_SRC=\$(dirname \$(readlink -f \$(which AmpliconArchitect.py)))
+    export AC_SRC=\$(dirname \$(readlink -f \$(which amplicon_classifier.py)))
     REF=${params.reference_build}
 
-    PrepareAA.py \\
+    AmpliconSuite-pipeline.py \\
         $args \\
         -s $prefix \\
         -t $task.cpus \\
         --cnv_bed $cns \\
-        --sorted_bam $bam \\
-        --cngain $cngain \\
-        --ref $ref
+        --bam $bam \\
+        --ref $ref \\
+        $args
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        prepareaa: \$(echo \$(PrepareAA.py --version) | sed 's/^.*PrepareAA version //')
+        AmpliconSuite-pipeline.py: \$(echo \$(AmpliconSuite-pipeline.py --version) | sed 's/^.*PrepareAA version //')
     END_VERSIONS
     """
 

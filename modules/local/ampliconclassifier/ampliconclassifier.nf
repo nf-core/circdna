@@ -2,13 +2,13 @@ process AMPLICONCLASSIFIER_AMPLICONCLASSIFIER {
     tag "AA Amplicons"
     label 'process_low'
 
-    conda "bioconda::ampliconclassifier=0.4.14"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/ampliconclassifier:0.4.14--hdfd78af_0':
-        'quay.io/biocontainers/ampliconclassifier:0.4.14--hdfd78af_0' }"
+    conda "conda-forge::python=3.7 bioconda::pysam=0.16.0 anaconda::flask=2.2.2 conda-forge::numpy=1.21.6 conda-forge::matplotlib=3.2.2 anaconda::scipy=1.7.3 conda-forge::intervaltree=3.0.2 anaconda::future=0.18.2 mosek::mosek=9.0.88"
+    container '/home/local/BICR/dschreye/ampliconsuite.sif'
 
     input:
-    path (input_file)
+    path (graphs)
+    path (cycles)
+    path (cnseg)
 
     output:
     path ("*amplicon_classification_profiles.tsv"   ), emit: class_tsv       , optional: true
@@ -29,17 +29,19 @@ process AMPLICONCLASSIFIER_AMPLICONCLASSIFIER {
 
     script:
     def args = task.ext.args ?: ''
+    def prefix = task.ext.prefix ?: "ampliconarchitect"
 
     """
     REF=${params.reference_build}
     export AA_DATA_REPO=${params.aa_data_repo}
-    export AA_SRC=${projectDir}/bin
+    export AA_SRC=\$(dirname \$(readlink -f \$(which AmpliconArchitect.py)))
+    export AC_SRC=\$(dirname \$(readlink -f \$(which amplicon_classifier.py)))
 
-    amplicon_classifier.py \\
-        --ref \$REF \\
-        $args \\
-        --input $input_file \\
-        > ampliconclassifier.classifier_stdout.log
+    AmpliconSuite-pipeline.py \\
+        -s $prefix \\
+        --completed_AA_runs ./ \\
+        -t $task.cpus \\
+        --ref "GRCh38"
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
