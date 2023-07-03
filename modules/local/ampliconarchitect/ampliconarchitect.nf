@@ -13,14 +13,16 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
     tuple val(meta), path(bam), path(bai), path(bed)
 
     output:
-    path "versions.yml"                     , emit: versions
     tuple val(meta), path("*cycles.txt")    , optional: true, emit: cycles
     tuple val(meta), path("*graph.txt")     , optional: true, emit: graph
-    tuple val(meta), path("*cnseg.txt")    , optional: true, emit: cnseg
+    tuple val(meta), path("*cnseg.txt")     , optional: true, emit: cnseg
     tuple val(meta), path("*.out")          , optional: true, emit: out
     tuple val(meta), path("*.{pdf,png}")    , optional: true, emit: svview
     tuple val(meta), path("*_summary.txt")  , optional: true, emit: summary
-    tuple val(meta), path("*")              , optional: true, emit: all
+    tuple val(meta), path("*{log.txt,flag.txt}")            , emit: log
+    tuple val(meta), path("*sample_metadata.json")          , emit: s_json
+    tuple val(meta), path("*run_metadata.json")             , emit: r_json
+    path "versions.yml"                     , emit: versions
 
     script:
     def args = task.ext.args ?: ''
@@ -28,23 +30,22 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
     """
     export AA_DATA_REPO=${params.aa_data_repo}
     export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
-    # export AA_SRC=${projectDir}/bin
     export AA_SRC=\$(dirname \$(readlink -f \$(which AmpliconArchitect.py)))
     export AC_SRC=\$(dirname \$(readlink -f \$(which amplicon_classifier.py)))
     REF=${params.reference_build}
 
     AmpliconSuite-pipeline.py \\
-    -t $task.cpus \\
-    --bam $bam \\
-    --bed $bed \\
-    --ref \$REF \\
-    -s "${prefix}" \\
-    --run_AA
-    $args
+        -t $task.cpus \\
+        --bam $bam \\
+        --bed $bed \\
+        --ref \$REF \\
+        -s "${prefix}" \\
+        --run_AA
+        $args
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        AmpliconArchitect: \$(echo \$(AmpliconArchitect.py --version 2>&1) | sed 's/AmpliconArchitect version //g')
+        AmpliconSuite-pipeline.py: \$(echo \$(AmpliconSuite-pipeline.py --version) | sed 's/^.*PrepareAA version //')
     END_VERSIONS
     """
 
@@ -70,7 +71,7 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        AmpliconArchitect: \$(echo \$(AmpliconArchitect.py --version 2>&1) | sed 's/AmpliconArchitect version //g')
+        AmpliconSuite-pipeline.py: \$(echo \$(AmpliconSuite-pipeline.py --version) | sed 's/^.*PrepareAA version //')
     END_VERSIONS
     """
 }

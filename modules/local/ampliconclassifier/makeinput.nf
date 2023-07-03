@@ -8,12 +8,12 @@ process AMPLICONCLASSIFIER_MAKEINPUT {
         'quay.io/biocontainers/ampliconclassifier:0.4.14--hdfd78af_0' }"
 
     input:
-    path(graph)
-    path(cycles)
+    val(id)
+    path(summary)
 
     output:
     path "*.input"      , emit: input
-    path "versions.yml" , emit: versions
+    // path "versions.yml" , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -22,12 +22,31 @@ process AMPLICONCLASSIFIER_MAKEINPUT {
     def args = task.ext.args ?: ''
 
     """
-    make_input.sh ./ ampliconclassifier
+    # Take vectors as input
+    vector1=(\$(echo $id | sed 's/\\[//g' | sed 's/, / /g' | sed 's/\\]//g' ))
+    vector2=(\$(echo $summary | sed 's/\\[//g' | sed 's/, /,/g' ))
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        AmpliconClassifier: \$(echo \$(amplicon_classifier.py --version | sed 's/amplicon_classifier //g' | sed 's/ .*//g'))
-    END_VERSIONS
+    echo \$vector1
+    echo \$vector2
+
+    # Check that vectors are of equal length
+    if [ \${#vector1[@]} -ne \${#vector2[@]} ]; then
+        echo "Vectors are not of equal length."
+        exit 1
+    fi
+
+    # Sort the vectors
+    vector1_sorted=(\$(printf '%s\n' "\${vector1[@]}"|sort))
+    vector2_sorted=(\$(printf '%s\n' "\${vector2[@]}"|sort))
+
+    # Write to file
+    for index in \${!vector1_sorted[@]}; do
+        echo \${vector1_sorted[\$index]}\t\${vector2_sorted[\$index]}
+    done > run_metadata_list.input
+
+#    "${task.process}":
+#        AmpliconClassifier: \$(echo \$(amplicon_classifier.py --version | sed 's/amplicon_classifier //g' | sed 's/ .*//g'))
+#    END_VERSIONS
     """
 
     stub:

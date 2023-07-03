@@ -6,7 +6,7 @@ process PREPAREAA {
     container '/home/local/BICR/dschreye/src/AmpliconSuite-pipeline/docker/test/ampliconsuite.img'
 
     input:
-    tuple val(meta), path(bam), path(cns)
+    tuple val(meta), path(bam)
 
     output:
     tuple val(meta), path("*CNV_SEEDS.bed") , emit: bed
@@ -35,7 +35,6 @@ process PREPAREAA {
         $args \\
         -s $prefix \\
         -t $task.cpus \\
-        --cnv_bed $cns \\
         --bam $bam \\
         --ref $ref \\
         $args

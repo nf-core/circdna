@@ -8,7 +8,7 @@ process AMPLICONCLASSIFIER_MAKERESULTSTABLE {
         'quay.io/biocontainers/ampliconclassifier:0.4.14--hdfd78af_0' }"
 
     input:
-    path (input_file)
+    path (metadata)
     path (class_file)
     path (gene_list)
     path (feature_entropy)
@@ -27,13 +27,16 @@ process AMPLICONCLASSIFIER_MAKERESULTSTABLE {
     script:
     def args = task.ext.args ?: ''
     """
+    export AA_DATA_REPO=${params.aa_data_repo}
+    REF=${params.reference_build}
+
     # Create subdirectories in working directory
     mkdir ampliconclassifier_classification_bed_files
     mv $bed_files ampliconclassifier_classification_bed_files/
 
     make_results_table.py \\
         $args \\
-        --input $input_file \\
+        --run_metadata_list $metadata \\
         --classification_file $class_file
 
     cat <<-END_VERSIONS > versions.yml

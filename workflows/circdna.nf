@@ -401,43 +401,15 @@ workflow CIRCDNA {
     }
 
     if (run_ampliconarchitect) {
-        CNVKIT_BATCH (
-            ch_bam_sorted.join(ch_bam_sorted_bai),
-            ch_fasta,
-            ch_cnvkit_reference
-        )
-        ch_versions = ch_versions.mix(CNVKIT_BATCH.out.versions)
-
-        CNVKIT_SEGMENT (
-            CNVKIT_BATCH.out.cnr
-        )
-        ch_versions = ch_versions.mix(CNVKIT_SEGMENT.out.versions)
-
         PREPAREAA (
-            ch_bam_sorted.join(CNVKIT_SEGMENT.out.cns)
+            ch_bam_sorted
         )
         ch_versions = ch_versions.mix(PREPAREAA.out.versions)
-
-//         COLLECT_SEEDS (
-//             CNVKIT_SEGMENT.out.cns
-//         )
-//         ch_versions = ch_versions.mix(COLLECT_SEEDS.out.versions)
-//
-//         ch_aa_seeds = COLLECT_SEEDS.out.bed
-//         AMPLIFIED_INTERVALS (
-//             ch_aa_seeds.join(ch_bam_sorted).join(ch_bam_sorted_bai)
-//         )
-//         ch_versions = ch_versions.mix(AMPLIFIED_INTERVALS.out.versions)
 
         AMPLICONARCHITECT_AMPLICONARCHITECT (
             ch_bam_sorted.join(ch_bam_sorted_bai).
                 join(PREPAREAA.out.bed)
         )
-
-        // AMPLICONARCHITECT_AMPLICONARCHITECT (
-        //     ch_bam_sorted.join(ch_bam_sorted_bai).
-        //         join(PREPAREAA.out.bed)
-        // )
         ch_versions = ch_versions.mix(AMPLICONARCHITECT_AMPLICONARCHITECT.out.versions)
 
         ch_aa_cycles = AMPLICONARCHITECT_AMPLICONARCHITECT.out.cycles.
@@ -452,39 +424,7 @@ workflow CIRCDNA {
             ch_aa_cycles.flatten().collect().ifEmpty([]),
             ch_aa_cnseg.flatten().collect().ifEmpty([])
         )
-
-//        ac_input_ch = AMPLICONCLASSIFIER_MAKEINPUT.out.input
-//
-//        AMPLICONCLASSIFIER_AMPLICONCLASSIFIER (
-//            ac_input_ch
-//        )
-//        ch_versions = ch_versions.mix(AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.versions)
-//
-//
-//        similarity_input = AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.features_to_graph
-//        AMPLICONCLASSIFIER_FEATURESIMILARITY (
-//            similarity_input
-//        )
-//        ch_versions = ch_versions.mix(AMPLICONCLASSIFIER_FEATURESIMILARITY.out.versions)
-//
-//        ac_input_ch.
-//            map {file -> ["group", file]}.
-//            set {ac_results_input_ch}
-//        AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.class_tsv.
-//            map {file -> ["group", file]}.
-//            set {ac_class_ch}
-        //  ac_results_input_ch.join(ac_class_ch).
-        //  map{group, input_file, class_file -> [input_file, class_file]}
-
-//        AMPLICONCLASSIFIER_MAKERESULTSTABLE (
-//            ac_input_ch,
-//            AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.class_tsv,
-//            AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.gene_list,
-//            AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.entropy,
-//            AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.basic_properties,
-//            AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.bed_files
-//        )
-//        ch_versions = ch_versions.mix(AMPLICONCLASSIFIER_MAKERESULTSTABLE.out.versions)
+        ch_versions = ch_versions.mix(AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.versions)
     }
 
 
