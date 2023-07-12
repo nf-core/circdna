@@ -155,10 +155,6 @@ include { COLLECT_SEEDS                             }     from '../modules/local
 include { AMPLIFIED_INTERVALS                       }     from '../modules/local/amplified_intervals.nf'
 include { AMPLICONARCHITECT_AMPLICONARCHITECT       }     from '../modules/local/ampliconarchitect/ampliconarchitect.nf'
 include { AMPLICONCLASSIFIER_AMPLICONCLASSIFIER     }     from '../modules/local/ampliconclassifier/ampliconclassifier.nf'
-include { AMPLICONCLASSIFIER_AMPLICONSIMILARITY     }     from '../modules/local/ampliconclassifier/ampliconsimilarity.nf'
-include { AMPLICONCLASSIFIER_FEATURESIMILARITY      }     from '../modules/local/ampliconclassifier/featuresimilarity.nf'
-include { AMPLICONCLASSIFIER_MAKEINPUT              }     from '../modules/local/ampliconclassifier/makeinput.nf'
-include { AMPLICONCLASSIFIER_MAKERESULTSTABLE       }     from '../modules/local/ampliconclassifier/makeresultstable.nf'
 
 // Unicycler
 include { UNICYCLER           }     from '../modules/local/unicycler/main.nf'
