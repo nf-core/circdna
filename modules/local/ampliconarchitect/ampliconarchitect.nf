@@ -3,7 +3,7 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
     label 'process_low'
 
     conda "bioconda::ampliconsuite=0.1555.2 mosek::mosek=10.1b1"
-    container '/home/local/BICR/dschreye/ampliconsuite.sif'
+    container 'quay.io/nf-core/prepareaa:1.0.0'
 
     input:
     tuple val(meta), path(bam), path(bai), path(bed)
@@ -26,8 +26,20 @@ process AMPLICONARCHITECT_AMPLICONARCHITECT {
     """
     export AA_DATA_REPO=${params.aa_data_repo}
     export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
-    export AA_SRC=\$(dirname \$(readlink -f \$(which AmpliconArchitect.py)))
-    export AC_SRC=\$(dirname \$(readlink -f \$(which amplicon_classifier.py)))
+
+    # Define Variables AA_SRC and AC_SRC
+    if ! command -v AmpliconArchitect.py &> /dev/null; then
+        export AA_SRC=\$(dirname \$(python -c "import ampliconarchitectlib; print(ampliconarchitectlib.__file__)")
+    else
+        export AA_SRC=\$(dirname \$(readlink -f \$(which AmpliconArchitect.py)))
+    fi
+
+    if ! command -v amplicon_classifier.py &> /dev/null; then
+        export AC_SRC=\$(dirname \$(python -c "import ampliconclassifierlib; print(ampliconclassifierlib.__file__)")
+    else
+        export AC_SRC=\$(dirname \$(readlink -f \$(which amplicon_classifier.py)))
+    fi
+
     REF=${params.reference_build}
 
     AmpliconSuite-pipeline.py \\
