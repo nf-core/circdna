@@ -29,13 +29,13 @@ process PREPAREAA {
     export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
     # Define Variables AA_SRC and AC_SRC
     if ! command -v AmpliconArchitect.py &> /dev/null; then
-        export AA_SRC=\$(dirname \$(python -c "import ampliconarchitectlib; print(ampliconarchitectlib.__file__)")
+        export AA_SRC=\$(dirname \$(python -c "import ampliconarchitectlib; print(ampliconarchitectlib.__file__)"))
     else
         export AA_SRC=\$(dirname \$(readlink -f \$(which AmpliconArchitect.py)))
     fi
 
     if ! command -v amplicon_classifier.py &> /dev/null; then
-        export AC_SRC=\$(dirname \$(python -c "import ampliconclassifierlib; print(ampliconclassifierlib.__file__)")
+        export AC_SRC=\$(dirname \$(python -c "import ampliconclassifierlib; print(ampliconclassifierlib.__file__)"))
     else
         export AC_SRC=\$(dirname \$(readlink -f \$(which amplicon_classifier.py)))
     fi
@@ -51,7 +51,7 @@ process PREPAREAA {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        AmpliconSuite-pipeline.py: \$(echo \$(AmpliconSuite-pipeline.py --version) | sed 's/^.*PrepareAA version //')
+        AmpliconSuite-pipeline.py: \$(AmpliconSuite-pipeline.py --version | sed 's/AmpliconSuite-pipeline version //')
     END_VERSIONS
     """
 
@@ -76,7 +76,7 @@ process PREPAREAA {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        prepareaa: \$(echo \$(PrepareAA.py --version) | sed 's/^.*PrepareAA version //')
+        AmpliconSuite-pipeline.py: \$(AmpliconSuite-pipeline.py --version | sed 's/AmpliconSuite-pipeline version //')
     END_VERSIONS
     """
 }
