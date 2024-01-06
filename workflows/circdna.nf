@@ -1,21 +1,19 @@
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    VALIDATE INPUTS
+    PRINT PARAMS SUMMARY
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
 
-def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
+def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
+def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
+def summary_params = paramsSummaryMap(workflow)
 
-// Validate input parameters
+// Print parameter summary log to screen
+log.info logo + paramsSummaryLog(workflow) + citation
 WorkflowCircdna.initialise(params, log)
 
-// Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
-for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
-
-// Check mandatory parameters
-if (params.input) { ch_input =  Channel.fromPath(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 if (params.fasta) { ch_fasta =  Channel.fromPath(params.fasta) } else { exit 1, 'Fasta reference genome not specified!' }
 
 if (!(params.input_format == "FASTQ" | params.input_format == "BAM")) {
@@ -41,7 +39,7 @@ if (run_unicycler && !params.input_format == "FASTQ") {
         exit 1, 'Unicycler needs FastQ input. Please specify input_format == "FASTQ", if possible, or don`t run unicycler.'
 }
 
-if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
+if (!params.input) { exit 1, 'Input samplesheet not specified!' }
 
 // Check if BWA Index is given
 if (params.bwa_index) {
@@ -189,7 +187,7 @@ workflow CIRCDNA {
         // SUBWORKFLOW: Read in samplesheet, validate and stage input files
         //
         INPUT_CHECK (
-            ch_input
+            file(params.input)
         )
         .reads
         .map {
@@ -287,7 +285,7 @@ workflow CIRCDNA {
     } else if (params.input_format == "BAM") {
         // Use BAM Files as input
         INPUT_CHECK (
-            ch_input
+            file(params.input)
         )
         if (!params.bam_sorted){
             SAMTOOLS_SORT_BAM (
@@ -535,8 +533,15 @@ workflow CIRCDNA {
     // MODULE: MultiQC
     //
     if (!params.skip_multiqc) {
-        workflow_summary    = WorkflowCircdna.paramsSummaryMultiqc(workflow, summary_params)
+        workflow_summary = WorkflowCircdna.paramsSummaryMultiqc(workflow, summary_params)
         ch_workflow_summary = Channel.value(workflow_summary)
+
+        methods_description    = WorkflowCircdna.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
+        ch_methods_description = Channel.value(methods_description)
+            ch_multiqc_files = Channel.empty()
+        ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
+        ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
 
         MULTIQC (
             ch_multiqc_config,
@@ -569,6 +574,7 @@ workflow.onComplete {
     if (params.email || params.email_on_fail) {
         NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
     }
+    NfcoreTemplate.dump_parameters(workflow, params)
     NfcoreTemplate.summary(workflow, params, log)
     if (params.hook_url) {
         NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)

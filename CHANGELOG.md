@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-- nf-core template
+- nf-core template update to 2.11.1
 
 ### `Dependencies`
 
