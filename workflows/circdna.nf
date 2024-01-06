@@ -150,13 +150,7 @@ include { CIRCLEFINDER                              }     from '../modules/local
 include { CIRCEXPLORER2_PARSE       }     from '../modules/local/circexplorer2/parse.nf'
 
 // AmpliconArchitect
-include { CNVKIT_BATCH                              }     from '../modules/local/cnvkit/batch/main.nf'
-include { CNVKIT_SEGMENT                            }     from '../modules/local/cnvkit/segment.nf'
-include { PREPAREAA                                 }     from '../modules/local/ampliconsuite/prepareaa.nf'
-include { COLLECT_SEEDS                             }     from '../modules/local/collect_seeds.nf'
-include { AMPLIFIED_INTERVALS                       }     from '../modules/local/amplified_intervals.nf'
-include { AMPLICONARCHITECT_AMPLICONARCHITECT       }     from '../modules/local/ampliconarchitect/ampliconarchitect.nf'
-include { AMPLICONCLASSIFIER_AMPLICONCLASSIFIER     }     from '../modules/local/ampliconclassifier/ampliconclassifier.nf'
+include { AMPLICONSUITE                                 }     from '../modules/local/ampliconsuite/ampliconsuite.nf'
 
 // Unicycler
 include { UNICYCLER           }     from '../modules/local/unicycler/main.nf'
@@ -399,32 +393,11 @@ workflow CIRCDNA {
     }
 
     if (run_ampliconarchitect) {
-        PREPAREAA (
+        AMPLICONSUITE (
             ch_bam_sorted
         )
-        ch_versions = ch_versions.mix(PREPAREAA.out.versions)
-
-        AMPLICONARCHITECT_AMPLICONARCHITECT (
-            ch_bam_sorted.join(ch_bam_sorted_bai).
-                join(PREPAREAA.out.bed)
-        )
-        ch_versions = ch_versions.mix(AMPLICONARCHITECT_AMPLICONARCHITECT.out.versions)
-
-        ch_aa_cycles = AMPLICONARCHITECT_AMPLICONARCHITECT.out.cycles.
-            map {meta, path -> [path]}
-        ch_aa_graphs = AMPLICONARCHITECT_AMPLICONARCHITECT.out.graph.
-            map {meta, path -> [path]}
-        ch_aa_cnseg = AMPLICONARCHITECT_AMPLICONARCHITECT.out.cnseg.
-            map {meta, path -> [path]}
-
-        AMPLICONCLASSIFIER_AMPLICONCLASSIFIER (
-            ch_aa_graphs.flatten().collect().ifEmpty([]),
-            ch_aa_cycles.flatten().collect().ifEmpty([]),
-            ch_aa_cnseg.flatten().collect().ifEmpty([])
-        )
-        ch_versions = ch_versions.mix(AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.versions)
+        ch_versions = ch_versions.mix(AMPLICONSUITE.out.versions)
     }
-
 
     //
     // SUBWORKFLOW - RUN CIRCLE_FINDER PIPELINE
