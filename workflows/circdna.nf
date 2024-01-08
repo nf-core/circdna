@@ -158,7 +158,7 @@ include { MINIMAP2_ALIGN      }     from '../modules/nf-core/minimap2/align/main
 
 
 // MULTIQC
-include { MULTIQC }     from '../modules/local/multiqc.nf'
+include { MULTIQC }     from '../modules/local/multiqc/main.nf'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
