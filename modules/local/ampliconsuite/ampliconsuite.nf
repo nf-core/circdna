@@ -9,19 +9,26 @@ process AMPLICONSUITE {
     tuple val(meta), path(bam)
 
     output:
-    tuple val(meta), path("*CNV_SEEDS.bed") , emit: bed
-    path "*.log"                            , emit: log
-    path "*run_metadata.json"               , emit: run_metadata_json
-    path "*sample_metadata.json"            , emit: sample_metadata_json
-    path "*timing_log.txt"                  , emit: timing_log
-    path "*cycles.txt"                      , emit: cycles, optional: true
-    path "*graph.txt"                       , emit: graph, optional: true
-    path "*edges.txt"                       , emit: edges, optional: true
-    path "*edges_cnseg.txt"                 , emit: edges_cnseg, optional: true
-    path "*.out"                            , emit: aa_out, optional: true
-    path "versions.yml"                     , emit: versions
-    path "*.png"                            , optional: true
-    path "*.pdf"                            , optional: true
+    path "*.bed"                    , emit: bed
+    path "*.cns"                    , emit: cns
+    path "*.cnr.gz"                 , emit: cnr
+    path "*.log"                    , emit: log
+    path "*run_metadata.json"       , emit: run_metadata_json
+    path "*sample_metadata.json"    , emit: sample_metadata_json
+    path "*timing_log.txt"          , emit: timing_log
+    path "*.input"                  , emit: ac_input, optional: true
+    path "*logs.txt"                , emit: logs, optional: true
+    path "*cycles.txt"              , emit: cycles, optional: true
+    path "*graph.txt"               , emit: graph, optional: true
+    path "*summary.txt"             , emit: summary, optional: true
+    path "*summary_map.txt"         , emit: summary_map, optional: true
+    path "*edges.txt"               , emit: edges, optional: true
+    path "*edges_cnseg.txt"         , emit: edges_cnseg, optional: true
+    path "*.out"                    , emit: aa_out, optional: true
+    path "*.png"                    , emit: png, optional: true
+    path "*.pdf"                    , emit: pdf, optional: true
+    path "*finish_flag.txt"         , emit: finish_flag, optional: true
+    path "versions.yml"             , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
