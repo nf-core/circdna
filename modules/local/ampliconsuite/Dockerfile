@@ -22,6 +22,7 @@ RUN micromamba install --yes --name base -c bioconda -c conda-forge -c mosek \
 
 # Append micromamba activation command to .bashrc
 RUN echo "micromamba activate base" >> ~/.bashrc
+RUN echo "export PATH=/opt/conda/bin:\$PATH" >> ~/.bashrc
 
 # Switch back to the default user
 USER $NB_UID
