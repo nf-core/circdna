@@ -49,6 +49,7 @@
   > Deshpande V, Luebeck J, Nguyen ND, Bakhtiari M, Turner KM, Schwab R, Carter H, Mischel PS, Bafna V. Exploring the landscape of focal amplifications in cancer using AmpliconArchitect. Nat Commun. 2019 Jan 23;10(1):392. doi: 10.1038/s41467-018-08200-y. PMID: 30674876; PMCID: PMC6344493.
 
 - [AmpliconClassifier](https://github.com/jluebeck/AmpliconClassifier)
+
   > Luebeck J, Ng AWT, Galipeau PC, Li X, Sanchez CA, Katz-Summercorn AC, Kim H, Jammula S, He Y, Lippman SM, Verhaak RGW, Maley CC, Alexandrov LB, Reid BJ, Fitzgerald RC, Paulson TG, Chang HY, Wu S, Bafna V, Mischel PS. Extrachromosomal DNA in the cancerous transformation of Barrett's oesophagus. Nature. 2023 Apr;616(7958):798-805. doi: 10.1038/s41586-023-05937-5. Epub 2023 Apr 12. PMID: 37046089; PMCID: PMC10132967.
 
 - [Samblaster](https://github.com/GregoryFaust/samblaster)
