@@ -3,10 +3,12 @@ process AMPLICONSUITE {
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container 'nf-core/prepareaa:1.0.1'
+    container 'nf-core/prepareaa:1.0.2'
 
     input:
     tuple val(meta), path(bam)
+    path(mosek_license_dir)
+    path(aa_data_repo)
 
     output:
     path "*.bed"                    , emit: bed
@@ -20,14 +22,7 @@ process AMPLICONSUITE {
     path "*logs.txt"                , emit: logs, optional: true
     path "*cycles.txt"              , emit: cycles, optional: true
     path "*graph.txt"               , emit: graph, optional: true
-    path "*summary.txt"             , emit: summary, optional: true
-    path "*summary_map.txt"         , emit: summary_map, optional: true
-    path "*edges.txt"               , emit: edges, optional: true
-    path "*edges_cnseg.txt"         , emit: edges_cnseg, optional: true
-    path "*.out"                    , emit: aa_out, optional: true
-    path "*.png"                    , emit: png, optional: true
-    path "*.pdf"                    , emit: pdf, optional: true
-    path "*finish_flag.txt"         , emit: finish_flag, optional: true
+    path "*"
     path "versions.yml"             , emit: versions
 
     when:
@@ -39,20 +34,11 @@ process AMPLICONSUITE {
     def cngain = params.aa_cngain
     def ref = params.reference_build
     """
-    export AA_DATA_REPO=${params.aa_data_repo}
-    export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
+    export AA_DATA_REPO=\$(echo $aa_data_repo)
+    export MOSEKLM_LICENSE_FILE=\$(echo $mosek_license_dir)
     # Define Variables AA_SRC and AC_SRC
-    if ! command -v AmpliconArchitect.py &> /dev/null; then
-        export AA_SRC=\$(dirname \$(python -c "import ampliconarchitectlib; print(ampliconarchitectlib.__file__)"))
-    else
-        export AA_SRC=\$(dirname \$(readlink -f \$(which AmpliconArchitect.py)))
-    fi
-
-    if ! command -v amplicon_classifier.py &> /dev/null; then
-        export AC_SRC=\$(dirname \$(python -c "import ampliconclassifierlib; print(ampliconclassifierlib.__file__)"))
-    else
-        export AC_SRC=\$(dirname \$(readlink -f \$(which amplicon_classifier.py)))
-    fi
+    export AA_SRC=\$(dirname \$(python -c "import ampliconarchitectlib; print(ampliconarchitectlib.__file__)"))
+    export AC_SRC=\$(dirname \$(which amplicon_classifier.py))
     REF=${params.reference_build}
 
     AmpliconSuite-pipeline.py \\
@@ -81,8 +67,11 @@ process AMPLICONSUITE {
     def cngain = params.aa_cngain
     def ref = params.reference_build
     """
-    export AA_DATA_REPO=${params.aa_data_repo}
-    export MOSEKLM_LICENSE_FILE=${params.mosek_license_dir}
+    export AA_DATA_REPO=\$(echo $aa_data_repo)
+    export MOSEKLM_LICENSE_FILE=\$(echo $mosek_license_dir)
+    # Define Variables AA_SRC and AC_SRC
+    export AA_SRC=\$(dirname \$(python -c "import ampliconarchitectlib; print(ampliconarchitectlib.__file__)"))
+    export AC_SRC=\$(dirname \$(which amplicon_classifier.py))
     REF=${params.reference_build}
 
     touch "${prefix}_CNV_SEEDS.bed"
@@ -92,7 +81,7 @@ process AMPLICONSUITE {
     touch "${prefix}.timing_log.txt"
     touch "${prefix}_summary.txt"
 
-    PrepareAA.py --help
+    AmpliconSuite-pipeline.py --help
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
