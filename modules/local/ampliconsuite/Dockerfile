@@ -1,21 +1,14 @@
 # Dockerfile to create container with bcl2fastq
-# Push to nfcore/bcl2fastq:<VER>
-
-FROM continuumio/miniconda3
+FROM mambaorg/micromamba
 LABEL authors="Daniel Schreyer <ds.danielschreyer@gmail.com>" \
     description="Docker image containing conda packages for ampliconsuite run"
 
+RUN micromamba install --yes --name base -c bioconda -c conda-forge -c mosek \
+    bioconda::ampliconsuite=1.2.1 \
+    mosek::mosek=10.1.21
+RUN micromamba clean --all --yes
 
-WORKDIR /app
+RUN echo "micromamba activate base" >> ~/.bashrc
 
-# Create the environment:
-COPY environment.yml .
-RUN conda env create -f environment.yml
-
-# Activate the environment
-SHELL ["conda", "activate", "-n", "ampliconsuite"]
-
-# Test AmpliconSuite-pipeline.py
-SHELL ["AmpliconSuite-pipeline.py",  "--help"]
-
-COPY . .
+# Start a bash shell by default
+CMD ["/bin/bash"]
