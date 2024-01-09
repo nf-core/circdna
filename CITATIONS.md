@@ -42,15 +42,14 @@
 
   > Talevich E, Shain AH, Botton T, Bastian BC. Cnvkit: genome-wide copy number detection and visualization from targeted dna sequencing. PLoS Comput Biol. 2016;12(4):e1004873. doi: 10.1371/journal.pcbi.1004873. PMID: 27100738; PMCID: PMC4839673.
 
-- [PrepareAA](https://github.com/jluebeck/AmpliconSuite-pipeline)
+- [AmpliconSuite-Pipeline](https://github.com/AmpliconSuite/AmpliconSuite-pipeline)
 
 - [AmpliconArchitect](https://github.com/virajbdeshpande/AmpliconArchitect)
 
   > Deshpande V, Luebeck J, Nguyen ND, Bakhtiari M, Turner KM, Schwab R, Carter H, Mischel PS, Bafna V. Exploring the landscape of focal amplifications in cancer using AmpliconArchitect. Nat Commun. 2019 Jan 23;10(1):392. doi: 10.1038/s41467-018-08200-y. PMID: 30674876; PMCID: PMC6344493.
 
 - [AmpliconClassifier](https://github.com/jluebeck/AmpliconClassifier)
-
-  > Luebeck, Jens, Alvin Wei Tian Ng, Patricia C. Galipeau, Xiaohong Li, Carissa A. Sanchez, Annalise Katz-Summercorn, Hoon Kim et al. "Extrachromosomal DNA in the cancerous transformation of Barrett's esophagus." bioRxiv (2022): 2022-07.
+  > Luebeck J, Ng AWT, Galipeau PC, Li X, Sanchez CA, Katz-Summercorn AC, Kim H, Jammula S, He Y, Lippman SM, Verhaak RGW, Maley CC, Alexandrov LB, Reid BJ, Fitzgerald RC, Paulson TG, Chang HY, Wu S, Bafna V, Mischel PS. Extrachromosomal DNA in the cancerous transformation of Barrett's oesophagus. Nature. 2023 Apr;616(7958):798-805. doi: 10.1038/s41586-023-05937-5. Epub 2023 Apr 12. PMID: 37046089; PMCID: PMC10132967.
 
 - [Samblaster](https://github.com/GregoryFaust/samblaster)
 
