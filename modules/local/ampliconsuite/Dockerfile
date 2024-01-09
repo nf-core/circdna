@@ -3,7 +3,7 @@ FROM mambaorg/micromamba:jammy
 
 # Label the image
 LABEL authors="Daniel Schreyer <ds.danielschreyer@gmail.com>" \
-      description="Docker image containing procps and conda packages for ampliconsuite run"
+    description="Docker image containing procps and conda packages for ampliconsuite run"
 
 # Switch to root to install system packages
 USER root
