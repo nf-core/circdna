@@ -24,4 +24,4 @@ jobs:
         with:
           file: modules/local/ampliconsuite/Dockerfile
           push: true
-          tags: "quay.io/nf-core/prepareaa:1.0.3"
+          tags: "quay.io/nf-core/prepareaa:1.0.4"

@@ -29,3 +29,13 @@ USER $NB_UID
 
 # Start a login bash shell by default
 CMD ["/bin/bash", "-l"]
+
+# Create an entrypoint script
+RUN echo '#!/bin/bash' > /entrypoint.sh && \
+    echo 'source ~/micromamba/etc/profile.d/mamba.sh' >> /entrypoint.sh && \
+    echo 'micromamba activate base' >> /entrypoint.sh && \
+    echo 'exec "$@"' >> /entrypoint.sh && \
+    chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/bin/bash", "-l"]
