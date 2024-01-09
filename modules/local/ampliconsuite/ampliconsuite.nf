@@ -2,7 +2,7 @@ process AMPLICONSUITE {
     tag "$meta.id"
     label 'process_low'
 
-    conda "bioconda::ampliconsuite=1.2.0 mosek::mosek=10.1.21"
+    conda "${moduleDir}/environment.yml"
     container 'quay.io/nf-core/prepareaa:1.0.0'
 
     input:
