@@ -3,15 +3,15 @@ process AMPLICONSUITE {
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container 'quay.io/nf-core/prepareaa:1.0.0'
+    container 'nf-core/prepareaa:1.0.1'
 
     input:
     tuple val(meta), path(bam)
 
     output:
     path "*.bed"                    , emit: bed
-    path "*.cns"                    , emit: cns
-    path "*.cnr.gz"                 , emit: cnr
+    path "*.cns"                    , emit: cns, optional: true
+    path "*.cnr.gz"                 , emit: cnr, optional: true
     path "*.log"                    , emit: log
     path "*run_metadata.json"       , emit: run_metadata_json
     path "*sample_metadata.json"    , emit: sample_metadata_json
@@ -65,9 +65,9 @@ process AMPLICONSUITE {
         $args
 
     # Move Files to base work directory
-    mv ${prefix}_cnvkit_output/* ./
-    mv ${prefix}_AA_results/* ./
-    mv ${prefix}_classification/* ./
+    find ${prefix}_cnvkit_output/ -type f -print0 | xargs -0 mv -t ./
+    find ${prefix}_AA_results/ -type f -print0 | xargs -0 mv -t ./
+    find ${prefix}_classification/ -type f -print0 | xargs -0 mv -t ./
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
