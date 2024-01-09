@@ -3,7 +3,7 @@ process AMPLICONSUITE {
     label 'process_low'
 
     conda "${moduleDir}/environment.yml"
-    container 'nf-core/prepareaa:1.0.4'
+    container 'nf-core/prepareaa:1.0.5'
 
     input:
     tuple val(meta), path(bam)
