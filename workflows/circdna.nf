@@ -516,7 +516,7 @@ workflow CIRCDNA {
 
         MINIMAP2_ALIGN (
             ch_circular_fastq,
-            ch_fasta,
+            ch_fasta_meta,
             false,
             false,
             false
