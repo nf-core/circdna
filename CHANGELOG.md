@@ -24,7 +24,11 @@ Special thanks to the following for their input and contributions to the release
   - A wrapper for calling copy numbers, preparing amplified intervals, running AmpliconArchitect, and calling amplicon classes using AmpliconClassifier
   - Added docker container named [PrepareAA](https://quay.iorepository/nf-core/prepareaa?tab=tags) to run AmpliconSuite-Pipeline with singualarity or docker
   - Added module configs and description
-- Changed assets/multiqc_config.yml to fit new pipeline version
+- Changed `assets/multiqc_config.yml`to fit new pipeline version
+- Included directory checks for `mosek_license_dir` and `aa_data_repo` .
+  - Removed both directory parameters in the test profile as it is only checked when running `ampliconarchitect`
+- Updated `nextflow_schema.json` to give better details about how to use `--circle_identifier`
+- made `--circle_identifier` an essential parameter
 
 ## v1.0.4 - [2023-06-26]
 
