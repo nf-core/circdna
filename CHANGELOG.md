@@ -3,26 +3,28 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v1.0.5 - [2024-01-09]
+## v1.1 - [2024-01-30]
 
-### `Added`
+### Credits
 
-- AmpliconSuite-Pipeline process
-- AmpliconSuite output description
+Special thanks to the following for their input and contributions to the release:
 
-### `Fixed`
+- [Jens Luebeck](https://github.com/jluebeck)
+- [Simon Pearce](https://github.com/SPPearce)
+- [Maxime U Garcia](https://github.com/maxulysse)
 
-- nf-core template update to 2.11.1
+### Enhancements & fixes
 
-### `Dependencies`
-
-- Added docker container dependency
-
-### `Deprecated`
-
-- AmpliconArchitect and AmpliconClassifier - Both used in AmpliconSuite
-
-=======
+- Nf-core template update to 2.11.1
+  - update of nf-core modules versions
+- Removed AmpliconArchitect and AmpliconClassifier modules with their respective scripts in /bin
+  - AmpliconArchitect and AmpliconClassifier is now run inside the AmpliconSuite-Pipeline. Additional scripts are not necessary.
+  - Removed respective configs and workflow code
+- Added AmpliconSuite-Pipeline
+  - A wrapper for calling copy numbers, preparing amplified intervals, running AmpliconArchitect, and calling amplicon classes using AmpliconClassifier
+  - Added docker container named [PrepareAA](https://quay.iorepository/nf-core/prepareaa?tab=tags) to run AmpliconSuite-Pipeline with singualarity or docker
+  - Added module configs and description
+- Changed assets/multiqc_config.yml to fit new pipeline version
 
 ## v1.0.4 - [2023-06-26]
 
