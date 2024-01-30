@@ -1,0 +1,9 @@
+name: ampliconsuite
+channels:
+  - conda-forge
+  - bioconda
+  - mosek
+  - defaults
+dependencies:
+  - bioconda::ampliconsuite=1.2.1
+  - mosek::mosek=10.1.21
