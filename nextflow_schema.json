@@ -72,8 +72,7 @@
                     "type": "string",
                     "description": "Specifies the circular DNA identification algorithm to use - available 'circle_map_realign', 'circle_map_repeats', 'circle_finder', 'circexplorer2', and 'ampliconarchitect'. Multiple circle_identifier's can be specified with a comma-separated string. E.g. `--circle_identifier 'circle_map_realign,unicycler'`.",
                     "help_text": "Specify the circle_identifier branch used. Multiple circle_identifier's can be specified with a comma-separated string. E.g. `--circle_identifier 'circle_map_realign,unicycler'`.",
-                    "fa_icon": "fas fa-circle-notch",
-                    "default": "circle_map_realign"
+                    "fa_icon": "fas fa-circle-notch"
                 }
             }
         },
@@ -303,8 +302,7 @@
                     "mimetype": "text/plain",
                     "fa_icon": "fas fa-book",
                     "description": "When running AmpliconArchitect, specify reference build ['GRCh37', 'GRCh38', 'mm10']. This is *mandatory* to match fasta and AA reference build!",
-                    "help_text": "Specify the reference genome build used for alignment of the WGS reads.",
-                    "default": "GRCh38"
+                    "help_text": "Specify the reference genome build used for alignment of the WGS reads."
                 },
                 "cnvkit_cnn": {
                     "type": "string",
