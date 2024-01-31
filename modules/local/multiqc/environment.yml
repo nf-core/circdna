@@ -1,4 +1,4 @@
-name: custom_dumpsoftwareversions
+name: multiqc
 channels:
   - conda-forge
   - bioconda
