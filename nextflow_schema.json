@@ -25,8 +25,7 @@
                 "input_format": {
                     "type": "string",
                     "description": "Specify input format. Default *FASTQ*. Options 'FASTQ' or 'BAM'.",
-                    "default": "FASTQ",
-                    "help_text": "Define which input file formats are used in the pipeline run. Use either `--input_format FASTQ` or `--input_format BAM`.",
+                    "help_text": "Define which input file formats are used in the pipeline run. Use either `--input_format 'FASTQ'` or `--input_format 'BAM'`.",
                     "fa_icon": "fas fa-pen"
                 },
                 "bam_sorted": {

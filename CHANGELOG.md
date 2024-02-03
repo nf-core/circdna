@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v1.1 - [2024-01-30]
+## v1.1.0 - [2024-02-03]
 
 ### Credits
 
@@ -29,6 +29,7 @@ Special thanks to the following for their input and contributions to the release
   - Removed both directory parameters in the test profile as it is only checked when running `ampliconarchitect`
 - Updated `nextflow_schema.json` to give better details about how to use `--circle_identifier`
 - made `--circle_identifier` an essential parameter
+- made `--input_format` an essential parameter and removed the default value to request specification by user
 
 ## v1.0.4 - [2023-06-26]
 
