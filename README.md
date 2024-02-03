@@ -79,7 +79,7 @@ Each row represents a pair of fastq files (paired end) or a single bam file gene
 Now, you can run the pipeline using:
 
 ```bash
-   nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --circle_identifier <CIRCLE_IDENTIFIER>
+   nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --circle_identifier <CIRCLE_IDENTIFIER> --input_format <"FASTQ"/"BAM">
 ```
 
 ## Available ecDNA identifiers

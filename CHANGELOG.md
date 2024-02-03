@@ -29,6 +29,7 @@ Special thanks to the following for their input and contributions to the release
   - Removed both directory parameters in the test profile as it is only checked when running `ampliconarchitect`
 - Updated `nextflow_schema.json` to give better details about how to use `--circle_identifier`
 - made `--circle_identifier` an essential parameter
+- made `--input_format` a required input and removed the default value "FASTQ" to prompt the user for an input specification.
 
 ## v1.0.4 - [2023-06-26]
 
