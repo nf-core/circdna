@@ -17,7 +17,6 @@ nextflow.enable.dsl = 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// TODO nf-core: Remove this line if you don't need a FASTA file
 //   This is an example of how to use getGenomeAttribute() to fetch parameters
 //   from igenomes.config using `--genome`
 params.fasta = WorkflowMain.getGenomeAttribute(params, 'fasta')
@@ -34,7 +33,7 @@ include { validateParameters; paramsHelp } from 'plugin/nf-validation'
 if (params.help) {
     def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
     def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
-    def String command = "nextflow run ${workflow.manifest.name} --input samplesheet.csv --genome GRCh37 -profile docker"
+    def String command = "nextflow run ${workflow.manifest.name} --input samplesheet.csv --genome GRCh38 -profile docker -outdir results --circle_identifier [circexplorer2,circle_map_realign,circle_map_repeats,circle_finder,unicycler,ampliconarchitect]"
     log.info logo + paramsHelp(command) + citation + NfcoreTemplate.dashedLine(params.monochrome_logs)
     System.exit(0)
 }

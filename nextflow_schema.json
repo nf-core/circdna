@@ -10,7 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "outdir"],
+            "required": ["input", "outdir", "input_format"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -19,8 +19,27 @@
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/circdna/usage#samplesheet-input).",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with either 2 [BAM] or 3 [FASTQ] columns, and a header row. See [usage docs](https://nf-co.re/circdna/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
+                },
+                "input_format": {
+                    "type": "string",
+                    "description": "Specify input format. Default *FASTQ*. Options 'FASTQ' or 'BAM'.",
+                    "default": "FASTQ",
+                    "help_text": "Define which input file formats are used in the pipeline run. Use either `--input_format FASTQ` or `--input_format BAM`.",
+                    "fa_icon": "fas fa-pen"
+                },
+                "bam_sorted": {
+                    "type": "boolean",
+                    "description": "Specify if bam file is sorted [false, true]. If false or not specified, bam file will be sorted!",
+                    "help_text": "Set this parameter if you specified `--input_format BAM` and supplied sorted `BAM` files. This will skip the `samtools sort` step.",
+                    "fa_icon": "fas fa-sort-down"
+                },
+                "save_sorted_bam": {
+                    "type": "boolean",
+                    "description": "Specify if sorted bam file should be saved [false, true]. Default: false",
+                    "help_text": "Set this parameter if you specified bam files in your samplesheet.",
+                    "fa_icon": "fas fa-save"
                 },
                 "outdir": {
                     "type": "string",
@@ -39,6 +58,21 @@
                     "type": "string",
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
+                }
+            }
+        },
+        "circdna_identifier_options": {
+            "title": "Circular DNA identifier options",
+            "type": "object",
+            "fa_icon": "fas fa-circle-notch",
+            "description": "Options to adjust inital circular DNA identifier",
+            "required": ["circle_identifier"],
+            "properties": {
+                "circle_identifier": {
+                    "type": "string",
+                    "description": "Specifies the circular DNA identification algorithm to use - available 'circle_map_realign', 'circle_map_repeats', 'circle_finder', 'circexplorer2', and 'ampliconarchitect'. Multiple circle_identifier's can be specified with a comma-separated string. E.g. `--circle_identifier 'circle_map_realign,unicycler'`.",
+                    "help_text": "Specify the circle_identifier branch used. Multiple circle_identifier's can be specified with a comma-separated string. E.g. `--circle_identifier 'circle_map_realign,unicycler'`.",
+                    "fa_icon": "fas fa-circle-notch"
                 }
             }
         },
@@ -70,6 +104,212 @@
                     "fa_icon": "fas fa-ban",
                     "hidden": true,
                     "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
+                },
+                "save_reference": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Save the index reference fasta in the results directory.",
+                    "help_text": "By default, indexed reference genome files will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
+                    "fa_icon": "fas fa-save"
+                },
+                "bwa_index": {
+                    "type": "string",
+                    "format": "file-path",
+                    "mimetype": "text/plain",
+                    "pattern": "^\\S+\\.\\{amb,ann,bwt,pac,sa\\}$",
+                    "description": "Path to BWA Index genome file.",
+                    "help_text": "This parameter is *optional*. If you don't have a BWA index available this will be generated for you automatically.",
+                    "fa_icon": "far fa-file-code"
+                }
+            }
+        },
+        "process_skipping_options": {
+            "title": "Process Skipping options",
+            "type": "object",
+            "fa_icon": "fas fa-fast-forward",
+            "description": "Options to skip various steps within the workflow.",
+            "properties": {
+                "skip_qc": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fas fa-fast-forward",
+                    "help_text": "Set this parameter to skip all quality control steps except MultiQC.",
+                    "description": "Skip all QC steps except for MultiQC."
+                },
+                "skip_multiqc": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fas fa-fast-forward",
+                    "help_text": "Set this parameter to skip the MultiQC step.",
+                    "description": "Skip MultiQC step."
+                },
+                "skip_markduplicates": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fas fa-fast-forward",
+                    "help_text": "Set this parameter to skip annotating and filtering of duplicates marked by Picard Markduplicates.",
+                    "description": "Skip Picard MarkDuplicates and duplicate filtering"
+                },
+                "keep_duplicates": {
+                    "type": "boolean",
+                    "default": true,
+                    "fa_icon": "fas fa-save",
+                    "help_text": "Set this parameter to skip filtering of duplicates marked by Picard Markduplicates.",
+                    "description": "Keep read duplications marked by picard MarkDuplicates."
+                },
+                "save_markduplicates_bam": {
+                    "type": "boolean",
+                    "default": true,
+                    "fa_icon": "fas fa-save",
+                    "help_text": "Set this parameter to save bam file with marked duplicate reads.",
+                    "description": "Store bam with marked duplicate reads."
+                }
+            }
+        },
+        "read_trimming_options": {
+            "title": "Read trimming options",
+            "type": "object",
+            "fa_icon": "fas fa-cut",
+            "description": "Options to adjust read trimming criteria.",
+            "properties": {
+                "clip_r1": {
+                    "type": "integer",
+                    "description": "Instructs Trim Galore to remove bp from the 5' end of read 1 (or single-end reads).",
+                    "fa_icon": "fas fa-cut"
+                },
+                "clip_r2": {
+                    "type": "integer",
+                    "description": "Instructs Trim Galore to remove bp from the 5' end of read 2 (paired-end reads only).",
+                    "fa_icon": "fas fa-cut"
+                },
+                "three_prime_clip_r1": {
+                    "type": "integer",
+                    "description": "Instructs Trim Galore to remove bp from the 3' end of read 1 AFTER adapter/quality trimming has been performed.",
+                    "fa_icon": "fas fa-cut"
+                },
+                "three_prime_clip_r2": {
+                    "type": "integer",
+                    "description": "Instructs Trim Galore to remove bp from the 3' end of read 2 AFTER adapter/quality trimming has been performed.",
+                    "fa_icon": "fas fa-cut"
+                },
+                "trim_nextseq": {
+                    "type": "integer",
+                    "description": "Instructs Trim Galore to apply the --nextseq=X option, to trim based on quality after removing poly-G tails.",
+                    "help_text": "This enables the option Cutadapt `--nextseq-trim=3'CUTOFF` option via Trim Galore, which will set a quality cutoff (that is normally given with -q instead), but qualities of G bases are ignored. This trimming is in common for the NextSeq- and NovaSeq-platforms, where basecalls without any signal are called as high-quality G bases.",
+                    "fa_icon": "fas fa-cut"
+                },
+                "skip_trimming": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Skip the adapter trimming step.",
+                    "help_text": "Use this if your input FastQ files have already been trimmed outside of the workflow or if you're very confident that there is no adapter contamination in your data.",
+                    "fa_icon": "fas fa-fast-forward"
+                },
+                "save_trimmed": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Save the trimmed FastQ files in the results directory.",
+                    "help_text": "By default, trimmed FastQ files will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
+                    "fa_icon": "fas fa-save"
+                },
+                "save_merged_fastq": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Save the merged FastQ files in the results directory.",
+                    "help_text": "By default, merged FastQ files will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
+                    "fa_icon": "fas fa-save"
+                }
+            }
+        },
+        "circle_map_options": {
+            "title": "circle-map options",
+            "type": "object",
+            "fa_icon": "fas fa-circle-notch",
+            "description": "Parameters used to run Circle-Map.",
+            "properties": {
+                "save_circle_map_intermediate": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fas fa-save",
+                    "help_text": "Set this parameter to save bam file with reads extracted by circle-map readextractor.",
+                    "description": "Store bam file with read candidates for circle-map circular dna calling."
+                }
+            }
+        },
+        "circle_finder_options": {
+            "title": "Circle_finder options",
+            "type": "object",
+            "fa_icon": "fas fa-circle-notch",
+            "description": "Parameters used to run Circle_finder.",
+            "properties": {
+                "save_circle_finder_intermediate": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fas fa-save",
+                    "help_text": "Set this parameter to save Circle_finder intermediate files.",
+                    "description": "Store bed files created during Circle_finder run."
+                }
+            }
+        },
+        "unicycler_options": {
+            "title": "Unicycler options",
+            "type": "object",
+            "fa_icon": "fas fa-circle-notch",
+            "description": "Parameters used to run Unicycler.",
+            "properties": {
+                "save_unicycler_intermediate": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fas fa-save",
+                    "help_text": "Set this parameter to save Uniycler intermediate files.",
+                    "description": "Store fastq intermediate files created during Uniycler run."
+                }
+            }
+        },
+
+        "amplicon_architect_options": {
+            "title": "ampliconarchitect options",
+            "type": "object",
+            "fa_icon": "fas fa-circle-notch",
+            "description": "parameters used to run ampliconarchitect. The software needs additional data files not included in ",
+            "properties": {
+                "aa_data_repo": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "mimetype": "text/plain",
+                    "fa_icon": "fas fa-folder",
+                    "help_text": "Specify the absolute path to the AmpliconArchitect data repository. See [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect).",
+                    "description": "Absolute path to the downloaded AA data repository. See [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect)."
+                },
+                "aa_cngain": {
+                    "type": "string",
+                    "mimetype": "text/plain",
+                    "default": "4.5",
+                    "fa_icon": "fas fa-chart-bar",
+                    "help_text": "Specify the seed copy number threshold.",
+                    "description": "Copy Number Threshold for seeds to be considered by AmpliconArchitect."
+                },
+                "mosek_license_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "mimetype": "text/plain",
+                    "fa_icon": "fas fa-folder",
+                    "help_text": "Specify the path to the directory containing the mosek license file named `mosek.lic`. A free academic license can be obtained at [Mosek.com](https://www.mosek.com/products/academic-licenses/).",
+                    "description": "Path to the directory containing the mosek license file 'mosek.lic'."
+                },
+                "reference_build": {
+                    "type": "string",
+                    "mimetype": "text/plain",
+                    "fa_icon": "fas fa-book",
+                    "description": "When running AmpliconArchitect, specify reference build ['GRCh37', 'GRCh38', 'mm10']. This is *mandatory* to match fasta and AA reference build!",
+                    "help_text": "Specify the reference genome build used for alignment of the WGS reads."
+                },
+                "cnvkit_cnn": {
+                    "type": "string",
+                    "mimetype": "text/plain",
+                    "fa_icon": "fas fa-file-code",
+                    "description": "Path to cnn file inside the AmpliconArchitect Data Repository of the respective reference genome. By default it uses the 'aa_data_repo' and the 'reference_build' input to construct the file path.",
+                    "help_text": "Specify path to cnvkit cnn file inside AmpliconArchitect Data Repository."
                 }
             }
         },
@@ -269,20 +509,17 @@
         }
     },
     "allOf": [
-        {
-            "$ref": "#/definitions/input_output_options"
-        },
-        {
-            "$ref": "#/definitions/reference_genome_options"
-        },
-        {
-            "$ref": "#/definitions/institutional_config_options"
-        },
-        {
-            "$ref": "#/definitions/max_job_request_options"
-        },
-        {
-            "$ref": "#/definitions/generic_options"
-        }
+        { "$ref": "#/definitions/input_output_options" },
+        { "$ref": "#/definitions/reference_genome_options" },
+        { "$ref": "#/definitions/institutional_config_options" },
+        { "$ref": "#/definitions/max_job_request_options" },
+        { "$ref": "#/definitions/process_skipping_options" },
+        { "$ref": "#/definitions/circdna_identifier_options" },
+        { "$ref": "#/definitions/circle_map_options" },
+        { "$ref": "#/definitions/circle_finder_options" },
+        { "$ref": "#/definitions/unicycler_options" },
+        { "$ref": "#/definitions/amplicon_architect_options" },
+        { "$ref": "#/definitions/read_trimming_options" },
+        { "$ref": "#/definitions/generic_options" }
     ]
 }
