@@ -12,6 +12,7 @@ Special thanks to the following for their input and contributions to the release
 - [Jens Luebeck](https://github.com/jluebeck)
 - [Simon Pearce](https://github.com/SPPearce)
 - [Maxime U Garcia](https://github.com/maxulysse)
+- [Alex M. Ascensión](https://github.com/alexmascension)
 
 ### Enhancements & fixes
 
@@ -30,6 +31,7 @@ Special thanks to the following for their input and contributions to the release
 - Updated `nextflow_schema.json` to give better details about how to use `--circle_identifier`
 - made `--circle_identifier` an essential parameter
 - made `--input_format` an essential parameter and removed the default value to request specification by user
+- Updated `--bwa_index` to accept only directory paths to the bwa index files. Makes the user input easier to not need to deal with file endings and patterns. Bug identified by [Alex M. Ascensión](https://github.com/alexmascension) in <https://github.com/nf-core/circdna/issues/68>
 
 ## v1.0.4 - [2023-06-26]
 
