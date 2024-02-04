@@ -82,6 +82,16 @@ Now, you can run the pipeline using:
    nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --circle_identifier <CIRCLE_IDENTIFIER> --input_format <"FASTQ"/"BAM">
 ```
 
+### Test AmpliconSuite-Pipeline with a test data-set
+
+To test the correct instllatiion of the pipeline and the use of AmpliconArchitect inside the [AmpliconSuite-Pipeline](https://github.com/AmpliconSuite/AmpliconSuite-pipeline), a small WGS data set is uploaded to [AWS](https://aws.amazon.com/) and can be downloaded and used with the parameter `-profile test_AA_local`. You just need to specify your local paths to the `aa_data_repo` and the `mosek_license_dir`. See [AmpliconSuite-Pipeline](https://github.com/AmpliconSuite/AmpliconSuite-pipeline) for information about the data repository and the Mosek license. To note, the Mosek license file needs to be named `mosek.lic`.
+
+You can test the pipeline using:
+
+```bash
+   nextflow run nf-core/circdna -profile test_AA_local,<docker/singularity/podman/shifter/charliecloud/conda/institute> --outdir <OUTDIR> --aa_data_repo <path/to/aa_data_repo/> --mosek_license_dir <path/to/mosek_license_directory/>
+```
+
 ## Available ecDNA identifiers
 
 Please specify the parameter `circle_identifier` depending on the pipeline branch used for circular DNA identifaction. Please note that some branches/software are only tested with specific NGS data sets.
@@ -92,7 +102,7 @@ Please specify the parameter `circle_identifier` depending on the pipeline branc
 
 ### Identification of amplified ecDNAs with WGS data
 
-> `ampliconarchitect` uses [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect)
+> `ampliconarchitect` uses [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect) inside the [AmpliconSuite-Pipeline](https://github.com/AmpliconSuite/AmpliconSuite-pipeline)
 
 ### De novo assembly of ecDNAs with Circle-seq data
 

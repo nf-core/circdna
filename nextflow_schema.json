@@ -113,10 +113,9 @@
                 },
                 "bwa_index": {
                     "type": "string",
-                    "format": "file-path",
+                    "format": "directory-path",
                     "mimetype": "text/plain",
-                    "pattern": "^\\S+\\.\\{amb,ann,bwt,pac,sa\\}$",
-                    "description": "Path to BWA Index genome file.",
+                    "description": "Path to the directory containg the BWA index files.",
                     "help_text": "This parameter is *optional*. If you don't have a BWA index available this will be generated for you automatically.",
                     "fa_icon": "far fa-file-code"
                 }

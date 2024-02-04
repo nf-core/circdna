@@ -43,12 +43,13 @@ if (!params.input) { exit 1, 'Input samplesheet not specified!' }
 
 // Check if BWA Index is given
 if (params.bwa_index) {
-    ch_bwa_index = Channel.fromPath(params.bwa_index).collect()
+    ch_bwa_index = Channel.fromPath(params.bwa_index, type: 'dir').collect()
+    ch_bwa_index = ch_bwa_index.map{ index -> ["bwa_index", index] }.collect()
     bwa_index_exists = true
-    } else {
-        ch_bwa_index = Channel.empty()
-        bwa_index_exists = false
-    }
+} else {
+    ch_bwa_index = Channel.empty()
+    bwa_index_exists = false
+}
 
 // AMPLICON ARCHITECT INPUT
 if (run_ampliconarchitect) {
