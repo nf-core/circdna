@@ -84,7 +84,7 @@ Now, you can run the pipeline using:
 
 ### Test AmpliconSuite-Pipeline with a test data-set
 
-To test the correct instllatiion of the pipeline and the use of AmpliconArchitect inside the [AmpliconSuite-Pipeline](https://github.com/AmpliconSuite/AmpliconSuite-pipeline), a small WGS data set is uploaded to [AWS](https://aws.amazon.com/) and can be downloaded and used with the parameter `-profile test_AA_local`. You just need to specify your local paths to the `aa_data_repo` and the `mosek_license_dir`. See [AmpliconSuite-Pipeline](https://github.com/AmpliconSuite/AmpliconSuite-pipeline) for information about the data repository and the Mosek license. To note, the Mosek license file needs to be named `mosek.lic`.
+To test the correct installation of the pipeline and the use of AmpliconArchitect inside the [AmpliconSuite-Pipeline](https://github.com/AmpliconSuite/AmpliconSuite-pipeline), a small WGS data set is uploaded to [AWS](https://aws.amazon.com/) and can be downloaded and used with the parameter `-profile test_AA_local`. You just need to specify your local paths to the `aa_data_repo` and the `mosek_license_dir`. See [AmpliconSuite-Pipeline](https://github.com/AmpliconSuite/AmpliconSuite-pipeline) for information about the data repository and the Mosek license. To note, the Mosek license file needs to be named `mosek.lic` inside the `mosek_license_dir`.
 
 You can test the pipeline using:
 
