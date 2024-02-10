@@ -1,8 +1,17 @@
-# ![nf-core/circdna](docs/images/nf-core-circdna_logo_light.png#gh-light-mode-only) ![nf-core/circdna](docs/images/nf-core-circdna_logo_dark.png#gh-dark-mode-only)
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/nf-core-circdna_logo_dark.png">
+    <img alt="nf-core/circdna" src="docs/images/nf-core-circdna_logo_light.png">
+  </picture>
+</h1>
+[![GitHub Actions CI Status](https://github.com/nf-core/circdna/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/circdna/actions?query=workflow%3A%22nf-core+CI%22)
+[![GitHub Actions Linting Status](https://github.com/nf-core/circdna/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/circdna/actions?query=workflow%3A%22nf-core+linting%22)[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/circdna/results)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.8085422?labelColor=000000)](https://doi.org/10.5281/zenodo.8085422)
 
-[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/circdna/results) [![Cite with Zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.6685250.svg)](https://doi.org/10.5281/zenodo.6685250)
-
-[![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A522.10.1-23aa62.svg)](https://www.nextflow.io/)
+[![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A523.04.0-23aa62.svg)](https://www.nextflow.io/)
+[![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
+[![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
+[![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
+[![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A523.04.0-23aa62.svg)](https://www.nextflow.io/)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg)](https://sylabs.io/docs/)
@@ -44,10 +53,8 @@ A graphical view of the pipeline and its diverse branches can be seen below.
 
 ## Usage
 
-> **Note**
-> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how
-> to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline)
-> with `-profile test` before running the workflow on actual data.
+> [!NOTE]
+> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/usage/installation) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/usage/introduction#how-to-run-a-pipeline) with `-profile test` before running the workflow on actual data.
 
 First, prepare a samplesheet with your input data that looks as follows:
 
@@ -72,7 +79,17 @@ Each row represents a pair of fastq files (paired end) or a single bam file gene
 Now, you can run the pipeline using:
 
 ```bash
-   nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --circle_identifier <CIRCLE_IDENTIFIER>
+   nextflow run nf-core/circdna --input samplesheet.csv --outdir <OUTDIR> --genome GRCh38 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --circle_identifier <CIRCLE_IDENTIFIER> --input_format <"FASTQ"/"BAM">
+```
+
+### Test AmpliconSuite-Pipeline with a test data-set
+
+To test the correct installation of the pipeline and the use of AmpliconArchitect inside the [AmpliconSuite-Pipeline](https://github.com/AmpliconSuite/AmpliconSuite-pipeline), a small WGS data set is uploaded to [AWS](https://aws.amazon.com/) and can be downloaded and used with the parameter `-profile test_AA_local`. You just need to specify your local paths to the `aa_data_repo` and the `mosek_license_dir`. See [AmpliconSuite-Pipeline](https://github.com/AmpliconSuite/AmpliconSuite-pipeline) for information about the data repository and the Mosek license. To note, the Mosek license file needs to be named `mosek.lic` inside the `mosek_license_dir`.
+
+You can test the pipeline using:
+
+```bash
+   nextflow run nf-core/circdna -profile test_AA_local,<docker/singularity/podman/shifter/charliecloud/conda/institute> --outdir <OUTDIR> --aa_data_repo <path/to/aa_data_repo/> --mosek_license_dir <path/to/mosek_license_directory/>
 ```
 
 ## Available ecDNA identifiers
@@ -85,22 +102,21 @@ Please specify the parameter `circle_identifier` depending on the pipeline branc
 
 ### Identification of amplified ecDNAs with WGS data
 
-> `ampliconarchitect` uses [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect)
+> `ampliconarchitect` uses [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect) inside the [AmpliconSuite-Pipeline](https://github.com/AmpliconSuite/AmpliconSuite-pipeline)
 
 ### De novo assembly of ecDNAs with Circle-seq data
 
 > `unicycler` uses [Unicycler](https://github.com/rrwick/Unicycler) for de novo assembly of ecDNAs and [Minimap2](https://github.com/lh3/minimap2) for accurate mapping of the identified circular sequences.
 
-> **Warning:**
-> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
-> provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
+> [!WARNING]
+> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
 > see [docs](https://nf-co.re/usage/configuration#custom-configuration-files).
 
-For more details, please refer to the [usage documentation](https://nf-co.re/circdna/usage) and the [parameter documentation](https://nf-co.re/circdna/parameters).
+For more details and further functionality, please refer to the [usage documentation](https://nf-co.re/circdna/usage) and the [parameter documentation](https://nf-co.re/circdna/parameters).
 
 ## Pipeline output
 
-To see the the results of a test run with a full size dataset refer to the [results](https://nf-co.re/circdna/results) tab on the nf-core website pipeline page.
+To see the results of an example test run with a full size dataset refer to the [results](https://nf-co.re/circdna/results) tab on the nf-core website pipeline page.
 For more details about the output files and reports, please refer to the
 [output documentation](https://nf-co.re/circdna/output).
 

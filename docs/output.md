@@ -38,7 +38,9 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes d
 
 [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your sequenced reads. It provides information about the quality score distribution across your reads, per base sequence content (%A/T/G/C), adapter contamination and overrepresented sequences. For further reading and documentation see the [FastQC help pages](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
 
-> **NB:** The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
+:::note
+The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
+:::
 
 ### TrimGalore
 
@@ -274,7 +276,27 @@ This Branch utilises the ability of [Unicycler](https://github.com/rrwick/Unicyc
 
 ### Branch: `ampliconarchitect`
 
-This pipeline branch `ampliconarchitect` is only usable with WGS data. This branch uses the utility of [PrepareAA](https://github.com/jluebeck/Prepare) to collect amplified seeds from copy number calls, which will be then fed to [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect) to characterise amplicons in each given sample.
+This pipeline branch `ampliconarchitect` is only usable with WGS data. This branch uses the utility of the [AmpliconSuite-Pipeline](https://github.com/AmpliconSuite/AmpliconSuite-pipeline) to call copy numbers using [CNVkit](https://cnvkit.readthedocs.io/en/stable/), collect amplified seeds from copy number calls, calls amplicons by using [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect), and classifies these amplicons using[AmpliconClassifier](https://github.com/jluebeck/AmpliconClassifier).
+
+#### **AmpliconSuite-Pipeline**
+
+[AmpliconSuite-Pipeline](https://github.com/AmpliconSuite/AmpliconSuite-pipeline) is performing all necessary steps to call copy numbers and amplicons from WGS data.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+**Output directory: `results/ampliconsuite/logs`**
+
+- `[SAMPLE]_run_metadata.json`
+  - `json` file describing the run metadata with all necessary information of software versions , prameters, and commands
+- `[SAMPLE]_perc_timing_log.txt`
+  - `txt` file describing the computing times of each process in the pipeline
+- `[SAMPLE]_sample_metadata.json`
+  - `json` file describing the sample metadata information
+- `[SAMPLE]_finishing_flag.txt`
+  - `txt` file details if the pipeline was run correctly
+
+</details>
 
 #### **CNVkit**
 
@@ -283,12 +305,14 @@ This pipeline branch `ampliconarchitect` is only usable with WGS data. This bran
 <details markdown="1">
 <summary>Output files</summary>
 
-**Output directory: `results/cnvkit`**
+**Output directory: `results/ampliconsuite/cnvkit`**
 
 - `[SAMPLE]_CNV_GAIN.bed`
   - `bed` file containing filtered Copy Number calls
 - `[SAMPLE]_AA_CNV_SEEDS.bed`
   - `bed` file containing filtered and connected amplified regions (seeds). This is used as input for [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect)
+- `[SAMPLE].md_CNV_CALLS_.bed`
+  - `bed` file containing copy number calls in bed format.
 - `[SAMPLE].cnvkit.segment.cns`
   - `cns` file containing copy number calls of CNVkit segment.
 - `[SAMPLE].cnvkit.segment.cnr`
@@ -298,20 +322,20 @@ This pipeline branch `ampliconarchitect` is only usable with WGS data. This bran
 
 #### **AmpliconArchitect**
 
-[AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect) uses amplicon seeds provided by `CNVkit`and `PrepareAA`to identify different types of amplicons in each sample.
+[AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect) uses amplicon seeds provided by `CNVkit`and `PrepareAA` inside the [AmpliconSuite-Pipeline](https://github.com/AmpliconSuite/AmpliconSuite-pipeline) to identify different types of amplicons in each sample.
 
 <details markdown="1">
 <summary>Output files</summary>
 
-**Output directory: `results/ampliconarchitect/ampliconarchitect`**
+**Output directory: `results/ampliconsuite/ampliconarchitect`**
 
 - `amplicons/[SAMPLE]_[AMPLICONID]_cycles.txt`
   - `txt`file describing the amplicon segments
 - `amplicons/[SAMPLE]_[AMPLICONID]_graph.txt`
   - `txt` file describing the amplicon graph
-- `cnseg/[SAMPLE]_[SEGMENT]_graph.txt`
+- `intermediate/[SAMPLE]_[SEGMENT]_graph.txt`
   - `txt` file describing the copy number segmentation file
-- `summary/[SAMPLE]_summary.txt`
+- `[SAMPLE]_summary.txt`
   - `txt` file describing each amplicon with regards to breakpoints, composition, oncogene content, copy number
 - `sv_view/[SAMPLE]_[AMPLICONID].{png,pdf}`
   - `png` or `pdf` file displaying the amplicon rearrangement signature
@@ -325,24 +349,28 @@ This pipeline branch `ampliconarchitect` is only usable with WGS data. This bran
 <details markdown="1">
 <summary>Output files</summary>
 
-**Output directory: `results/ampliconclassifier`**
+**Output directory: `results/ampliconsuite/ampliconclassifier`**
 
-- `makeinput/ampliconclassifier.input`
-  - `txt` file containing the input used for `AmpliconClassifier` and `AmpliconSimilarity`.
-- `ampliconclassifier/ampliconclassifier_amplicon_classification_profiles.tsv`
-  - `tsv` file describing the amplicon class of each amplicon for each sample.
-- `ecDNA_counts/ampliconclassifier_ecDNA_counts.tsv`
-  - `tsv` file describing if an amplicon is circular [1 = circular, 0 = non-circular].
-- `gene_list/ampliconclassifier_gene_list.tsv`
-  - `tsv` file detailing the genes on each amplicon.
-- `log/ampliconclassifier_stdout.log`
-  - `log` file
-- `ampliconsimilarity/ampliconclassifier_similarity_scores.tsv`
-  - `tsv` file containing amplicon similarity scores calculated by `AmpliconSimilarity`.
-- `bed/[SAMPLE]_amplicon[AMPLICONID]_[CLASSIFICATION]_[ID]_intervals.bed`
-  - `bed` files containing information about the intervals on each amplicon. `unknown` intervals were not identified to be located on the respective amplicon.
-- `resultstable/ampliconclassifier_result_table.[tsv,json]`
+- `input/[SAMPLE].input`
+  - `txt` file containing the input used for `AmpliconClassifier`.
+- `amplicon_information/[SAMPLE]_[AMPLICON]_intervals.bed`
+  - `bed` file containing the regions of the respective amplicon.
+- `amplicon_information/[SAMPLE]_[AMPLICON]_SV_summary.tsv`
+  - `tsv` file detailing the SVs identified in an amplicon.
+- `amplicon_information/[SAMPLE]_[AMPLICON]_annotated_cycles.txt`
+  - `txt` file containing the annotated cycles information of AmpliconArchitect.
+- `result/[SAMPLE]_result_table.[tsv,json]`.
   - `tsv` or `json` file of the results table tenerated by `AmpliconClassifier` which combines the output of `AmpliconArchitect` and `AmpliconClassifier`.
+- `[SAMPLE]_amplicon_classification_profiles.tsv`
+  - `tsv` file describing the amplicon classes.
+- `[SAMPLE]_gene_list.tsv`
+  - `tsv` file detailing the genes within each amplicon
+- `[SAMPLE]_context_calls.tsv`
+  - `tsv` file with context for ecDNA calls.
+- `[SAMPLE]_ecDNA_counts.tsv`
+  - `tsv` file with the number of ecDNAs in this sample.
+- `[SAMPLE]_feature_basic_properties.tsv`
+  - `tsv` file with the amplicon information of captured region size, median feature CN, max feature CN, and borderline flag.
 
 </details>
 
@@ -379,6 +407,7 @@ The plots will show:
   - Reports generated by Nextflow: `execution_report.html`, `execution_timeline.html`, `execution_trace.txt` and `pipeline_dag.dot`/`pipeline_dag.svg`.
   - Reports generated by the pipeline: `pipeline_report.html`, `pipeline_report.txt` and `software_versions.yml`. The `pipeline_report*` files will only be present if the `--email` / `--email_on_fail` parameter's are used when running the pipeline.
   - Reformatted samplesheet files used as input to the pipeline: `samplesheet.valid.csv`.
+  - Parameters used by the pipeline run: `params.json`.
 
 </details>
 

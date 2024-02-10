@@ -12,6 +12,8 @@
 
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 
+  > Andrews, S. (2010). FastQC: A Quality Control Tool for High Throughput Sequence Data [Online].
+
 - [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
 
   > Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.
@@ -40,7 +42,7 @@
 
   > Talevich E, Shain AH, Botton T, Bastian BC. Cnvkit: genome-wide copy number detection and visualization from targeted dna sequencing. PLoS Comput Biol. 2016;12(4):e1004873. doi: 10.1371/journal.pcbi.1004873. PMID: 27100738; PMCID: PMC4839673.
 
-- [PrepareAA](https://github.com/jluebeck/AmpliconSuite-pipeline)
+- [AmpliconSuite-Pipeline](https://github.com/AmpliconSuite/AmpliconSuite-pipeline)
 
 - [AmpliconArchitect](https://github.com/virajbdeshpande/AmpliconArchitect)
 
@@ -48,7 +50,7 @@
 
 - [AmpliconClassifier](https://github.com/jluebeck/AmpliconClassifier)
 
-  > Luebeck, Jens, Alvin Wei Tian Ng, Patricia C. Galipeau, Xiaohong Li, Carissa A. Sanchez, Annalise Katz-Summercorn, Hoon Kim et al. "Extrachromosomal DNA in the cancerous transformation of Barrett's esophagus." bioRxiv (2022): 2022-07.
+  > Luebeck J, Ng AWT, Galipeau PC, Li X, Sanchez CA, Katz-Summercorn AC, Kim H, Jammula S, He Y, Lippman SM, Verhaak RGW, Maley CC, Alexandrov LB, Reid BJ, Fitzgerald RC, Paulson TG, Chang HY, Wu S, Bafna V, Mischel PS. Extrachromosomal DNA in the cancerous transformation of Barrett's oesophagus. Nature. 2023 Apr;616(7958):798-805. doi: 10.1038/s41586-023-05937-5. Epub 2023 Apr 12. PMID: 37046089; PMCID: PMC10132967.
 
 - [Samblaster](https://github.com/GregoryFaust/samblaster)
 
@@ -77,5 +79,8 @@
 
 - [Docker](https://dl.acm.org/doi/10.5555/2600239.2600241)
 
+  > Merkel, D. (2014). Docker: lightweight linux containers for consistent development and deployment. Linux Journal, 2014(239), 2. doi: 10.5555/2600239.2600241.
+
 - [Singularity](https://pubmed.ncbi.nlm.nih.gov/28494014/)
+
   > Kurtzer GM, Sochat V, Bauer MW. Singularity: Scientific containers for mobility of compute. PLoS One. 2017 May 11;12(5):e0177459. doi: 10.1371/journal.pone.0177459. eCollection 2017. PubMed PMID: 28494014; PubMed Central PMCID: PMC5426675.

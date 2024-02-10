@@ -3,6 +3,36 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.1.0 - [2024-02-03]
+
+### Credits
+
+Special thanks to the following for their input and contributions to the release:
+
+- [Jens Luebeck](https://github.com/jluebeck)
+- [Simon Pearce](https://github.com/SPPearce)
+- [Maxime U Garcia](https://github.com/maxulysse)
+- [Alex M. Ascensión](https://github.com/alexmascension)
+
+### Enhancements & fixes
+
+- Nf-core template update to 2.11.1
+  - update of nf-core modules versions
+- Removed AmpliconArchitect and AmpliconClassifier modules with their respective scripts in /bin
+  - AmpliconArchitect and AmpliconClassifier is now run inside the AmpliconSuite-Pipeline. Additional scripts are not necessary.
+  - Removed respective configs and workflow code
+- Added AmpliconSuite-Pipeline
+  - A wrapper for calling copy numbers, preparing amplified intervals, running AmpliconArchitect, and calling amplicon classes using AmpliconClassifier
+  - Added docker container named [PrepareAA](https://quay.iorepository/nf-core/prepareaa?tab=tags) to run AmpliconSuite-Pipeline with singualarity or docker
+  - Added module configs and description
+- Changed `assets/multiqc_config.yml`to fit new pipeline version
+- Included directory checks for `mosek_license_dir` and `aa_data_repo` .
+  - Removed both directory parameters in the test profile as it is only checked when running `ampliconarchitect`
+- Updated `nextflow_schema.json` to give better details about how to use `--circle_identifier`
+- made `--circle_identifier` an essential parameter
+- made `--input_format` an essential parameter and removed the default value to request specification by user
+- Updated `--bwa_index` to accept only directory paths to the bwa index files. Makes the user input easier to not need to deal with file endings and patterns. Bug identified by [Alex M. Ascensión](https://github.com/alexmascension) in <https://github.com/nf-core/circdna/issues/68>
+
 ## v1.0.4 - [2023-06-26]
 
 ### `Added`

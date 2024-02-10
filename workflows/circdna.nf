@@ -1,21 +1,19 @@
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    VALIDATE INPUTS
+    PRINT PARAMS SUMMARY
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
 
-def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
+def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
+def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
+def summary_params = paramsSummaryMap(workflow)
 
-// Validate input parameters
+// Print parameter summary log to screen
+log.info logo + paramsSummaryLog(workflow) + citation
 WorkflowCircdna.initialise(params, log)
 
-// Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config, params.fasta ]
-for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
-
-// Check mandatory parameters
-if (params.input) { ch_input =  Channel.fromPath(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 if (params.fasta) { ch_fasta =  Channel.fromPath(params.fasta) } else { exit 1, 'Fasta reference genome not specified!' }
 
 if (!(params.input_format == "FASTQ" | params.input_format == "BAM")) {
@@ -41,22 +39,25 @@ if (run_unicycler && !params.input_format == "FASTQ") {
         exit 1, 'Unicycler needs FastQ input. Please specify input_format == "FASTQ", if possible, or don`t run unicycler.'
 }
 
-if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
+if (!params.input) { exit 1, 'Input samplesheet not specified!' }
 
 // Check if BWA Index is given
 if (params.bwa_index) {
-    ch_bwa_index = Channel.fromPath(params.bwa_index).collect()
+    ch_bwa_index = Channel.fromPath(params.bwa_index, type: 'dir').collect()
+    ch_bwa_index = ch_bwa_index.map{ index -> ["bwa_index", index] }.collect()
     bwa_index_exists = true
-    } else {
-        ch_bwa_index = Channel.empty()
-        bwa_index_exists = false
-    }
+} else {
+    ch_bwa_index = Channel.empty()
+    bwa_index_exists = false
+}
 
 // AMPLICON ARCHITECT INPUT
 if (run_ampliconarchitect) {
-    mosek_license_dir = file(params.mosek_license_dir)
-    if (!mosek_license_dir.exists()) {
+    mosek_license_dir = params.mosek_license_dir
+    if (!params.mosek_license_dir) {
         exit 1, "Mosek License Directory is missing! Please specifiy directory containing mosek license using --mosek_license_dir and rename license to 'mosek.lic'."
+    } else {
+        mosek_license_dir = file(params.mosek_license_dir)
     }
     if (!params.aa_data_repo) { exit 1, "AmpliconArchitect Data Repository Missing! Please see https://github.com/jluebeck/AmpliconArchitect for more information and specify its absolute path using --aa_data_repo." }
     if (params.reference_build != "hg19" & params.reference_build != "GRCh38" & params.reference_build != "GRCh37" & params.reference_build != "mm10"){
@@ -148,16 +149,7 @@ include { CIRCLEFINDER                              }     from '../modules/local
 include { CIRCEXPLORER2_PARSE       }     from '../modules/local/circexplorer2/parse.nf'
 
 // AmpliconArchitect
-include { CNVKIT_BATCH                              }     from '../modules/local/cnvkit/batch/main.nf'
-include { CNVKIT_SEGMENT                            }     from '../modules/local/cnvkit/segment.nf'
-include { PREPAREAA                                 }     from '../modules/local/ampliconsuite/prepareaa.nf'
-include { COLLECT_SEEDS                             }     from '../modules/local/collect_seeds.nf'
-include { AMPLIFIED_INTERVALS                       }     from '../modules/local/amplified_intervals.nf'
-include { AMPLICONARCHITECT_AMPLICONARCHITECT       }     from '../modules/local/ampliconarchitect/ampliconarchitect.nf'
-include { AMPLICONCLASSIFIER_AMPLICONCLASSIFIER     }     from '../modules/local/ampliconclassifier/ampliconclassifier.nf'
-include { AMPLICONCLASSIFIER_AMPLICONSIMILARITY     }     from '../modules/local/ampliconclassifier/ampliconsimilarity.nf'
-include { AMPLICONCLASSIFIER_MAKEINPUT              }     from '../modules/local/ampliconclassifier/makeinput.nf'
-include { AMPLICONCLASSIFIER_MAKERESULTSTABLE       }     from '../modules/local/ampliconclassifier/makeresultstable.nf'
+include { AMPLICONSUITE                                 }     from '../modules/local/ampliconsuite/ampliconsuite.nf'
 
 // Unicycler
 include { UNICYCLER           }     from '../modules/local/unicycler/main.nf'
@@ -167,7 +159,7 @@ include { MINIMAP2_ALIGN      }     from '../modules/nf-core/minimap2/align/main
 
 
 // MULTIQC
-include { MULTIQC }     from '../modules/local/multiqc.nf'
+include { MULTIQC }     from '../modules/local/multiqc/main.nf'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -196,7 +188,7 @@ workflow CIRCDNA {
         // SUBWORKFLOW: Read in samplesheet, validate and stage input files
         //
         INPUT_CHECK (
-            ch_input
+            file(params.input)
         )
         .reads
         .map {
@@ -294,7 +286,7 @@ workflow CIRCDNA {
     } else if (params.input_format == "BAM") {
         // Use BAM Files as input
         INPUT_CHECK (
-            ch_input
+            file(params.input)
         )
         if (!params.bam_sorted){
             SAMTOOLS_SORT_BAM (
@@ -400,84 +392,13 @@ workflow CIRCDNA {
     }
 
     if (run_ampliconarchitect) {
-        CNVKIT_BATCH (
-            ch_bam_sorted.join(ch_bam_sorted_bai),
-            ch_fasta,
-            ch_cnvkit_reference
+        AMPLICONSUITE (
+            ch_bam_sorted,
+            file(params.mosek_license_dir),
+            file(params.aa_data_repo)
         )
-        ch_versions = ch_versions.mix(CNVKIT_BATCH.out.versions)
-
-        CNVKIT_SEGMENT (
-            CNVKIT_BATCH.out.cnr
-        )
-        ch_versions = ch_versions.mix(CNVKIT_SEGMENT.out.versions)
-
-        // PREPAREAA (
-        //     ch_bam_sorted.join(CNVKIT_SEGMENT.out.cns)
-        // )
-        // ch_versions = ch_versions.mix(PREPAREAA.out.versions)
-        COLLECT_SEEDS (
-            CNVKIT_SEGMENT.out.cns
-        )
-        ch_versions = ch_versions.mix(COLLECT_SEEDS.out.versions)
-
-        ch_aa_seeds = COLLECT_SEEDS.out.bed
-        AMPLIFIED_INTERVALS (
-            ch_aa_seeds.join(ch_bam_sorted).join(ch_bam_sorted_bai)
-        )
-        ch_versions = ch_versions.mix(AMPLIFIED_INTERVALS.out.versions)
-
-        AMPLICONARCHITECT_AMPLICONARCHITECT (
-            ch_bam_sorted.join(ch_bam_sorted_bai).
-                join(AMPLIFIED_INTERVALS.out.bed)
-        )
-
-        // AMPLICONARCHITECT_AMPLICONARCHITECT (
-        //     ch_bam_sorted.join(ch_bam_sorted_bai).
-        //         join(PREPAREAA.out.bed)
-        // )
-        ch_versions = ch_versions.mix(AMPLICONARCHITECT_AMPLICONARCHITECT.out.versions)
-
-        ch_aa_cycles = AMPLICONARCHITECT_AMPLICONARCHITECT.out.cycles.
-            map {meta, path -> [path]}
-        ch_aa_graphs = AMPLICONARCHITECT_AMPLICONARCHITECT.out.graph.
-            map {meta, path -> [path]}
-
-        AMPLICONCLASSIFIER_MAKEINPUT (
-            ch_aa_graphs.flatten().collect().ifEmpty([]),
-            ch_aa_cycles.flatten().collect().ifEmpty([])
-        )
-
-        AMPLICONCLASSIFIER_AMPLICONCLASSIFIER (
-            AMPLICONCLASSIFIER_MAKEINPUT.out.input
-        )
-        ac_input_ch = AMPLICONCLASSIFIER_MAKEINPUT.out.input
-        ch_versions = ch_versions.mix(AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.versions)
-        AMPLICONCLASSIFIER_AMPLICONSIMILARITY (
-            ac_input_ch
-        )
-        ch_versions = ch_versions.mix(AMPLICONCLASSIFIER_AMPLICONSIMILARITY.out.versions)
-
-        ac_input_ch.
-            map {file -> ["group", file]}.
-            set {ac_results_input_ch}
-        AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.class_tsv.
-            map {file -> ["group", file]}.
-            set {ac_class_ch}
-        //  ac_results_input_ch.join(ac_class_ch).
-        //  map{group, input_file, class_file -> [input_file, class_file]}
-
-        AMPLICONCLASSIFIER_MAKERESULTSTABLE (
-            ac_input_ch,
-            AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.class_tsv,
-            AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.gene_list,
-            AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.entropy,
-            AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.basic_properties,
-            AMPLICONCLASSIFIER_AMPLICONCLASSIFIER.out.bed_files
-        )
-        ch_versions = ch_versions.mix(AMPLICONCLASSIFIER_MAKERESULTSTABLE.out.versions)
+        ch_versions = ch_versions.mix(AMPLICONSUITE.out.versions)
     }
-
 
     //
     // SUBWORKFLOW - RUN CIRCLE_FINDER PIPELINE
@@ -596,7 +517,7 @@ workflow CIRCDNA {
 
         MINIMAP2_ALIGN (
             ch_circular_fastq,
-            ch_fasta,
+            ch_fasta_meta,
             false,
             false,
             false
@@ -615,8 +536,15 @@ workflow CIRCDNA {
     // MODULE: MultiQC
     //
     if (!params.skip_multiqc) {
-        workflow_summary    = WorkflowCircdna.paramsSummaryMultiqc(workflow, summary_params)
+        workflow_summary = WorkflowCircdna.paramsSummaryMultiqc(workflow, summary_params)
         ch_workflow_summary = Channel.value(workflow_summary)
+
+        methods_description    = WorkflowCircdna.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
+        ch_methods_description = Channel.value(methods_description)
+            ch_multiqc_files = Channel.empty()
+        ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+        ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
+        ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
 
         MULTIQC (
             ch_multiqc_config,
@@ -649,9 +577,17 @@ workflow.onComplete {
     if (params.email || params.email_on_fail) {
         NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
     }
+    NfcoreTemplate.dump_parameters(workflow, params)
     NfcoreTemplate.summary(workflow, params, log)
     if (params.hook_url) {
         NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
+    }
+}
+
+workflow.onError {
+    if (workflow.errorReport.contains("Process requirement exceeds available memory")) {
+        println("🛑 Default resources exceed availability 🛑 ")
+        println("💡 See here on how to configure pipeline: https://nf-co.re/docs/usage/configuration#tuning-workflow-resources 💡")
     }
 }
 
