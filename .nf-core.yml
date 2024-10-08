@@ -1,2 +1,23 @@
+bump_version: null
+lint:
+  files_exist:
+    - assets/multiqc_config.yml
+  files_unchanged:
+    - assets/email_template.html
+nf_core_version: 3.0.0
+org_path: null
 repository_type: pipeline
-nf_core_version: "2.14.1"
+template:
+  author: Daniel Schreyer
+  description: Pipeline for the identification of circular DNAs
+  force: false
+  is_nfcore: true
+  name: circdna
+  org: nf-core
+  outdir: .
+  skip_features: null
+  version: "1.1"
+update:
+  nf-core:
+    samtools/index: 1ad73f1b2abdea9398680d6d20014838135c9a35
+    samtools/sort: 1ad73f1b2abdea9398680d6d20014838135c9a35
