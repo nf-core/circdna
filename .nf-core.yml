@@ -4,7 +4,7 @@ lint:
     - assets/multiqc_config.yml
   files_unchanged:
     - assets/email_template.html
-nf_core_version: 3.0.1
+nf_core_version: 3.0.2
 org_path: null
 repository_type: pipeline
 template:
