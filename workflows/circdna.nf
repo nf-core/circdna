@@ -1,6 +1,6 @@
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    PRINT PARAMS SUMMARY
+    IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
@@ -101,6 +101,12 @@ include { INPUT_CHECK           } from '../subworkflows/local/input_check'
 */
 
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
+include { FASTQC                 } from '../modules/nf-core/fastqc/main'
+include { MULTIQC                } from '../modules/nf-core/multiqc/main'
+include { paramsSummaryMap       } from 'plugin/nf-schema'
+include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { methodsDescriptionText } from '../subworkflows/local/utils_nfcore_circdna_pipeline'
 
 
 // CONCATENATE FASTQ
@@ -166,9 +172,6 @@ include { MULTIQC }     from '../modules/local/multiqc/main.nf'
     RUN MAIN WORKFLOW
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-
-// Info required for completion email and summary
-def multiqc_report = []
 
 workflow CIRCDNA {
     ch_versions = Channel.empty()
@@ -400,6 +403,8 @@ workflow CIRCDNA {
         ch_versions = ch_versions.mix(AMPLICONSUITE.out.versions)
     }
 
+    ch_versions = Channel.empty()
+    ch_multiqc_files = Channel.empty()
     //
     // SUBWORKFLOW - RUN CIRCLE_FINDER PIPELINE
     //
@@ -531,6 +536,22 @@ workflow CIRCDNA {
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
+    FASTQC (
+        ch_samplesheet
+    )
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
+    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+
+    //
+    // Collate and save software versions
+    //
+    softwareVersionsToYAML(ch_versions)
+        .collectFile(
+            storeDir: "${params.outdir}/pipeline_info",
+            name: 'nf_core_'  +  'circdna_software_'  + 'mqc_'  + 'versions.yml',
+            sort: true,
+            newLine: true
+        ).set { ch_collated_versions }
 
     //
     // MODULE: MultiQC
@@ -547,7 +568,10 @@ workflow CIRCDNA {
         ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
 
         MULTIQC (
-            ch_multiqc_config,
+            ch_multiqc_files.collect(),
+            ch_multiqc_config.toList(),
+            ch_multiqc_custom_config.toList(),
+            ch_multiqc_logo.toList(),
             ch_multiqc_custom_config.collect().ifEmpty([]),
             CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect(),
             ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'),
@@ -565,13 +589,6 @@ workflow CIRCDNA {
         multiqc_report       = MULTIQC.out.report.toList()
     }
 }
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    COMPLETION EMAIL AND SUMMARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
 
 workflow.onComplete {
     if (params.email || params.email_on_fail) {
