@@ -105,6 +105,14 @@
                     "hidden": true,
                     "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
                 },
+                "igenomes_base": {
+                    "type": "string",
+                    "description": "Base path for iGenomes references.",
+                    "default": "s3://ngi-igenomes/igenomes/",
+                    "fa_icon": "fas fa-book",
+                    "hidden": true,
+                    "help_text": "Base path for iGenomes references used in `igenomes.config`."
+                },
                 "save_reference": {
                     "type": "boolean",
                     "default": false,
@@ -410,6 +418,12 @@
                     "fa_icon": "fas fa-palette",
                     "hidden": true
                 },
+                "enable_conda": {
+                    "type": "boolean",
+                    "description": "Enable conda for modules that optionally support it.",
+                    "fa_icon": "fas fa-box",
+                    "hidden": true
+                },
                 "hook_url": {
                     "type": "string",
                     "description": "Incoming hook URL for messaging service",
@@ -454,22 +468,41 @@
                     "fa_icon": "far calendar",
                     "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
                     "hidden": true
+                },
+                "max_cpus": {
+                    "type": "integer",
+                    "description": "Maximum number of CPUs to use for any process.",
+                    "fa_icon": "fas fa-microchip",
+                    "hidden": true
+                },
+                "max_memory": {
+                    "type": "string",
+                    "description": "Maximum amount of memory to use for any process.",
+                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
+                    "fa_icon": "fas fa-memory",
+                    "hidden": true
+                },
+                "max_time": {
+                    "type": "string",
+                    "description": "Maximum walltime to use for any process.",
+                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(s|m|h|d)?$",
+                    "fa_icon": "far fa-clock",
+                    "hidden": true
                 }
             }
         }
     },
     "allOf": [
-        { "$ref": "#/definitions/input_output_options" },
-        { "$ref": "#/definitions/reference_genome_options" },
-        { "$ref": "#/definitions/institutional_config_options" },
-        { "$ref": "#/definitions/max_job_request_options" },
-        { "$ref": "#/definitions/process_skipping_options" },
-        { "$ref": "#/definitions/circdna_identifier_options" },
-        { "$ref": "#/definitions/circle_map_options" },
-        { "$ref": "#/definitions/circle_finder_options" },
-        { "$ref": "#/definitions/unicycler_options" },
-        { "$ref": "#/definitions/amplicon_architect_options" },
-        { "$ref": "#/definitions/read_trimming_options" },
-        { "$ref": "#/definitions/generic_options" }
+        { "$ref": "#/$defs/input_output_options" },
+        { "$ref": "#/$defs/reference_genome_options" },
+        { "$ref": "#/$defs/institutional_config_options" },
+        { "$ref": "#/$defs/process_skipping_options" },
+        { "$ref": "#/$defs/circdna_identifier_options" },
+        { "$ref": "#/$defs/circle_map_options" },
+        { "$ref": "#/$defs/circle_finder_options" },
+        { "$ref": "#/$defs/unicycler_options" },
+        { "$ref": "#/$defs/amplicon_architect_options" },
+        { "$ref": "#/$defs/read_trimming_options" },
+        { "$ref": "#/$defs/generic_options" }
     ]
 }

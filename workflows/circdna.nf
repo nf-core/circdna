@@ -4,16 +4,6 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
-
-def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
-def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
-def summary_params = paramsSummaryMap(workflow)
-
-// Print parameter summary log to screen
-log.info logo + paramsSummaryLog(workflow) + citation
-WorkflowCircdna.initialise(params, log)
-
 if (params.fasta) { ch_fasta =  Channel.fromPath(params.fasta) } else { exit 1, 'Fasta reference genome not specified!' }
 
 if (!(params.input_format == "FASTQ" | params.input_format == "BAM")) {
@@ -92,7 +82,6 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK           } from '../subworkflows/local/input_check'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -100,9 +89,7 @@ include { INPUT_CHECK           } from '../subworkflows/local/input_check'
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
-include { FASTQC                 } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                } from '../modules/nf-core/multiqc/main'
+// include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { paramsSummaryMap       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { softwareVersionsToYAML } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -125,6 +112,7 @@ include { BWA_INDEX     }   from '../modules/nf-core/bwa/index/main'
 include { BWA_MEM                                   }   from '../modules/local/bwa/mem/main'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_BAM        }   from '../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_BAM      }   from '../modules/nf-core/samtools/index/main'
+include { PICARD_ADDORREPLACEREADGROUPS             }   from '../modules/nf-core/picard/addorreplacereadgroups/main'
 
 // PICARD
 include { SAMTOOLS_FAIDX                            }   from '../modules/nf-core/samtools/faidx/main'
@@ -165,7 +153,7 @@ include { MINIMAP2_ALIGN      }     from '../modules/nf-core/minimap2/align/main
 
 
 // MULTIQC
-include { MULTIQC }     from '../modules/local/multiqc/main.nf'
+include { MULTIQC }     from '../modules/nf-core/multiqc/main.nf'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -174,7 +162,12 @@ include { MULTIQC }     from '../modules/local/multiqc/main.nf'
 */
 
 workflow CIRCDNA {
+    take:
+    samplesheet
+
+    main:
     ch_versions = Channel.empty()
+    multiqc_report = Channel.empty()
 
     // Define Empty Channels for MultiQC
     ch_samtools_stats           = Channel.empty()
@@ -190,24 +183,23 @@ workflow CIRCDNA {
         //
         // SUBWORKFLOW: Read in samplesheet, validate and stage input files
         //
-        INPUT_CHECK (
-            file(params.input)
-        )
-        .reads
-        .map {
-            meta, fastq ->
-                meta.id = meta.id.split('_')[0..-2].join('_')
-                [ meta, fastq ] }
-        .groupTuple(by: [0])
+        samplesheet
+        .map { meta, fastq ->
+            meta.id = meta.id.replaceFirst(/_T\\d+$/, '')
+            def files = fastq instanceof List ? fastq : [ fastq ]
+            def expected = meta.single_end ? 1 : 2
+            if (files.size() < expected) {
+                error("Unexpected number of FASTQ files for sample ${meta.id}: ${files.size()}")
+            }
+            [ meta, files.flatten() ]
+        }
         .branch {
-            meta, fastq ->
-                single  : fastq.size() == 1
-                    return [ meta, fastq.flatten() ]
-                multiple: fastq.size() > 1
-                    return [ meta, fastq.flatten() ]
+            meta, files ->
+                def expected = meta.single_end ? 1 : 2
+                single   : files.size() == expected
+                multiple : files.size() > expected
         }
         .set { ch_fastq }
-        ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
         //
         // MODULE: Concatenate FASTQs from the same samples
@@ -219,7 +211,11 @@ workflow CIRCDNA {
         .mix(ch_fastq.single)
         .set { ch_cat_fastq }
 
-        ch_versions = ch_versions.mix(CAT_FASTQ.out.versions)
+        ch_versions = ch_versions.mix(
+            CAT_FASTQ.out.versions_cat.map { process, tool, version ->
+                "${process}:\n    ${tool}: ${version.toString().trim()}"
+            }
+        )
 
 
         //
@@ -244,9 +240,13 @@ workflow CIRCDNA {
             ch_trimmed_reads            = TRIMGALORE.out.reads
             ch_trimgalore_multiqc       = TRIMGALORE.out.zip
             ch_trimgalore_multiqc_log   = TRIMGALORE.out.log
-            ch_versions                 = ch_versions.mix(TRIMGALORE.out.versions)
+            ch_versions                 = ch_versions.mix(
+                TRIMGALORE.out.versions_trimgalore.map { process, tool, version ->
+                    "${process}:\n    ${tool}: ${version.toString().trim()}"
+                }
+            )
         } else {
-            ch_trimmed_reads            = INPUT_CHECK.out.reads
+            ch_trimmed_reads            = ch_cat_fastq
             ch_trimgalore_multiqc       = Channel.empty()
             ch_trimgalore_multiqc_log   = Channel.empty()
         }
@@ -261,7 +261,11 @@ workflow CIRCDNA {
                 ch_fasta_meta
             )
             ch_bwa_index = BWA_INDEX.out.index.map{ meta, index -> ["bwa_index", index] }.collect()
-            ch_versions = ch_versions.mix(BWA_INDEX.out.versions)
+            ch_versions = ch_versions.mix(
+                BWA_INDEX.out.versions_bwa.map { process, tool, version ->
+                    "${process}:\n    ${tool}: ${version.toString().trim()}"
+                }
+            )
         }
 
 
@@ -288,19 +292,25 @@ workflow CIRCDNA {
         }
     } else if (params.input_format == "BAM") {
         // Use BAM Files as input
-        INPUT_CHECK (
-            file(params.input)
-        )
+        samplesheet
+        .map { meta, bams ->
+            def bam_list = bams instanceof List ? bams : [ bams ]
+            if (bam_list.size() != 1) {
+                error("Multiple BAMs per sample are not supported: ${meta.id}")
+            }
+            [ meta, bam_list[0] ]
+        }
+        .set { ch_bam_input }
         if (!params.bam_sorted){
             SAMTOOLS_SORT_BAM (
-                INPUT_CHECK.out.reads
+                ch_bam_input
             )
             ch_versions         = ch_versions.mix(SAMTOOLS_SORT_BAM.out.versions)
             ch_bam_sorted       = SAMTOOLS_SORT_BAM.out.bam
         } else {
-            ch_bam_sorted       = INPUT_CHECK.out.reads
-            ch_full_bam_sorted  = INPUT_CHECK.out.reads
-            ch_bwa_sorted       = INPUT_CHECK.out.reads
+            ch_bam_sorted       = ch_bam_input
+            ch_full_bam_sorted  = ch_bam_input
+            ch_bwa_sorted       = ch_bam_input
         }
         // SAMTOOLS INDEX SORTED BAM
         SAMTOOLS_INDEX_BAM (
@@ -346,9 +356,21 @@ workflow CIRCDNA {
                 [[], []]
             )
 
+            PICARD_ADDORREPLACEREADGROUPS (
+                ch_bam_sorted,
+                ch_fasta_meta,
+                SAMTOOLS_FAIDX.out.fai
+            )
+            ch_versions = ch_versions.mix(
+                PICARD_ADDORREPLACEREADGROUPS.out.versions_picard.map { process, tool, version ->
+                    "${process}:\n    ${tool}: ${version.toString().trim()}"
+                }
+            )
+            ch_bam_md_input = PICARD_ADDORREPLACEREADGROUPS.out.bam
+
             // MARK DUPLICATES IN BAM FILE
             BAM_MARKDUPLICATES_PICARD (
-                ch_bam_sorted,
+                ch_bam_md_input,
                 ch_fasta_meta,
                 SAMTOOLS_FAIDX.out.fai.collect()
             )
@@ -384,7 +406,15 @@ workflow CIRCDNA {
                 ch_markduplicates_flagstat  = BAM_MARKDUPLICATES_PICARD.out.flagstat
                 ch_markduplicates_idxstats  = BAM_MARKDUPLICATES_PICARD.out.idxstats
                 ch_markduplicates_multiqc   = BAM_MARKDUPLICATES_PICARD.out.metrics
-                ch_versions = ch_versions.mix(BAM_MARKDUPLICATES_PICARD.out.versions)
+                ch_versions = ch_versions.mix(
+                    BAM_MARKDUPLICATES_PICARD.out.versions.map { version ->
+                        if (version instanceof List && version.size() == 3) {
+                            "${version[0]}:\n    ${version[1]}: ${version[2].toString().trim()}"
+                        } else {
+                            version
+                        }
+                    }
+                )
             }
         } else {
                 ch_markduplicates_stats         = Channel.empty()
@@ -403,8 +433,6 @@ workflow CIRCDNA {
         ch_versions = ch_versions.mix(AMPLICONSUITE.out.versions)
     }
 
-    ch_versions = Channel.empty()
-    ch_multiqc_files = Channel.empty()
     //
     // SUBWORKFLOW - RUN CIRCLE_FINDER PIPELINE
     //
@@ -527,20 +555,19 @@ workflow CIRCDNA {
             false,
             false
         )
-        ch_versions = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
+        ch_versions = ch_versions.mix(
+            MINIMAP2_ALIGN.out.versions_minimap2.map { process, tool, version ->
+                "${process}:\n    ${tool}: ${version.toString().trim()}"
+            }
+        )
     }
 
     //
     // MODULE: Pipeline reporting
     //
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
-    FASTQC (
-        ch_samplesheet
-    )
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
-    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+//    CUSTOM_DUMPSOFTWAREVERSIONS (
+//        ch_versions.unique().collectFile(name: 'collated_versions.yml')
+//    )
 
     //
     // Collate and save software versions
@@ -557,55 +584,42 @@ workflow CIRCDNA {
     // MODULE: MultiQC
     //
     if (!params.skip_multiqc) {
-        workflow_summary = WorkflowCircdna.paramsSummaryMultiqc(workflow, summary_params)
+        summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+        workflow_summary = paramsSummaryMultiqc(summary_params)
         ch_workflow_summary = Channel.value(workflow_summary)
 
-        methods_description    = WorkflowCircdna.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
+        methods_description    = methodsDescriptionText(ch_multiqc_custom_methods_description)
         ch_methods_description = Channel.value(methods_description)
-            ch_multiqc_files = Channel.empty()
-        ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-        ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
-        ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+        ch_workflow_summary_file = ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml')
+        ch_methods_description_file = ch_methods_description.collectFile(name: 'methods_description_mqc.yaml')
+
+        ch_multiqc_files = ch_fastqc_multiqc.collect{it[1]}.ifEmpty([])
+            .mix(ch_trimgalore_multiqc.collect{it[1]}.ifEmpty([]))
+            .mix(ch_trimgalore_multiqc_log.collect{it[1]}.ifEmpty([]))
+            .mix(ch_samtools_stats.collect{it[1]}.ifEmpty([]))
+            .mix(ch_samtools_flagstat.collect{it[1]}.ifEmpty([]))
+            .mix(ch_samtools_idxstats.collect{it[1]}.ifEmpty([]))
+            .mix(ch_markduplicates_stats.collect{it[1]}.ifEmpty([]))
+            .mix(ch_markduplicates_flagstat.collect{it[1]}.ifEmpty([]))
+            .mix(ch_markduplicates_idxstats.collect{it[1]}.ifEmpty([]))
+            .mix(ch_markduplicates_multiqc.collect{it[1]}.ifEmpty([]))
+            .mix(ch_workflow_summary_file)
+            .mix(ch_collated_versions)
+            .mix(ch_methods_description_file)
 
         MULTIQC (
             ch_multiqc_files.collect(),
             ch_multiqc_config.toList(),
             ch_multiqc_custom_config.toList(),
             ch_multiqc_logo.toList(),
-            ch_multiqc_custom_config.collect().ifEmpty([]),
-            CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect(),
-            ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'),
-            ch_fastqc_multiqc.collect{it[1]}.ifEmpty([]),
-            ch_trimgalore_multiqc.collect{it[1]}.ifEmpty([]),
-            ch_trimgalore_multiqc_log.collect{it[1]}.ifEmpty([]),
-            ch_samtools_stats.collect{it[1]}.ifEmpty([]),
-            ch_samtools_flagstat.collect{it[1]}.ifEmpty([]),
-            ch_samtools_idxstats.collect{it[1]}.ifEmpty([]),
-            ch_markduplicates_flagstat.collect{it[1]}.ifEmpty([]),
-            ch_markduplicates_stats.collect{it[1]}.ifEmpty([]),
-            ch_markduplicates_idxstats.collect{it[1]}.ifEmpty([]),
-            ch_markduplicates_multiqc.collect{it[1]}.ifEmpty([]),
+            [],
+            []
         )
         multiqc_report       = MULTIQC.out.report.toList()
     }
-}
 
-workflow.onComplete {
-    if (params.email || params.email_on_fail) {
-        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
-    }
-    NfcoreTemplate.dump_parameters(workflow, params)
-    NfcoreTemplate.summary(workflow, params, log)
-    if (params.hook_url) {
-        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
-    }
-}
-
-workflow.onError {
-    if (workflow.errorReport.contains("Process requirement exceeds available memory")) {
-        println("🛑 Default resources exceed availability 🛑 ")
-        println("💡 See here on how to configure pipeline: https://nf-co.re/docs/usage/configuration#tuning-workflow-resources 💡")
-    }
+    emit:
+    multiqc_report
 }
 
 /*

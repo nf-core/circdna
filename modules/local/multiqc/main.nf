@@ -35,9 +35,13 @@ process MULTIQC {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ? "--filename ${task.ext.prefix}.html" : ''
     def config = multiqc_config ? "--config $multiqc_config" : ''
+    def extra_multiqc_config = task.ext.extra_multiqc_config ?: null
     def extra_config = extra_multiqc_config ? "--config $extra_multiqc_config" : ''
+    def multiqc_logo = task.ext.multiqc_logo ?: null
     def logo = multiqc_logo ? "--cl-config 'custom_logo: \"${multiqc_logo}\"'" : ''
+    def replace_names = task.ext.replace_names ?: null
     def replace = replace_names ? "--replace-names ${replace_names}" : ''
+    def sample_names = task.ext.sample_names ?: null
     def samples = sample_names ? "--sample-names ${sample_names}" : ''
     """
     multiqc \\
