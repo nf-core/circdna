@@ -10,9 +10,19 @@
                         "git_sha": "966ba9887e2b04d89d64db06c01508873bde13b1",
                         "installed_by": ["modules"]
                     },
+                    "bwa/mem": {
+                        "branch": "master",
+                        "git_sha": "707241c72951f24fd89982c4c80c5983a4c437ef",
+                        "installed_by": ["modules"]
+                    },
                     "cat/fastq": {
                         "branch": "master",
                         "git_sha": "cf735af4433f2dc8e410f67012dff824ef9990eb",
+                        "installed_by": ["modules"]
+                    },
+                    "cnvkit/batch": {
+                        "branch": "master",
+                        "git_sha": "380cb90926b8c28558cb11479da5ff45bc4f1c5d",
                         "installed_by": ["modules"]
                     },
                     "custom/dumpsoftwareversions": {
@@ -80,9 +90,19 @@
                         "git_sha": "a64788f5ad388f1d2ac5bd5f1f3f8fc81476148c",
                         "installed_by": ["modules"]
                     },
+                    "seqtk/seq": {
+                        "branch": "master",
+                        "git_sha": "a46713779030a5f508117080cbf4b693dd4c6e33",
+                        "installed_by": ["modules"]
+                    },
                     "trimgalore": {
                         "branch": "master",
                         "git_sha": "eed5d14302a6c9070dcc25feeab707a27a4b3254",
+                        "installed_by": ["modules"]
+                    },
+                    "unicycler": {
+                        "branch": "master",
+                        "git_sha": "41dfa3f7c0ffabb96a6a813fe321c6d1cc5b6e46",
                         "installed_by": ["modules"]
                     }
                 }
