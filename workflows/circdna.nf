@@ -109,7 +109,7 @@ include { TRIMGALORE    }    from '../modules/nf-core/trimgalore/main'
 include { BWA_INDEX     }   from '../modules/nf-core/bwa/index/main'
 
 // Alignment
-include { BWA_MEM                                   }   from '../modules/local/bwa/mem/main'
+include { BWA_MEM                                   }   from '../modules/nf-core/bwa/mem/main'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_BAM        }   from '../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_BAM      }   from '../modules/nf-core/samtools/index/main'
 include { PICARD_ADDORREPLACEREADGROUPS             }   from '../modules/nf-core/picard/addorreplacereadgroups/main'
@@ -146,7 +146,7 @@ include { CIRCEXPLORER2_PARSE       }     from '../modules/local/circexplorer2/p
 include { AMPLICONSUITE                                 }     from '../modules/local/ampliconsuite/ampliconsuite.nf'
 
 // Unicycler
-include { UNICYCLER           }     from '../modules/local/unicycler/main.nf'
+include { UNICYCLER           }     from '../modules/nf-core/unicycler/main'
 include { SEQTK_SEQ           }     from '../modules/local/seqtk/seq.nf'
 include { GETCIRCULARREADS    }     from '../modules/local/getcircularreads.nf'
 include { MINIMAP2_ALIGN      }     from '../modules/nf-core/minimap2/align/main.nf'
@@ -167,6 +167,10 @@ workflow CIRCDNA {
 
     main:
     ch_versions = Channel.empty()
+    ch_versions_topic = Channel.topic('versions')
+        .map { process, tool, version ->
+            "${process}:\n    ${tool}: ${version.toString().trim()}"
+        }
     multiqc_report = Channel.empty()
 
     // Define Empty Channels for MultiQC
@@ -211,12 +215,6 @@ workflow CIRCDNA {
         .mix(ch_fastq.single)
         .set { ch_cat_fastq }
 
-        ch_versions = ch_versions.mix(
-            CAT_FASTQ.out.versions_cat.map { process, tool, version ->
-                "${process}:\n    ${tool}: ${version.toString().trim()}"
-            }
-        )
-
 
         //
         // MODULE: Run FastQC
@@ -240,11 +238,6 @@ workflow CIRCDNA {
             ch_trimmed_reads            = TRIMGALORE.out.reads
             ch_trimgalore_multiqc       = TRIMGALORE.out.zip
             ch_trimgalore_multiqc_log   = TRIMGALORE.out.log
-            ch_versions                 = ch_versions.mix(
-                TRIMGALORE.out.versions_trimgalore.map { process, tool, version ->
-                    "${process}:\n    ${tool}: ${version.toString().trim()}"
-                }
-            )
         } else {
             ch_trimmed_reads            = ch_cat_fastq
             ch_trimgalore_multiqc       = Channel.empty()
@@ -261,11 +254,6 @@ workflow CIRCDNA {
                 ch_fasta_meta
             )
             ch_bwa_index = BWA_INDEX.out.index.map{ meta, index -> ["bwa_index", index] }.collect()
-            ch_versions = ch_versions.mix(
-                BWA_INDEX.out.versions_bwa.map { process, tool, version ->
-                    "${process}:\n    ${tool}: ${version.toString().trim()}"
-                }
-            )
         }
 
 
@@ -277,18 +265,17 @@ workflow CIRCDNA {
             BWA_MEM (
                 ch_trimmed_reads,
                 ch_bwa_index,
+                ch_fasta_meta,
                 Channel.value(true)
             )
-            ch_bam_sorted   = BWA_MEM.out.bam
+            ch_bam_sorted = BWA_MEM.out.bam
             ch_full_bam_sorted   = BWA_MEM.out.bam
             ch_bwa_sorted   = BWA_MEM.out.bam
-            ch_versions = ch_versions.mix(BWA_MEM.out.versions)
 
             // SAMTOOLS INDEX SORTED BAM
             SAMTOOLS_INDEX_BAM (
                 ch_bam_sorted
             )
-            ch_versions = ch_versions.mix(SAMTOOLS_INDEX_BAM.out.versions)
         }
     } else if (params.input_format == "BAM") {
         // Use BAM Files as input
@@ -316,7 +303,6 @@ workflow CIRCDNA {
         SAMTOOLS_INDEX_BAM (
             ch_bam_sorted
         )
-        ch_versions = ch_versions.mix(SAMTOOLS_INDEX_BAM.out.versions)
         ch_fastqc_multiqc           = Channel.empty()
         ch_trimgalore_multiqc       = Channel.empty()
         ch_trimgalore_multiqc_log   = Channel.empty()
@@ -342,7 +328,6 @@ workflow CIRCDNA {
                     map { meta, bam, bai -> [meta, bam, bai] },
                     ch_fasta_meta
             )
-            ch_versions = ch_versions.mix(BAM_STATS_SAMTOOLS.out.versions)
             ch_samtools_stats               = BAM_STATS_SAMTOOLS.out.stats
             ch_samtools_flagstat            = BAM_STATS_SAMTOOLS.out.flagstat
             ch_samtools_idxstats            = BAM_STATS_SAMTOOLS.out.idxstats
@@ -361,11 +346,7 @@ workflow CIRCDNA {
                 ch_fasta_meta,
                 SAMTOOLS_FAIDX.out.fai
             )
-            ch_versions = ch_versions.mix(
-                PICARD_ADDORREPLACEREADGROUPS.out.versions_picard.map { process, tool, version ->
-                    "${process}:\n    ${tool}: ${version.toString().trim()}"
-                }
-            )
+
             ch_bam_md_input = PICARD_ADDORREPLACEREADGROUPS.out.bam
 
             // MARK DUPLICATES IN BAM FILE
@@ -397,7 +378,6 @@ workflow CIRCDNA {
 
                 ch_bam_sorted = SAMTOOLS_SORT_FILTERED.out.bam
                 ch_bam_sorted_bai = SAMTOOLS_INDEX_FILTERED.out.bai
-                ch_versions = ch_versions.mix(SAMTOOLS_INDEX_FILTERED.out.versions)
             }
             else {
                 ch_bam_sorted               = BAM_MARKDUPLICATES_PICARD.out.bam
@@ -406,15 +386,6 @@ workflow CIRCDNA {
                 ch_markduplicates_flagstat  = BAM_MARKDUPLICATES_PICARD.out.flagstat
                 ch_markduplicates_idxstats  = BAM_MARKDUPLICATES_PICARD.out.idxstats
                 ch_markduplicates_multiqc   = BAM_MARKDUPLICATES_PICARD.out.metrics
-                ch_versions = ch_versions.mix(
-                    BAM_MARKDUPLICATES_PICARD.out.versions.map { version ->
-                        if (version instanceof List && version.size() == 3) {
-                            "${version[0]}:\n    ${version[1]}: ${version[2].toString().trim()}"
-                        } else {
-                            version
-                        }
-                    }
-                )
             }
         } else {
                 ch_markduplicates_stats         = Channel.empty()
@@ -487,7 +458,6 @@ workflow CIRCDNA {
         SAMTOOLS_INDEX_RE (
             SAMTOOLS_SORT_RE.out.bam
         )
-        ch_versions = ch_versions.mix(SAMTOOLS_INDEX_RE.out.versions)
 
         // DEFINE CHANNELS FOR REALIGN AND REPEATS
         ch_qname_sorted_bam = SAMTOOLS_SORT_QNAME_CM.out.bam
@@ -531,7 +501,7 @@ workflow CIRCDNA {
     if (run_unicycler && params.input_format == "FASTQ") {
 
         UNICYCLER (
-            ch_trimmed_reads
+            ch_trimmed_reads.map { meta, reads -> [meta, reads, []] }
         )
         ch_versions = ch_versions.mix(UNICYCLER.out.versions)
 
@@ -553,12 +523,8 @@ workflow CIRCDNA {
             ch_fasta_meta,
             false,
             false,
+            false,
             false
-        )
-        ch_versions = ch_versions.mix(
-            MINIMAP2_ALIGN.out.versions_minimap2.map { process, tool, version ->
-                "${process}:\n    ${tool}: ${version.toString().trim()}"
-            }
         )
     }
 
@@ -572,7 +538,7 @@ workflow CIRCDNA {
     //
     // Collate and save software versions
     //
-    softwareVersionsToYAML(ch_versions)
+    softwareVersionsToYAML(ch_versions.mix(ch_versions_topic))
         .collectFile(
             storeDir: "${params.outdir}/pipeline_info",
             name: 'nf_core_'  +  'circdna_software_'  + 'mqc_'  + 'versions.yml',
