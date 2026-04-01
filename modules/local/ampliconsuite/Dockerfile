@@ -19,7 +19,7 @@ USER $NB_UID
 
 # Install Conda packages with micromamba, including Python
 RUN micromamba install --yes --name base -c bioconda -c conda-forge -c mosek \
-    bioconda::ampliconsuite=1.2.1 \
+    bioconda::ampliconsuite=1.5.0 \
     mosek::mosek=10.1.21 && \
     micromamba clean --all --yes
 

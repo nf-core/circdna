@@ -5,5 +5,5 @@ channels:
   - mosek
   - defaults
 dependencies:
-  - bioconda::ampliconsuite=1.2.1
+  - bioconda::ampliconsuite=1.5.0
   - mosek::mosek=10.1.21
