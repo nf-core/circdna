@@ -53,7 +53,13 @@ workflow PIPELINE_INITIALISATION {
     UTILS_NFSCHEMA_PLUGIN (
         workflow,
         validate_params,
-        null
+        "nextflow_schema.json",
+        params.help,
+        params.help_full,
+        params.show_hidden,
+        "",
+        "",
+        "nextflow run ${workflow.manifest.name} --input samplesheet.csv --outdir <OUTDIR> -profile docker"
     )
 
     //
