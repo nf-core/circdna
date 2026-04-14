@@ -78,15 +78,34 @@ workflow PIPELINE_INITIALISATION {
     // Create channel from input file provided through params.input
     //
 
+    def parseBoolean = { value ->
+        if (value == null) {
+            return null
+        }
+        if (value instanceof Boolean) {
+            return value
+        }
+        if (value instanceof CharSequence) {
+            return value.toString().toLowerCase() in ['true','t','1','yes','y']
+        }
+        if (value instanceof Collection) {
+            if (value.isEmpty()) {
+                return null
+            }
+            return parseBoolean(value[0])
+        }
+        return value.toString().toLowerCase() in ['true','t','1','yes','y']
+    }
+
     if (params.input_format == "FASTQ") {
         Channel
             .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
             .map {
                 meta, fastq_1, fastq_2, single_end, bam ->
-                    if (bam) {
+                    if (parseBoolean(bam)) {
                         error("Please check input samplesheet -> BAM column provided while --input_format FASTQ is set.")
                     }
-                    def is_single_end = (single_end != null) ? single_end.toBoolean() : !fastq_2
+                    def is_single_end = parseBoolean(single_end) != null ? parseBoolean(single_end) : !fastq_2
                     if (is_single_end) {
                         return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
                     } else {

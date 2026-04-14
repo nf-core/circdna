@@ -140,7 +140,7 @@ include { BEDTOOLS_SPLITBAM2BED                     }     from '../modules/local
 include { CIRCLEFINDER                              }     from '../modules/local/circlefinder.nf'
 
 // CIRCexplorer2
-include { CIRCEXPLORER2_PARSE       }     from '../modules/local/circexplorer2/parse.nf'
+include { CIRCEXPLORER2_PARSE       }     from '../modules/nf-core/circexplorer2/parse/main.nf'
 
 // AmpliconArchitect
 include { AMPLICONSUITE                                 }     from '../modules/local/ampliconsuite/ampliconsuite.nf'
@@ -224,7 +224,6 @@ workflow CIRCDNA {
             FASTQC (
                 ch_cat_fastq
             )
-            ch_versions         = ch_versions.mix(FASTQC.out.versions)
             ch_fastqc_multiqc   = FASTQC.out.zip
         }
 
@@ -292,7 +291,6 @@ workflow CIRCDNA {
             SAMTOOLS_SORT_BAM (
                 ch_bam_input
             )
-            ch_versions         = ch_versions.mix(SAMTOOLS_SORT_BAM.out.versions)
             ch_bam_sorted       = SAMTOOLS_SORT_BAM.out.bam
         } else {
             ch_bam_sorted       = ch_bam_input
@@ -363,13 +361,11 @@ workflow CIRCDNA {
                     ch_fasta_meta,
                     []
                 )
-                ch_versions = ch_versions.mix(SAMTOOLS_VIEW_FILTER.out.versions)
 
                 // SORT FILTERED BAM FILE
                 SAMTOOLS_SORT_FILTERED (
                     SAMTOOLS_VIEW_FILTER.out.bam
                 )
-                ch_versions = ch_versions.mix(SAMTOOLS_SORT_FILTERED.out.versions)
 
                 // INDEX FILTERED BAM FILE
                 SAMTOOLS_INDEX_FILTERED (
@@ -401,7 +397,6 @@ workflow CIRCDNA {
             file(params.mosek_license_dir),
             file(params.aa_data_repo)
         )
-        ch_versions = ch_versions.mix(AMPLICONSUITE.out.versions)
     }
 
     //
@@ -411,22 +406,18 @@ workflow CIRCDNA {
         SAMTOOLS_SORT_QNAME_CF (
             ch_full_bam_sorted
         )
-        ch_versions = ch_versions.mix(SAMTOOLS_SORT_QNAME_CF.out.versions)
 
         SAMBLASTER (
             SAMTOOLS_SORT_QNAME_CF.out.bam
         )
-        ch_versions = ch_versions.mix(SAMBLASTER.out.versions)
 
         BEDTOOLS_SPLITBAM2BED (
             SAMBLASTER.out.split_bam
         )
-        ch_versions = ch_versions.mix(BEDTOOLS_SPLITBAM2BED.out.versions)
 
         BEDTOOLS_SORTEDBAM2BED (
             ch_full_bam_sorted.join(ch_full_bam_sorted_bai)
         )
-        ch_versions = ch_versions.mix(BEDTOOLS_SORTEDBAM2BED.out.versions)
 
         ch_b2b_sorted = BEDTOOLS_SORTEDBAM2BED.out.conc_txt
         ch_b2b_split = BEDTOOLS_SPLITBAM2BED.out.split_txt
@@ -443,17 +434,14 @@ workflow CIRCDNA {
         SAMTOOLS_SORT_QNAME_CM (
             ch_bam_sorted
         )
-        ch_versions = ch_versions.mix(SAMTOOLS_SORT_QNAME_CM.out.versions)
 
         CIRCLEMAP_READEXTRACTOR (
             SAMTOOLS_SORT_QNAME_CM.out.bam
         )
-        ch_versions = ch_versions.mix(CIRCLEMAP_READEXTRACTOR.out.versions)
 
         SAMTOOLS_SORT_RE (
             CIRCLEMAP_READEXTRACTOR.out.bam
         )
-        ch_versions = ch_versions.mix(SAMTOOLS_SORT_RE.out.versions)
 
         SAMTOOLS_INDEX_RE (
             SAMTOOLS_SORT_RE.out.bam
@@ -471,7 +459,6 @@ workflow CIRCDNA {
             CIRCLEMAP_REPEATS (
                 ch_re_sorted_bam.join(ch_re_sorted_bai)
             )
-            ch_versions = ch_versions.mix(CIRCLEMAP_REPEATS.out.versions)
         }
 
         //
@@ -486,16 +473,19 @@ workflow CIRCDNA {
                     join(ch_bam_sorted_bai),
                 ch_fasta
             )
-            ch_versions = ch_versions.mix(CIRCLEMAP_REALIGN.out.versions)
         }
     }
 
 
     if (run_circexplorer2) {
+        ch_bam_sorted
+            .join(ch_bam_sorted_bai)
+            .map { meta, bam, bai -> [meta, bam] }
+            .set { ch_circexplorer2_input }
+
         CIRCEXPLORER2_PARSE (
-            ch_bam_sorted.join(ch_bam_sorted_bai)
+            ch_circexplorer2_input
         )
-        ch_versions = ch_versions.mix(CIRCEXPLORER2_PARSE.out.versions)
     }
 
     if (run_unicycler && params.input_format == "FASTQ") {
@@ -503,12 +493,10 @@ workflow CIRCDNA {
         UNICYCLER (
             ch_trimmed_reads.map { meta, reads -> [meta, reads, []] }
         )
-        ch_versions = ch_versions.mix(UNICYCLER.out.versions)
 
         SEQTK_SEQ (
             UNICYCLER.out.scaffolds
         )
-        ch_versions = ch_versions.mix(SEQTK_SEQ.out.versions)
 
         GETCIRCULARREADS (
             SEQTK_SEQ.out.fastq
@@ -538,7 +526,7 @@ workflow CIRCDNA {
     //
     // Collate and save software versions
     //
-    softwareVersionsToYAML(ch_versions.mix(ch_versions_topic))
+    softwareVersionsToYAML(ch_versions_topic)
         .collectFile(
             storeDir: "${params.outdir}/pipeline_info",
             name: 'nf_core_'  +  'circdna_software_'  + 'mqc_'  + 'versions.yml',

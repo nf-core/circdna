@@ -2,7 +2,7 @@
 process CIRCEXPLORER2_PARSE {
     tag "$meta.id"
     label 'process_medium'
-    conda (params.enable_conda ? "bioconda::circexplorer2=2.3.8" : null)
+    conda (params.enable_conda ? "bioconda::circexplorer2" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
         container "https://depot.galaxyproject.org/singularity/circexplorer2:2.3.8--pyh864c0ab_1"
     } else {
