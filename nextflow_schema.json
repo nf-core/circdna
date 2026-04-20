@@ -418,12 +418,6 @@
                     "fa_icon": "fas fa-palette",
                     "hidden": true
                 },
-                "enable_conda": {
-                    "type": "boolean",
-                    "description": "Enable conda for modules that optionally support it.",
-                    "fa_icon": "fas fa-box",
-                    "hidden": true
-                },
                 "hook_url": {
                     "type": "string",
                     "description": "Incoming hook URL for messaging service",
@@ -467,26 +461,6 @@
                     "type": "string",
                     "fa_icon": "far calendar",
                     "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
-                    "hidden": true
-                },
-                "max_cpus": {
-                    "type": "integer",
-                    "description": "Maximum number of CPUs to use for any process.",
-                    "fa_icon": "fas fa-microchip",
-                    "hidden": true
-                },
-                "max_memory": {
-                    "type": "string",
-                    "description": "Maximum amount of memory to use for any process.",
-                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
-                    "fa_icon": "fas fa-memory",
-                    "hidden": true
-                },
-                "max_time": {
-                    "type": "string",
-                    "description": "Maximum walltime to use for any process.",
-                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(s|m|h|d)?$",
-                    "fa_icon": "far fa-clock",
                     "hidden": true
                 }
             }
