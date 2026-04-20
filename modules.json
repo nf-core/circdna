@@ -37,7 +37,7 @@
                     },
                     "fastqc": {
                         "branch": "master",
-                        "git_sha": "617777a807a1770f73deb38c80004bac06807eef",
+                        "git_sha": "79b36b51048048374b642289bfe9e591ef56fe05",
                         "installed_by": ["modules"]
                     },
                     "minimap2/align": {
