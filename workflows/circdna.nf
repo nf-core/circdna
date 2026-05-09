@@ -320,12 +320,12 @@ workflow CIRCDNA {
         ch_fasta = ch_fasta_meta.map{ meta, index -> [index] }.collect()
 
         // Stub run is not yet implemented into BAM_STATS_SAMTOOLS subworkflow -> Will be skipped when stub is active
-        if (!workflow.stubRun) {
-            BAM_STATS_SAMTOOLS (
-                ch_bam_sorted.join(ch_bam_sorted_bai).
-                    map { meta, bam, bai -> [meta, bam, bai] },
-                    ch_fasta_meta
-            )
+        ch_bam_with_bai = ch_bam_sorted.join(ch_bam_sorted_bai).map { meta, bam, bai -> [meta, bam, bai] }
+
+        BAM_STATS_SAMTOOLS(
+            ch_bam_with_bai,
+            ch_fasta_meta
+        )
             ch_samtools_stats               = BAM_STATS_SAMTOOLS.out.stats
             ch_samtools_flagstat            = BAM_STATS_SAMTOOLS.out.flagstat
             ch_samtools_idxstats            = BAM_STATS_SAMTOOLS.out.idxstats
@@ -467,10 +467,11 @@ workflow CIRCDNA {
         if (run_circle_map_realign) {
 
             CIRCLEMAP_REALIGN (
-                ch_re_sorted_bam.join(ch_re_sorted_bai).
-                    join(ch_qname_sorted_bam).
-                    join(ch_bam_sorted).
-                    join(ch_bam_sorted_bai),
+                ch_re_sorted_bam
+                    .join(ch_re_sorted_bai)
+                    .join(ch_qname_sorted_bam)
+                    .join(ch_bam_sorted)
+                    .join(ch_bam_sorted_bai),
                 ch_fasta
             )
         }
@@ -573,7 +574,7 @@ workflow CIRCDNA {
     }
 
     emit:
-    multiqc_report
+        multiqc_report = multiqc_report
 }
 
 /*
