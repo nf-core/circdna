@@ -3,6 +3,8 @@ lint:
     - assets/multiqc_config.yml
   files_unchanged:
     - assets/email_template.html
+    - .github/workflows/linting.yml
+    - .github/workflows/linting_comment.yml
 nf_core_version: 3.3.2
 repository_type: pipeline
 template:
