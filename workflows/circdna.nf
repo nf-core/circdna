@@ -307,8 +307,8 @@ workflow CIRCDNA {
         if (!params.skip_markduplicates) {
             // Index Fasta File for Markduplicates
             SAMTOOLS_FAIDX (
-                ch_fasta_meta,
-                [[], []]
+                ch_fasta_meta.map { meta, fasta -> [meta, fasta, []] },
+                false
             )
 
             // Combine fasta and fai into [meta, fasta, fai] tuple required by picard modules
