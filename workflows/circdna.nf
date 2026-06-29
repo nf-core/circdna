@@ -297,7 +297,7 @@ workflow CIRCDNA {
 
         BAM_STATS_SAMTOOLS(
             ch_bam_with_bai,
-            ch_fasta_meta
+            ch_fasta_meta.map { meta, fasta -> [meta, fasta, []] }
         )
         ch_samtools_stats    = BAM_STATS_SAMTOOLS.out.stats
         ch_samtools_flagstat = BAM_STATS_SAMTOOLS.out.flagstat
