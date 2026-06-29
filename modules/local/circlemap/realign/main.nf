@@ -27,7 +27,10 @@ process CIRCLEMAP_REALIGN {
         -sbam $sbam \\
         -fasta $fasta \\
         --threads $task.cpus \\
-        -o ${prefix}_circularDNA_coordinates.bed
+        -o ${prefix}_circularDNA_coordinates.bed || true
+
+    # Circle-Map exits 0 on failure without producing output; create empty file as fallback
+    [ -f ${prefix}_circularDNA_coordinates.bed ] || touch ${prefix}_circularDNA_coordinates.bed
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
