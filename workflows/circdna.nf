@@ -40,30 +40,30 @@ include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_FILTERED }   from '../modules/nf-core
 include { BAM_STATS_SAMTOOLS                        }   from '../subworkflows/nf-core/bam_stats_samtools/main'
 
 // CIRCLE-MAP
-include { CIRCLEMAP_READEXTRACTOR                   }   from '../modules/local/circlemap/readextractor.nf'
+include { CIRCLEMAP_READEXTRACTOR                   }   from '../modules/local/circlemap/readextractor/main'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_RE         }   from '../modules/nf-core/samtools/sort/main'
 include { SAMTOOLS_INDEX as SAMTOOLS_INDEX_RE       }   from '../modules/nf-core/samtools/index/main'
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_QNAME_CM   }   from '../modules/nf-core/samtools/sort/main'
-include { CIRCLEMAP_REALIGN                         }   from '../modules/local/circlemap/realign.nf'
-include { CIRCLEMAP_REPEATS                         }   from '../modules/local/circlemap/repeats.nf'
+include { CIRCLEMAP_REALIGN                         }   from '../modules/local/circlemap/realign/main'
+include { CIRCLEMAP_REPEATS                         }   from '../modules/local/circlemap/repeats/main'
 
 // CIRCLE_FINDER
 include { SAMTOOLS_SORT as SAMTOOLS_SORT_QNAME_CF   }   from '../modules/nf-core/samtools/sort/main'
-include { SAMBLASTER                                }     from '../modules/local/samblaster.nf'
-include { BEDTOOLS_SORTEDBAM2BED                    }     from '../modules/local/bedtools/sortedbam2bed.nf'
-include { BEDTOOLS_SPLITBAM2BED                     }     from '../modules/local/bedtools/splitbam2bed.nf'
-include { CIRCLEFINDER                              }     from '../modules/local/circlefinder.nf'
+include { SAMBLASTER                                }     from '../modules/local/samblaster/main'
+include { BEDTOOLS_SORTEDBAM2BED                    }     from '../modules/local/bedtools/sortedbam2bed/main'
+include { BEDTOOLS_SPLITBAM2BED                     }     from '../modules/local/bedtools/splitbam2bed/main'
+include { CIRCLEFINDER                              }     from '../modules/local/circlefinder/main'
 
 // CIRCexplorer2
 include { CIRCEXPLORER2_PARSE       }     from '../modules/nf-core/circexplorer2/parse/main.nf'
 
 // AmpliconArchitect
-include { AMPLICONSUITE                                 }     from '../modules/local/ampliconsuite/ampliconsuite.nf'
+include { AMPLICONSUITE                                 }     from '../modules/local/ampliconsuite/main'
 
 // Unicycler
 include { UNICYCLER           }     from '../modules/nf-core/unicycler/main'
-include { SEQTK_SEQ           }     from '../modules/local/seqtk/seq.nf'
-include { GETCIRCULARREADS    }     from '../modules/local/getcircularreads.nf'
+include { SEQTK_SEQ           }     from '../modules/local/seqtk/seq/main'
+include { GETCIRCULARREADS    }     from '../modules/local/getcircularreads/main'
 include { MINIMAP2_ALIGN      }     from '../modules/nf-core/minimap2/align/main.nf'
 
 
