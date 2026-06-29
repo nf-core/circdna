@@ -309,10 +309,12 @@ workflow CIRCDNA {
                 [[], []]
             )
 
+            // Combine fasta and fai into [meta, fasta, fai] tuple required by picard modules
+            ch_fasta_fai = SAMTOOLS_FAIDX.out.fa.join(SAMTOOLS_FAIDX.out.fai)
+
             PICARD_ADDORREPLACEREADGROUPS (
                 ch_bam_sorted,
-                ch_fasta_meta,
-                SAMTOOLS_FAIDX.out.fai
+                ch_fasta_fai
             )
 
             ch_bam_md_input = PICARD_ADDORREPLACEREADGROUPS.out.bam
@@ -320,8 +322,7 @@ workflow CIRCDNA {
             // MARK DUPLICATES IN BAM FILE
             BAM_MARKDUPLICATES_PICARD (
                 ch_bam_md_input,
-                ch_fasta_meta,
-                SAMTOOLS_FAIDX.out.fai.collect()
+                ch_fasta_fai
             )
 
             // FILTER DUPLICATES IN BAM FILES USING SAMTOOLS VIEW
