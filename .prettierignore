@@ -1,4 +1,6 @@
 email_template.html
+assets/slackreport.json
+assets/adaptivecard.json
 .nextflow*
 work/
 data/

@@ -42,7 +42,6 @@ process AMPLICONSUITE {
     REF=${params.reference_build}
 
     AmpliconSuite-pipeline.py \\
-        $args \\
         -s $prefix \\
         -t $task.cpus \\
         --bam $bam \\

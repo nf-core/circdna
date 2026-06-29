@@ -3,6 +3,44 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.2dev - [2026-06-29]
+
+### Enhancements & fixes
+
+- Merged nf-core template updates from v3.0.0 through v4.0.2
+  - Updated all CI workflows (linting, nf-test, download pipeline) to nf-core v4 standards
+  - Updated GitHub Actions action versions
+  - Added ARM64/AMD64 container config files
+  - Updated nf-test version to 0.9.4 and Nextflow minimum version requirement
+- Migrated from local modules to nf-core modules where available
+  - Replaced local BWA index/mem, samtools, trimgalore, fastqc, cat/fastq, unicycler, minimap2 modules with nf-core equivalents
+  - Replaced local circexplorer2/parse module with nf-core module
+  - Replaced local picard/markduplicates with nf-core `bam_markduplicates_picard` subworkflow
+  - Replaced local samtools stats/flagstat/idxstats with nf-core `bam_stats_samtools` subworkflow
+- Removed CNVkit local module — CNVkit is already bundled inside AmpliconSuite-Pipeline
+- Removed unused local MultiQC module — pipeline uses the nf-core multiqc module
+- Removed local CIRCexplorer2 module in favour of nf-core equivalent
+- Updated nf-core FastQC module to latest version
+- Updated nf-core MultiQC module to latest version (v1.34, using new tuple-based input signature)
+- Updated local AmpliconSuite module to use PrepareAA container v1.0.5 (latest)
+- Fixed duplicate `$args` bug in the AmpliconSuite-Pipeline script call
+- Replaced `Channel` (deprecated) with `channel` factory throughout workflow
+- Updated pipeline to use `nf-schema` plugin instead of `nf-validation`
+- Updated `utils_nfcore_circdna_pipeline` subworkflow to nf-core v4 structure
+  - UTILS_NFSCHEMA_PLUGIN now uses variable-based parameters for help text
+- Removed max memory/time/cpu overrides from process configs (use nf-core defaults)
+- Removed unused `imNotification` process
+- Added nf-test pipeline test (`tests/default.nf.test`) for CI
+- Added test dataset (`test_dataset/`) for local development and testing
+
+### Dependencies
+
+| Tool | Previous version | New version |
+|------|-----------------|-------------|
+| FastQC | 0.11.9 | 0.12.1 |
+| MultiQC | 1.18 | 1.34 |
+| PrepareAA (AmpliconSuite-Pipeline) | 1.0.3 | 1.0.5 |
+
 ## v1.1 - [2024-02-03]
 
 ### Credits
