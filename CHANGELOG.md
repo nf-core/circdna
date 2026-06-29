@@ -35,11 +35,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependencies
 
-| Tool | Previous version | New version |
-|------|-----------------|-------------|
-| FastQC | 0.11.9 | 0.12.1 |
-| MultiQC | 1.18 | 1.34 |
-| PrepareAA (AmpliconSuite-Pipeline) | 1.0.3 | 1.0.5 |
+| Tool                               | Previous version | New version |
+| ---------------------------------- | ---------------- | ----------- |
+| FastQC                             | 0.11.9           | 0.12.1      |
+| MultiQC                            | 1.18             | 1.34        |
+| PrepareAA (AmpliconSuite-Pipeline) | 1.0.3            | 1.0.5       |
 
 ## v1.1 - [2024-02-03]
 
