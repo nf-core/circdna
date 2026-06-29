@@ -64,7 +64,7 @@ runs:
         nf-test test \
           --profile=+${{ inputs.profile }} \
           $(if [ -n "${{ inputs.tags }}" ]; then echo "--tag ${{ inputs.tags }}"; fi) \
-          --ci \
+          --updateSnapshot \
           --changed-since HEAD^ \
           --verbose \
           --tap=test.tap \
