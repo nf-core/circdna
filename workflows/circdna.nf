@@ -1,90 +1,5 @@
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-if (params.fasta) { ch_fasta =  Channel.fromPath(params.fasta) } else { exit 1, 'Fasta reference genome not specified!' }
-
-if (!(params.input_format == "FASTQ" | params.input_format == "BAM")) {
-    exit 1, 'Please specifiy --input_format "FASTQ" or "BAM" in capital letters, depending on the input file format.'
-}
-
-// Modify fasta channel to include meta data
-ch_fasta_meta = ch_fasta.map{ it -> [[id:it[0].baseName], it] }.collect()
-
-branch = params.circle_identifier.split(",")
-run_circexplorer2 = ("circexplorer2" in branch)
-run_circle_map_realign = ("circle_map_realign" in branch)
-run_circle_map_repeats = ("circle_map_repeats" in branch)
-run_circle_finder = ("circle_finder" in branch)
-run_ampliconarchitect = ("ampliconarchitect" in branch)
-run_unicycler = ("unicycler" in branch)
-
-if (!(run_unicycler | run_circle_map_realign | run_circle_map_repeats | run_circle_finder | run_ampliconarchitect | run_circexplorer2)) {
-    exit 1, 'circle_identifier param not valid. Please check!'
-}
-
-if (run_unicycler && !params.input_format == "FASTQ") {
-        exit 1, 'Unicycler needs FastQ input. Please specify input_format == "FASTQ", if possible, or don`t run unicycler.'
-}
-
-if (!params.input) { exit 1, 'Input samplesheet not specified!' }
-
-// Check if BWA Index is given
-if (params.bwa_index) {
-    ch_bwa_index = Channel.fromPath(params.bwa_index, type: 'dir').collect()
-    ch_bwa_index = ch_bwa_index.map{ index -> ["bwa_index", index] }.collect()
-    bwa_index_exists = true
-} else {
-    ch_bwa_index = Channel.empty()
-    bwa_index_exists = false
-}
-
-// AMPLICON ARCHITECT INPUT
-if (run_ampliconarchitect) {
-    mosek_license_dir = params.mosek_license_dir
-    if (!params.mosek_license_dir) {
-        exit 1, "Mosek License Directory is missing! Please specifiy directory containing mosek license using --mosek_license_dir and rename license to 'mosek.lic'."
-    } else {
-        mosek_license_dir = file(params.mosek_license_dir)
-    }
-    if (!params.aa_data_repo) { exit 1, "AmpliconArchitect Data Repository Missing! Please see https://github.com/jluebeck/AmpliconArchitect for more information and specify its absolute path using --aa_data_repo." }
-    if (params.reference_build != "hg19" & params.reference_build != "GRCh38" & params.reference_build != "GRCh37" & params.reference_build != "mm10"){
-        exit 1, "Reference Build not given! Please specify --reference_build 'mm10', 'hg19', 'GRCh38', or 'GRCh37'."
-    }
-
-    if (!params.cnvkit_cnn) {
-        ch_cnvkit_reference = file(params.aa_data_repo + "/" + params.reference_build + "/" + params.reference_build + "_cnvkit_filtered_ref.cnn", checkIfExists: true)
-    } else {
-        ch_cnvkit_reference = file(params.cnvkit_cnn)
-    }
-}
-
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    CONFIG FILES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
-ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
-ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT LOCAL MODULES/SUBWORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-//
-// SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
-//
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS & LOCAL MODULES/SUBWORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
@@ -176,6 +91,58 @@ workflow CIRCDNA {
             "${process}:\n    ${tool}: ${version.toString().trim()}"
         }
     multiqc_report = Channel.empty()
+
+    // FASTA reference channel
+    if (params.fasta) {
+        ch_fasta = Channel.fromPath(params.fasta)
+    } else {
+        error 'Fasta reference genome not specified!'
+    }
+
+    // Modify fasta channel to include meta data
+    ch_fasta_meta = ch_fasta.map { it -> [[id: it[0].baseName], it] }.collect()
+
+    // Circle identifier branches
+    def branch_list = params.circle_identifier.split(",")
+    run_circexplorer2 = ("circexplorer2" in branch_list)
+    run_circle_map_realign = ("circle_map_realign" in branch_list)
+    run_circle_map_repeats = ("circle_map_repeats" in branch_list)
+    run_circle_finder = ("circle_finder" in branch_list)
+    run_ampliconarchitect = ("ampliconarchitect" in branch_list)
+    run_unicycler = ("unicycler" in branch_list)
+
+    if (!(run_unicycler | run_circle_map_realign | run_circle_map_repeats | run_circle_finder | run_ampliconarchitect | run_circexplorer2)) {
+        error 'circle_identifier param not valid. Please check!'
+    }
+
+    // Check if BWA Index is given
+    if (params.bwa_index) {
+        ch_bwa_index = Channel.fromPath(params.bwa_index, type: 'dir').collect()
+        ch_bwa_index = ch_bwa_index.map { index -> ["bwa_index", index] }.collect()
+        bwa_index_exists = true
+    } else {
+        ch_bwa_index = Channel.empty()
+        bwa_index_exists = false
+    }
+
+    // AmpliconArchitect input validation
+    if (run_ampliconarchitect) {
+        if (!params.mosek_license_dir) {
+            error "Mosek License Directory is missing! Please specify directory containing mosek license using --mosek_license_dir and rename license to 'mosek.lic'."
+        }
+        mosek_license_dir = file(params.mosek_license_dir)
+        if (!params.aa_data_repo) {
+            error "AmpliconArchitect Data Repository Missing! Please see https://github.com/jluebeck/AmpliconArchitect for more information and specify its absolute path using --aa_data_repo."
+        }
+        if (!(params.reference_build in ["hg19", "GRCh38", "GRCh37", "mm10"])) {
+            error "Reference Build not given! Please specify --reference_build 'mm10', 'hg19', 'GRCh38', or 'GRCh37'."
+        }
+        if (!params.cnvkit_cnn) {
+            ch_cnvkit_reference = file(params.aa_data_repo + "/" + params.reference_build + "/" + params.reference_build + "_cnvkit_filtered_ref.cnn", checkIfExists: true)
+        } else {
+            ch_cnvkit_reference = file(params.cnvkit_cnn)
+        }
+    }
 
     // Define Empty Channels for MultiQC
     ch_samtools_stats           = Channel.empty()

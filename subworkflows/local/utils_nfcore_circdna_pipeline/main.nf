@@ -107,25 +107,6 @@ workflow PIPELINE_INITIALISATION {
     // Create channel from input file provided through params.input
     //
 
-    def parseBoolean = { value ->
-        if (value == null) {
-            return null
-        }
-        if (value instanceof Boolean) {
-            return value
-        }
-        if (value instanceof CharSequence) {
-            return value.toString().toLowerCase() in ['true','t','1','yes','y']
-        }
-        if (value instanceof Collection) {
-            if (value.isEmpty()) {
-                return null
-            }
-            return parseBoolean(value[0])
-        }
-        return value.toString().toLowerCase() in ['true','t','1','yes','y']
-    }
-
     if (params.input_format == "FASTQ") {
         Channel
             .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
@@ -223,6 +204,17 @@ workflow PIPELINE_COMPLETION {
     FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+//
+// Parse a value to Boolean (handles String, Boolean, Collection, null)
+//
+def parseBoolean(value) {
+    if (value == null) return null
+    if (value instanceof Boolean) return value
+    if (value instanceof CharSequence) return value.toString().toLowerCase() in ['true', 't', '1', 'yes', 'y']
+    if (value instanceof Collection) return value.isEmpty() ? null : parseBoolean(value[0])
+    return value.toString().toLowerCase() in ['true', 't', '1', 'yes', 'y']
+}
+
 //
 // Check and validate pipeline parameters
 //
