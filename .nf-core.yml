@@ -3,6 +3,7 @@ lint:
     - assets/multiqc_config.yml
   files_unchanged:
     - assets/email_template.html
+    - .prettierignore
 nf_core_version: 4.0.2
 repository_type: pipeline
 template:
