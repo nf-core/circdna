@@ -284,9 +284,9 @@ workflow CIRCDNA {
         run_circle_map_realign | run_circle_map_repeats) {
 
         // Define Index channel and additional bam sorted channels for Circle_finder - not usable with duplicates removed
-        ch_bam_sorted_bai       = SAMTOOLS_INDEX_BAM.out.bai
+        ch_bam_sorted_bai       = SAMTOOLS_INDEX_BAM.out.index
         ch_full_bam_sorted      = ch_bam_sorted
-        ch_full_bam_sorted_bai  = SAMTOOLS_INDEX_BAM.out.bai
+        ch_full_bam_sorted_bai  = SAMTOOLS_INDEX_BAM.out.index
 
         ch_fasta = ch_fasta_meta.map{ meta, index -> [index] }.collect()
 
@@ -343,11 +343,11 @@ workflow CIRCDNA {
                 )
 
                 ch_bam_sorted = SAMTOOLS_SORT_FILTERED.out.bam
-                ch_bam_sorted_bai = SAMTOOLS_INDEX_FILTERED.out.bai
+                ch_bam_sorted_bai = SAMTOOLS_INDEX_FILTERED.out.index
             }
             else {
                 ch_bam_sorted               = BAM_MARKDUPLICATES_PICARD.out.bam
-                ch_bam_sorted_bai           = BAM_MARKDUPLICATES_PICARD.out.bai
+                ch_bam_sorted_bai           = BAM_MARKDUPLICATES_PICARD.out.index
                 ch_markduplicates_stats     = BAM_MARKDUPLICATES_PICARD.out.stats
                 ch_markduplicates_flagstat  = BAM_MARKDUPLICATES_PICARD.out.flagstat
                 ch_markduplicates_idxstats  = BAM_MARKDUPLICATES_PICARD.out.idxstats
@@ -420,7 +420,7 @@ workflow CIRCDNA {
         // DEFINE CHANNELS FOR REALIGN AND REPEATS
         ch_qname_sorted_bam = SAMTOOLS_SORT_QNAME_CM.out.bam
         ch_re_sorted_bam = SAMTOOLS_SORT_RE.out.bam
-        ch_re_sorted_bai = SAMTOOLS_INDEX_RE.out.bai
+        ch_re_sorted_bai = SAMTOOLS_INDEX_RE.out.index
 
         //
         // MODULE: RUN CIRCLE_MAP REPEATS
