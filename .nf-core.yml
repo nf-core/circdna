@@ -14,7 +14,7 @@ template:
   name: circdna
   org: nf-core
   outdir: .
-  version: "1.1"
+  version: "1.2"
 update:
   nf-core:
     samtools/index: 1ad73f1b2abdea9398680d6d20014838135c9a35

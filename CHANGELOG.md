@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v1.2dev - [2026-06-29]
+## v1.2 - [2026-06-29]
 
 ### Enhancements & fixes
 
@@ -32,6 +32,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed unused `imNotification` process
 - Added nf-test pipeline test (`tests/default.nf.test`) for CI
 - Added test dataset (`test_dataset/`) for local development and testing
+- Fixed module input tuple signatures following `nf-core modules update --all` (Nextflow 25.10.3 strict tuple matching)
+  - Fixed SAMTOOLS_FAIDX, BAM_STATS_SAMTOOLS, SAMTOOLS_SORT, SAMTOOLS_VIEW_FILTER, and Picard module calls
+  - Updated `.out.bai` → `.out.index` channel references for updated samtools/index module
+- Fixed BWA_INDEX out-of-memory on test profile; added `memory = '8.GB'` override in `conf/test.config`
+- Updated `download_pipeline.yml` to read nf-core version dynamically from `.nf-core.yml`
+- Added AmpliconSuite citation (Luebeck et al. 2024, bioRxiv) to `CITATIONS.md`
 
 ### Dependencies
 
