@@ -164,6 +164,10 @@ include { MULTIQC }     from '../modules/nf-core/multiqc/main.nf'
 workflow CIRCDNA {
     take:
     samplesheet
+    multiqc_config
+    multiqc_logo
+    multiqc_methods_description
+    outdir
 
     main:
     ch_versions = Channel.empty()
@@ -526,28 +530,44 @@ workflow CIRCDNA {
     //
     // Collate and save software versions
     //
-    softwareVersionsToYAML(ch_versions_topic)
+    def topic_versions = channel.topic("versions")
+        .distinct()
+        .branch { entry ->
+            versions_file: entry instanceof Path
+            versions_tuple: true
+        }
+
+    def topic_versions_string = topic_versions.versions_tuple
+        .map { process, tool, version ->
+            [ process[process.lastIndexOf(':')+1..-1], "  ${tool}: ${version}" ]
+        }
+        .groupTuple(by:0)
+        .map { process, tool_versions ->
+            tool_versions.unique().sort()
+            "${process}:\n${tool_versions.join('\n')}"
+        }
+
+    def ch_collated_versions = softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
+        .mix(topic_versions_string)
         .collectFile(
-            storeDir: "${params.outdir}/pipeline_info",
+            storeDir: "${outdir}/pipeline_info",
             name: 'nf_core_'  +  'circdna_software_'  + 'mqc_'  + 'versions.yml',
             sort: true,
             newLine: true
-        ).set { ch_collated_versions }
+        )
 
     //
     // MODULE: MultiQC
     //
     if (!params.skip_multiqc) {
-        summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
-        workflow_summary = paramsSummaryMultiqc(summary_params)
-        ch_workflow_summary = Channel.value(workflow_summary)
+        def ch_summary_params = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+        def ch_workflow_summary = channel.value(paramsSummaryMultiqc(ch_summary_params))
+        def ch_multiqc_custom_methods_description = multiqc_methods_description
+            ? file(multiqc_methods_description, checkIfExists: true)
+            : file("${projectDir}/assets/methods_description_template.yml", checkIfExists: true)
+        def ch_methods_description = channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
 
-        methods_description    = methodsDescriptionText(ch_multiqc_custom_methods_description)
-        ch_methods_description = Channel.value(methods_description)
-        ch_workflow_summary_file = ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml')
-        ch_methods_description_file = ch_methods_description.collectFile(name: 'methods_description_mqc.yaml')
-
-        ch_multiqc_files = ch_fastqc_multiqc.collect{it[1]}.ifEmpty([])
+        def ch_multiqc_files = ch_fastqc_multiqc.collect{it[1]}.ifEmpty([])
             .mix(ch_trimgalore_multiqc.collect{it[1]}.ifEmpty([]))
             .mix(ch_trimgalore_multiqc_log.collect{it[1]}.ifEmpty([]))
             .mix(ch_samtools_stats.collect{it[1]}.ifEmpty([]))
@@ -557,19 +577,25 @@ workflow CIRCDNA {
             .mix(ch_markduplicates_flagstat.collect{it[1]}.ifEmpty([]))
             .mix(ch_markduplicates_idxstats.collect{it[1]}.ifEmpty([]))
             .mix(ch_markduplicates_multiqc.collect{it[1]}.ifEmpty([]))
-            .mix(ch_workflow_summary_file)
+            .mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
             .mix(ch_collated_versions)
-            .mix(ch_methods_description_file)
+            .mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml', sort: true))
 
-        MULTIQC (
-            ch_multiqc_files.collect(),
-            ch_multiqc_config.toList(),
-            ch_multiqc_custom_config.toList(),
-            ch_multiqc_logo.toList(),
-            [],
-            []
+        MULTIQC(
+            ch_multiqc_files.flatten().collect().map { files ->
+                [
+                    [id: 'circdna'],
+                    files,
+                    multiqc_config
+                        ? file(multiqc_config, checkIfExists: true)
+                        : file("${projectDir}/assets/multiqc_config.yml", checkIfExists: true),
+                    multiqc_logo ? file(multiqc_logo, checkIfExists: true) : [],
+                    [],
+                    [],
+                ]
+            }
         )
-        multiqc_report       = MULTIQC.out.report.toList()
+        multiqc_report = MULTIQC.out.report.map { _meta, report -> [report] }.toList()
     }
 
     emit:
