@@ -260,7 +260,9 @@ workflow CIRCDNA {
         .set { ch_bam_input }
         if (!params.bam_sorted){
             SAMTOOLS_SORT_BAM (
-                ch_bam_input
+                ch_bam_input,
+                [[id: null], [], []],
+                []
             )
             ch_bam_sorted       = SAMTOOLS_SORT_BAM.out.bam
         } else {
@@ -328,14 +330,18 @@ workflow CIRCDNA {
             // FILTER DUPLICATES IN BAM FILES USING SAMTOOLS VIEW
             if (!params.keep_duplicates) {
                 SAMTOOLS_VIEW_FILTER (
-                    ch_bam_sorted.join(ch_bam_sorted_bai),
-                    ch_fasta_meta,
+                    BAM_MARKDUPLICATES_PICARD.out.bam.join(BAM_MARKDUPLICATES_PICARD.out.index),
+                    ch_fasta_fai,
+                    [[], []],
+                    [[], []],
                     []
                 )
 
                 // SORT FILTERED BAM FILE
                 SAMTOOLS_SORT_FILTERED (
-                    SAMTOOLS_VIEW_FILTER.out.bam
+                    SAMTOOLS_VIEW_FILTER.out.bam,
+                    [[id: null], [], []],
+                    []
                 )
 
                 // INDEX FILTERED BAM FILE
@@ -375,7 +381,9 @@ workflow CIRCDNA {
     //
     if (run_circle_finder) {
         SAMTOOLS_SORT_QNAME_CF (
-            ch_full_bam_sorted
+            ch_full_bam_sorted,
+            [[id: null], [], []],
+            []
         )
 
         SAMBLASTER (
@@ -403,7 +411,9 @@ workflow CIRCDNA {
     if (run_circle_map_realign ||
             run_circle_map_repeats) {
         SAMTOOLS_SORT_QNAME_CM (
-            ch_bam_sorted
+            ch_bam_sorted,
+            [[id: null], [], []],
+            []
         )
 
         CIRCLEMAP_READEXTRACTOR (
@@ -411,7 +421,9 @@ workflow CIRCDNA {
         )
 
         SAMTOOLS_SORT_RE (
-            CIRCLEMAP_READEXTRACTOR.out.bam
+            CIRCLEMAP_READEXTRACTOR.out.bam,
+            [[id: null], [], []],
+            []
         )
 
         SAMTOOLS_INDEX_RE (
