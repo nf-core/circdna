@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "utils_nfcore_circdna_pipeline"
+description: Subworkflow with utility functions specific to the nf-core/circdna pipeline
+keywords:
+  - utility
+  - pipeline
+  - initialisation
+components:
+  - utils_nfschema_plugin
+  - utils_nfcore_pipeline
+  - utils_nextflow_pipeline
+
+input:
+  - version:
+      type: boolean
+      description: |
+        Display version and exit
+  - validate_params:
+      type: boolean
+      description: |
+        Boolean whether to validate parameters against the schema at runtime
+  - monochrome_logs:
+      type: boolean
+      description: |
+        Do not use coloured log outputs
+
+output:
+  - samplesheet:
+      type: channel
+      description: |
+        Channel containing samplesheet data
+  - versions:
+      type: file
+      description: |
+        File containing software versions
+      pattern: "versions.yml"
+
+authors:
+  - "@DSchreyer"
+maintainers:
+  - "@DSchreyer"

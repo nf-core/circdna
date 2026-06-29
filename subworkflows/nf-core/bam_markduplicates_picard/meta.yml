@@ -14,27 +14,31 @@ components:
   - samtools/flagstat
   - bam_stats_samtools
 input:
-  - ch_bam:
+  - ch_reads:
       description: |
-        BAM/CRAM/SAM file
-        Structure: [ val(meta), path(bam) ]
-  - ch_fasta:
+        Sequence reads in BAM/CRAM/SAM format
+        Structure: [ val(meta), path(reads) ]
+  - ch_fasta_fai:
       description: |
-        Reference genome fasta file
-        Structure: [ path(fasta) ]
-  - ch_fasta:
-      description: |
-        Index of the reference genome fasta file
-        Structure: [ path(fai) ]
+        Reference genome fasta file required for CRAM input
+        Structure: [ path(fasta), path(fai) ]
 output:
   - bam:
       description: |
-        processed BAM/CRAM/SAM file
+        processed BAM/SAM file
         Structure: [ val(meta), path(bam) ]
   - bai:
       description: |
-        BAM/CRAM/SAM samtools index
+        BAM/SAM samtools index
         Structure: [ val(meta), path(bai) ]
+  - cram:
+      description: |
+        processed CRAM file
+        Structure: [ val(meta), path(cram) ]
+  - crai:
+      description: |
+        CRAM samtools index
+        Structure: [ val(meta), path(crai) ]
   - csi:
       description: |
         CSI samtools index
@@ -51,6 +55,10 @@ output:
       description: |
         File containing samtools idxstats output
         Structure: [ val(meta), path(idxstats) ]
+  - per_sample_mqc_bundle:
+      description: |
+        Per-sample MultiQC-feeding outputs (stats, flagstat, idxstats, metrics) joined on meta.
+        Structure: [ val(meta), list(files) ]
   - versions:
       description: |
         Files containing software versions

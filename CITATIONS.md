@@ -12,11 +12,11 @@
 
 - [FastQC](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 
-  > Andrews, S. (2010). FastQC: A Quality Control Tool for High Throughput Sequence Data [Online].
+> Andrews, S. (2010). FastQC: A Quality Control Tool for High Throughput Sequence Data [Online].
 
 - [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
 
-  > Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.
+> Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.
 
 - [Samtools](http://www.htslib.org/)
 
@@ -44,6 +44,8 @@
 
 - [AmpliconSuite-Pipeline](https://github.com/AmpliconSuite/AmpliconSuite-pipeline)
 
+  > Luebeck J, Huang E, Kim F, Liefeld T, Dameracharla B, Ahuja R, Schreyer D, Prasad G, Adamaszek M, Kenkre R, Agashe T, Torvi D, Tabor T, Giurgiu M, Kim S, Kim H, Bailey P, Verhaak RGW, Deshpande VB, Reich MM, Mischel PS, Mesirov J, Bafna V. AmpliconSuite: an end-to-end workflow for analyzing focal amplifications in cancer genomes. bioRxiv. 2024 May 10. doi: 10.1101/2024.05.06.592768.
+
 - [AmpliconArchitect](https://github.com/virajbdeshpande/AmpliconArchitect)
 
   > Deshpande V, Luebeck J, Nguyen ND, Bakhtiari M, Turner KM, Schwab R, Carter H, Mischel PS, Bafna V. Exploring the landscape of focal amplifications in cancer using AmpliconArchitect. Nat Commun. 2019 Jan 23;10(1):392. doi: 10.1038/s41467-018-08200-y. PMID: 30674876; PMCID: PMC6344493.
@@ -51,6 +53,8 @@
 - [AmpliconClassifier](https://github.com/jluebeck/AmpliconClassifier)
 
   > Luebeck J, Ng AWT, Galipeau PC, Li X, Sanchez CA, Katz-Summercorn AC, Kim H, Jammula S, He Y, Lippman SM, Verhaak RGW, Maley CC, Alexandrov LB, Reid BJ, Fitzgerald RC, Paulson TG, Chang HY, Wu S, Bafna V, Mischel PS. Extrachromosomal DNA in the cancerous transformation of Barrett's oesophagus. Nature. 2023 Apr;616(7958):798-805. doi: 10.1038/s41586-023-05937-5. Epub 2023 Apr 12. PMID: 37046089; PMCID: PMC10132967.
+
+  > Luebeck J, Huang E, Kim F, Liefeld T, Dameracharla B, Ahuja R, Schreyer D, Prasad G, Adamaszek M, Kenkre R, Agashe T, Torvi D, Tabor T, Giurgiu M, Kim S, Kim H, Bailey P, Verhaak RGW, Deshpande VB, Reich MM, Mischel PS, Mesirov J, Bafna V. AmpliconSuite: an end-to-end workflow for analyzing focal amplifications in cancer genomes. bioRxiv. 2024 May 10. doi: 10.1101/2024.05.06.592768.
 
 - [Samblaster](https://github.com/GregoryFaust/samblaster)
 
