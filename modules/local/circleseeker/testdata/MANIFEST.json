@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-10-16T07:01:21.087079+00:00",
+  "circle_seeker_tag": "v1.6.1",
+  "simulator_relpath": "tests/simulation/eccdna_simulator.py",
+  "circle_seeker_src_basename": "CircleSeeker",
+  "parameters": {
+    "seed": 42,
+    "num_uecc": 3,
+    "num_mecc": 0,
+    "num_cecc": 0,
+    "num_chromosomes": 1,
+    "chr_length": 8000,
+    "uecc_length_range": [
+      300,
+      800
+    ],
+    "auto_scale_genome": false,
+    "tandem_copies": 3
+  },
+  "ci_adaptation": "Each upstream Uecc read (copy_number=1.0) is expanded to 3 tandem copies so CtcReads-Core/TideHunter has RCA-like signal.",
+  "outputs": {
+    "circleseeker_test_ref.fa": {
+      "bytes": 8106,
+      "md5": "d2f816c89811bdfc52f47a53760458c4"
+    },
+    "circleseeker_test_reads.fa": {
+      "bytes": 5416,
+      "md5": "8b37b6b3059065d6e8bb6692198bfbd0",
+      "n_reads": 3
+    }
+  },
+  "test_datasets_paths": [
+    "data/genomics/homo_sapiens/pacbio/fasta/circleseeker_test_reads.fa",
+    "data/genomics/homo_sapiens/pacbio/fasta/circleseeker_test_ref.fa"
+  ]
+}

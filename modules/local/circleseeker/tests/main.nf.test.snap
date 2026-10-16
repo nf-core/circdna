@@ -34,7 +34,7 @@
                     {
                         "id": "test"
                     },
-                    "test_eccDNA_summary.csv:md5,0d1df304e1662e3fb78fa3da5b62efd4"
+                    "test_eccDNA_summary.csv:md5,9e4792320c591de5ab7c1cffc014ddf2"
                 ]
             ],
             [
@@ -42,14 +42,14 @@
                     {
                         "id": "test"
                     },
-                    "test.circleseeker.bed:md5,e64d585b2e06cb3297522fae77255cfb"
+                    "test.circleseeker.bed:md5,7246eaa17342b7f9cfd40dd3bc49c355"
                 ]
             ],
             [
                 "versions.yml:md5,848655bdc99bfbd897fcce96dc35e594"
             ]
         ],
-        "timestamp": "2026-10-16T08:36:15.925967",
+        "timestamp": "2026-10-16T15:02:14.765484",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
