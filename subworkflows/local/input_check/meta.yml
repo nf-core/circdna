@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "input_check"
+description: Check and validate input samplesheet
+keywords:
+  - samplesheet
+  - input
+  - validation
+components: []
+
+input:
+  - samplesheet:
+      type: file
+      description: |
+        Samplesheet CSV file
+
+output:
+  - reads:
+      type: channel
+      description: |
+        Channel containing sample reads
+
+authors:
+  - "@DSchreyer"
+maintainers:
+  - "@DSchreyer"

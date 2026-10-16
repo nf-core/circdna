@@ -107,25 +107,47 @@ workflow PIPELINE_INITIALISATION {
     // Create channel from input file provided through params.input
     //
 
-    channel
-        .fromList(samplesheetToList(input, "${projectDir}/assets/schema_input.json"))
-        .map {
-            meta, fastq_1, fastq_2 ->
-                if (!fastq_2) {
-                    return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
-                } else {
-                    return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
+    if (params.input_format == "FASTQ") {
+        Channel
+            .fromList(samplesheetToList(params.input, "${projectDir}/assets/schema_input.json"))
+            .map {
+                meta, fastq_1, fastq_2, single_end, bam ->
+                    if (parseBoolean(bam)) {
+                        error("Please check input samplesheet -> BAM column provided while --input_format FASTQ is set.")
+                    }
+                    def is_single_end = parseBoolean(single_end) != null ? parseBoolean(single_end) : !fastq_2
+                    if (is_single_end) {
+                        return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
+                    } else {
+                        return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
+                    }
+            }
+            .groupTuple()
+            .map { samplesheet ->
+                validateInputSamplesheet(samplesheet)
+            }
+            .map {
+                meta, fastqs ->
+                    return [ meta, fastqs.flatten() ]
+            }
+            .set { ch_samplesheet }
+    } else if (params.input_format == "BAM") {
+        Channel
+            .fromPath(params.input)
+            .splitCsv(header: true, sep: ',')
+            .map { row ->
+                if (!row.bam) {
+                    error("Please check input samplesheet -> Missing required field 'bam'.")
                 }
-        }
-        .groupTuple()
-        .map { samplesheet ->
-            validateInputSamplesheet(samplesheet)
-        }
-        .map {
-            meta, fastqs ->
-                return [ meta, fastqs.flatten() ]
-        }
-        .set { ch_samplesheet }
+                def meta = [ id: row.sample, single_end: false ]
+                [ meta.id, meta, [ file(row.bam, checkIfExists: true) ] ]
+            }
+            .groupTuple()
+            .map { id, metas, bams ->
+                return [ metas[0], bams.flatten() ]
+            }
+            .set { ch_samplesheet }
+    }
 
     emit:
     samplesheet = ch_samplesheet
@@ -182,6 +204,17 @@ workflow PIPELINE_COMPLETION {
     FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+//
+// Parse a value to Boolean (handles String, Boolean, Collection, null)
+//
+def parseBoolean(value) {
+    if (value == null) return null
+    if (value instanceof Boolean) return value
+    if (value instanceof CharSequence) return value.toString().toLowerCase() in ['true', 't', '1', 'yes', 'y']
+    if (value instanceof Collection) return value.isEmpty() ? null : parseBoolean(value[0])
+    return value.toString().toLowerCase() in ['true', 't', '1', 'yes', 'y']
+}
+
 //
 // Check and validate pipeline parameters
 //
