@@ -8,9 +8,9 @@ keywords:
 tools:
   - circleseeker:
       description: Comprehensive detection and characterization of extrachromosomal circular DNA (eccDNA) from PacBio HiFi sequencing data
-      homepage: https://github.com/leoxqy/CircleSeeker
-      documentation: https://github.com/leoxqy/CircleSeeker#readme
-      tool_dev_url: https://github.com/leoxqy/CircleSeeker
+      homepage: https://github.com/YaoxinBio/CircleSeeker
+      documentation: https://github.com/YaoxinBio/CircleSeeker#readme
+      tool_dev_url: https://github.com/YaoxinBio/CircleSeeker
       licence: ["GPL-3.0-only"]
 
 input:

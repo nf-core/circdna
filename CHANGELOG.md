@@ -3,6 +3,17 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v4.7.4 - [2026-10-16]
+
+### Dependencies
+
+- circleseeker: 1.1.2 → 1.6.1 (`bioconda` / `biocontainers`; homepage now [YaoxinBio/CircleSeeker](https://github.com/YaoxinBio/CircleSeeker))
+
+### Enhancements & fixes
+
+- **CircleSeeker container exit**: process script now `wait`s for leftover child processes so Docker tasks exit cleanly after CircleSeeker finishes.
+- **Version sync**: `nextflow.config` manifest version caught up from 4.7.2 to match CHANGELOG (via 4.7.3 → 4.7.4).
+
 ## v4.7.3 - [2026-09-18]
 
 ### Enhancements & fixes

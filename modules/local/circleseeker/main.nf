@@ -4,8 +4,8 @@ process CIRCLESEEKER {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/circleseeker:1.1.2--pyhdfd78af_0' :
-        'quay.io/biocontainers/circleseeker:1.1.2--pyhdfd78af_0' }"
+        'https://depot.galaxyproject.org/singularity/circleseeker:1.6.1--pyhdfd78af_0' :
+        'quay.io/biocontainers/circleseeker:1.6.1--pyhdfd78af_0' }"
 
     input:
     tuple val(meta), path(reads)
@@ -67,6 +67,10 @@ process CIRCLESEEKER {
     circleseeker_to_bed.py \\
         ${prefix}_eccDNA_summary.csv \\
         ${prefix}.circleseeker.bed
+
+    # External aligners spawned by CircleSeeker can outlive the main process
+    # and keep the container PID namespace alive; wait for any remaining children.
+    wait || true
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
