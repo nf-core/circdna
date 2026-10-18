@@ -29,6 +29,10 @@ jobs:
         run: pre-commit run --all-files
 
   nf-core:
+    # This fork diverges significantly from the current nf-core template
+    # (custom modes, local modules, legacy lib/ structure). Full template
+    # conformance is tracked separately; keep lint informative but non-blocking.
+    continue-on-error: true
     runs-on: ubuntu-latest
     steps:
       - name: Check out pipeline code

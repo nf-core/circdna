@@ -1,599 +1,33 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/circdna/master/nextflow_schema.json",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/nf-core/circdna//nextflow_schema.json",
     "title": "nf-core/circdna pipeline parameters",
     "description": "Pipeline for the identification of circular DNAs",
     "type": "object",
-    "definitions": {
+    "$defs": {
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
-            "required": ["input", "outdir", "input_format"],
+            "required": ["input", "outdir"],
             "properties": {
                 "input": {
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
+                    "schema": "assets/schema_input.json",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with either 2 [BAM] or 3 [FASTQ] columns, and a header row. See [usage docs](https://nf-co.re/circdna/usage#samplesheet-input).",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
                     "fa_icon": "fas fa-file-csv"
-                },
-                "input_format": {
-                    "type": "string",
-                    "description": "Specify input format. Default *FASTQ*. Options 'FASTQ' or 'BAM'.",
-                    "help_text": "Define which input file formats are used in the pipeline run. Use either `--input_format 'FASTQ'` or `--input_format 'BAM'`.",
-                    "fa_icon": "fas fa-pen"
-                },
-                "bam_sorted": {
-                    "type": "boolean",
-                    "description": "Specify if bam file is sorted [false, true]. If false or not specified, bam file will be sorted!",
-                    "help_text": "Set this parameter if you specified `--input_format BAM` and supplied sorted `BAM` files. This will skip the `samtools sort` step.",
-                    "fa_icon": "fas fa-sort-down"
-                },
-                "save_sorted_bam": {
-                    "type": "boolean",
-                    "description": "Specify if sorted bam file should be saved [false, true]. Default: false",
-                    "help_text": "Set this parameter if you specified bam files in your samplesheet.",
-                    "fa_icon": "fas fa-save"
                 },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
                     "fa_icon": "fas fa-folder-open"
-                },
-                "email": {
-                    "type": "string",
-                    "description": "Email address for completion summary.",
-                    "fa_icon": "fas fa-envelope",
-                    "help_text": "Set this parameter to your e-mail address to get a summary e-mail with details of the run sent to you when the workflow exits. If set in your user config file (`~/.nextflow/config`) then you don't need to specify this on the command line for every run.",
-                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$"
-                },
-                "multiqc_title": {
-                    "type": "string",
-                    "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
-                    "fa_icon": "fas fa-file-signature"
-                }
-            }
-        },
-        "circdna_identifier_options": {
-            "title": "Circular DNA identifier options",
-            "type": "object",
-            "fa_icon": "fas fa-circle-notch",
-            "description": "Options to adjust inital circular DNA identifier (required for short-read protocol only)",
-            "properties": {
-                "mode": {
-                    "type": "string",
-                    "default": "eccdna",
-                    "description": "Legacy pipeline mode: 'reference' or 'eccdna'. No longer a master switch.",
-                    "help_text": "§1.1: rows are routed on datatype/assay. mode only backfills the datatype (reference→gdna) when a row omits it. Integrated Mode was removed; scoring lives in eccdna.smk.",
-                    "fa_icon": "fas fa-cogs",
-                    "enum": ["reference", "eccdna"]
-                },
-                "circle_identifier": {
-                    "type": "string",
-                    "description": "Specifies the circular DNA identification algorithm to use - available 'circle_map_realign', 'circle_map_repeats', 'circle_finder', 'circexplorer2', and 'ampliconarchitect'. Multiple circle_identifier's can be specified with a comma-separated string. E.g. `--circle_identifier 'circle_map_realign,unicycler'`. Required when --protocol is 'short_read'; ignored for 'pacbio'/'ont'.",
-                    "help_text": "Specify the circle_identifier branch used. Multiple circle_identifier's can be specified with a comma-separated string. E.g. `--circle_identifier 'circle_map_realign,unicycler'`. Leave empty for long-read protocols (pacbio/ont).",
-                    "fa_icon": "fas fa-circle-notch"
-                },
-                "repeat_gff": {
-                    "type": "string",
-                    "format": "file-path",
-                    "description": "Path to EDTA/RepeatMasker GFF3 or BED file for TE repeat annotation",
-                    "help_text": "TE repeat annotation file passed to reference mode.",
-                    "fa_icon": "fas fa-file-code"
-                }
-            }
-        },
-        "long_read_options": {
-            "title": "Long-read sequencing options",
-            "type": "object",
-            "fa_icon": "fas fa-dna",
-            "description": "Options for PacBio/ONT long-read eccDNA analysis",
-            "properties": {
-                "protocol": {
-                    "type": "string",
-                    "enum": ["short_read", "pacbio", "ont"],
-                    "default": "short_read",
-                    "description": "Legacy global platform fallback. Only used when a samplesheet row lacks an explicit 'platform' column.",
-                    "help_text": "DEPRECATED as a routing key: rows are routed on platform × assay × datatype. This value only backfills the platform for rows without one (short_read→illumina).",
-                    "fa_icon": "fas fa-dna"
-                },
-                "entrypoint": {
-                    "type": "string",
-                    "enum": ["cleaned_fastq", "raw_fastq", "subreads", "hifi_bam"],
-                    "default": "cleaned_fastq",
-                    "description": "Input entrypoint for long-read data. Controls preprocessing depth.",
-                    "help_text": "For PacBio: 'subreads' (raw subreads BAM → PBCCS → LIMA), 'hifi_bam' (HiFi BAM → LIMA), 'raw_fastq' (raw FASTQ → LIMA), 'cleaned_fastq' (ready-to-use FASTQ). For ONT: 'raw_fastq' (raw FASTQ → CHOPPER → PYCHOPPER), 'cleaned_fastq' (ready-to-use FASTQ).",
-                    "fa_icon": "fas fa-arrow-right"
-                },
-                "primers": {
-                    "type": "string",
-                    "format": "file-path",
-                    "exists": true,
-                    "description": "Path to primers FASTA file for adapter trimming with Lima/Pychopper.",
-                    "help_text": "Required for PacBio (Lima) and ONT (Pychopper) adapter trimming. Provide a FASTA file containing the primer sequences.",
-                    "fa_icon": "fas fa-file-code"
-                },
-                "long_read_identifier": {
-                    "type": "string",
-                    "default": "cresil,fled,flye,eccfinder",
-                    "description": "Long-read eccDNA identification algorithms to use. Options: 'cresil', 'fled', 'flye', 'eccfinder', 'circleseeker', 'ciderseq'. Multiple can be specified with comma-separated string.",
-                    "help_text": "Specify the long-read eccDNA identification engines. 'cresil' and 'fled' are mapping-based tools; 'flye' is an assembly-based tool; 'eccfinder' supports both mapping and assembly modes; 'circleseeker' is a repeat-based tool; 'ciderseq' runs the CIDER-Seq2 five-step pipeline (requires --ciderseq_config and its databases). E.g. `--long_read_identifier 'cresil,flye'`.",
-                    "fa_icon": "fas fa-circle-notch"
-                },
-                "eccfinder_mode": {
-                    "type": "string",
-                    "enum": ["map", "asm", "both"],
-                    "default": "map",
-                    "description": "ecc_finder detection mode. 'map' = mapping-based, 'asm' = assembly-based, 'both' = run both.",
-                    "help_text": "Controls which ecc_finder sub-pipeline runs. map-ont/map-sr for mapping-based detection; asm-ont/asm-sr for assembly-based detection.",
-                    "fa_icon": "fas fa-search"
-                },
-                "ciderseq_config": {
-                    "type": "string",
-                    "format": "file-path",
-                    "exists": true,
-                    "description": "CIDER-Seq2 config JSON (see ciderseq2 examples/ciderseq_config.json).",
-                    "help_text": "Required when 'ciderseq' is in --long_read_identifier. The config holds the blast database path, align targets, protein database, and phasing parameters; file paths are re-resolved by basename inside --ciderseq_blastdb / --ciderseq_align_targets / --ciderseq_protein_db.",
-                    "fa_icon": "fas fa-file-code"
-                },
-                "ciderseq_blastdb": {
-                    "type": "string",
-                    "format": "path",
-                    "exists": true,
-                    "description": "Directory (or db file) of the blastn database for the CIDER-Seq2 separate step.",
-                    "help_text": "Directory containing the pre-built blastn database (fasta + .nhr/.nin/.nsq). If only a fasta is given, makeblastdb is run automatically.",
-                    "fa_icon": "fas fa-database"
-                },
-                "ciderseq_align_targets": {
-                    "type": "string",
-                    "format": "path",
-                    "exists": true,
-                    "description": "Directory of the align target fasta files for the CIDER-Seq2 align step.",
-                    "help_text": "Directory containing one FASTA per target genome, named after the align.targets keys of the CIDER-Seq2 config (e.g. EACMV_DNA_A.fa).",
-                    "fa_icon": "fas fa-database"
-                },
-                "ciderseq_protein_db": {
-                    "type": "string",
-                    "format": "path",
-                    "exists": true,
-                    "description": "Directory (or db file) of the tblastn protein database for the CIDER-Seq2 annotate step.",
-                    "help_text": "Directory containing the pre-built tblastn protein database (fasta + .phr/.pin/.psq). If only a fasta is given, makeblastdb is run automatically.",
-                    "fa_icon": "fas fa-database"
-                },
-                "ciderseq_host_genome": {
-                    "type": "string",
-                    "format": "file-path",
-                    "exists": true,
-                    "description": "Host genome FASTA for the optional CIDER-Seq2 cs-eccDNA detection step.",
-                    "help_text": "When provided, CIDER-Seq2 deconcatenated outputs are screened against the host genome with cs-eccDNA.py to report likely eccDNA candidates.",
-                    "fa_icon": "fas fa-dna"
-                },
-                "min_read_support": {
-                    "type": "integer",
-                    "default": 2,
-                    "minimum": 1,
-                    "description": "Minimum number of supporting reads to retain an eccDNA candidate.",
-                    "help_text": "Filter out eccDNA candidates with fewer supporting reads than this threshold.",
-                    "fa_icon": "fas fa-filter"
-                },
-                "ccs_chunk_size": {
-                    "type": "number",
-                    "default": 2,
-                    "minimum": 0.1,
-                    "description": "Chunk size in GB for PBCCS (ccs) chunked processing of PacBio subreads BAM.",
-                    "help_text": "Subreads BAM files larger than this size are split into multiple chunks for parallel HiFi generation with PBCCS, then merged with samtools cat. Default 2 GB.",
-                    "fa_icon": "fas fa-cut"
-                },
-                "assay": {
-                    "type": "string",
-                    "enum": ["wgs", "circleseq", "rca", "ciderseq", "enriched"],
-                    "description": "Global assay backfill for samplesheet rows that omit the 'assay' column.",
-                    "help_text": "Long-read rows without an explicit 'assay' column fall back to this value. Default null forces the assay to be written per row. Illumina+RCA must be written as circleseq.",
-                    "fa_icon": "fas fa-flask"
-                },
-                "remap_min_mapq": {
-                    "type": "integer",
-                    "default": 20,
-                    "minimum": 0,
-                    "description": "Minimum MAPQ for collapse_circle_alignments.py when remapping assembled circles.",
-                    "help_text": "Assembled FASTA (TideHunter consensus / ecc_finder asm / Flye contigs) are remapped to the reference; alignments below this MAPQ are dropped.",
-                    "fa_icon": "fas fa-filter"
-                },
-                "remap_max_gap": {
-                    "type": "integer",
-                    "default": 100,
-                    "minimum": 0,
-                    "description": "Max gap (bp) for merging alignment blocks/loci in collapse_circle_alignments.py.",
-                    "fa_icon": "fas fa-arrows-alt-h"
-                },
-                "filter_organelle": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Enable organelle origin tagging of candidate BED entries.",
-                    "help_text": "When true and --organelle_genome is set, candidates are annotated with origin=nuclear|pt|mt|ambiguous. Default: tag only, never drop.",
-                    "fa_icon": "fas fa-seedling"
-                },
-                "organelle_genome": {
-                    "type": "string",
-                    "format": "file-path",
-                    "description": "Organelle genome FASTA (plastid/mitochondrial, optionally concatenated) for origin tagging.",
-                    "help_text": "Mapped to the nuclear reference; candidate regions overlapping organelle hits are tagged pt/mt by contig name keywords (mito/chloro/plastid).",
-                    "fa_icon": "fas fa-dna"
-                },
-                "drop_organelle_candidates": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Remove organelle-tagged candidates from the output instead of only annotating origin.",
-                    "help_text": "§4.7 default is false (annotate only). Set true to hard-remove pt/mt/ambiguous candidates.",
-                    "fa_icon": "fas fa-ban"
-                },
-                "organelle_min_overlap": {
-                    "type": "number",
-                    "default": 0.5,
-                    "minimum": 0,
-                    "maximum": 1,
-                    "description": "Minimum overlap fraction for a candidate to be tagged as organelle origin.",
-                    "fa_icon": "fas fa-percentage"
-                },
-                "blacklist_bed": {
-                    "type": "string",
-                    "format": "file-path",
-                    "description": "Path to BED file containing blacklisted genomic regions.",
-                    "help_text": "Filter out eccDNA candidates overlapping with blacklisted regions (e.g., centromeres, telomeres).",
-                    "fa_icon": "fas fa-ban"
-                },
-                "repeats_bed": {
-                    "type": "string",
-                    "format": "file-path",
-                    "description": "Path to BED file containing repetitive genomic regions.",
-                    "help_text": "§4.6: repeat regions are ANNOTATED (te_overlap column appended), never hard-deleted. Blacklist filtering remains hard.",
-                    "fa_icon": "fas fa-repeat"
-                },
-                "save_long_read_intermediate": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Save intermediate files from long-read preprocessing.",
-                    "help_text": "Set this parameter to save intermediate files from PBCCS, LIMA, CHOPPER, and PYCHOPPER.",
-                    "fa_icon": "fas fa-save"
-                },
-                "skip_long_read_qc": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Skip quality control steps for long-read data.",
-                    "help_text": "Set this parameter to skip QC steps for long-read preprocessing.",
-                    "fa_icon": "fas fa-fast-forward"
-                }
-            }
-        },
-        "reference_genome_options": {
-            "title": "Reference genome options",
-            "type": "object",
-            "fa_icon": "fas fa-dna",
-            "description": "Reference genome related files and options required for the workflow.",
-            "properties": {
-                "genome": {
-                    "type": "string",
-                    "description": "Name of iGenomes reference.",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
-                },
-                "fasta": {
-                    "type": "string",
-                    "format": "file-path",
-                    "exists": true,
-                    "mimetype": "text/plain",
-                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
-                    "description": "Path to FASTA genome file.",
-                    "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
-                    "fa_icon": "far fa-file-code"
-                },
-                "igenomes_ignore": {
-                    "type": "boolean",
-                    "description": "Do not load the iGenomes reference config.",
-                    "fa_icon": "fas fa-ban",
-                    "hidden": true,
-                    "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
-                },
-                "save_reference": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Save the index reference fasta in the results directory.",
-                    "help_text": "By default, indexed reference genome files will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
-                    "fa_icon": "fas fa-save"
-                },
-                "bwa_index": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "mimetype": "text/plain",
-                    "description": "Path to the directory containg the BWA index files.",
-                    "help_text": "This parameter is *optional*. If you don't have a BWA index available this will be generated for you automatically.",
-                    "fa_icon": "far fa-file-code"
-                }
-            }
-        },
-        "process_skipping_options": {
-            "title": "Process Skipping options",
-            "type": "object",
-            "fa_icon": "fas fa-fast-forward",
-            "description": "Options to skip various steps within the workflow.",
-            "properties": {
-                "skip_qc": {
-                    "type": "boolean",
-                    "default": false,
-                    "fa_icon": "fas fa-fast-forward",
-                    "help_text": "Set this parameter to skip all quality control steps except MultiQC.",
-                    "description": "Skip all QC steps except for MultiQC."
-                },
-                "skip_multiqc": {
-                    "type": "boolean",
-                    "default": false,
-                    "fa_icon": "fas fa-fast-forward",
-                    "help_text": "Set this parameter to skip the MultiQC step.",
-                    "description": "Skip MultiQC step."
-                },
-                "skip_markduplicates": {
-                    "type": "boolean",
-                    "default": false,
-                    "fa_icon": "fas fa-fast-forward",
-                    "help_text": "Set this parameter to skip annotating and filtering of duplicates marked by Picard Markduplicates.",
-                    "description": "Skip Picard MarkDuplicates and duplicate filtering"
-                },
-                "keep_duplicates": {
-                    "type": "boolean",
-                    "default": true,
-                    "fa_icon": "fas fa-save",
-                    "help_text": "Set this parameter to skip filtering of duplicates marked by Picard Markduplicates.",
-                    "description": "Keep read duplications marked by picard MarkDuplicates."
-                },
-                "save_markduplicates_bam": {
-                    "type": "boolean",
-                    "default": true,
-                    "fa_icon": "fas fa-save",
-                    "help_text": "Set this parameter to save bam file with marked duplicate reads.",
-                    "description": "Store bam with marked duplicate reads."
-                }
-            }
-        },
-        "read_trimming_options": {
-            "title": "Read trimming options",
-            "type": "object",
-            "fa_icon": "fas fa-cut",
-            "description": "Options to adjust read trimming criteria.",
-            "properties": {
-                "clip_r1": {
-                    "type": "integer",
-                    "description": "Instructs Trim Galore to remove bp from the 5' end of read 1 (or single-end reads).",
-                    "fa_icon": "fas fa-cut"
-                },
-                "clip_r2": {
-                    "type": "integer",
-                    "description": "Instructs Trim Galore to remove bp from the 5' end of read 2 (paired-end reads only).",
-                    "fa_icon": "fas fa-cut"
-                },
-                "three_prime_clip_r1": {
-                    "type": "integer",
-                    "description": "Instructs Trim Galore to remove bp from the 3' end of read 1 AFTER adapter/quality trimming has been performed.",
-                    "fa_icon": "fas fa-cut"
-                },
-                "three_prime_clip_r2": {
-                    "type": "integer",
-                    "description": "Instructs Trim Galore to remove bp from the 3' end of read 2 AFTER adapter/quality trimming has been performed.",
-                    "fa_icon": "fas fa-cut"
-                },
-                "trim_nextseq": {
-                    "type": "integer",
-                    "description": "Instructs Trim Galore to apply the --nextseq=X option, to trim based on quality after removing poly-G tails.",
-                    "help_text": "This enables the option Cutadapt `--nextseq-trim=3'CUTOFF` option via Trim Galore, which will set a quality cutoff (that is normally given with -q instead), but qualities of G bases are ignored. This trimming is in common for the NextSeq- and NovaSeq-platforms, where basecalls without any signal are called as high-quality G bases.",
-                    "fa_icon": "fas fa-cut"
-                },
-                "skip_trimming": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Skip the adapter trimming step.",
-                    "help_text": "Use this if your input FastQ files have already been trimmed outside of the workflow or if you're very confident that there is no adapter contamination in your data.",
-                    "fa_icon": "fas fa-fast-forward"
-                },
-                "save_trimmed": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Save the trimmed FastQ files in the results directory.",
-                    "help_text": "By default, trimmed FastQ files will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
-                    "fa_icon": "fas fa-save"
-                },
-                "save_merged_fastq": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Save the merged FastQ files in the results directory.",
-                    "help_text": "By default, merged FastQ files will not be saved to the results directory. Specify this flag (or set to true in your config file) to copy these files to the results directory when complete.",
-                    "fa_icon": "fas fa-save"
-                },
-                "save_all_intermediates": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Save all process outputs that have no dedicated publish rule.",
-                    "help_text": "When enabled, process outputs without an explicit publishDir are copied to <outdir>/intermediate/<process-path>. The server profile enables this for traceability.",
-                    "fa_icon": "fas fa-save"
-                }
-            }
-        },
-        "circle_map_options": {
-            "title": "circle-map options",
-            "type": "object",
-            "fa_icon": "fas fa-circle-notch",
-            "description": "Parameters used to run Circle-Map.",
-            "properties": {
-                "save_circle_map_intermediate": {
-                    "type": "boolean",
-                    "default": false,
-                    "fa_icon": "fas fa-save",
-                    "help_text": "Set this parameter to save bam file with reads extracted by circle-map readextractor.",
-                    "description": "Store bam file with read candidates for circle-map circular dna calling."
-                }
-            }
-        },
-        "circle_finder_options": {
-            "title": "Circle_finder options",
-            "type": "object",
-            "fa_icon": "fas fa-circle-notch",
-            "description": "Parameters used to run Circle_finder.",
-            "properties": {
-                "save_circle_finder_intermediate": {
-                    "type": "boolean",
-                    "default": false,
-                    "fa_icon": "fas fa-save",
-                    "help_text": "Set this parameter to save Circle_finder intermediate files.",
-                    "description": "Store bed files created during Circle_finder run."
-                }
-            }
-        },
-        "unicycler_options": {
-            "title": "Unicycler options",
-            "type": "object",
-            "fa_icon": "fas fa-circle-notch",
-            "description": "Parameters used to run Unicycler.",
-            "properties": {
-                "save_unicycler_intermediate": {
-                    "type": "boolean",
-                    "default": false,
-                    "fa_icon": "fas fa-save",
-                    "help_text": "Set this parameter to save Uniycler intermediate files.",
-                    "description": "Store fastq intermediate files created during Uniycler run."
-                }
-            }
-        },
-
-        "amplicon_architect_options": {
-            "title": "ampliconarchitect options",
-            "type": "object",
-            "fa_icon": "fas fa-circle-notch",
-            "description": "parameters used to run ampliconarchitect. The software needs additional data files not included in ",
-            "properties": {
-                "aa_data_repo": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "mimetype": "text/plain",
-                    "fa_icon": "fas fa-folder",
-                    "help_text": "Specify the absolute path to the AmpliconArchitect data repository. See [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect).",
-                    "description": "Absolute path to the downloaded AA data repository. See [AmpliconArchitect](https://github.com/jluebeck/AmpliconArchitect)."
-                },
-                "aa_cngain": {
-                    "type": "string",
-                    "mimetype": "text/plain",
-                    "default": "4.5",
-                    "fa_icon": "fas fa-chart-bar",
-                    "help_text": "Specify the seed copy number threshold.",
-                    "description": "Copy Number Threshold for seeds to be considered by AmpliconArchitect."
-                },
-                "mosek_license_dir": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "mimetype": "text/plain",
-                    "fa_icon": "fas fa-folder",
-                    "help_text": "Specify the path to the directory containing the mosek license file named `mosek.lic`. A free academic license can be obtained at [Mosek.com](https://www.mosek.com/products/academic-licenses/).",
-                    "description": "Path to the directory containing the mosek license file 'mosek.lic'."
-                },
-                "reference_build": {
-                    "type": "string",
-                    "mimetype": "text/plain",
-                    "fa_icon": "fas fa-book",
-                    "description": "When running AmpliconArchitect, specify reference build ['GRCh37', 'GRCh38', 'mm10']. This is *mandatory* to match fasta and AA reference build!",
-                    "help_text": "Specify the reference genome build used for alignment of the WGS reads."
-                },
-                "cnvkit_cnn": {
-                    "type": "string",
-                    "mimetype": "text/plain",
-                    "fa_icon": "fas fa-file-code",
-                    "description": "Path to cnn file inside the AmpliconArchitect Data Repository of the respective reference genome. By default it uses the 'aa_data_repo' and the 'reference_build' input to construct the file path.",
-                    "help_text": "Specify path to cnvkit cnn file inside AmpliconArchitect Data Repository."
-                }
-            }
-        },
-        "institutional_config_options": {
-            "title": "Institutional config options",
-            "type": "object",
-            "fa_icon": "fas fa-university",
-            "description": "Parameters used to describe centralised config profiles. These should not be edited.",
-            "help_text": "The centralised nf-core configuration profiles use a handful of pipeline parameters to describe themselves. This information is then printed to the Nextflow log when you run a pipeline. You should not need to change these values when you run a pipeline.",
-            "properties": {
-                "custom_config_version": {
-                    "type": "string",
-                    "description": "Git commit id for Institutional configs.",
-                    "default": "master",
-                    "hidden": true,
-                    "fa_icon": "fas fa-users-cog"
-                },
-                "custom_config_base": {
-                    "type": "string",
-                    "description": "Base directory for Institutional configs.",
-                    "default": "https://raw.githubusercontent.com/nf-core/configs/master",
-                    "hidden": true,
-                    "help_text": "If you're running offline, Nextflow will not be able to fetch the institutional config files from the internet. If you don't need them, then this is not a problem. If you do need them, you should download the files from the repo and tell Nextflow where to find them with this parameter.",
-                    "fa_icon": "fas fa-users-cog"
-                },
-                "config_profile_name": {
-                    "type": "string",
-                    "description": "Institutional config name.",
-                    "hidden": true,
-                    "fa_icon": "fas fa-users-cog"
-                },
-                "config_profile_description": {
-                    "type": "string",
-                    "description": "Institutional config description.",
-                    "hidden": true,
-                    "fa_icon": "fas fa-users-cog"
-                },
-                "config_profile_contact": {
-                    "type": "string",
-                    "description": "Institutional config contact information.",
-                    "hidden": true,
-                    "fa_icon": "fas fa-users-cog"
-                },
-                "config_profile_url": {
-                    "type": "string",
-                    "description": "Institutional config URL link.",
-                    "hidden": true,
-                    "fa_icon": "fas fa-users-cog"
-                }
-            }
-        },
-        "max_job_request_options": {
-            "title": "Max job request options",
-            "type": "object",
-            "fa_icon": "fab fa-acquisitions-incorporated",
-            "description": "Set the top limit for requested resources for any single job.",
-            "help_text": "If you are running on a smaller system, a pipeline step requesting more resources than are available may cause the Nextflow to stop the run with an error. These options allow you to cap the maximum resources requested by any single job so that the pipeline will run on your system.\n\nNote that you can not _increase_ the resources requested by any job using these options. For that you will need your own configuration file. See [the nf-core website](https://nf-co.re/usage/configuration) for details.",
-            "properties": {
-                "max_cpus": {
-                    "type": "integer",
-                    "description": "Maximum number of CPUs that can be requested for any single job.",
-                    "default": 16,
-                    "fa_icon": "fas fa-microchip",
-                    "hidden": true,
-                    "help_text": "Use to set an upper-limit for the CPU requirement for each process. Should be an integer e.g. `--max_cpus 1`"
-                },
-                "max_memory": {
-                    "type": "string",
-                    "description": "Maximum amount of memory that can be requested for any single job.",
-                    "default": "128.GB",
-                    "fa_icon": "fas fa-memory",
-                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
-                    "hidden": true,
-                    "help_text": "Use to set an upper-limit for the memory requirement for each process. Should be a string in the format integer-unit e.g. `--max_memory '8.GB'`"
-                },
-                "max_time": {
-                    "type": "string",
-                    "description": "Maximum amount of time that can be requested for any single job.",
-                    "default": "240.h",
-                    "fa_icon": "far fa-clock",
-                    "pattern": "^(\\d+\\.?\\s*(s|m|h|d|day)\\s*)+$",
-                    "hidden": true,
-                    "help_text": "Use to set an upper-limit for the time requirement for each process. Should be a string in the format integer-unit e.g. `--max_time '2.h'`"
                 }
             }
         },
@@ -604,79 +38,11 @@
             "description": "Less common options for the pipeline, typically set in a config file.",
             "help_text": "These options are common to all nf-core pipelines and allow you to customise some of the core preferences for how the pipeline runs.\n\nTypically these options would be set in a Nextflow config file loaded for all pipeline runs, such as `~/.nextflow/config`.",
             "properties": {
-                "help": {
-                    "type": "boolean",
-                    "description": "Display help text.",
-                    "fa_icon": "fas fa-question-circle",
-                    "hidden": true
-                },
                 "version": {
                     "type": "boolean",
                     "description": "Display version and exit.",
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
-                },
-                "publish_dir_mode": {
-                    "type": "string",
-                    "default": "copy",
-                    "description": "Method used to save pipeline results to output directory.",
-                    "help_text": "The Nextflow `publishDir` option specifies which intermediate files should be saved to the output directory. This option tells the pipeline what method should be used to move these files. See [Nextflow docs](https://www.nextflow.io/docs/latest/process.html#publishdir) for details.",
-                    "fa_icon": "fas fa-copy",
-                    "enum": ["symlink", "rellink", "link", "copy", "copyNoFollow", "move"],
-                    "hidden": true
-                },
-                "email_on_fail": {
-                    "type": "string",
-                    "description": "Email address for completion summary, only when pipeline fails.",
-                    "fa_icon": "fas fa-exclamation-triangle",
-                    "pattern": "^([a-zA-Z0-9_\\-\\.]+)@([a-zA-Z0-9_\\-\\.]+)\\.([a-zA-Z]{2,5})$",
-                    "help_text": "An email address to send a summary email to when the pipeline is completed - ONLY sent if the pipeline does not exit successfully.",
-                    "hidden": true
-                },
-                "plaintext_email": {
-                    "type": "boolean",
-                    "description": "Send plain-text email instead of HTML.",
-                    "fa_icon": "fas fa-remove-format",
-                    "hidden": true
-                },
-                "max_multiqc_email_size": {
-                    "type": "string",
-                    "description": "File size limit when attaching MultiQC reports to summary emails.",
-                    "pattern": "^\\d+(\\.\\d+)?\\.?\\s*(K|M|G|T)?B$",
-                    "default": "25.MB",
-                    "fa_icon": "fas fa-file-upload",
-                    "hidden": true
-                },
-                "monochrome_logs": {
-                    "type": "boolean",
-                    "description": "Do not use coloured log outputs.",
-                    "fa_icon": "fas fa-palette",
-                    "hidden": true
-                },
-                "hook_url": {
-                    "type": "string",
-                    "description": "Incoming hook URL for messaging service",
-                    "fa_icon": "fas fa-people-group",
-                    "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
-                    "hidden": true
-                },
-                "multiqc_config": {
-                    "type": "string",
-                    "format": "file-path",
-                    "description": "Custom config file to supply to MultiQC.",
-                    "fa_icon": "fas fa-cog",
-                    "hidden": true
-                },
-                "multiqc_logo": {
-                    "type": "string",
-                    "description": "Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file",
-                    "fa_icon": "fas fa-image",
-                    "hidden": true
-                },
-                "multiqc_methods_description": {
-                    "type": "string",
-                    "description": "Custom MultiQC yaml file containing HTML including a methods description.",
-                    "fa_icon": "fas fa-cog"
                 },
                 "validate_params": {
                     "type": "boolean",
@@ -685,62 +51,442 @@
                     "fa_icon": "fas fa-check-square",
                     "hidden": true
                 },
-                "validationShowHiddenParams": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-eye-slash",
-                    "description": "Show all params when using `--help`",
-                    "hidden": true,
-                    "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
-                },
-                "validationFailUnrecognisedParams": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-check-circle",
-                    "description": "Validation of parameters fails when an unrecognised parameter is found.",
-                    "hidden": true,
-                    "help_text": "By default, when an unrecognised parameter is found, it returns a warinig."
-                },
-                "validationLenientMode": {
-                    "type": "boolean",
-                    "fa_icon": "far fa-check-circle",
-                    "description": "Validation of parameters in lenient more.",
-                    "hidden": true,
-                    "help_text": "Allows string values that are parseable as numbers or booleans. For further information see [JSONSchema docs](https://github.com/everit-org/json-schema#lenient-mode)."
-                },
-                "fasta_base_path": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "description": "Base path for genome FASTA files.",
-                    "hidden": true,
-                    "fa_icon": "fas fa-folder"
-                },
                 "trace_report_suffix": {
                     "type": "string",
-                    "description": "Suffix for trace report files.",
-                    "hidden": true,
-                    "fa_icon": "fas fa-file"
-                },
-                "use_csi_index": {
-                    "type": "boolean",
-                    "description": "Use CSI index format for large genomes (>512Mb chromosomes).",
-                    "hidden": true,
-                    "fa_icon": "fas fa-database"
+                    "fa_icon": "far calendar",
+                    "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
+                    "hidden": true
                 }
             }
         }
     },
     "allOf": [
-        { "$ref": "#/definitions/input_output_options" },
-        { "$ref": "#/definitions/reference_genome_options" },
-        { "$ref": "#/definitions/institutional_config_options" },
-        { "$ref": "#/definitions/max_job_request_options" },
-        { "$ref": "#/definitions/process_skipping_options" },
-        { "$ref": "#/definitions/circdna_identifier_options" },
-        { "$ref": "#/definitions/long_read_options" },
-        { "$ref": "#/definitions/circle_map_options" },
-        { "$ref": "#/definitions/circle_finder_options" },
-        { "$ref": "#/definitions/unicycler_options" },
-        { "$ref": "#/definitions/amplicon_architect_options" },
-        { "$ref": "#/definitions/read_trimming_options" },
-        { "$ref": "#/definitions/generic_options" }
-    ]
+        {
+            "$ref": "#/$defs/input_output_options"
+        },
+        {
+            "$ref": "#/$defs/generic_options"
+        }
+    ],
+    "properties": {
+        "input_format": {
+            "type": "string"
+        },
+        "genome": {
+            "type": "string"
+        },
+        "igenomes_base": {
+            "type": "string",
+            "default": "s3://ngi-igenomes/igenomes/"
+        },
+        "igenomes_ignore": {
+            "type": "boolean"
+        },
+        "bwa_index": {
+            "type": "string"
+        },
+        "save_reference": {
+            "type": "boolean"
+        },
+        "bam_sorted": {
+            "type": "boolean"
+        },
+        "save_sorted_bam": {
+            "type": "boolean"
+        },
+        "use_csi_index": {
+            "type": "boolean"
+        },
+        "circle_identifier": {
+            "type": "string"
+        },
+        "eccfinder_engine": {
+            "type": "string",
+            "default": "blackbox"
+        },
+        "eccsplorer_engine": {
+            "type": "string",
+            "default": "blackbox"
+        },
+        "repex_databases": {
+            "type": "string",
+            "default": "/data1/users/siyangming/PublicDB/RepeatExplorer"
+        },
+        "eccsplorer_input_normalize": {
+            "type": "boolean"
+        },
+        "eccsplorer_taxon": {
+            "type": "string",
+            "default": "vir"
+        },
+        "eccsplorer_all": {
+            "type": "boolean"
+        },
+        "eccsplorer_trim_reads": {
+            "type": "boolean"
+        },
+        "eccsplorer_database": {
+            "type": "string"
+        },
+        "eccsplorer_map_core": {
+            "type": "boolean"
+        },
+        "eccsplorer_map_extract": {
+            "type": "boolean"
+        },
+        "eccsplorer_clu": {
+            "type": "boolean"
+        },
+        "eccsplorer_trim_reads_opt": {
+            "type": "string"
+        },
+        "eccsplorer_window_size": {
+            "type": "integer",
+            "default": 100
+        },
+        "eccsplorer_read_count": {
+            "type": "string"
+        },
+        "eccsplorer_read_seed": {
+            "type": "integer",
+            "default": 12
+        },
+        "eccsplorer_image_format": {
+            "type": "string",
+            "default": "png"
+        },
+        "eccsplorer_viz_mode": {
+            "type": "string",
+            "default": "manhattan"
+        },
+        "eccsplorer_pre_a": {
+            "type": "string",
+            "default": "TR"
+        },
+        "eccsplorer_pre_b": {
+            "type": "string",
+            "default": "CO"
+        },
+        "eccsplorer_genome_size": {
+            "type": "string"
+        },
+        "eccsplorer_max_cand_cnt": {
+            "type": "integer",
+            "default": 500
+        },
+        "eccsplorer_ecc_proportion": {
+            "type": "number",
+            "default": 0.8
+        },
+        "eccsplorer_clu_prefix_length": {
+            "type": "integer",
+            "default": 2
+        },
+        "eccsplorer_clu_taxon": {
+            "type": "string",
+            "default": "vir"
+        },
+        "eccfinder_peak_len": {
+            "type": "integer",
+            "default": 200
+        },
+        "eccfinder_max_dist": {
+            "type": "integer",
+            "default": 1000
+        },
+        "eccfinder_max_pvalue": {
+            "type": "number",
+            "default": 0.05
+        },
+        "eccfinder_min_reads": {
+            "type": "integer",
+            "default": 5
+        },
+        "eccfinder_asm_min_length": {
+            "type": "integer",
+            "default": 500
+        },
+        "eccfinder_ont_min_read": {
+            "type": "integer",
+            "default": 3
+        },
+        "eccfinder_ont_min_bound": {
+            "type": "number",
+            "default": 0.8
+        },
+        "eccfinder_ont_min_cov": {
+            "type": "integer",
+            "default": 10
+        },
+        "eccfinder_ont_min_query": {
+            "type": "integer",
+            "default": 200
+        },
+        "eccfinder_ont_min_align": {
+            "type": "integer",
+            "default": 200
+        },
+        "eccfinder_ont_copy": {
+            "type": "integer",
+            "default": 2
+        },
+        "eccfinder_ont_divergence": {
+            "type": "number",
+            "default": 0.25
+        },
+        "eccfinder_ont_period": {
+            "type": "integer",
+            "default": 30
+        },
+        "eccfinder_cdhit_identity": {
+            "type": "number",
+            "default": 0.8
+        },
+        "analysis_mode": {
+            "type": "string"
+        },
+        "analysis_input": {
+            "type": "string"
+        },
+        "detect_type": {
+            "type": "string"
+        },
+        "protocol": {
+            "type": "string",
+            "default": "short_read"
+        },
+        "entrypoint": {
+            "type": "string",
+            "default": "cleaned_fastq"
+        },
+        "primers": {
+            "type": "string"
+        },
+        "long_read_identifier": {
+            "type": "string",
+            "default": "cresil,fled,flye,eccfinder"
+        },
+        "min_read_support": {
+            "type": "integer",
+            "default": 1
+        },
+        "blacklist_bed": {
+            "type": "string"
+        },
+        "repeats_bed": {
+            "type": "string"
+        },
+        "save_long_read_intermediate": {
+            "type": "boolean"
+        },
+        "skip_long_read_qc": {
+            "type": "boolean"
+        },
+        "ccs_chunk_size": {
+            "type": "integer",
+            "default": 2
+        },
+        "assay": {
+            "type": "string"
+        },
+        "remap_min_mapq": {
+            "type": "integer",
+            "default": 20
+        },
+        "remap_max_gap": {
+            "type": "integer",
+            "default": 100
+        },
+        "filter_organelle": {
+            "type": "boolean"
+        },
+        "organelle_genome": {
+            "type": "string"
+        },
+        "drop_organelle_candidates": {
+            "type": "boolean"
+        },
+        "organelle_min_overlap": {
+            "type": "number",
+            "default": 0.5
+        },
+        "eccfinder_mode": {
+            "type": "string",
+            "default": "map"
+        },
+        "ciderseq_config": {
+            "type": "string"
+        },
+        "ciderseq_blastdb": {
+            "type": "string"
+        },
+        "ciderseq_align_targets": {
+            "type": "string"
+        },
+        "ciderseq_protein_db": {
+            "type": "string"
+        },
+        "ciderseq_host_genome": {
+            "type": "string"
+        },
+        "mode": {
+            "type": "string",
+            "default": "eccdna"
+        },
+        "repeat_gff": {
+            "type": "string"
+        },
+        "skip_qc": {
+            "type": "boolean"
+        },
+        "clip_r1": {
+            "type": "string"
+        },
+        "clip_r2": {
+            "type": "string"
+        },
+        "three_prime_clip_r1": {
+            "type": "string"
+        },
+        "three_prime_clip_r2": {
+            "type": "string"
+        },
+        "trim_nextseq": {
+            "type": "string"
+        },
+        "save_trimmed": {
+            "type": "boolean"
+        },
+        "skip_trimming": {
+            "type": "boolean"
+        },
+        "skip_markduplicates": {
+            "type": "boolean"
+        },
+        "keep_duplicates": {
+            "type": "boolean",
+            "default": true
+        },
+        "save_markduplicates_bam": {
+            "type": "boolean",
+            "default": true
+        },
+        "cnvkit_cnn": {
+            "type": "string"
+        },
+        "aa_data_repo": {
+            "type": "string"
+        },
+        "aa_cngain": {
+            "type": "number",
+            "default": 4.5
+        },
+        "mosek_license_dir": {
+            "type": "string"
+        },
+        "reference_build": {
+            "type": "string"
+        },
+        "save_merged_fastq": {
+            "type": "boolean"
+        },
+        "save_circle_map_intermediate": {
+            "type": "boolean"
+        },
+        "save_circle_finder_intermediate": {
+            "type": "boolean"
+        },
+        "save_unicycler_intermediate": {
+            "type": "boolean"
+        },
+        "save_all_intermediates": {
+            "type": "boolean"
+        },
+        "skip_multiqc": {
+            "type": "boolean"
+        },
+        "multiqc_config": {
+            "type": "string"
+        },
+        "multiqc_title": {
+            "type": "string"
+        },
+        "multiqc_logo": {
+            "type": "string"
+        },
+        "max_multiqc_email_size": {
+            "type": "string",
+            "default": "25.MB"
+        },
+        "multiqc_methods_description": {
+            "type": "string"
+        },
+        "publish_dir_mode": {
+            "type": "string",
+            "default": "copy"
+        },
+        "email": {
+            "type": "string"
+        },
+        "email_on_fail": {
+            "type": "string"
+        },
+        "plaintext_email": {
+            "type": "boolean"
+        },
+        "monochrome_logs": {
+            "type": "boolean"
+        },
+        "hook_url": {
+            "type": "string"
+        },
+        "config_profile_name": {
+            "type": "string"
+        },
+        "config_profile_description": {
+            "type": "string"
+        },
+        "custom_config_version": {
+            "type": "string",
+            "default": "master"
+        },
+        "custom_config_base": {
+            "type": "string",
+            "default": "https://raw.githubusercontent.com/nf-core/configs/master"
+        },
+        "config_profile_contact": {
+            "type": "string"
+        },
+        "config_profile_url": {
+            "type": "string"
+        },
+        "max_memory": {
+            "type": "string",
+            "default": "128.GB"
+        },
+        "max_cpus": {
+            "type": "integer",
+            "default": 16
+        },
+        "max_time": {
+            "type": "string",
+            "default": "240.h"
+        },
+        "validationFailUnrecognisedParams": {
+            "type": "boolean"
+        },
+        "validationLenientMode": {
+            "type": "boolean"
+        },
+        "validationSchemaIgnoreParams": {
+            "type": "string",
+            "default": "genomes,igenomes_base,analysis_input,analysis_mode,detect_type,eccfinder_asm_min_length,eccfinder_cdhit_identity,eccfinder_engine,eccfinder_max_dist,eccfinder_max_pvalue,eccfinder_min_reads,eccfinder_ont_copy,eccfinder_ont_divergence,eccfinder_ont_min_align,eccfinder_ont_min_bound,eccfinder_ont_min_cov,eccfinder_ont_min_query,eccfinder_ont_min_read,eccfinder_ont_period,eccfinder_peak_len,eccsplorer_all,eccsplorer_clu,eccsplorer_clu_prefix_length,eccsplorer_clu_taxon,eccsplorer_database,eccsplorer_ecc_proportion,eccsplorer_engine,eccsplorer_genome_size,eccsplorer_image_format,eccsplorer_input_normalize,eccsplorer_map_core,eccsplorer_map_extract,eccsplorer_max_cand_cnt,eccsplorer_pre_a,eccsplorer_pre_b,eccsplorer_read_count,eccsplorer_read_seed,eccsplorer_taxon,eccsplorer_trim_reads,eccsplorer_trim_reads_opt,eccsplorer_viz_mode,eccsplorer_window_size,repex_databases"
+        },
+        "validationShowHiddenParams": {
+            "type": "boolean"
+        },
+        "fasta": {
+            "type": "string"
+        }
+    }
 }

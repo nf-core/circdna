@@ -34,7 +34,7 @@ process ECCSPLORER_BLAST_ANNOTATE {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        blast: \$(blastn -version 2>&1 | grep -oP 'blastn: \\\K[0-9.]+' | head -1)
+        blast: \$(blastn -version 2>&1 | grep -oP 'blastn: \\K[0-9.]+' | head -1)
     END_VERSIONS
     """
 
