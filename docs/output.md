@@ -431,14 +431,22 @@ The plots will show:
 
 </details>
 
-Filtered CircleSeeker candidates are published by the shared long-read filtering step:
+Filtered candidates are published per engine by the shared long-read filtering step:
 
 **Output directory: `results/long_read/filtering/<SAMPLE>/`**
 
-- `<SAMPLE>.filtered.circleseeker.bed`
-  - Candidates passing the `--min_read_support` filter (plus `--blacklist_bed` / `--repeats_bed` when provided)
+- `<SAMPLE>.<ENGINE>.filtered.bed`
+  - Candidates passing the `--min_read_support` filter (plus `--blacklist_bed` / `--repeats_bed` when provided).
+  - `<ENGINE>` is one of `cresil`, `fled`, `flye`, `circleseeker`, `eccfinder`, `eccfinder_asm`.
 
-### Pipeline information
+The same candidates are also merged across engines per sample:
+
+**Output directory: `results/long_read/candidates/<SAMPLE>/`**
+
+- `<SAMPLE>.eccdna_candidates.bed`
+  - Every engine's filtered candidates in one file, under the shared BED contract
+    (`chr start end name score strand read_count [te_overlap] [origin]`), sorted by position.
+  - Optional trailing columns are preserved as produced by each engine.
 
 <details markdown="1">
 <summary>Output files</summary>

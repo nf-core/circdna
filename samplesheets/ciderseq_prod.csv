@@ -1,0 +1,2 @@
+sample,fastq_1,fastq_2,input_bam,entrypoint,platform,assay,datatype,pair,concatemer,read_type,enrichment
+SRR16958693,/data1/users/siyangming/PlanteccDNADB/eccDNA/Amaranthus_palmeri/SRR16958693.fastq.gz,,,cleaned_fastq,pacbio,ciderseq,eccdna,,false,clr,ciderseq

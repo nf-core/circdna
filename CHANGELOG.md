@@ -3,6 +3,14 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v4.7.5 - [2026-10-18]
+
+### Enhancements & fixes
+
+- **长读过滤前缀选择器失效（导致 filtered BED 相互覆盖）**: `conf/modules.config` 中 6 条按引擎的前缀选择器写作 `LONG_READ_FILTERING_<ENGINE>:FILTER_ECCDNA_BY_SUPPORT`，但 Nextflow 对含 `:` 的 `withName` 选择器按**完整任务名**匹配（`NFCORE_CIRCDNA:CIRCDNA:LONG_READ_FILTERING_<ENGINE>:FILTER_ECCDNA_BY_SUPPORT`），因此 6 条规则全部静默不生效，所有引擎都输出 `<sample>.filtered.bed` 并互相覆盖，`long_read/filtering/<sample>/` 只剩最后一个引擎的结果。已补齐前导 `.*`，现在每个引擎产出 `<sample>.<engine>.filtered.bed`。
+- **统一长读候选 BED 从未输出**: `workflows/circdna.nf` 里的 `ch_long_read_bed` 被各引擎 mix 但从未 emit/publish，属死代码。新增 `COLLECT_LONG_READ_BED` 模块（`modules/local/collect_long_read_bed/` + `bin/collect_long_read_bed.py`），按样本合并各引擎 filtered BED 并按坐标自然排序，输出 `long_read/candidates/<sample>/<sample>.eccdna_candidates.bed`（沿用 §4.6 BED 契约，保留各行原有的可选尾列）。
+- **既有批次回补**: 批次 01–02 已按旧配置完成，其原始 per-engine BED 仍在盘上，用 `eccDNA_results/batch_runs/wheat/backfill_unified_bed.sh` 重新派生 per-engine filtered 文件与统一 BED，无需重跑任何检测引擎；旧的歧义文件 `<sample>.filtered.bed` 移入同目录 `_superseded/` 保留。
+
 ## v4.7.4 - [2026-10-16]
 
 ### Dependencies

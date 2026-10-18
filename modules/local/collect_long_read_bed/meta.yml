@@ -1,0 +1,28 @@
+name: collect_long_read_bed
+description: Merge per-engine long-read candidate BEDs into one unified per-sample BED
+keywords:
+  - eccdna
+  - long-read
+  - bed
+tools:
+  - collect_long_read_bed:
+      description: Concatenate and sort per-engine long-read candidate BEDs
+      homepage: https://github.com/nf-core/circdna
+input:
+  - meta:
+      type: map
+      description: Groovy Map containing sample information
+  - beds:
+      type: file
+      description: Per-engine filtered BED files for one sample
+output:
+  - candidates:
+      type: file
+      description: Unified candidate BED (chr, start, end, name, score, strand, read_count, ...)
+      pattern: "*.eccdna_candidates.bed"
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+authors:
+  - "@siyangming"

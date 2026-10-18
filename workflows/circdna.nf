@@ -37,6 +37,7 @@ include { LONG_READ_FILTERING as LONG_READ_FILTERING_ECCFINDER } from '../subwor
 include { LONG_READ_FILTERING as LONG_READ_FILTERING_ECCFINDER_ASM } from '../subworkflows/local/long_read_filtering/main'
 include { CIRCLESEEKER_PIPELINE         } from '../subworkflows/local/circleseeker_pipeline/main'
 include { CRESIL_TO_BED                   } from '../modules/local/cresil_to_bed/main'
+include { COLLECT_LONG_READ_BED          } from '../modules/local/collect_long_read_bed/main'
 include { CIDERSEQ_PIPELINE             } from '../subworkflows/local/ciderseq_pipeline/main'
 include { ORGANELLE_TAG                 } from '../subworkflows/local/organelle_tag/main'
 include { REFERENCE_MODE                } from '../subworkflows/local/reference_mode/main'
@@ -654,6 +655,15 @@ workflow CIRCDNA {
         ORGANELLE_TAG ( ch_long_read_bed, ch_fasta_meta )
         ch_long_read_bed = ORGANELLE_TAG.out.tagged
         ch_versions = ch_versions.mix(ORGANELLE_TAG.out.versions)
+    }
+
+    // 统一长读候选 BED：把该样本所有引擎的 filtered BED 合并成单一清单。
+    // 引擎专属文件仍各自发布，这里额外产出一份跨引擎汇总（§4.6 BED 契约）。
+    if ( ch_long_read_bed ) {
+        COLLECT_LONG_READ_BED (
+            ch_long_read_bed.groupTuple(by: [0])
+        )
+        ch_versions = ch_versions.mix(COLLECT_LONG_READ_BED.out.versions)
     }
 
     //
