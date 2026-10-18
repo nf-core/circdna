@@ -9,7 +9,8 @@ testing*
 null
 .vscode
 /nextflow_work*
-/work*
+/work/
+/work_*/
 /results*
 server.txt
 
