@@ -6,19 +6,20 @@
 - **Depends On**: None
 - **Description**: 逐一删除以下 8 个文件中的 `docker.userEmulation = true`（或 `userEmulation = true`）行，不修改其他任何内容。
 
-  | # | 文件 | 行号 | 当前内容 |
-  |---|------|------|----------|
-  | 1 | `circdna.nf/nextflow.config` | 165 | `        docker.userEmulation   = true` |
-  | 2 | `circrna.nf/nextflow.config` | 173 | `        docker.userEmulation    = true` |
-  | 3 | `nanoseq.nf/nextflow.config` | 149 | `        docker.userEmulation   = true` |
-  | 4 | `isoseq.nf/nextflow.config` | 137 | `        docker.userEmulation    = true` |
-  | 5 | `fetchngs.nf/nextflow.config` | 103 | `        docker.userEmulation   = true` |
-  | 6 | `riboseq.nf/nextflow.config` | 180 | `        docker.userEmulation    = true` |
-  | 7 | `rnaseq/nextflow.config` | 193 | `        docker.userEmulation    = true` |
-  | 8 | `bio.nf/nextflow.config` | 8 | `    userEmulation = true` |
+  | #   | 文件                          | 行号 | 当前内容                                 |
+  | --- | ----------------------------- | ---- | ---------------------------------------- |
+  | 1   | `circdna.nf/nextflow.config`  | 165  | `        docker.userEmulation   = true`  |
+  | 2   | `circrna.nf/nextflow.config`  | 173  | `        docker.userEmulation    = true` |
+  | 3   | `nanoseq.nf/nextflow.config`  | 149  | `        docker.userEmulation   = true`  |
+  | 4   | `isoseq.nf/nextflow.config`   | 137  | `        docker.userEmulation    = true` |
+  | 5   | `fetchngs.nf/nextflow.config` | 103  | `        docker.userEmulation   = true`  |
+  | 6   | `riboseq.nf/nextflow.config`  | 180  | `        docker.userEmulation    = true` |
+  | 7   | `rnaseq/nextflow.config`      | 193  | `        docker.userEmulation    = true` |
+  | 8   | `bio.nf/nextflow.config`      | 8    | `    userEmulation = true`               |
 
   - **操作方式**：对每个文件使用 Edit 工具删除该行（含行尾换行符）
   - **注意**：`bio.nf/nextflow.config` 的缩进为 4 空格（顶层 `docker {}` 块），其余 7 个为 8 空格（`profiles { docker {} }` 块内）
+
 - **Acceptance Criteria**: `grep -r 'userEmulation' circdna.nf/nextflow.config circrna.nf/nextflow.config nanoseq.nf/nextflow.config isoseq.nf/nextflow.config fetchngs.nf/nextflow.config riboseq.nf/nextflow.config rnaseq/nextflow.config bio.nf/nextflow.config` 无输出
 - **Test**: TR-1.1 `grep -c 'userEmulation'` 对上述 8 个文件均返回 0
 
@@ -28,23 +29,24 @@
 - **Depends On**: None（与 Task 1 无依赖，可并行）
 - **Description**: 逐一删除以下 12 个文件中的 `    userEmulation = true` 行（4 空格缩进），不修改其他任何内容。
 
-  | # | 文件 |
-  |---|------|
-  | 1 | `bio.nf/modules/flye/tests/nextflow.config` |
-  | 2 | `bio.nf/modules/cresil/identify_wgls/tests/nextflow.config` |
-  | 3 | `bio.nf/modules/cresil/trim/tests/nextflow.config` |
-  | 4 | `bio.nf/modules/cresil/visualize/tests/nextflow.config` |
-  | 5 | `bio.nf/modules/cresil/annotate/tests/nextflow.config` |
-  | 6 | `bio.nf/modules/cresil/identify/tests/nextflow.config` |
-  | 7 | `bio.nf/modules/eccsplorer/tests/nextflow.config` |
-  | 8 | `bio.nf/modules/ecc_finder/map_ont/tests/nextflow.config` |
-  | 9 | `bio.nf/modules/ecc_finder/map_sr/tests/nextflow.config` |
-  | 10 | `bio.nf/modules/ecc_finder/asm_sr/tests/nextflow.config` |
-  | 11 | `bio.nf/modules/ecc_finder/asm_ont/tests/nextflow.config` |
-  | 12 | `bio.nf/modules/fastqdl/download/tests/nextflow.config` |
+  | #   | 文件                                                        |
+  | --- | ----------------------------------------------------------- |
+  | 1   | `bio.nf/modules/flye/tests/nextflow.config`                 |
+  | 2   | `bio.nf/modules/cresil/identify_wgls/tests/nextflow.config` |
+  | 3   | `bio.nf/modules/cresil/trim/tests/nextflow.config`          |
+  | 4   | `bio.nf/modules/cresil/visualize/tests/nextflow.config`     |
+  | 5   | `bio.nf/modules/cresil/annotate/tests/nextflow.config`      |
+  | 6   | `bio.nf/modules/cresil/identify/tests/nextflow.config`      |
+  | 7   | `bio.nf/modules/eccsplorer/tests/nextflow.config`           |
+  | 8   | `bio.nf/modules/ecc_finder/map_ont/tests/nextflow.config`   |
+  | 9   | `bio.nf/modules/ecc_finder/map_sr/tests/nextflow.config`    |
+  | 10  | `bio.nf/modules/ecc_finder/asm_sr/tests/nextflow.config`    |
+  | 11  | `bio.nf/modules/ecc_finder/asm_ont/tests/nextflow.config`   |
+  | 12  | `bio.nf/modules/fastqdl/download/tests/nextflow.config`     |
 
   - **操作方式**：对每个文件使用 Edit 工具删除 `    userEmulation = true` 行
   - **注意**：保留同文件中的 `runOptions` 和 `fixOwnership` 行不变
+
 - **Acceptance Criteria**: `grep -r 'userEmulation' bio.nf/modules/*/tests/nextflow.config` 无输出
 - **Test**: TR-2.1 `grep -c 'userEmulation'` 对上述 12 个文件均返回 0；TR-2.2 `grep -c 'runOptions\|fixOwnership'` 确认这些行仍在
 

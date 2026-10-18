@@ -1,9 +1,10 @@
 # Rebuild and Publish CReSIL Docker/Conda Packages - The Implementation Plan
 
 ## [x] Task 1: 更新所有版本号到 1.2.1
+
 - **Priority**: high
 - **Depends On**: None
-- **Description**: 
+- **Description**:
   - 将 CReSIL 所有版本号从 1.2.0 统一更新到 1.2.1
   - 更新文件：
     - `cresil/cresil/__init__.py`: `__version__`
@@ -19,9 +20,10 @@
 - **Notes**: 统一所有版本号，便于 GitHub 备份
 
 ## [x] Task 2: 构建并推送 Docker 镜像
+
 - **Priority**: high
 - **Depends On**: Task 1
-- **Description**: 
+- **Description**:
   - 使用 `--platform linux/amd64` 构建 Docker 镜像
   - 镜像标签：`quay.io/bioinfortools/cresil:1.2.1`
   - 构建目录：`/Users/siyangming/nextflow_nf_core/bio.nf/cresil/`
@@ -35,9 +37,10 @@
 - **Notes**: 基础镜像为 `quay.io/bioinfortools/cresil:1.2.0`，修复了 strand 比较 bug（1/-1 → '+/-'）和 bedtools 排序问题
 
 ## [x] Task 3: 构建并发布 Conda 包
+
 - **Priority**: high
 - **Depends On**: Task 1
-- **Description**: 
+- **Description**:
   - 使用 conda build 构建 linux-64 平台的 Conda 包 1.2.1
   - 构建环境：Docker（quay.io/bioinfortools/cresil:1.2.1 容器内安装 conda-build）
   - 发布到 anaconda.org/yangmingsi/cresil
@@ -49,9 +52,10 @@
 - **Notes**: 构建耗时约 25 分钟（主要是依赖解析）
 
 ## [x] Task 4: 更新 Nextflow 模块版本引用
+
 - **Priority**: medium
 - **Depends On**: Task 2, Task 3
-- **Description**: 
+- **Description**:
   - 更新所有 CReSIL Nextflow 模块的 container 版本到 1.2.1
   - 更新 environment.yml 的 conda 版本引用
   - 更新 meta.yml 中的版本信息
@@ -64,6 +68,7 @@
 - **Notes**: 5 个模块都需要更新
 
 # Task Dependencies
+
 - Task 2 depends on Task 1
 - Task 3 depends on Task 1
 - Task 4 depends on Task 2 and Task 3

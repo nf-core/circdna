@@ -1,4 +1,4 @@
-- [x] 所有版本号已统一更新到 1.2.1（__init__.py, Dockerfile, meta.yaml, README.md）
+- [x] 所有版本号已统一更新到 1.2.1（**init**.py, Dockerfile, meta.yaml, README.md）
 - [x] Docker 镜像构建成功（linux/amd64 平台）
 - [x] Docker 镜像成功推送到 quay.io/bioinfortools/cresil:1.2.1
 - [x] Conda 包构建成功（linux-64 平台，版本 1.2.1）

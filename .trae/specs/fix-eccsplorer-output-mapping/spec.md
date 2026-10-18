@@ -18,19 +18,19 @@
 
 ### 文件名映射关系
 
-| 模块输出名（保持不变） | ECCsplorer 实际源文件 | 说明 |
-|---|---|---|
-| `${prefix}_candidates.bed` | `*_hiconf-ECC-REGIONS.bed` | 高置信度 eccDNA 候选区域 |
-| `${prefix}_junction_reads.txt` | `*.trns.txt` | junction/translocation reads |
+| 模块输出名（保持不变）         | ECCsplorer 实际源文件      | 说明                         |
+| ------------------------------ | -------------------------- | ---------------------------- |
+| `${prefix}_candidates.bed`     | `*_hiconf-ECC-REGIONS.bed` | 高置信度 eccDNA 候选区域     |
+| `${prefix}_junction_reads.txt` | `*.trns.txt`               | junction/translocation reads |
 
 ### 新增输出
 
-| 输出名 | 源文件/目录 | 说明 |
-|---|---|---|
-| `lowconf_ecc_regions` | `*_lowconf-ECC-regions.bed` | 低置信度 eccDNA 区域 |
-| `alignment_stats` | `*_alignment-stats.txt` | segemehl 比对统计 |
-| `ecc_sequences` | `*_ECC-SEQUENCES.fasta` | 提取的 eccDNA 序列 |
-| `eccpipe_results` | `${prefix}_output/eccpipe_results/` | 完整结果树（含可视化、per-candidate 分析、HTML 报告） |
+| 输出名                | 源文件/目录                         | 说明                                                  |
+| --------------------- | ----------------------------------- | ----------------------------------------------------- |
+| `lowconf_ecc_regions` | `*_lowconf-ECC-regions.bed`         | 低置信度 eccDNA 区域                                  |
+| `alignment_stats`     | `*_alignment-stats.txt`             | segemehl 比对统计                                     |
+| `ecc_sequences`       | `*_ECC-SEQUENCES.fasta`             | 提取的 eccDNA 序列                                    |
+| `eccpipe_results`     | `${prefix}_output/eccpipe_results/` | 完整结果树（含可视化、per-candidate 分析、HTML 报告） |
 
 ## Impact
 
@@ -51,32 +51,38 @@
 ECCSPLORER 模块 SHALL 正确映射 ECCsplorer 工具的实际输出文件到模块声明的输出通道，并发布完整的分析结果到输出目录。
 
 #### Scenario: 高置信度 eccDNA 区域输出
+
 - **WHEN** ECCsplorer 在 mapping 模式下运行完成
 - **THEN** `${prefix}_candidates.bed` SHALL 包含 `*_hiconf-ECC-REGIONS.bed` 的完整内容（非 0 字节空文件）
 - **AND** 文件 SHALL 被发布到 `${params.outdir}/eccsplorer/`
 
 #### Scenario: Junction reads 输出
+
 - **WHEN** ECCsplorer 在 mapping 模式下运行完成
 - **THEN** `${prefix}_junction_reads.txt` SHALL 包含 `*.trns.txt` 的完整内容（非 0 字节空文件）
 - **AND** 文件 SHALL 被发布到 `${params.outdir}/eccsplorer/`
 
 #### Scenario: 完整 eccpipe_results 输出
+
 - **WHEN** ECCsplorer 在 mapping 模式下运行完成
 - **THEN** 完整的 `eccpipe_results/` 目录树 SHALL 被发布到 `${params.outdir}/eccsplorer/${prefix}_eccpipe_results/`
 - **AND** 目录 SHALL 包含 `mapping_results/`（含 `TR_hiconf-ECC-REGIONS.bed`、`TR_lowconf-ECC-regions.bed`、`TR.bed`、`TR.trns.txt`、`TR_alignment-stats.txt`、`TR_ECC-SEQUENCES.fasta`、`TR_chr_manhattan-plot.png` 等）
 - **AND** 目录 SHALL 包含 `eccMap_summary.html`
 
 #### Scenario: 低置信度区域输出
+
 - **WHEN** ECCsplorer 在 mapping 模式下运行完成
 - **THEN** `${prefix}_lowconf_ecc_regions.bed` SHALL 包含 `*_lowconf-ECC-regions.bed` 的完整内容
 - **AND** 文件 SHALL 被发布到 `${params.outdir}/eccsplorer/`
 
 #### Scenario: 无候选 eccDNA 时的兜底
+
 - **WHEN** ECCsplorer 运行完成但未检测到高置信度 eccDNA 区域（`*_hiconf-ECC-REGIONS.bed` 为空或不存在）
 - **THEN** `${prefix}_candidates.bed` SHALL 为 0 字节空文件（通过 `touch` 兜底）
 - **AND** 流程 SHALL 正常完成，不报错
 
 #### Scenario: stub 模式
+
 - **WHEN** 流程以 stub 模式运行
 - **THEN** SHALL 创建 0 字节的 `${prefix}_candidates.bed` 和 `${prefix}_junction_reads.txt` 占位文件
 - **AND** SHALL 创建空的 `${prefix}_eccpipe_results` 目录占位
@@ -87,6 +93,7 @@ ECCSPLORER 模块 SHALL 正确映射 ECCsplorer 工具的实际输出文件到�
 `bio.nf/modules/eccsplorer/main.nf` SHALL 与 `circdna.nf/modules/local/eccsplorer/main.nf` 保持同步，确保上游模块集合与下游流程使用相同的输出映射逻辑。
 
 #### Scenario: bio.nf 模块同步
+
 - **WHEN** circdna.nf 的 ECCSPLORER 模块输出映射被修复
 - **THEN** bio.nf 的 ECCSPLORER 模块 SHALL 应用相同的修复
 - **AND** bio.nf 的 `meta.yml` SHALL 同步更新输出描述

@@ -1,9 +1,10 @@
 # 创建 Nextflow 模块 GitHub 分支 - 实现计划
 
 ## [ ] Task 1: 创建 feature/cresil-nf-modules 分支
+
 - **Priority**: high
 - **Depends On**: None
-- **Description**: 
+- **Description**:
   - 从 main 分支创建 feature/cresil-nf-modules 分支
   - 添加 modules/cresil/ 和 .trae/ 目录
   - 确保 cresil/ 源代码目录不上传
@@ -15,9 +16,10 @@
   - `programmatic` TR-1.3: 提交成功
 
 ## [ ] Task 2: 推送 feature/cresil-nf-modules 分支到远程
+
 - **Priority**: high
 - **Depends On**: Task 1
-- **Description**: 
+- **Description**:
   - 将 feature/cresil-nf-modules 分支推送到 origin
   - 验证远程分支存在
 - **Acceptance Criteria Addressed**: AC-1
@@ -26,9 +28,10 @@
   - `programmatic` TR-2.2: 远程分支 origin/feature/cresil-nf-modules 存在
 
 ## [ ] Task 3: 创建 feature/ecc-finder-nf-modules 分支
+
 - **Priority**: high
 - **Depends On**: None
-- **Description**: 
+- **Description**:
   - 从 main 分支创建 feature/ecc-finder-nf-modules 分支
   - 添加 modules/ecc_finder/ 和 .trae/ 目录
   - 确保 ecc_finder/ 源代码目录不上传
@@ -40,9 +43,10 @@
   - `programmatic` TR-3.3: 提交成功
 
 ## [ ] Task 4: 推送 feature/ecc-finder-nf-modules 分支到远程
+
 - **Priority**: high
 - **Depends On**: Task 3
-- **Description**: 
+- **Description**:
   - 将 feature/ecc-finder-nf-modules 分支推送到 origin
   - 验证远程分支存在
 - **Acceptance Criteria Addressed**: AC-2
@@ -51,9 +55,10 @@
   - `programmatic` TR-4.2: 远程分支 origin/feature/ecc-finder-nf-modules 存在
 
 ## [ ] Task 5: 验证远程分支内容
+
 - **Priority**: high
 - **Depends On**: Task 2, Task 4
-- **Description**: 
+- **Description**:
   - 检查两个远程分支的文件列表
   - 确认源代码目录不在分支中
 - **Acceptance Criteria Addressed**: AC-3
@@ -63,6 +68,7 @@
   - `programmatic` TR-5.3: 远程分支不包含 cresil/ 和 ecc_finder/ 源代码目录
 
 # Task Dependencies
+
 - Task 2 depends on Task 1
 - Task 4 depends on Task 3
 - Task 5 depends on Task 2 and Task 4

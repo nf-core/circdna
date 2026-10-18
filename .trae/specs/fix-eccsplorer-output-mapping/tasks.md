@@ -3,12 +3,14 @@
 ## 阶段一：修复 circdna.nf ECCSPLORER 模块
 
 - [x] Task 1: 修复 `circdna.nf/modules/local/eccsplorer/main.nf` 的输出映射
+
   - [x] SubTask 1.1: 修改 output 块，新增 `lowconf_ecc_regions`、`alignment_stats`、`ecc_sequences`、`eccpipe_results` 输出声明
   - [x] SubTask 1.2: 修改 script 块（BAM 模式），将 `mv ${prefix}_output/*_candidates.bed` 改为 `cp ${prefix}_output/eccpipe_results/mapping_results/*_hiconf-ECC-REGIONS.bed ${prefix}_candidates.bed`，junction_reads 改为 `*.trns.txt`，新增 lowconf/stats/sequences 的 cp 命令，新增 `cp -r ${prefix}_output/eccpipe_results ${prefix}_eccpipe_results`
   - [x] SubTask 1.3: 修改 script 块（FASTQ 模式），同 SubTask 1.2
   - [x] SubTask 1.4: 修改 stub 块，新增 `mkdir -p ${prefix}_eccpipe_results`、`touch ${prefix}_lowconf_ecc_regions.bed`、`touch ${prefix}_alignment_stats.txt`、`touch ${prefix}_ecc_sequences.fasta`
 
 - [x] Task 2: 更新 `circdna.nf/modules/local/eccsplorer/meta.yml`
+
   - [x] SubTask 2.1: 在 output 部分新增 `lowconf_ecc_regions`、`alignment_stats`、`ecc_sequences`、`eccpipe_results` 的描述
 
 - [x] Task 3: 更新 `circdna.nf/conf/modules.config` 的 ECCSPLORER publishDir
@@ -17,6 +19,7 @@
 ## 阶段二：同步修复 bio.nf ECCSPLORER 模块
 
 - [x] Task 4: 同步修复 `bio.nf/modules/eccsplorer/main.nf`
+
   - [x] SubTask 4.1: 应用与 Task 1 相同的修改（output 块、script 块 BAM 模式、script 块 FASTQ 模式、stub 块）
 
 - [x] Task 5: 同步更新 `bio.nf/modules/eccsplorer/meta.yml`
@@ -25,6 +28,7 @@
 ## 阶段三：版本管理与文档
 
 - [x] Task 6: 更新 `circdna.nf/nextflow.config` 版本号
+
   - [x] SubTask 6.1: 将 `version = '4.2.0'` 改为 `version = '4.2.1'`
 
 - [x] Task 7: 更新 `circdna.nf/CHANGELOG.md`

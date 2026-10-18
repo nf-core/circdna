@@ -29,7 +29,7 @@ process ECCSPLORER_COVERAGE_PROFILE {
     names_list="${names}"
     if [ \$(echo "\$names_list" | tr ',' '\\n' | wc -l) -ne \$(echo "\$alignments_list" | tr ',' '\\n' | wc -l) ]; then
         # fallback: derive names from file basenames
-        names_list=\$(ls ${beds} | sed 's/\.bed\$//' | paste -sd, -)
+        names_list=\$(ls ${beds} | sed 's/\\.bed\$//' | paste -sd, -)
     fi
 
     coverage_profile.py \\

@@ -1,6 +1,7 @@
 # CReSIL Nextflow 模块 - The Implementation Plan (Decomposed and Prioritized Task List)
 
 ## [x] Task 1: 准备测试数据 (testdata)
+
 - **Priority**: high
 - **Depends On**: None
 - **Description**:
@@ -18,6 +19,7 @@
 - **Notes**: 使用现有的 minimap2 和 samtools 模块或 Docker 容器生成测试数据
 
 ## [x] Task 2: 构建 CRESIL_TRIM 模块
+
 - **Priority**: high
 - **Depends On**: Task 1
 - **Description**:
@@ -26,7 +28,7 @@
   - 创建 meta.yml：描述输入输出和工具信息
   - 创建 environment.yml：conda 环境配置
   - 输入：tuple val(meta), path(reads) + tuple val(meta2), path(mmi)
-  - 输出：tuple val(meta), path("*.trim.txt") emit: trim + versions.yml
+  - 输出：tuple val(meta), path("\*.trim.txt") emit: trim + versions.yml
   - 支持 task.ext.args 和 task.ext.prefix
   - 实现 stub 模式
   - 使用 Docker: quay.io/bioinfortools/cresil:1.2.0
@@ -41,6 +43,7 @@
 - **Notes**: 参考 modules/flair/align/main.nf 的写法
 
 ## [x] Task 3: 构建 CRESIL_IDENTIFY 模块
+
 - **Priority**: high
 - **Depends On**: Task 1, Task 2
 - **Description**:
@@ -49,7 +52,7 @@
   - 创建 meta.yml：描述输入输出和工具信息
   - 创建 environment.yml
   - 输入：tuple val(meta), path(fasta), path(fai), path(reads), path(trim)（trim 可选）
-  - 输出：tuple val(meta), path("*eccDNA_final.txt") emit: identify + versions.yml
+  - 输出：tuple val(meta), path("\*eccDNA_final.txt") emit: identify + versions.yml
   - 支持 -s (skip-variant) 和 -sg (skip-gfa) 参数
   - 支持 -cm medaka 模型参数
   - 实现 stub 模式
@@ -63,6 +66,7 @@
 - **Notes**: 由于 medaka 运行较慢，测试时可使用 -s (skip-variant) 加速
 
 ## [x] Task 4: 构建 CRESIL_IDENTIFY_WGLS 模块
+
 - **Priority**: medium
 - **Depends On**: Task 1, Task 2
 - **Description**:
@@ -70,7 +74,7 @@
   - 创建 main.nf：process CRESIL_IDENTIFY_WGLS
   - 创建 meta.yml、environment.yml
   - 输入：tuple val(meta), path(mmi), path(fasta), path(fai), path(reads), path(trim)（trim 可选）
-  - 输出：tuple val(meta), path("*eccDNA_final.txt") emit: identify_wgls + versions.yml
+  - 输出：tuple val(meta), path("\*eccDNA_final.txt") emit: identify_wgls + versions.yml
   - 支持 -m (mode) 参数
   - 实现 stub 模式
 - **Acceptance Criteria Addressed**: [AC-3, AC-6, AC-7, AC-9]
@@ -83,6 +87,7 @@
 - **Notes**: WGLS 模式适用于全基因组测序数据，测试时需注意数据量
 
 ## [x] Task 5: 构建 CRESIL_ANNOTATE 模块
+
 - **Priority**: high
 - **Depends On**: Task 1
 - **Description**:
@@ -90,7 +95,7 @@
   - 创建 main.nf：process CRESIL_ANNOTATE
   - 创建 meta.yml、environment.yml
   - 输入：tuple val(meta), path(identify_table), path(rmsk_bed) 可选, path(cpg_bed) 可选, path(gene_bed) 可选
-  - 输出：tuple val(meta), path("*annotate*") 各注释文件 + versions.yml
+  - 输出：tuple val(meta), path("_annotate_") 各注释文件 + versions.yml
   - 实现 stub 模式
 - **Acceptance Criteria Addressed**: [AC-4, AC-6, AC-7, AC-9]
 - **Test Requirements**:
@@ -102,6 +107,7 @@
 - **Notes**: 三个 BED 输入均为可选，需处理部分输入的情况
 
 ## [x] Task 6: 构建 CRESIL_VISUALIZE 模块
+
 - **Priority**: medium
 - **Depends On**: Task 1
 - **Description**:
@@ -122,6 +128,7 @@
 - **Notes**: 仅生成配置文件，不执行 circos 命令
 
 ## [/] Task 7: 编写各模块的 nf-test 测试（真实运行验证）
+
 - **Priority**: high
 - **Depends On**: Task 1, Task 2, Task 3, Task 4, Task 5, Task 6
 - **Description**:
@@ -141,6 +148,7 @@
 - **Notes**: 先跑 stub 测试确保结构正确，再跑完整测试
 
 ## [x] Task 8: 端到端验证与文档
+
 - **Priority**: medium
 - **Depends On**: Task 7
 - **Description**:

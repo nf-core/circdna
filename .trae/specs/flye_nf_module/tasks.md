@@ -1,9 +1,10 @@
 # Flye Nextflow模块 - 实现计划（分解并排序的任务列表）
 
 ## [ ] Task 1: 创建flye分支和模块目录结构
+
 - **Priority**: high
 - **Depends On**: None
-- **Description**: 
+- **Description**:
   - 从主分支创建新分支flye
   - 创建modules/flye/目录结构
   - 创建modules/flye/tests/目录
@@ -16,9 +17,10 @@
 - **Notes**: 参照现有模块的目录结构
 
 ## [ ] Task 2: 准备测试数据（E.coli小型长读长数据集）
+
 - **Priority**: high
 - **Depends On**: Task 1
-- **Description**: 
+- **Description**:
   - 从Zenodo或GitHub获取E.coli PacBio/ONT长读长示例数据的子集
   - 下载小型FASTA格式测试数据
   - 保存为modules/flye/testdata/目录下的文件
@@ -30,9 +32,10 @@
 - **Notes**: 数据集参考Flye官方文档中提到的E.coli PacBio或ONT数据集，取一小部分即可
 
 ## [ ] Task 3: 创建main.nf模块主文件
+
 - **Priority**: high
 - **Depends On**: Task 1
-- **Description**: 
+- **Description**:
   - 定义FLYE process
   - 配置input: tuple val(meta), path(reads)
   - 配置output: assembly(assembly.fasta), gfa(assembly_graph.gfa), info(assembly_info.txt), versions(versions.yml)
@@ -53,9 +56,10 @@
 - **Notes**: 参照minimap2或类似模块的写法
 
 ## [ ] Task 4: 创建meta.yml模块文档
+
 - **Priority**: high
 - **Depends On**: Task 3
-- **Description**: 
+- **Description**:
   - 编写meta.yml文件，包含完整的模块文档
   - 描述工具信息（name, description, homepage, licence等）
   - 详细描述input和output参数
@@ -68,9 +72,10 @@
 - **Notes**: 参照现有模块的meta.yml格式
 
 ## [ ] Task 5: 创建测试配置文件和测试用例
+
 - **Priority**: high
 - **Depends On**: Task 3, Task 4
-- **Description**: 
+- **Description**:
   - 创建tests/nextflow.config，配置docker.enabled=true和runOptions='--platform linux/amd64'
   - 创建tests/main.nf.test，包含nf-test测试用例
   - 测试用例1: stub模式运行（使用测试数据）
@@ -83,9 +88,10 @@
 - **Notes**: 参照现有模块的测试写法
 
 ## [ ] Task 6: 运行stub模式测试并生成snapshot
+
 - **Priority**: high
 - **Depends On**: Task 5
-- **Description**: 
+- **Description**:
   - 运行nf-test stub模式测试
   - 验证输出文件是否符合预期
   - 生成并保存snapshot文件
@@ -98,9 +104,10 @@
 - **Notes**: 确保stub输出与实际输出格式一致
 
 ## [ ] Task 7: Docker环境测试验证（可选）
+
 - **Priority**: medium
 - **Depends On**: Task 6
-- **Description**: 
+- **Description**:
   - 使用真实Docker环境运行测试
   - 验证flye可以正常运行（--version）
   - 验证输出文件格式正确
@@ -113,9 +120,10 @@
 - **Notes**: 如果数据量大，可以只验证版本号和基本功能
 
 ## [ ] Task 8: 提交并推送flye分支
+
 - **Priority**: high
 - **Depends On**: Task 6
-- **Description**: 
+- **Description**:
   - 将所有修改提交到flye分支
   - 推送到远程仓库
   - 不包含源代码（Flye/目录），只包含模块文件和.trae文档

@@ -1,9 +1,10 @@
 # 所有流程统一 Docker 用户映射 A+B+C 方案 - The Implementation Plan
 
 ## [ ] Task 1: 6 个标准流程 nextflow.config docker profile 补齐 B+C
+
 - **Priority**: high
 - **Depends On**: None
-- **Description**: 
+- **Description**:
   - 为 circdna.nf、circrna.nf、isoseq.nf、fetchngs.nf、riboseq.nf、rnaseq 的 `nextflow.config → profiles → docker { }` 块添加 B（`docker.userEmulation = true`）和 C（`docker.fixOwnership = true`）
   - 这 6 个流程已有 A（`docker.runOptions = '-u $(id -u):$(id -g)'`），只需在 runOptions 行之后插入 B 和 C 两行
   - 标准插入位置：在 `docker.runOptions = '...'` 行之后、其他引擎 `xxx.enabled = false` 行之前
@@ -38,9 +39,10 @@
 - **Notes**: 不修改 emulate_amd64 profile 中的 runOptions（那些已以 `-u` 开头）；不修改其他引擎 enabled 行
 
 ## [ ] Task 2: nanoseq.nf nextflow.config docker profile 补齐 A+C
+
 - **Priority**: high
 - **Depends On**: None
-- **Description**: 
+- **Description**:
   - 文件：`nanoseq.nf/nextflow.config` 的 `profiles { docker { } }` 块（L146-153）
   - 当前状态：已有 B（`docker.userEmulation = true`，L148），缺少 A 和 C
   - 在 `docker.userEmulation = true` 行之前插入 A（`docker.runOptions = '-u $(id -u):$(id -g)'`）
@@ -67,9 +69,10 @@
 - **Notes**: nanoseq 没有 apptainer.enabled 行，不要额外添加
 
 ## [ ] Task 3: bio.nf 顶层 nextflow.config 补齐 B+C
+
 - **Priority**: high
 - **Depends On**: None
-- **Description**: 
+- **Description**:
   - 文件：`bio.nf/nextflow.config`（L5-8，顶层 docker 块，无 profiles）
   - 当前状态：已有 A（`runOptions = '-u $(id -u):$(id -g) --platform linux/amd64'`，L7）
   - 在 `enabled = true` 行之后、`runOptions` 行之前插入 B（`userEmulation = true`）
@@ -91,9 +94,10 @@
 - **Notes**: bio.nf 无 profiles 块，docker 配置在顶层
 
 ## [ ] Task 4: bio.nf 11 个模块测试配置补齐 A+B+C
+
 - **Priority**: high
 - **Depends On**: None
-- **Description**: 
+- **Description**:
   - bio.nf 下 11 个模块测试配置文件，路径均为 `bio.nf/modules/{module}/{sub}/tests/nextflow.config`
   - 当前状态：仅有 `runOptions = '--platform linux/amd64'`（缺少 A 的 `-u`，缺少 B 和 C）
   - 改动：将 docker 块从：
@@ -132,9 +136,10 @@
 - **Notes**: 11 处改动完全相同
 
 ## [ ] Task 5: 3 个 server.config 删除重复 A/B/C 设置
+
 - **Priority**: medium
 - **Depends On**: None
-- **Description**: 
+- **Description**:
   - circdna.nf、circrna.nf、isoseq.nf 的 `conf/server.config` 中顶层 docker 块已有 A+C（与 nextflow.config docker profile 重复）
   - 删除 `fixOwnership = true` 行和 `runOptions = '-u $(id -u):$(id -g)'` 行
   - **保留** `enabled = true`（确保 `-profile server` 仍能启用 Docker）
@@ -156,12 +161,15 @@
 - **Notes**: 删除后 `-profile server` 单独使用时 Docker 仍启用（enabled=true），但 A+B+C 权限设置需 `-profile docker,server` 组合；server.config 只负责服务器资源/执行器配置
 
 ## [ ] Task 6: AGENTS.md 新增"Docker 用户映射 A+B+C 标准设置规范"章节
+
 - **Priority**: high
 - **Depends On**: None
-- **Description**: 
+- **Description**:
+
   - 文件：`/Users/siyangming/nextflow_nf_core/AGENTS.md`（项目根目录）
   - 在适当位置新增一节，内容结构如下：
-    ```
+
+    ````
     ## Docker 用户映射 A+B+C 标准设置规范
 
     为彻底避免容器以 root 身份运行导致输出文件无法删除的问题，所有流程必须在**同一标准位置**同时设置三层 Docker 权限方案：
@@ -194,7 +202,7 @@
         docker.fixOwnership    = true                      // C
         // ... 其他引擎设置
     }
-    ```
+    ````
 
     ### 扩展写法（追加其他参数时 `-u` 在最前）
 
@@ -210,7 +218,11 @@
     ### 不采用的方案
 
     - `userns-remap`（Docker daemon 级别）：需改 daemon 配置，HPC 服务器不允许
+
     ```
+
+    ```
+
 - **Acceptance Criteria Addressed**: AC-4
 - **Test Requirements**:
   - `programmatic` TR-6.1: `grep -c "Docker 用户映射 A+B+C 标准设置规范" AGENTS.md` 返回 1
@@ -218,9 +230,10 @@
 - **Notes**: 写在根目录 AGENTS.md（全局通用），不是 circdna.nf/AGENTS.md
 
 ## [ ] Task 7: 跨流程批量一致性验证
+
 - **Priority**: medium
 - **Depends On**: Task 1, Task 2, Task 3, Task 4, Task 5, Task 6
-- **Description**: 
+- **Description**:
   - 一次性批量检查所有流程在标准位置的 A+B+C 三参数是否齐全
   - 用 git diff 验证 emulate_amd64/arm/gpu profile 未被修改
 - **Acceptance Criteria Addressed**: AC-5, NFR-1
@@ -241,9 +254,10 @@
   - `human-judgement` TR-7.3: 人工审阅 AGENTS.md 新增章节内容完整
 
 ## [ ] Task 8: 仅同步 circdna.nf 修改到 GitHub
+
 - **Priority**: medium
 - **Depends On**: Task 7
-- **Description**: 
+- **Description**:
   - 所有 Task 1-7 完成后，只将 circdna.nf 目录下的修改同步到 GitHub
   - 不同步其他流程（circrna.nf、isoseq.nf、fetchngs.nf、riboseq.nf、nanoseq.nf、rnaseq、bio.nf）的修改
   - 不同步 AGENTS.md 的修改（除非用户另行要求）
@@ -260,6 +274,7 @@
 - **Notes**: 只同步 circdna.nf 是用户明确要求；其他流程的修改保留在本地，后续按需单独同步
 
 # Task Dependencies
+
 - Task 1-6 互相独立，可并行执行
 - Task 7 必须在 Task 1-6 全部完成后执行
 - Task 8 必须在 Task 7 完成后执行

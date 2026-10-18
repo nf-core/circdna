@@ -38,22 +38,25 @@ WARN: Config setting `docker.userEmulation` is not supported anymore
 
 所有 Nextflow 流程的 Docker 配置 SHALL 采用 **A+C 两层方案**：
 
-| 层级 | 参数 | 作用 | 状态 |
-|------|------|------|------|
-| **A（预防层）** | `docker.runOptions = '-u $(id -u):$(id -g)'` | 显式将宿主机 UID/GID 传入容器 | ✅ 保留 |
-| ~~B（预防层补充）~~ | ~~`docker.userEmulation = true`~~ | ~~Nextflow 动态生成 /etc/passwd 挂载~~ | ❌ **已废弃，移除** |
-| **C（兜底层）** | `docker.fixOwnership = true` | 任务结束后 chown 修复文件所有权 | ✅ 保留 |
+| 层级                | 参数                                         | 作用                                   | 状态                |
+| ------------------- | -------------------------------------------- | -------------------------------------- | ------------------- |
+| **A（预防层）**     | `docker.runOptions = '-u $(id -u):$(id -g)'` | 显式将宿主机 UID/GID 传入容器          | ✅ 保留             |
+| ~~B（预防层补充）~~ | ~~`docker.userEmulation = true`~~            | ~~Nextflow 动态生成 /etc/passwd 挂载~~ | ❌ **已废弃，移除** |
+| **C（兜底层）**     | `docker.fixOwnership = true`                 | 任务结束后 chown 修复文件所有权        | ✅ 保留             |
 
 #### Scenario: 运行流程时无 userEmulation 警告
+
 - **WHEN** 用户执行 `nextflow run main.nf -profile test_local,docker`
 - **THEN** 控制台输出中不出现 `WARN: Unrecognized config option 'docker.userEmulation'` 或 `WARN: Config setting 'docker.userEmulation' is not supported anymore`
 
 #### Scenario: 容器内文件归属仍正确
+
 - **WHEN** Docker 任务执行完毕
 - **THEN** work 目录下的文件归属为当前用户（非 root），`rm -rf work/` 可成功执行
 - **BECAUSE** A 层 `-u $(id -u):$(id -g)` 在容器启动时即以宿主机用户身份运行，C 层 `fixOwnership` 在任务结束后兜底修复
 
 #### Scenario: 需要 /etc/passwd 的工具仍可工作
+
 - **WHEN** 某些工具（如 GATK4）在容器内需要查询 /etc/passwd
 - **THEN** 该工具的测试配置已通过 `runOptions` 手动挂载 `/etc/passwd`、`/etc/group` 等文件（参见 `modules/modules/nf-core/gatk4/*/tests/nextflow.config` 的现有做法）
 - **AND** 全局 docker profile 不需要为此额外配置
