@@ -1,0 +1,10 @@
+- [x] 所有版本号已统一更新到 1.2.1（__init__.py, Dockerfile, meta.yaml, README.md）
+- [x] Docker 镜像构建成功（linux/amd64 平台）
+- [x] Docker 镜像成功推送到 quay.io/bioinfortools/cresil:1.2.1
+- [x] Conda 包构建成功（linux-64 平台，版本 1.2.1）
+- [x] Conda 包成功发布到 anaconda.org/yangmingsi/cresil（版本 1.2.1）
+- [x] Nextflow 模块的 container 版本已更新为 1.2.1（5 个模块）
+- [x] Nextflow 模块的 environment.yml conda 版本已更新为 1.2.1（5 个模块）
+- [x] 新镜像中运行 identify_wgls 不再出现 KeyError: 'name'（根本原因：strand 比较类型不匹配）
+- [x] bedtools merge 排序问题已修复（添加 .sort()）
+- [ ] Nextflow 模块 stub 测试全部通过

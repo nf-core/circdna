@@ -1,0 +1,6 @@
+- [ ] bio.nf 11 个模块测试配置文件（`modules/*/tests/nextflow.config`）的 `runOptions` 均包含 `-u $(id -u):$(id -g) --platform linux/amd64`
+- [ ] 每个模块测试文件仍保留原有 `--platform linux/amd64` 不变（无遗漏、无顺序颠倒）
+- [ ] nanoseq.nf/nextflow.config 的 docker profile 包含 `docker.runOptions = '-u $(id -u):$(id -g)'`
+- [ ] nanoseq.nf docker profile 中的 `docker.userEmulation = true` 仍保留未删除
+- [ ] circdna.nf, circrna.nf, isoseq.nf, fetchngs.nf, riboseq.nf, rnaseq 的 nextflow.config docker profile 未发生任何改动（通过 git diff 验证）
+- [ ] bio.nf 11 处改动完全一致（格式统一，无非标准格式或多余修改）

@@ -1,0 +1,17 @@
+- [ ] circdna.nf/nextflow.config docker profile 含 A(runOptions) + B(userEmulation) + C(fixOwnership)
+- [ ] circrna.nf/nextflow.config docker profile 含 A+B+C
+- [ ] isoseq.nf/nextflow.config docker profile 含 A+B+C
+- [ ] fetchngs.nf/nextflow.config docker profile 含 A+B+C
+- [ ] riboseq.nf/nextflow.config docker profile 含 A+B+C
+- [ ] nanoseq.nf/nextflow.config docker profile 含 A+B+C（B 已有，新增 A+C）
+- [ ] rnaseq/nextflow.config docker profile 含 A+B+C
+- [ ] bio.nf/nextflow.config 顶层 docker 块含 A+B+C（A 已有含 --platform，新增 B+C）
+- [ ] bio.nf 11 个模块测试配置文件 docker 块含 A+B+C（runOptions 改为含 -u，新增 B+C）
+- [ ] circdna.nf/conf/server.config docker 块仅保留 enabled=true（删除 fixOwnership 和 runOptions）
+- [ ] circrna.nf/conf/server.config docker 块仅保留 enabled=true（删除 fixOwnership 和 runOptions）
+- [ ] isoseq.nf/conf/server.config docker 块仅保留 enabled=true（删除 fixOwnership 和 runOptions）
+- [ ] 根目录 AGENTS.md 新增"Docker 用户映射 A+B+C 标准设置规范"章节，覆盖：三层方案表格、标准位置（两类）、标准配置块、扩展写法、server.config 规则（只保留 enabled）、不采用方案
+- [ ] 所有 emulate_amd64 / arm / gpu profile 的 runOptions 行未被修改（git diff 验证）
+- [ ] 所有新增行的缩进与周围行一致
+- [ ] 跨流程汇总表：8 个流程 docker profile A+B+C 齐全 + 11 个模块测试 A+B+C 齐全 + 3 个 server.config 仅 enabled=true
+- [ ] 仅 circdna.nf 的修改同步到 GitHub（git commit + push），其他流程修改保留在本地

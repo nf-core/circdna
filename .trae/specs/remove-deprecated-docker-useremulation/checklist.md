@@ -1,0 +1,11 @@
+- [ ] 8 个主流程 nextflow.config 中不再包含 `userEmulation`（circdna/circrna/nanoseq/isoseq/fetchngs/riboseq/rnaseq/bio.nf）
+- [ ] 12 个 bio.nf 模块测试配置中不再包含 `userEmulation`
+- [ ] 上述 20 个文件中的 `runOptions`（含 `-u $(id -u):$(id -g)`）和 `fixOwnership = true` 行保持不变
+- [ ] `nf-core-nanoseq_3.1.0/3_1_0/` 参考归档目录未被修改
+- [ ] `modules/modules/nf-core/` 下的第三方模块测试配置未被修改
+- [ ] AGENTS.md Section 11 标题已从 "A+B+C" 改为 "A+C"
+- [ ] AGENTS.md Section 11 的方案表格中 B 层已移除，仅保留 A 层和 C 层
+- [ ] AGENTS.md Section 11 的标准配置行中不再包含 `userEmulation` 设置
+- [ ] AGENTS.md Section 11 的检查清单已从 "A+B+C" 更新为 "A+C"
+- [ ] AGENTS.md 中对 `userEmulation` 的提及仅出现在废弃说明上下文
+- [ ] 全局 grep（排除 nf-core-nanoseq_3.1.0 参考归档）确认活跃配置中零 `userEmulation` 残留

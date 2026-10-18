@@ -1,11 +1,12 @@
 repository_type: pipeline
-
 lint:
   files_exist:
     - assets/multiqc_config.yml
+    - .github/workflows/linting_comment.yml
   files_unchanged:
     - assets/email_template.html
-
+    - .github/workflows/branch.yml
+    - .github/workflows/linting.yml
 update:
   nf-core:
     samtools/sort: "1ad73f1b2abdea9398680d6d20014838135c9a35"
