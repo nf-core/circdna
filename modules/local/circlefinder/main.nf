@@ -65,7 +65,7 @@ process CIRCLEFINDER {
         ${prefix}.split_freq2.oneline.S-R-S-CHR-S-ST.ID.txt
 
     #Step 9: Based on unique id I am extracting one continuously mapped reads and their partner mapped as split read (3 lines for each id)
-    # grep -w -Ff "${prefix}.split_freq2.oneline.S-R-S-CHR-S-ST.ID.txt" "${prefix}.concordant_freq3.txt" > "${prefix}.concordant_freq3.txt"    
+    # grep -w -Ff "${prefix}.split_freq2.oneline.S-R-S-CHR-S-ST.ID.txt" "${prefix}.concordant_freq3.txt" > "${prefix}.concordant_freq3.txt"
     awk 'NR==FNR{a[\$1]; next} \$4 in a' "${prefix}.split_freq2.oneline.S-R-S-CHR-S-ST.ID.txt" "${prefix}.concordant_freq3.txt" > \
         "${prefix}.concordant_freq3.2SPLIT-1M.txt"
 

@@ -17,13 +17,13 @@ nextflow_process {
             process {
                 """
                 input[0] = [ [ id:'ref' ], // meta
-                             file("\${projectDir}/modules/local/ecc_finder/testdata/test_ref.fa.bwt", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/ecc_finder/testdata/test_ref.fa.bwt", checkIfExists: true) ]
                 input[1] = [ [ id:'test' ], // meta2
-                             file("\${projectDir}/modules/local/ecc_finder/testdata/Arabi.1kReads.R1.fastq.gz", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/ecc_finder/testdata/Arabi.1kReads.R1.fastq.gz", checkIfExists: true) ]
                 input[2] = [ [ id:'test' ], // meta3
-                             file("\${projectDir}/modules/local/ecc_finder/testdata/Arabi.1kReads.R2.fastq.gz", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/ecc_finder/testdata/Arabi.1kReads.R2.fastq.gz", checkIfExists: true) ]
                 input[3] = [ [ id:'ref' ], // meta4
-                             file("\${projectDir}/modules/local/ecc_finder/testdata/test_ref.fa", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/ecc_finder/testdata/test_ref.fa", checkIfExists: true) ]
                 """
             }
         }

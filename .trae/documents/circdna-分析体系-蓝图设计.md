@@ -59,7 +59,7 @@
 | Module 4 | 新增 Integration  | circRNA + eccDNA    |
 | Module 5 | Benchmark         | 33 个代表数据集测试 |
 
-------
+---
 
 # 2. Metadata 总体设计原则
 
@@ -69,7 +69,7 @@
 
 因为两者实验设计完全不同。
 
-------
+---
 
 # 3. circRNA Metadata
 
@@ -125,7 +125,7 @@ metadata/circRNA/Oryza_sativa.tsv
 | batch          | 批次                             |
 | notes          | 备注                             |
 
-------
+---
 
 ## 3.1 当前 circRNA 数据分类
 
@@ -192,7 +192,7 @@ Differential circRNA
 
 建议作为 `circrna.nf` 的标准输入。
 
-------
+---
 
 ### B 类：普通 WGS
 
@@ -226,7 +226,7 @@ circRNA.nf
     └── gDNA/WGS      → NO
 ```
 
-------
+---
 
 # 4. eccDNA Metadata
 
@@ -287,7 +287,7 @@ metadata/
 | ccs                   | PacBio HiFi             |
 | notes                 | 备注                    |
 
-------
+---
 
 # 5. eccDNA 数据分层
 
@@ -351,7 +351,7 @@ E
 
 不进入 eccDNA 主流程。
 
-------
+---
 
 # 6. 二代 eccDNA 流程
 
@@ -402,7 +402,7 @@ Quantification
 Differential eccDNA
 ```
 
-------
+---
 
 ## 6.2 建议增加的模块
 
@@ -429,7 +429,7 @@ modules/
 
 如果当前流程已有部分模块，则只补缺失模块。
 
-------
+---
 
 ## 6.3 二代 eccDNA 推荐工具组合
 
@@ -479,7 +479,7 @@ Illumina
 
 不建议让 Illumina 独立承担复杂 eccDNA 全长结构解析。
 
-------
+---
 
 # 7. 三代 eccDNA 流程
 
@@ -517,7 +517,7 @@ params.mode = 'pacbio'
 params.mode = 'ont'
 ```
 
-------
+---
 
 # 8. PacBio eccDNA Pipeline
 
@@ -560,7 +560,7 @@ Circular structure reconstruction
 eccDNA annotation
 ```
 
-------
+---
 
 ## 8.1 CIDER-seq
 
@@ -597,7 +597,7 @@ CircleSeeker
 eccDNA candidates
 ```
 
-------
+---
 
 ## 8.2 RCA-PacBio
 
@@ -647,7 +647,7 @@ linearization = yes/no
 
 不能把两者实验方法直接标成完全相同。
 
-------
+---
 
 # 9. PacBio HiFi WGS
 
@@ -703,7 +703,7 @@ Circle validation
 
 而不是主 eccDNA discovery pipeline。
 
-------
+---
 
 # 10. ONT eccDNA Pipeline
 
@@ -739,7 +739,7 @@ Circular molecule reconstruction
 TE / gene annotation
 ```
 
-------
+---
 
 # 11. ONT 数据进一步分三类
 
@@ -761,7 +761,7 @@ SRR36603439
 ONT eccDNA mode
 ```
 
-------
+---
 
 ### 第二类：RCA / T7 / 特殊处理
 
@@ -785,7 +785,7 @@ T7 = yes/no
 ONT special mode
 ```
 
-------
+---
 
 ### 第三类：WGS
 
@@ -813,7 +813,7 @@ eccDNA origin
 
 而不是直接等价于 eccDNA-enriched sequencing。
 
-------
+---
 
 # 12. 推荐的三代统一架构
 
@@ -840,7 +840,7 @@ eccDNA origin
                  candidate table
 ```
 
-------
+---
 
 # 13. 最终统一 eccDNA 数据结构
 
@@ -879,7 +879,7 @@ ONT
 
 三者进入同一个 downstream analysis。
 
-------
+---
 
 # 14. circRNA + eccDNA 整合流程
 
@@ -919,7 +919,7 @@ ONT
               Multi-omics result
 ```
 
-------
+---
 
 # 15. 为什么推荐 Snakemake 做第三层
 
@@ -979,7 +979,7 @@ rule integration:
         integrated_results
 ```
 
-------
+---
 
 # 16. Snakemake 推荐结构
 
@@ -1017,7 +1017,7 @@ integration/
 └── results/
 ```
 
-------
+---
 
 # 17. 三个流程的职责
 
@@ -1041,7 +1041,7 @@ quantification
 differential analysis
 ```
 
-------
+---
 
 ## Pipeline 2：eccDNA
 
@@ -1075,7 +1075,7 @@ copy number
 annotation
 ```
 
-------
+---
 
 ## Pipeline 3：Integration
 
@@ -1112,7 +1112,7 @@ eccDNA
 Integration
 ```
 
-------
+---
 
 # 18. 最终建议的分析关系
 
@@ -1154,7 +1154,7 @@ eccDNA genomic region
 circRNA host gene
 ```
 
-------
+---
 
 ### ② TE-mediated
 
@@ -1165,7 +1165,7 @@ TE-derived eccDNA
 TE-associated circRNA
 ```
 
-------
+---
 
 ### ③ Stress response
 
@@ -1181,7 +1181,7 @@ Stress
 
 这个方向对于植物材料尤其有价值。
 
-------
+---
 
 # 19. 建议的最终目录
 
@@ -1224,7 +1224,7 @@ plant_circle_pipeline/
 └── README.md
 ```
 
-------
+---
 
 # 20. 我建议的开发优先级
 
@@ -1259,7 +1259,7 @@ ERR10889820
 ERR12724677
 ```
 
-------
+---
 
 ### Phase 2：完善 Illumina eccDNA
 
@@ -1291,7 +1291,7 @@ CRR3168885
 CRR1082975
 ```
 
-------
+---
 
 ### Phase 3：加入 PacBio
 
@@ -1319,7 +1319,7 @@ SRR30359583
 
 作为 HiFi WGS 模式。
 
-------
+---
 
 ### Phase 4：加入 ONT
 
@@ -1343,7 +1343,7 @@ SRR24693334
 SRR36603439
 ```
 
-------
+---
 
 ### Phase 5：Snakemake Integration
 
@@ -1361,7 +1361,7 @@ TE
 
 不要一开始就做整合层。
 
-------
+---
 
 # 21. 最终推荐的技术路线
 

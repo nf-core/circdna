@@ -30,3 +30,32 @@ indent_style = unset
 # ignore python
 [*.{py}]
 indent_style = unset
+
+# internal planning docs and fix notes — free-form formatting
+[.trae/**]
+indent_size = unset
+
+[CHANGES&FIX/**]
+charset = unset
+end_of_line = unset
+insert_final_newline = unset
+trim_trailing_whitespace = unset
+indent_style = unset
+indent_size = unset
+
+# project rules doc contains aligned ASCII diagrams
+[AGENTS.md]
+indent_size = unset
+
+# aligned report / issue-log data files
+[samplesheets/*.txt]
+indent_size = unset
+
+# test fixtures (including binary index files)
+[**/testdata/**]
+charset = unset
+end_of_line = unset
+insert_final_newline = unset
+trim_trailing_whitespace = unset
+indent_style = unset
+indent_size = unset

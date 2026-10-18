@@ -27,20 +27,20 @@ input:
         pattern: "*.{fasta,fa}"
 output:
   - candidates:
-    - - meta:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. `[ id:'sample1' ]`
-      - "*.fasta":
-          type: file
-          description: Candidate eccDNA sequences (assess/replicate fasta files)
-          pattern: "*.fasta"
+      - - meta:
+            type: map
+            description: |
+              Groovy Map containing sample information
+              e.g. `[ id:'sample1' ]`
+        - "*.fasta":
+            type: file
+            description: Candidate eccDNA sequences (assess/replicate fasta files)
+            pattern: "*.fasta"
   - versions:
-    - "versions.yml":
-        type: file
-        description: File containing software versions
-        pattern: "versions.yml"
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
 authors:
   - "@siyangming"
 maintainers:

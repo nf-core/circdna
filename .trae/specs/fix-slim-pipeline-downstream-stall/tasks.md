@@ -1,10 +1,13 @@
 # Tasks
+
 - [x] Task 1: SEGEMEHL_ALIGN 模块补充 segemehl 参数
+
   - [x] 1.1 modules.config 中为 SEGEMEHL_ALIGN 添加 `ext.args = '--splits --briefcigar --MEOP --accuracy 95'`
   - [x] 1.2 SEGEMEHL_ALIGN publishDir 的 saveAs 排除 `.sam` 文件
   - [x] 1.3 验证：stub 编译通过
 
 - [x] Task 2: HAARZ 模块增加 awk 行修复（复刻 eccMapper.py start>end 纠错）
+
   - [x] 2.1 在 haarz.x 输出后添加 awk 修复并重命名
   - [x] 2.2 验证：stub 编译通过
 
@@ -15,5 +18,6 @@
   - [x] 3.4 验证 bam 目录仅含 .bam，3 个样本齐全（不手动清理缓存）
 
 # Task Dependencies
+
 - [Task 2] depends on [Task 1]
 - [Task 3] depends on [Task 1] + [Task 2]

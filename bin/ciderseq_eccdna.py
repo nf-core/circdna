@@ -67,7 +67,7 @@ def main():
 
     genome = os.path.abspath(args.genome)
     cmd = [sys.executable, exe, '--blast_threads', str(args.blast_threads),
-           '--gap_window', str(args.gap_window), list_file, genome]
+            '--gap_window', str(args.gap_window), list_file, genome]
     sys.stderr.write('[ciderseq_eccdna] %s\n' % ' '.join(cmd))
     subprocess.run(cmd, cwd=staging, check=True)
 

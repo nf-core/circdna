@@ -16,7 +16,7 @@ nextflow_process {
             process {
                 """
                 input[0] = [ [ id:'test' ], // meta
-                             file("\${projectDir}/modules/local/cseccdna/testdata/input", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/cseccdna/testdata/input", checkIfExists: true) ]
                 input[1] = file("\${projectDir}/modules/local/cseccdna/testdata/genome.fasta", checkIfExists: true)
                 """
             }

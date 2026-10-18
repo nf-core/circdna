@@ -18,9 +18,9 @@ nextflow_process {
             process {
                 """
                 input[0] = [ [ id:'test' ], // meta
-                             file("\${projectDir}/modules/local/circleseeker/testdata/test_reads.fa", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/circleseeker/testdata/test_reads.fa", checkIfExists: true) ]
                 input[1] = [ [ id:'ref' ], // meta2
-                             file("\${projectDir}/modules/local/circleseeker/testdata/test_ref.fa", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/circleseeker/testdata/test_ref.fa", checkIfExists: true) ]
                 """
             }
         }
@@ -44,9 +44,9 @@ nextflow_process {
             process {
                 """
                 input[0] = [ [ id:'test' ], // meta
-                             file("\${projectDir}/modules/local/circleseeker/testdata/test_reads.fa", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/circleseeker/testdata/test_reads.fa", checkIfExists: true) ]
                 input[1] = [ [ id:'ref' ], // meta2
-                             file("\${projectDir}/modules/local/circleseeker/testdata/test_ref.fa", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/circleseeker/testdata/test_ref.fa", checkIfExists: true) ]
                 """
             }
         }

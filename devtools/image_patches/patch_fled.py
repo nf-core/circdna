@@ -8,19 +8,19 @@ duplicate SAM header and samtools sort aborts before the FLED process finishes.
 Upstream problems patched here:
 
 1. multisegs_cluster skips the first group while clustering, so identical
-   segment combinations can create duplicate groups.
+    segment combinations can create duplicate groups.
 2. MS_PseudoReference builds one FASTA record per Segreads key but the record
-   id omits strand, so strand variants of the same junction collapse to the
-   same FASTA name.
+    id omits strand, so strand variants of the same junction collapse to the
+    same FASTA name.
 3. When a non-empty multiseg dict merges to zero usable candidates, FLED still
-   realigns an empty pseudo-reference and pysam rejects the headerless BAM.
-   Open alignment files with check_sq=False so this is handled as an empty
-   multi-segment result.
+    realigns an empty pseudo-reference and pysam rejects the headerless BAM.
+    Open alignment files with check_sq=False so this is handled as an empty
+    multi-segment result.
 
 4. FLED's internal minimap2 command can build a multi-part index on very
-   large references. Pass --split-prefix so the SAM retains @SQ records.
+    large references. Pass --split-prefix so the SAM retains @SQ records.
 5. ecDNAdetection.py uses BAI for the full-genome BAM. Use CSI when
-   reference contigs exceed the ~512 Mb BAI limit.
+    reference contigs exceed the ~512 Mb BAI limit.
 
 The module copies the pinned FLED package into a writable directory, applies
 this patch there, and shadows it via PYTHONPATH.

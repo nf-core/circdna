@@ -1,3 +1,0 @@
-ERROR ~ No such file or directory: /Users/siyangming/nextflow_nf_core/bio.nf/modules/cresil/trim/tests/modules/cresil/testdata/exp_reads.fastq
-
- -- Check script '/Users/siyangming/nextflow_nf_core/bio.nf/modules/cresil/trim/tests/.nf-test-184bce91f4515a98fc003ca8f2b12079.nf' at line: 25 or see '/Users/siyangming/nextflow_nf_core/bio.nf/modules/cresil/trim/tests/.nf-test/tests/184bce91f4515a98fc003ca8f2b12079/meta/nextflow.log' file for more details

@@ -2,18 +2,18 @@
 """Patch CRESIL identify_wgls runtime bugs in the copied module.
 
 1. CRESIL trim writes strand as numeric -1/1 while identify_wgls and the
-   final graph logic expect '+'/'-'; normalize both numeric and '+'/'-' input.
+    final graph logic expect '+'/'-'; normalize both numeric and '+'/'-' input.
 2. Mosdepth region files are read without a header, so numeric contig names
-   are ints while the summary keys are strings; cast contigs before joining.
+    are ints while the summary keys are strings; cast contigs before joining.
 3. If no 10bp windows pass the depth threshold, CRESIL still tries to open a
-   missing bedgraph and crashes with FileNotFoundError. Emit the same ABORT
-   message the module already treats as an empty result.
+    missing bedgraph and crashes with FileNotFoundError. Emit the same ABORT
+    message the module already treats as an empty result.
 4. If no depth regions are within 1bp of a breakpoint window, pybedtools
-   passes an empty BED file to `bedtools groupby`, which then raises
-   BEDToolsError. Treat that as a valid no-detection abort too.
+    passes an empty BED file to `bedtools groupby`, which then raises
+    BEDToolsError. Treat that as a valid no-detection abort too.
 5. identify_wgls runs minimap2 against the full genome and uses BAI for the
-   resulting BAM; use --split-prefix and CSI so large references retain @SQ
-   records and can be indexed.
+    resulting BAM; use --split-prefix and CSI so large references retain @SQ
+    records and can be indexed.
 
 The module file in site-packages is read-only inside the container, so we
 copy it next to the module and shadow it via PYTHONPATH. This script

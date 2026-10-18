@@ -16,9 +16,9 @@ nextflow_process {
             process {
                 """
                 input[0] = [ [ id:'test' ], // meta
-                             file("\${projectDir}/modules/local/cresil/testdata/exp_reads.fastq", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/cresil/testdata/exp_reads.fastq", checkIfExists: true) ]
                 input[1] = [ [ id:'ref' ], // meta2
-                             file("\${projectDir}/modules/local/cresil/testdata/ref.mmi", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/cresil/testdata/ref.mmi", checkIfExists: true) ]
                 """
             }
         }
@@ -40,9 +40,9 @@ nextflow_process {
             process {
                 """
                 input[0] = [ [ id:'test' ], // meta
-                             file("\${projectDir}/modules/local/cresil/testdata/exp_reads.fastq", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/cresil/testdata/exp_reads.fastq", checkIfExists: true) ]
                 input[1] = [ [ id:'ref' ], // meta2
-                             file("\${projectDir}/modules/local/cresil/testdata/ref.mmi", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/cresil/testdata/ref.mmi", checkIfExists: true) ]
                 """
             }
         }

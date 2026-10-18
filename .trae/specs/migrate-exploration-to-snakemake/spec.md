@@ -3,6 +3,7 @@
 ## Why
 
 circdna.nf 当前的 `CANDIDATE_MERGE` 和 `ECC_SCORE` 两个模块是参数敏感的轻量 Python 步骤（process_single，秒级重算），但被嵌入到包含 `CIRCLEMAP_REALIGN`（process_high, 96h）等重计算步骤的 Nextflow 流程中。这导致：
+
 1. 调整 `--max-distance`、`w1/w2/w3` 等探索性参数时，无法避免重新触发上游重计算
 2. 参数网格搜索难以在 Nextflow 中实现
 3. 探索性可视化（深度分布、候选统计、工具一致性）在 Nextflow 中缺失
@@ -42,12 +43,12 @@ circdna.nf 当前的 `CANDIDATE_MERGE` 和 `ECC_SCORE` 两个模块是参数敏�
 
 ### 契约接口（Nextflow 产物 → Snakemake 输入）
 
-| Nextflow 产物 | 路径模式 | Snakemake 用途 |
-|--------------|---------|----------------|
-| mosdepth 区域深度 | `{outdir}/mosdepth/{sample}/*.regions.bed.gz` | ECC_SCORE 输入 |
-| mosdepth 深度分布 | `{outdir}/mosdepth/{sample}/*.global.dist.txt` | 深度可视化 |
-| Circle-Map realign bed | `{outdir}/circlemap/realign/*.bed` | candidate_merge 输入 |
-| ECCsplorer bed | `{outdir}/eccdna_mode/eccsplorer/*_candidates.bed` | candidate_merge 输入 |
+| Nextflow 产物          | 路径模式                                           | Snakemake 用途       |
+| ---------------------- | -------------------------------------------------- | -------------------- |
+| mosdepth 区域深度      | `{outdir}/mosdepth/{sample}/*.regions.bed.gz`      | ECC_SCORE 输入       |
+| mosdepth 深度分布      | `{outdir}/mosdepth/{sample}/*.global.dist.txt`     | 深度可视化           |
+| Circle-Map realign bed | `{outdir}/circlemap/realign/*.bed`                 | candidate_merge 输入 |
+| ECCsplorer bed         | `{outdir}/eccdna_mode/eccsplorer/*_candidates.bed` | candidate_merge 输入 |
 
 ## Impact
 

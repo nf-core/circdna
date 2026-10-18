@@ -7,31 +7,31 @@ Columns (from plan §7):
     sample,fastq_1,fastq_2,input_bam,entrypoint,platform,assay,datatype,pair,concatemer,read_type,enrichment
 
 Rules (plan §1.2):
-  * workflow=circrna 或 library_source=TRANSCRIPTOMIC → rejected
-  * platform: ILLUMINA→illumina, PACBIO_SMRT→pacbio, OXFORD_NANOPORE→ont
-  * analysis_role=reference_genome → datatype=gdna ; primary_eccDNA → eccdna
-  * experimental_type=CIDER-seq → assay=ciderseq, enrichment=ciderseq
-  * long-read + enriched + RCA + non-CIDER → assay=rca
-  * long-read + enriched + no RCA → assay=enriched
-  * short-read + enriched → assay=circleseq
-  * un-enriched WGS / genome-skimming / size fractionation → assay=wgs
-  * amplification_method=RCA on illumina → still circleseq
-  * notes contain linearized / T7 debranching → concatemer=false
-  * long-read RCA without linearization → concatemer=true
-  * assay in (wgs, enriched) → concatemer=false
-  * PacBio HiFi → read_type=hifi ; PacBio RS/RS II → read_type=clr ; ONT → ont ; Illumina → pe/se
-  * pair ← bioproject (or sra_study)
+    * workflow=circrna 或 library_source=TRANSCRIPTOMIC → rejected
+    * platform: ILLUMINA→illumina, PACBIO_SMRT→pacbio, OXFORD_NANOPORE→ont
+    * analysis_role=reference_genome → datatype=gdna ; primary_eccDNA → eccdna
+    * experimental_type=CIDER-seq → assay=ciderseq, enrichment=ciderseq
+    * long-read + enriched + RCA + non-CIDER → assay=rca
+    * long-read + enriched + no RCA → assay=enriched
+    * short-read + enriched → assay=circleseq
+    * un-enriched WGS / genome-skimming / size fractionation → assay=wgs
+    * amplification_method=RCA on illumina → still circleseq
+    * notes contain linearized / T7 debranching → concatemer=false
+    * long-read RCA without linearization → concatemer=true
+    * assay in (wgs, enriched) → concatemer=false
+    * PacBio HiFi → read_type=hifi ; PacBio RS/RS II → read_type=clr ; ONT → ont ; Illumina → pe/se
+    * pair ← bioproject (or sra_study)
 
 Usage:
-  python bin/metadata_to_samplesheet.py samplesheets/metadata.csv -o samplesheets/circdna_representative.csv \
-      --root /data1/users/siyangming/PlanteccDNADB/eccDNA
+    python bin/metadata_to_samplesheet.py samplesheets/metadata.csv -o samplesheets/circdna_representative.csv \
+        --root /data1/users/siyangming/PlanteccDNADB/eccDNA
 """
 import argparse
 import csv
 import sys
 
 OUTPUT_COLS = ["sample", "fastq_1", "fastq_2", "input_bam", "entrypoint",
-               "platform", "assay", "datatype", "pair", "concatemer", "read_type", "enrichment"]
+                "platform", "assay", "datatype", "pair", "concatemer", "read_type", "enrichment"]
 
 EXPERIMENTAL_TO_ASSAY = {
     "CIDER-seq": ("ciderseq", "ciderseq"),
@@ -50,14 +50,14 @@ def parse_args():
     p.add_argument("metadata", help="metadata.csv (representative set)")
     p.add_argument("-o", "--out", default="samplesheets/circdna_representative.csv")
     p.add_argument("--root", default="/data1/users/siyangming/PlanteccDNADB/eccDNA",
-                   help="Base directory holding per-species fastq folders")
+                    help="Base directory holding per-species fastq folders")
     p.add_argument("--reject-file", default=None, help="Optional: write rejected rows here")
     p.add_argument("--full-master", default=None,
-                   help="Legacy master long-read samplesheet to migrate (adds platform/assay/datatype/... columns per row)")
+                    help="Legacy master long-read samplesheet to migrate (adds platform/assay/datatype/... columns per row)")
     p.add_argument("--sra", default="samplesheets/SraRunInfo_eccDNA_all2.csv",
-                   help="SRA Run Info for platform/strategy inference in --full-master mode")
+                    help="SRA Run Info for platform/strategy inference in --full-master mode")
     p.add_argument("--species-filter", default=None,
-                   help="Only emit rows whose species dir matches (e.g. Arabidopsis_thaliana); used for per-species files")
+                    help="Only emit rows whose species dir matches (e.g. Arabidopsis_thaliana); used for per-species files")
     return p.parse_args()
 
 

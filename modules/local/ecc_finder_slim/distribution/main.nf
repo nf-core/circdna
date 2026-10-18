@@ -29,7 +29,7 @@ process ECC_FINDER_DISTRIBUTION {
     import matplotlib.pyplot as plt
 
     df = pd.read_csv('${csv}', sep='\t', header=None,
-                     names=['chr', 'start', 'end', 'num_s', 'num_d', 'len'])
+                    names=['chr', 'start', 'end', 'num_s', 'num_d', 'len'])
     fig, ax = plt.subplots(figsize=(8, 5))
     if not df.empty:
         ax.hist(df['len'], bins=50, color='steelblue', edgecolor='white')

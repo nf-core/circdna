@@ -8,20 +8,21 @@
 
 ## 一、划分原则
 
-| 维度 | Nextflow 适合 | Snakemake 适合 |
-|------|--------------|----------------|
-| 计算量 | 重计算（高 CPU/内存/长时） | 轻计算（< 4 CPU、< 8 GB、秒级） |
-| 频次 | 每样本一次的标准化批处理 | 一次性/跨样本汇总 |
-| 参数敏感度 | 固定参数、确定性输出 | 参数可调、需迭代探索 |
-| 依赖关系 | 强依赖、必须串行、重算成本高 | 弱依赖、可独立重算、成本低 |
-| 容器化需求 | 需要 Docker/Singularity 统一环境 | 可用轻量 Python/R 环境 |
-| 输入数据规模 | 大文件（FASTQ/BAM） | 小文件（BED/TXT/TSV） |
+| 维度         | Nextflow 适合                    | Snakemake 适合                  |
+| ------------ | -------------------------------- | ------------------------------- |
+| 计算量       | 重计算（高 CPU/内存/长时）       | 轻计算（< 4 CPU、< 8 GB、秒级） |
+| 频次         | 每样本一次的标准化批处理         | 一次性/跨样本汇总               |
+| 参数敏感度   | 固定参数、确定性输出             | 参数可调、需迭代探索            |
+| 依赖关系     | 强依赖、必须串行、重算成本高     | 弱依赖、可独立重算、成本低      |
+| 容器化需求   | 需要 Docker/Singularity 统一环境 | 可用轻量 Python/R 环境          |
+| 输入数据规模 | 大文件（FASTQ/BAM）              | 小文件（BED/TXT/TSV）           |
 
 ---
 
 ## 二、三种模式步骤特性分析
 
 ### 2.1 reference 模式
+
 ```
 FASTQ → INPUT_CHECK → CAT_FASTQ → FASTQC → TRIMGALORE
                                           ↓
@@ -39,6 +40,7 @@ FASTQ → INPUT_CHECK → CAT_FASTQ → FASTQC → TRIMGALORE
 **特性**：纯标准化"上游加工"流水线，所有步骤确定性输出，无探索性环节。
 
 ### 2.2 eccdna 模式
+
 ```
 BAM_PREPROCESSING (同上)
         │
@@ -57,6 +59,7 @@ CANDIDATE_MERGE (process_single, Python, --max-distance 可调) → merged_bed
 **特性**：在 reference 基础上增加两条并行检测支路。`CIRCLEMAP_REALIGN` 是全流程最重计算步骤（process_high + 96h）。`CANDIDATE_MERGE` 是参数敏感的轻量 Python 脚本。
 
 ### 2.3 integrated 模式
+
 ```
 ch_trimmed_reads
    ├── filter(datatype=='gdna')   → REFERENCE_MODE → reference_mosdepth_bed
@@ -76,34 +79,34 @@ ch_trimmed_reads
 
 ### 3.1 重计算模块（建议保留 Nextflow）
 
-| 模块 | Label | 资源 | 计算类型 | 频次 | 重算成本 |
-|------|-------|------|---------|------|---------|
-| `BWA_MEM` | process_high | 12C/72G | CPU+IO 密集 | 每样本 | **极高** |
-| `BAM_MARKDUPLICATES_PICARD` | process_medium | 6C/36G | 内存密集 | 每样本 | 高 |
-| `MOSDEPTH` | process_medium | 6C/36G | CPU+IO 中等 | 每样本 | 中 |
-| `CIRCLEMAP_REALIGN` | process_high + 96h | 12C/72G | CPU+IO 重计算 | 每样本 | **极高** |
-| `UNICYCLER` | 默认 + 96h | - | CPU 长时 | 每样本 | **极高** |
-| `AMPLICONSUITE` | process_low + 96h | - | CPU+内存 长时 | 每样本 | **极高** |
-| `BWA_INDEX` | process_single | 1C/6G | CPU 密集 | 每参考组一次 | 中 |
-| `ECCSPLORER` | process_medium | 6C/36G | (stub 占位) | 每样本 | 中 |
+| 模块                        | Label              | 资源    | 计算类型      | 频次         | 重算成本 |
+| --------------------------- | ------------------ | ------- | ------------- | ------------ | -------- |
+| `BWA_MEM`                   | process_high       | 12C/72G | CPU+IO 密集   | 每样本       | **极高** |
+| `BAM_MARKDUPLICATES_PICARD` | process_medium     | 6C/36G  | 内存密集      | 每样本       | 高       |
+| `MOSDEPTH`                  | process_medium     | 6C/36G  | CPU+IO 中等   | 每样本       | 中       |
+| `CIRCLEMAP_REALIGN`         | process_high + 96h | 12C/72G | CPU+IO 重计算 | 每样本       | **极高** |
+| `UNICYCLER`                 | 默认 + 96h         | -       | CPU 长时      | 每样本       | **极高** |
+| `AMPLICONSUITE`             | process_low + 96h  | -       | CPU+内存 长时 | 每样本       | **极高** |
+| `BWA_INDEX`                 | process_single     | 1C/6G   | CPU 密集      | 每参考组一次 | 中       |
+| `ECCSPLORER`                | process_medium     | 6C/36G  | (stub 占位)   | 每样本       | 中       |
 
 ### 3.2 中间加工模块（建议保留 Nextflow）
 
-| 模块 | Label | 资源 | 计算类型 | 频次 |
-|------|-------|------|---------|------|
-| `SAMTOOLS_FAIDX/INDEX/VIEW/SORT` | process_single | 1C/6G | IO 轻量 | 每样本 |
-| `BAM_STATS_SAMTOOLS` | process_single | 1C/6G | IO 轻量 | 每样本 |
-| `CIRCLEMAP_READEXTRACTOR` | process_low | 2C/12G | CPU 单线程 | 每样本 |
-| `CIRCLEMAP_REPEATS` | process_low | 2C/12G | CPU 轻量 | 每样本 |
-| `CIRCLEFINDER` | process_low | 2C/12G | awk 串行 IO+CPU | 每样本 |
-| `MULTIQC` | process_single | 1C/6G | IO 轻量 | 全局一次 |
+| 模块                             | Label          | 资源   | 计算类型        | 频次     |
+| -------------------------------- | -------------- | ------ | --------------- | -------- |
+| `SAMTOOLS_FAIDX/INDEX/VIEW/SORT` | process_single | 1C/6G  | IO 轻量         | 每样本   |
+| `BAM_STATS_SAMTOOLS`             | process_single | 1C/6G  | IO 轻量         | 每样本   |
+| `CIRCLEMAP_READEXTRACTOR`        | process_low    | 2C/12G | CPU 单线程      | 每样本   |
+| `CIRCLEMAP_REPEATS`              | process_low    | 2C/12G | CPU 轻量        | 每样本   |
+| `CIRCLEFINDER`                   | process_low    | 2C/12G | awk 串行 IO+CPU | 每样本   |
+| `MULTIQC`                        | process_single | 1C/6G  | IO 轻量         | 全局一次 |
 
 ### 3.3 探索性轻量模块（建议迁移 Snakemake）
 
-| 模块 | Label | 资源 | 计算类型 | 参数敏感 | 重算成本 |
-|------|-------|------|---------|----------|---------|
+| 模块              | Label          | 资源  | 计算类型       | 参数敏感                      | 重算成本 |
+| ----------------- | -------------- | ----- | -------------- | ----------------------------- | -------- |
 | `CANDIDATE_MERGE` | process_single | 1C/6G | IO 轻量 Python | `--max-distance` (默认 100bp) | **秒级** |
-| `ECC_SCORE` | process_single | 1C/6G | IO 轻量 Python | `w1/w2/w3` + 分级阈值 | **秒级** |
+| `ECC_SCORE`       | process_single | 1C/6G | IO 轻量 Python | `w1/w2/w3` + 分级阈值         | **秒级** |
 
 ---
 
@@ -142,14 +145,14 @@ Snakemake 迁移范围:
 
 ### 4.3 契约接口（Nextflow 产物 → Snakemake 输入）
 
-| Nextflow 产物 | 路径模式 | Snakemake 用途 |
-|--------------|---------|----------------|
-| mosdepth 深度分布 | `{outdir}/mosdepth/{sample}/*.global.dist.txt` | 深度可视化、阈值探索 |
-| mosdepth 区域深度 | `{outdir}/mosdepth/{sample}/*.regions.bed.gz` | ECC_SCORE 输入 |
-| Circle-Map realign bed | `{outdir}/circlemap/realign/*.bed` | CANDIDATE_MERGE 输入 |
-| ECCsplorer bed | `{outdir}/eccdna_mode/eccsplorer/*_candidates.bed` | CANDIDATE_MERGE 输入 |
-| (可选) merged_bed | `{outdir}/eccdna_mode/candidate_merge/*_merged.bed` | ECC_SCORE 备用输入 |
-| BAM 标准化产物 | `{outdir}/bwa/*.sorted.bam` + `.bai` | 备用 IGV 检查 |
+| Nextflow 产物          | 路径模式                                            | Snakemake 用途       |
+| ---------------------- | --------------------------------------------------- | -------------------- |
+| mosdepth 深度分布      | `{outdir}/mosdepth/{sample}/*.global.dist.txt`      | 深度可视化、阈值探索 |
+| mosdepth 区域深度      | `{outdir}/mosdepth/{sample}/*.regions.bed.gz`       | ECC_SCORE 输入       |
+| Circle-Map realign bed | `{outdir}/circlemap/realign/*.bed`                  | CANDIDATE_MERGE 输入 |
+| ECCsplorer bed         | `{outdir}/eccdna_mode/eccsplorer/*_candidates.bed`  | CANDIDATE_MERGE 输入 |
+| (可选) merged_bed      | `{outdir}/eccdna_mode/candidate_merge/*_merged.bed` | ECC_SCORE 备用输入   |
+| BAM 标准化产物         | `{outdir}/bwa/*.sorted.bam` + `.bai`                | 备用 IGV 检查        |
 
 ---
 
@@ -173,12 +176,14 @@ Snakemake 迁移范围:
 ### 5.3 为什么 MOSDEPTH 保留在 Nextflow
 
 虽然 mosdepth 输出的 `global.dist.txt` 适合在 Snakemake 中做探索性可视化，但 mosdepth 本身是 process_medium（6C/36G）的中等计算步骤，且其输出是 ECC_SCORE 的必要输入。将其保留在 Nextflow 中可确保：
+
 - BAM → mosdepth 的强依赖链在 Nextflow 内部完整
 - mosdepth 产物作为契约接口供 Snakemake 探索使用
 
 ### 5.4 为什么可视化/统计适合放 Snakemake
 
 当前 Nextflow 流程**缺少**以下探索性环节，它们均基于已有 BED/BAM 产物，不触发新比对：
+
 - eccDNA 候选长度分布、染色体分布统计
 - ECC_SCORE 分级分布、阈值敏感性曲线
 - 跨样本候选重叠热图
@@ -224,18 +229,21 @@ Snakemake 迁移范围:
 ## 七、关键文件清单
 
 ### Nextflow 侧（保留）
+
 - [modules/local/eccsplorer/main.nf](file:///Users/siyangming/nextflow_nf_core/circdna.nf/modules/local/eccsplorer/main.nf)
 - [modules/local/circle_map_pipeline/main.nf](file:///Users/siyangming/nextflow_nf_core/circdna.nf/modules/local/circle_map_pipeline/main.nf)
 - [modules/local/mosdepth/main.nf](file:///Users/siyangming/nextflow_nf_core/circdna.nf/modules/local/mosdepth/main.nf)
 - [subworkflows/local/bam_preprocessing/main.nf](file:///Users/siyangming/nextflow_nf_core/circdna.nf/subworkflows/local/bam_preprocessing/main.nf)
 
 ### Snakemake 侧（迁移目标）
+
 - [modules/local/candidate_merge/main.nf](file:///Users/siyangming/nextflow_nf_core/circdna.nf/modules/local/candidate_merge/main.nf)
 - [modules/local/ecc_score/main.nf](file:///Users/siyangming/nextflow_nf_core/circdna.nf/modules/local/ecc_score/main.nf)
 - [bin/merge_candidates.py](file:///Users/siyangming/nextflow_nf_core/circdna.nf/bin/merge_candidates.py)
 - [bin/calculate_ecc_score.py](file:///Users/siyangming/nextflow_nf_core/circdna.nf/bin/calculate_ecc_score.py)
 
 ### 三种模式入口
+
 - [workflows/circdna.nf](file:///Users/siyangming/nextflow_nf_core/circdna.nf/workflows/circdna.nf) 第 271-329 行（模式路由）
 - [subworkflows/local/reference_mode/main.nf](file:///Users/siyangming/nextflow_nf_core/circdna.nf/subworkflows/local/reference_mode/main.nf)
 - [subworkflows/local/eccdna_mode/main.nf](file:///Users/siyangming/nextflow_nf_core/circdna.nf/subworkflows/local/eccdna_mode/main.nf)
@@ -248,19 +256,23 @@ Snakemake 迁移范围:
 在制定具体迁移实施计划前，需用户确认以下决策点：
 
 1. **迁移粒度**：
+
    - 选项 A：仅迁移 `ECC_SCORE`（最小改动，integrated 模式收益最大）
    - 选项 B：迁移 `CANDIDATE_MERGE` + `ECC_SCORE`（推荐，覆盖两个参数敏感步骤）
    - 选项 C：迁移上述两者 + 新增探索性可视化（最完整，需新建 Snakemake 项目）
 
 2. **Nextflow 侧处理方式**：
+
    - 选项 A：保留 Nextflow 中的 CANDIDATE_MERGE/ECC_SCORE 模块作为"默认实现"，Snakemake 作为"探索副本"
    - 选项 B：从 Nextflow 中移除这两个模块，eccdna_mode/integrated_mode 在产出原始 bed 后即终止，下游完全交给 Snakemake
 
 3. **Snakemake 项目位置**：
+
    - 选项 A：在 circdna.nf 仓库内新建 `snakemake/` 子目录
    - 选项 B：新建独立仓库（如 `circdna-explore.smk`）
 
 4. **是否需要参数网格搜索**：
+
    - 是否需要 Snakemake 支持 `w1/w2/w3` 网格搜索，还是仅支持单组参数调优
 
 5. **是否新增可视化模块**：
@@ -280,4 +292,4 @@ Snakemake 迁移范围:
 
 ---
 
-*本建议基于当前 v3.2.1 版本的代码分析，若用户确认迁移意图，将基于上述划分进一步细化实施计划。*
+_本建议基于当前 v3.2.1 版本的代码分析，若用户确认迁移意图，将基于上述划分进一步细化实施计划。_

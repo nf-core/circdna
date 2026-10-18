@@ -14,7 +14,7 @@
   - `repeatexplorer2/` → `local/repeatexplorer2/`
   - `ampliconsuite/` → `local/ampliconsuite_ec/`（**重命名避免覆盖**：local 已有 `ampliconsuite/` 实为 prepareaa，供 ampliconarchitect 使用）
 - **更新所有 include 引用**（跨仓 `bio.nf/modules/...` → `modules/local/...`）：
-  - `eccsplorer_pipeline/main.nf`：AMPLICONSUITE、ECCSPLORER(_WITH_CONTROL/_CLU)
+  - `eccsplorer_pipeline/main.nf`：AMPLICONSUITE、ECCSPLORER(\_WITH_CONTROL/\_CLU)
   - `ecc_finder_pipeline/main.nf`：4 个 ecc_finder 子模块
   - `eccsplorer_clu_slim/main.nf`、`tests/eccsplorer_clu/test.nf`：REPEATEXPLORER2
 - **黑盒版与 slim 版并存，circle_identifier 选择**：黑盒（`eccsplorer`/`ecc_finder_map_sr` 等）与 slim（`eccsplorer_map_slim`/`ecc_finder_map_sr_slim` 等）标识符在 workflows 中共存，各自触发对应链
@@ -39,18 +39,22 @@
 系统 SHALL 将 cresil / ecc_finder / eccsplorer / flye / repeatexplorer2 / ampliconsuite 从 `bio.nf/modules/` 迁入 `circdna.nf/modules/local/`。
 
 #### Scenario: ecc_finder 拆分为 nf-core 规范子模块
+
 - **WHEN** 迁移 ecc_finder
 - **THEN** `local/ecc_finder/{map_sr,asm_sr,map_ont,asm_ont}/` 各含单 process 的 main.nf；删除旧 `local/ecc_finder/main.nf`（4 process 单文件）；`ecc_finder_pipeline` 改引 4 个独立子模块
 
 #### Scenario: 黑盒 eccsplorer 就位
+
 - **WHEN** 迁移 eccsplorer
 - **THEN** `local/eccsplorer/` 含 `ECCSPLORER` 与 `ECCSPLORER_WITH_CONTROL` process，`eccsplorer_pipeline` 引用不再断链
 
 #### Scenario: ampliconsuite 命名冲突处理
+
 - **WHEN** 迁移 ampliconsuite
 - **THEN** bio.nf 的 AmpliconSuite（`ampliconsuite:1.6.0`）迁入 `local/ampliconsuite_ec/`，不覆盖 local 已有 prepareaa 版 `local/ampliconsuite/`
 
 #### Scenario: 仅物理移动 cresil/flye
+
 - **WHEN** 迁移 cresil / flye
 - **THEN** 目录与 testdata 完整迁入 local，不新增 circle_identifier 运行路径
 
@@ -59,6 +63,7 @@
 系统 SHALL 将所有 `bio.nf/modules/...` 引用改为 `modules/local/...`。
 
 #### Scenario: 引用更新
+
 - **WHEN** 迁移完成后检查 include
 - **THEN** `grep bio.nf/modules` 在 `*.nf` 中无残留（eccsplorer_pipeline/eccsplorer_clu_slim/tests 等全部指向 local）
 
@@ -67,6 +72,7 @@
 系统 SHALL 使黑盒与 slim 标识符在 workflows 中共存并按选择运行。
 
 #### Scenario: 黑盒标识符触发
+
 - **WHEN** `--circle_identifier 'eccsplorer,ecc_finder_map_sr'`（黑盒）
 - **THEN** 触发黑盒链（eccsplorer_pipeline / ecc_finder 黑盒子模块）
 - **WHEN** `--circle_identifier 'eccsplorer_map_slim,ecc_finder_map_sr_slim'`（slim）
@@ -77,6 +83,7 @@
 系统 SHALL 归档有用脚本并删除过时脚本，移除 scripts 目录。
 
 #### Scenario: 归档与删除
+
 - **WHEN** 处理 scripts 目录
 - **THEN** `prepare_eccsplorer_database.sh` → `testdatasets/eccsplorer_db/`；`update_samplesheets.py` → `samplesheets/`；`test_incremental_cache.py` 删除；`scripts/` 目录删除
 
@@ -85,20 +92,24 @@
 系统 SHALL 评估并提交当前未提交更改（保留有价值、丢弃黑盒残留）。
 
 #### Scenario: PRExing 链保留
+
 - **WHEN** 评估未提交更改
 - **THEN** `bin/eccsplorer_prepare_*`、`modules/local/eccsplorer_prepare_*`、`modules/nf-core/seqkit/concat`、`subworkflows/local/ecc_preprocessing` 保留并提交
 
 #### Scenario: 黑盒残留丢弃
+
 - **WHEN** 解决冲突文件
 - **THEN** `conf/modules.config` 中 stash 侧 `ECCSPLORER`/`CLU_*` 旧配置丢弃；`nextflow.config` 中旧黑盒参数丢弃，保留 `run_eccprepare`/`eccprepare_*` 参数
 
 ## MODIFIED Requirements
 
 ### Requirement: ecc_finder_pipeline 子模块引用
+
 由单文件 `local/ecc_finder/main`（4 process）改为 4 个独立子模块 `local/ecc_finder/{map_sr,asm_sr,map_ont,asm_ont}/main`。
 
 ## REMOVED Requirements
 
 ### Requirement: local/ecc_finder 单文件黑盒
+
 **Reason**: 不符合 nf-core「一个 process 一个子目录」规范，被 4 子模块拆分版替代
 **Migration**: `ecc_finder_pipeline` 改引 4 个子模块；删除 `local/ecc_finder/{main.nf,environment.yml,meta.yml}`

@@ -3,6 +3,15 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v4.7.6 - [2026-10-18]
+
+### Fixed
+
+- **CI 流程测试编译失败**: `modules/local/bedtools/splitbam2bed/main.nf` 的 `"""` 脚本块内注释含未转义的 `$1`/`$10`/`$16`，Groovy 将其当插值解析报 `Unexpected character: '$'`，导致包含该模块的运行全部编译失败（v4.7.3 引入）。
+- **测试 profile 资源超限**: `conf/base.config` 此前移除了 `check_max()` 但未设上限，`process_medium`（36 GB）等标签在 16 GB 的 GitHub Actions runner 上直接报 `Process requirement exceeds available memory`。按 nf-core 4.1.0 模板做法，在 `conf/test.config` / `conf/test_AA.config` 中加入硬编码 `process.resourceLimits`（2 cpus / 6 GB / 6 h）。
+- **CI 工作流与 nf-core/tools 4.x 不兼容**: `linting.yml` 与 `download_pipeline.yml` 中的 `nf-core lint` / `nf-core download` 命令在 tools 4.1.0 中已迁移，更新为 `nf-core pipelines lint` / `nf-core pipelines download`；`ci.yml` 的 Nextflow 矩阵从 23.04.0 升到 25.04.8（对齐 `nextflowVersion = '!>=25.04.8'`）。
+- **pre-commit 全量修复（826 → 0）**: 清除全仓库行尾空格与缺失末尾换行；约 120 处代码续行/文档缩进归一到 4 的倍数；`.editorconfig` 新增路径作用域豁免（`.trae/**`、`CHANGES&FIX/**`、`AGENTS.md` 对齐图、`samplesheets/*.txt`、`**/testdata/**`）；prettier 排除 testdata 与二进制 `.pac`；`circleseeker_pipeline/meta.yml` 从 Markdown 改写为合法 nf-core meta.yml YAML；移除误提交的 `.nf-test` 缓存目录（已在 .gitignore）。
+
 ## v4.7.5 - [2026-10-18]
 
 ### Enhancements & fixes
@@ -31,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CReSIL 接入统一 BED 契约**: 新增 `CRESIL_TO_BED` 模块（`modules/local/cresil_to_bed/`），在长读分支先经 `bin/convert_cresil_to_bed.py` 转换再进 `LONG_READ_FILTERING`；重写 `convert_cresil_to_bed.py` 的列映射（原实现把 `id`/`merge_region` 当作 chrom/start/end，且该脚本此前从未被引用）。
 - **长读过滤阈值与命名**: `min_read_support` 默认 2 → 1（FLEd junction 支持数普遍为 1，原值会整批滤掉）；`FILTER_ECCDNA_BY_SUPPORT` 支持 `task.ext.prefix`，并在 `conf/modules.config` 为 6 个长读引擎设置独立前缀，消除 `long_read/filtering/<sample>/` 下 `<sample>.filtered.bed` 的相互覆盖。
 - **元数据修正**: `samplesheets/metadata.csv` 中 `ERR6326020` 由 Arabidopsis 改为 Triticum aestivum（ENA PRJEB46420，wheat ecDNA-seq ONT rep1，SAMEA8987722）。
-- **CReSIL / FLED 补丁固化进镜像**: identify_wgls / annotate / FLED PseudoReference·CSI·`--split-prefix` 等运行时 PYTHONPATH 补丁已写入 [SiYangming/cresil](https://github.com/SiYangming/cresil) 与 [SiYangming/FLED](https://github.com/SiYangming/FLED) 源码，并**原地覆盖**推送 `quay.io/bioinfortools/cresil:1.2.1` 与 `quay.io/bioinfortools/fled:1.7.0`（不新增旁路 tag）；流程去掉 `cp`/`patch_*.py`/`PYTHONPATH` 运行时改写。
+- **CReSIL / FLED 补丁固化进镜像**: identify*wgls / annotate / FLED PseudoReference·CSI·`--split-prefix` 等运行时 PYTHONPATH 补丁已写入 [SiYangming/cresil](https://github.com/SiYangming/cresil) 与 [SiYangming/FLED](https://github.com/SiYangming/FLED) 源码，并**原地覆盖**推送 `quay.io/bioinfortools/cresil:1.2.1` 与 `quay.io/bioinfortools/fled:1.7.0`（不新增旁路 tag）；流程去掉 `cp`/`patch*\*.py`/`PYTHONPATH` 运行时改写。
 
 详见 `CHANGES&FIX/20260918.md`。
 
@@ -183,7 +192,7 @@ Special thanks to the following for their input and contributions:
 - **新增 `ECC_VOLCANO` 模块**: `modules/local/ecc_deg/main.nf`，移植自 ecc_pipe `DEG.py: volcano_plot()`。基于 DEG 结果绘制火山图（`*.volcano.pdf`），按 log2FC 和 pvalue 阈值着色 up/down/normal，标注 top5 基因。依赖 matplotlib
 - **新增 `ECC_HOMER_ANNOTATION` 模块**: `modules/local/ecc_distribution/main.nf`，移植自 ecc_pipe `Distribution.py: annotate_homer()`。调用 HOMER `annotatePeaks.pl` 对 eccDNA 区域进行注释，输出注释分布统计 CSV（`*_homer_anno_distribution.csv`）、柱状图 PDF（`*_homer_anno_distribution.pdf`）和原始注释 TSV（`*_result.analysis.anno.tsv`）。条件执行：仅当 `--annotation_db` 提供时运行。依赖 HOMER、pandas、matplotlib
 - **新增 `ECC_DEG_R` 模块**: `modules/local/ecc_deg/main.nf`，移植自 ecc_pipe `analysis_code/{deseq2,edger,limma}.R`。支持三种 R DEG 方法（DESeq2/edgeR/limma），通过 `--deg_method` 参数选择。输出标准化矩阵（`{method}_norm_matrix.csv`）和 DEG 结果（`{method}_result.csv`）。使用独立 `environment_r.yml` 隔离 R 依赖。条件执行：仅当 `--deg_method` 非 `ecc_perm` 且 `--group_file` 提供时运行
-- **新增 `ECC_ENRICHMENT` 模块**: `modules/local/ecc_deg/main.nf`，移植自 ecc_pipe `analysis_code/clusterprofile.R`。基于 R DEG 结果执行 GO/KEGG/GSEA 富集分析，输出 GO 上调/下调 CSV（`*_GO_up.csv`、`*_GO_down.csv`）和 GSEA 结果 CSV + 图（`*_gsea_result_*.csv`、`*_gsea_top_*.pdf`）。动态加载物种注释包（通过 `--org_db` 参数，如 `org.Hs.eg.db`、`org.Mm.eg.db`、`org.At.tair.db`）。条件执行：仅当 `--org_db` 提供且 DEG 方法为 R 时运行
+- **新增 `ECC_ENRICHMENT` 模块**: `modules/local/ecc_deg/main.nf`，移植自 ecc*pipe `analysis_code/clusterprofile.R`。基于 R DEG 结果执行 GO/KEGG/GSEA 富集分析，输出 GO 上调/下调 CSV（`*_GO_up.csv`、`*\_GO_down.csv`）和 GSEA 结果 CSV + 图（`\*\_gsea_result*_.csv`、`\__gsea_top_\*.pdf`）。动态加载物种注释包（通过 `--org_db`参数，如`org.Hs.eg.db`、`org.Mm.eg.db`、`org.At.tair.db`）。条件执行：仅当 `--org_db` 提供且 DEG 方法为 R 时运行
 - **新增 `ECC_VISUALIZE` 模块**: `modules/local/ecc_visualize/main.nf`，移植自 ecc_pipe `Circlize.py + circlize.R`。两步流程：Python 预处理（`ecc_circlize_prep.py` 提取目标 eccDNA 区域并与基因 BED 交集）→ R 绘图（`ecc_circlize.R` 使用 circlize 包绘制环形可视化）。输出 `circlize_plot.pdf`。条件执行：仅当 `--ecc_id_visualize` 和 `--gene_bed` 提供时运行
 - **新增 Python 脚本**: `bin/ecc_distribution.py`（分布分析）、`bin/ecc_gene_burden.py`（burden 矩阵）、`bin/ecc_perm.py`（ecc_perm 置换检验 + burden 矩阵合并）、`bin/ecc_volcano.py`（火山图）、`bin/ecc_homer_anno.py`（HOMER 注释）、`bin/ecc_merge_burden.py`（burden CSV 合并，供 R DEG 使用）、`bin/ecc_circlize_prep.py`（Circlize 预处理）
 - **新增 R 脚本**: `bin/deseq2.R`、`bin/edger.R`、`bin/limma.R`（三种 R DEG 方法，移植自 ecc_pipe）、`bin/clusterprofile.R`（GO/KEGG/GSEA 富集，动态加载物种注释包）、`bin/ecc_circlize.R`（环形可视化，移植自 ecc_pipe）
@@ -386,6 +395,7 @@ Special thanks to the following for their input and contributions to the release
 ### Migration Guide
 
 从 v3.x 升级到 v4.0.0 的用户：
+
 1. `integrated` 模式不再可用，请改用 `reference` + `eccdna` 两种模式
 2. 综合评分分析请使用 [eccdna.smk](https://github.com/SiYangming/eccdna.smk) 仓库
 3. Nextflow 产出路径（mosdepth bed、eccsplorer bed、circle_map bed）作为 eccdna.smk 的输入
@@ -417,7 +427,7 @@ Special thanks to the following for their input and contributions to the release
   - 移除 `--READ_NAME_REGEX null` 参数，测试原生 Picard 处理能力
   - 清理 `SAMTOOLS_VIEW_DEDUP` 相关配置和注释
 - **文档更新**: 更新 `testdatasets/README.md`，添加样本表说明、本地测试命令和缓存验证步骤
-- **测试文件清理**: 移除冗余测试文件（samplesheet.csv、test_AA_local.csv、test_backcompat.csv、test_incr_lane_*.csv、test_multilane.csv），保留核心缓存测试文件
+- **测试文件清理**: 移除冗余测试文件（samplesheet.csv、test*AA_local.csv、test_backcompat.csv、test_incr_lane*\*.csv、test_multilane.csv），保留核心缓存测试文件
 
 ## v3.1.0 - [2026-07-27]
 

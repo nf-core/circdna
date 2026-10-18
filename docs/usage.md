@@ -112,12 +112,12 @@ SAMPLE_A,/path/to/SAMPLE_A.hifi.fastq.gz,,cleaned_fastq
 SAMPLE_B,,/path/to/SAMPLE_B.subreads.bam,subreads
 ```
 
-| Column      | Description                                                                                                                                                              |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `sample`    | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `fastq_1`   | Full path to the long-read FastQ file (optional if `input_bam` is given).                                                                                                 |
-| `input_bam` | Full path to a raw PacBio subreads BAM (optional if `fastq_1` is given, only for `entrypoint=subreads`).                                                                 |
-| `entrypoint`| Input entry point: `cleaned_fastq` (already QC'ed FastQ), `raw_fastq`, `hifi_bam`, or `subreads`.                                                                        |
+| Column       | Description                                                                                                                                                                            |
+| ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sample`     | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
+| `fastq_1`    | Full path to the long-read FastQ file (optional if `input_bam` is given).                                                                                                              |
+| `input_bam`  | Full path to a raw PacBio subreads BAM (optional if `fastq_1` is given, only for `entrypoint=subreads`).                                                                               |
+| `entrypoint` | Input entry point: `cleaned_fastq` (already QC'ed FastQ), `raw_fastq`, `hifi_bam`, or `subreads`.                                                                                      |
 
 The long-read detection engines are selected with `--long_read_identifier` (comma-separated, default `cresil,fled,flye,eccfinder`). Add `circleseeker` to run [CircleSeeker](https://github.com/leoxqy/CircleSeeker) for comprehensive eccDNA detection from PacBio HiFi reads:
 
@@ -157,12 +157,12 @@ This will launch the pipeline with the `docker` configuration profile. See below
 
 Note that the pipeline will create the following files in your working directory:
 
-````bash
+```bash
 work                # Directory containing the nextflow working files
 <OUTDIR>            # Finished results in specified location (defined with --outdir)
 .nextflow_log       # Log file from Nextflow
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
-````
+```
 
 :::note
 When using `-profile server`, all intermediate outputs are retained in `<OUTDIR>` and `work/` is automatically removed after a successful run. Processes without a dedicated output path are copied under `<OUTDIR>/intermediate/<process-path>/`.
@@ -201,7 +201,7 @@ When you run the above command, Nextflow automatically pulls the pipeline code f
 
 ```bash
 nextflow pull nf-core/circdna
-````
+```
 
 ### Reproducibility
 

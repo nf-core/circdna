@@ -16,7 +16,7 @@ nextflow_process {
             process {
                 """
                 input[0] = [ [ id:'example1' ], // meta
-                             file("\${projectDir}/modules/local/ciderseq/testdata/example1.fastq", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/ciderseq/testdata/example1.fastq", checkIfExists: true) ]
                 input[1] = file("\${projectDir}/modules/local/ciderseq/testdata/ciderseq_config.json", checkIfExists: true)
                 input[2] = file("\${projectDir}/modules/local/ciderseq/testdata/blastdb", checkIfExists: true)
                 """

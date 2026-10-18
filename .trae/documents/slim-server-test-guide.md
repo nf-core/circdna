@@ -4,11 +4,11 @@
 
 ## 测试文件（相对路径，放仓库根目录即可运行）
 
-| 文件 | 内容 | 用途 |
-|---|---|---|
-| `samplesheets/test_ont.csv` | ONT 长读 smoke(1500)/regular(7500) reads，`platform=ont,protocol=long_read` | map-ont / asm-ont |
-| `samplesheets/test_pacbio.csv` | PacBio HiFi smoke(1508)/regular(2512) reads，`platform=pacbio` | map-ont / asm-ont |
-| `samplesheets/test_eccsplorer_pair.csv` | 短读 6 样本（gdna/circdna × 3），含 `datatype`+`pair` 列 | map(clu) control 配对 / all |
+| 文件                                    | 内容                                                                        | 用途                        |
+| --------------------------------------- | --------------------------------------------------------------------------- | --------------------------- |
+| `samplesheets/test_ont.csv`             | ONT 长读 smoke(1500)/regular(7500) reads，`platform=ont,protocol=long_read` | map-ont / asm-ont           |
+| `samplesheets/test_pacbio.csv`          | PacBio HiFi smoke(1508)/regular(2512) reads，`platform=pacbio`              | map-ont / asm-ont           |
+| `samplesheets/test_eccsplorer_pair.csv` | 短读 6 样本（gdna/circdna × 3），含 `datatype`+`pair` 列                    | map(clu) control 配对 / all |
 
 ## 运行命令模板
 

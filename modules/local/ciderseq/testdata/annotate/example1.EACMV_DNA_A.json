@@ -1,1 +1,317 @@
-{"m170428_222201_42243_c101146952550000001823273107071793_s1_p0_35074_ccs": {"length": 2779, "proteins": {"AC1": {"hsps": [[2, 1685, 2761, 1, 359, 0.0]], "strand": 1, "minprotpos": 1, "maxprotpos": 359, "minnucpos": 1685, "case": "ok forward", "maxnucpos": 2761}, "AC2": {"hsps": [[1, 1, 297, 38, 136, 1.79006e-66], [3, 2670, 2777, 1, 36, 3.79157e-11]], "strand": 1, "minprotpos": 1, "maxprotpos": 136, "minnucpos": 2670, "case": "over breakpoint forward", "maxnucpos": 3076}, "AC3": {"hsps": [[2, 38, 442, 1, 135, 2.3088e-90]], "strand": 1, "minprotpos": 1, "maxprotpos": 135, "minnucpos": 38, "case": "ok forward", "maxnucpos": 442}, "AC4": {"hsps": [[3, 1590, 2141, 1, 184, 1.79625e-114]], "strand": 1, "minprotpos": 1, "maxprotpos": 184, "minnucpos": 1590, "case": "ok forward", "maxnucpos": 2141}, "AC5": {"hsps": [[1, 505, 1230, 1, 242, 1.01749e-144]], "strand": 1, "minprotpos": 1, "maxprotpos": 242, "minnucpos": 505, "case": "ok forward", "maxnucpos": 1230}, "AV1": {"hsps": [[-2, 439, 1215, 1, 259, 0.0]], "strand": -1, "minprotpos": 1, "maxprotpos": 259, "minnucpos": 439, "case": "ok reverse", "maxnucpos": 1215}, "AV2": {"hsps": [[-1, 1034, 1375, 1, 114, 9.47949e-76]], "strand": -1, "minprotpos": 1, "maxprotpos": 114, "minnucpos": 1034, "case": "ok reverse", "maxnucpos": 1375}}}, "m170428_222201_42243_c101146952550000001823273107071793_s1_p0_45909_ccs": {"length": 2097, "proteins": {"AC1": {"hsps": [[-2, 249, 1325, 1, 359, 0.0]], "strand": -1, "minprotpos": 1, "maxprotpos": 359, "minnucpos": 249, "case": "ok reverse", "maxnucpos": 1325}, "AC2": {"hsps": [[-3, 5, 340, 1, 112, 1.26821e-64]], "strand": -1, "minprotpos": 1, "maxprotpos": 112, "minnucpos": 5, "case": "ok reverse", "maxnucpos": 340}, "AC3": {"hsps": [[-1, 7, 192, 1, 62, 6.96189e-39]], "strand": -1, "minprotpos": 1, "maxprotpos": 62, "minnucpos": 7, "case": "ok reverse", "maxnucpos": 192}, "AC4": {"hsps": [[-3, 869, 1420, 1, 184, 8.86308e-117]], "strand": -1, "minprotpos": 1, "maxprotpos": 184, "minnucpos": 869, "case": "ok reverse", "maxnucpos": 1420}, "AC5": {"hsps": [[-2, 1779, 2096, 137, 242, 3.16712e-64]], "strand": -1, "minprotpos": 137, "maxprotpos": 242, "minnucpos": 1779, "case": "ok reverse", "maxnucpos": 2096}, "AV1": {"hsps": [[3, 1794, 2096, 1, 101, 3.31677e-67]], "strand": 1, "minprotpos": 1, "maxprotpos": 101, "minnucpos": 1794, "case": "ok forward", "maxnucpos": 2096}, "AV2": {"hsps": [[2, 1634, 1975, 1, 114, 1.3916e-76]], "strand": 1, "minprotpos": 1, "maxprotpos": 114, "minnucpos": 1634, "case": "ok forward", "maxnucpos": 1975}, "BC1": {"hsps": [[-2, 1386, 1631, 39, 123, 6.20601e-05]], "strand": -1, "minprotpos": 39, "maxprotpos": 123, "minnucpos": 1386, "case": "ok reverse", "maxnucpos": 1631}}}, "m170428_222201_42243_c101146952550000001823273107071793_s1_p0_29171_ccs": {"length": 2790, "proteins": {"AC1": {"hsps": [[3, 1728, 2645, 54, 359, 0.0], [1, 1570, 1728, 1, 53, 3.77976e-31]], "strand": 1, "minprotpos": 1, "maxprotpos": 359, "minnucpos": 1570, "case": "ok forward", "maxnucpos": 2645}, "AC2": {"hsps": [[1, 2554, 2790, 1, 79, 1.00392e-43], [1, 1, 183, 76, 136, 1.20828e-37]], "strand": 1, "minprotpos": 1, "maxprotpos": 136, "minnucpos": 2554, "case": "over breakpoint forward", "maxnucpos": 2973}, "AC3": {"hsps": [[2, 2, 328, 27, 135, 4.48451e-69], [2, 2702, 2788, 1, 29, 4.4299e-18]], "strand": 1, "minprotpos": 1, "maxprotpos": 135, "minnucpos": 2702, "case": "over breakpoint forward", "maxnucpos": 3118}, "AC4": {"hsps": [[1, 1642, 2025, 64, 184, 2.20135e-60], [2, 1475, 1744, 1, 89, 8.97434e-47]], "strand": 1, "minprotpos": 1, "maxprotpos": 184, "minnucpos": 1475, "case": "ok forward", "maxnucpos": 2025}, "AC5": {"hsps": [[1, 391, 1116, 1, 242, 1.12458e-144]], "strand": 1, "minprotpos": 1, "maxprotpos": 242, "minnucpos": 391, "case": "ok forward", "maxnucpos": 1116}, "AV1": {"hsps": [[-1, 325, 1101, 1, 259, 0.0]], "strand": -1, "minprotpos": 1, "maxprotpos": 259, "minnucpos": 325, "case": "ok reverse", "maxnucpos": 1101}, "AV2": {"hsps": [[-3, 920, 1261, 1, 114, 9.86583e-76]], "strand": -1, "minprotpos": 1, "maxprotpos": 114, "minnucpos": 920, "case": "ok reverse", "maxnucpos": 1261}, "BC1": {"hsps": [[1, 1264, 1509, 39, 123, 8.57149e-05]], "strand": 1, "minprotpos": 39, "maxprotpos": 123, "minnucpos": 1264, "case": "ok forward", "maxnucpos": 1509}}}, "m170428_222201_42243_c101146952550000001823273107071793_s1_p0_87163_ccs": {"length": 600, "proteins": {}}, "m170428_222201_42243_c101146952550000001823273107071793_s1_p0_124406_ccs": {"length": 2820, "proteins": {"AC1": {"hsps": [[3, 606, 1640, 2, 346, 0.0]], "strand": 1, "minprotpos": 2, "maxprotpos": 346, "minnucpos": 606, "case": "ok forward", "maxnucpos": 1640}, "AC2": {"hsps": [[1, 1588, 1995, 1, 136, 3.01405e-54]], "strand": 1, "minprotpos": 1, "maxprotpos": 136, "minnucpos": 1588, "case": "ok forward", "maxnucpos": 1995}, "AC3": {"hsps": [[2, 1736, 2140, 1, 135, 1.212e-65]], "strand": 1, "minprotpos": 1, "maxprotpos": 135, "minnucpos": 1736, "case": "ok forward", "maxnucpos": 2140}, "AC4": {"hsps": [[1, 691, 900, 62, 131, 8.03527e-08]], "strand": 1, "minprotpos": 62, "maxprotpos": 131, "minnucpos": 691, "case": "ok forward", "maxnucpos": 900}, "AC5": {"hsps": [[1, 2203, 2820, 1, 207, 3.09315e-100], [1, 13, 114, 205, 238, 1.2293e-06]], "strand": 1, "minprotpos": 1, "maxprotpos": 238, "minnucpos": 2203, "case": "over breakpoint forward", "maxnucpos": 2934}, "AV1": {"hsps": [[-1, 2137, 2820, 31, 259, 2.04997e-158], [-1, 10, 111, 1, 34, 2.4273e-15]], "strand": -1, "minprotpos": 1, "maxprotpos": 259, "minnucpos": 2137, "case": "over breakpoint reverse", "maxnucpos": 2931}, "AV2": {"hsps": [[-3, 11, 271, 1, 87, 3.42755e-38], [-3, 2735, 2815, 86, 113, 1.00332e-06]], "strand": -1, "minprotpos": 1, "maxprotpos": 113, "minnucpos": 2735, "case": "over breakpoint reverse", "maxnucpos": 3091}}}}
+{
+  "m170428_222201_42243_c101146952550000001823273107071793_s1_p0_35074_ccs": {
+    "length": 2779,
+    "proteins": {
+      "AC1": {
+        "hsps": [[2, 1685, 2761, 1, 359, 0.0]],
+        "strand": 1,
+        "minprotpos": 1,
+        "maxprotpos": 359,
+        "minnucpos": 1685,
+        "case": "ok forward",
+        "maxnucpos": 2761
+      },
+      "AC2": {
+        "hsps": [
+          [1, 1, 297, 38, 136, 1.79006e-66],
+          [3, 2670, 2777, 1, 36, 3.79157e-11]
+        ],
+        "strand": 1,
+        "minprotpos": 1,
+        "maxprotpos": 136,
+        "minnucpos": 2670,
+        "case": "over breakpoint forward",
+        "maxnucpos": 3076
+      },
+      "AC3": {
+        "hsps": [[2, 38, 442, 1, 135, 2.3088e-90]],
+        "strand": 1,
+        "minprotpos": 1,
+        "maxprotpos": 135,
+        "minnucpos": 38,
+        "case": "ok forward",
+        "maxnucpos": 442
+      },
+      "AC4": {
+        "hsps": [[3, 1590, 2141, 1, 184, 1.79625e-114]],
+        "strand": 1,
+        "minprotpos": 1,
+        "maxprotpos": 184,
+        "minnucpos": 1590,
+        "case": "ok forward",
+        "maxnucpos": 2141
+      },
+      "AC5": {
+        "hsps": [[1, 505, 1230, 1, 242, 1.01749e-144]],
+        "strand": 1,
+        "minprotpos": 1,
+        "maxprotpos": 242,
+        "minnucpos": 505,
+        "case": "ok forward",
+        "maxnucpos": 1230
+      },
+      "AV1": {
+        "hsps": [[-2, 439, 1215, 1, 259, 0.0]],
+        "strand": -1,
+        "minprotpos": 1,
+        "maxprotpos": 259,
+        "minnucpos": 439,
+        "case": "ok reverse",
+        "maxnucpos": 1215
+      },
+      "AV2": {
+        "hsps": [[-1, 1034, 1375, 1, 114, 9.47949e-76]],
+        "strand": -1,
+        "minprotpos": 1,
+        "maxprotpos": 114,
+        "minnucpos": 1034,
+        "case": "ok reverse",
+        "maxnucpos": 1375
+      }
+    }
+  },
+  "m170428_222201_42243_c101146952550000001823273107071793_s1_p0_45909_ccs": {
+    "length": 2097,
+    "proteins": {
+      "AC1": {
+        "hsps": [[-2, 249, 1325, 1, 359, 0.0]],
+        "strand": -1,
+        "minprotpos": 1,
+        "maxprotpos": 359,
+        "minnucpos": 249,
+        "case": "ok reverse",
+        "maxnucpos": 1325
+      },
+      "AC2": {
+        "hsps": [[-3, 5, 340, 1, 112, 1.26821e-64]],
+        "strand": -1,
+        "minprotpos": 1,
+        "maxprotpos": 112,
+        "minnucpos": 5,
+        "case": "ok reverse",
+        "maxnucpos": 340
+      },
+      "AC3": {
+        "hsps": [[-1, 7, 192, 1, 62, 6.96189e-39]],
+        "strand": -1,
+        "minprotpos": 1,
+        "maxprotpos": 62,
+        "minnucpos": 7,
+        "case": "ok reverse",
+        "maxnucpos": 192
+      },
+      "AC4": {
+        "hsps": [[-3, 869, 1420, 1, 184, 8.86308e-117]],
+        "strand": -1,
+        "minprotpos": 1,
+        "maxprotpos": 184,
+        "minnucpos": 869,
+        "case": "ok reverse",
+        "maxnucpos": 1420
+      },
+      "AC5": {
+        "hsps": [[-2, 1779, 2096, 137, 242, 3.16712e-64]],
+        "strand": -1,
+        "minprotpos": 137,
+        "maxprotpos": 242,
+        "minnucpos": 1779,
+        "case": "ok reverse",
+        "maxnucpos": 2096
+      },
+      "AV1": {
+        "hsps": [[3, 1794, 2096, 1, 101, 3.31677e-67]],
+        "strand": 1,
+        "minprotpos": 1,
+        "maxprotpos": 101,
+        "minnucpos": 1794,
+        "case": "ok forward",
+        "maxnucpos": 2096
+      },
+      "AV2": {
+        "hsps": [[2, 1634, 1975, 1, 114, 1.3916e-76]],
+        "strand": 1,
+        "minprotpos": 1,
+        "maxprotpos": 114,
+        "minnucpos": 1634,
+        "case": "ok forward",
+        "maxnucpos": 1975
+      },
+      "BC1": {
+        "hsps": [[-2, 1386, 1631, 39, 123, 6.20601e-5]],
+        "strand": -1,
+        "minprotpos": 39,
+        "maxprotpos": 123,
+        "minnucpos": 1386,
+        "case": "ok reverse",
+        "maxnucpos": 1631
+      }
+    }
+  },
+  "m170428_222201_42243_c101146952550000001823273107071793_s1_p0_29171_ccs": {
+    "length": 2790,
+    "proteins": {
+      "AC1": {
+        "hsps": [
+          [3, 1728, 2645, 54, 359, 0.0],
+          [1, 1570, 1728, 1, 53, 3.77976e-31]
+        ],
+        "strand": 1,
+        "minprotpos": 1,
+        "maxprotpos": 359,
+        "minnucpos": 1570,
+        "case": "ok forward",
+        "maxnucpos": 2645
+      },
+      "AC2": {
+        "hsps": [
+          [1, 2554, 2790, 1, 79, 1.00392e-43],
+          [1, 1, 183, 76, 136, 1.20828e-37]
+        ],
+        "strand": 1,
+        "minprotpos": 1,
+        "maxprotpos": 136,
+        "minnucpos": 2554,
+        "case": "over breakpoint forward",
+        "maxnucpos": 2973
+      },
+      "AC3": {
+        "hsps": [
+          [2, 2, 328, 27, 135, 4.48451e-69],
+          [2, 2702, 2788, 1, 29, 4.4299e-18]
+        ],
+        "strand": 1,
+        "minprotpos": 1,
+        "maxprotpos": 135,
+        "minnucpos": 2702,
+        "case": "over breakpoint forward",
+        "maxnucpos": 3118
+      },
+      "AC4": {
+        "hsps": [
+          [1, 1642, 2025, 64, 184, 2.20135e-60],
+          [2, 1475, 1744, 1, 89, 8.97434e-47]
+        ],
+        "strand": 1,
+        "minprotpos": 1,
+        "maxprotpos": 184,
+        "minnucpos": 1475,
+        "case": "ok forward",
+        "maxnucpos": 2025
+      },
+      "AC5": {
+        "hsps": [[1, 391, 1116, 1, 242, 1.12458e-144]],
+        "strand": 1,
+        "minprotpos": 1,
+        "maxprotpos": 242,
+        "minnucpos": 391,
+        "case": "ok forward",
+        "maxnucpos": 1116
+      },
+      "AV1": {
+        "hsps": [[-1, 325, 1101, 1, 259, 0.0]],
+        "strand": -1,
+        "minprotpos": 1,
+        "maxprotpos": 259,
+        "minnucpos": 325,
+        "case": "ok reverse",
+        "maxnucpos": 1101
+      },
+      "AV2": {
+        "hsps": [[-3, 920, 1261, 1, 114, 9.86583e-76]],
+        "strand": -1,
+        "minprotpos": 1,
+        "maxprotpos": 114,
+        "minnucpos": 920,
+        "case": "ok reverse",
+        "maxnucpos": 1261
+      },
+      "BC1": {
+        "hsps": [[1, 1264, 1509, 39, 123, 8.57149e-5]],
+        "strand": 1,
+        "minprotpos": 39,
+        "maxprotpos": 123,
+        "minnucpos": 1264,
+        "case": "ok forward",
+        "maxnucpos": 1509
+      }
+    }
+  },
+  "m170428_222201_42243_c101146952550000001823273107071793_s1_p0_87163_ccs": { "length": 600, "proteins": {} },
+  "m170428_222201_42243_c101146952550000001823273107071793_s1_p0_124406_ccs": {
+    "length": 2820,
+    "proteins": {
+      "AC1": {
+        "hsps": [[3, 606, 1640, 2, 346, 0.0]],
+        "strand": 1,
+        "minprotpos": 2,
+        "maxprotpos": 346,
+        "minnucpos": 606,
+        "case": "ok forward",
+        "maxnucpos": 1640
+      },
+      "AC2": {
+        "hsps": [[1, 1588, 1995, 1, 136, 3.01405e-54]],
+        "strand": 1,
+        "minprotpos": 1,
+        "maxprotpos": 136,
+        "minnucpos": 1588,
+        "case": "ok forward",
+        "maxnucpos": 1995
+      },
+      "AC3": {
+        "hsps": [[2, 1736, 2140, 1, 135, 1.212e-65]],
+        "strand": 1,
+        "minprotpos": 1,
+        "maxprotpos": 135,
+        "minnucpos": 1736,
+        "case": "ok forward",
+        "maxnucpos": 2140
+      },
+      "AC4": {
+        "hsps": [[1, 691, 900, 62, 131, 8.03527e-8]],
+        "strand": 1,
+        "minprotpos": 62,
+        "maxprotpos": 131,
+        "minnucpos": 691,
+        "case": "ok forward",
+        "maxnucpos": 900
+      },
+      "AC5": {
+        "hsps": [
+          [1, 2203, 2820, 1, 207, 3.09315e-100],
+          [1, 13, 114, 205, 238, 1.2293e-6]
+        ],
+        "strand": 1,
+        "minprotpos": 1,
+        "maxprotpos": 238,
+        "minnucpos": 2203,
+        "case": "over breakpoint forward",
+        "maxnucpos": 2934
+      },
+      "AV1": {
+        "hsps": [
+          [-1, 2137, 2820, 31, 259, 2.04997e-158],
+          [-1, 10, 111, 1, 34, 2.4273e-15]
+        ],
+        "strand": -1,
+        "minprotpos": 1,
+        "maxprotpos": 259,
+        "minnucpos": 2137,
+        "case": "over breakpoint reverse",
+        "maxnucpos": 2931
+      },
+      "AV2": {
+        "hsps": [
+          [-3, 11, 271, 1, 87, 3.42755e-38],
+          [-3, 2735, 2815, 86, 113, 1.00332e-6]
+        ],
+        "strand": -1,
+        "minprotpos": 1,
+        "maxprotpos": 113,
+        "minnucpos": 2735,
+        "case": "over breakpoint reverse",
+        "maxnucpos": 3091
+      }
+    }
+  }
+}

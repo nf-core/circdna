@@ -3,6 +3,7 @@
 ## 阶段一：Samplesheets 重命名
 
 ### 文件重命名
+
 - [x] `samplesheet.csv` → `test_online.csv`
 - [x] `samplesheet_bam_test.csv` → `test_local_bam.csv`
 - [x] `samplesheet_local.csv` → `test_local_eccdna.csv`
@@ -13,21 +14,26 @@
 ## 阶段二：更新引用文件
 
 ### conf/test_local.config
+
 - [x] `input` 路径已更新为 `test_local_eccdna.csv`
 
 ### conf/test_local_gdna.config
+
 - [x] 注释中文件名已更新为 `test_local_gdna.csv`
 - [x] `input` 路径已更新为 `test_local_gdna.csv`
 
 ### scripts/test_incremental_cache.py
+
 - [x] `ORIGINAL_SAMPLESHEET` 路径已更新
 - [x] backup 文件名已更新
 
 ### AGENTS.md
+
 - [x] 所有 `samplesheet_local.csv` 引用已更新为 `test_local_eccdna.csv`
 - [x] 所有 `samplesheet_integrated.csv` 引用已更新为 `test_local_integrated.csv`
 
 ### testdatasets/README.md
+
 - [x] `samplesheet_local.csv` 引用已更新为 `test_local_eccdna.csv`
 
 ## 阶段三：stub 模式快速验证
@@ -38,11 +44,13 @@
 ## 阶段四：真实模式测试
 
 ### test_local（无 control）
+
 - [x] `nextflow run main.nf -profile test_local,docker` 执行成功（61 tasks, 1h26m58s）
 - [x] 无 failed 任务
 - [x] ECCSPLORER 任务全部完成（3/3）
 
 ### test_local_gdna（有 control）
+
 - [x] `nextflow run main.nf -profile test_local_gdna,docker` 执行成功（70 tasks, 全部 COMPLETED）
 - [x] 无 failed 任务
 - [x] ECCSPLORER_WITH_CONTROL 任务全部完成（3/3）
@@ -50,6 +58,7 @@
 ## 阶段五：验证真实产出
 
 ### test_local 产出
+
 - [x] `results/test_local/eccsplorer/*_candidates.bed` 非空（78/102/119 行）
 - [x] `results/test_local/eccsplorer/*_blast.m6` 非空（85-445 bytes，BLAST 注释生效）
 - [x] `results/test_local/eccsplorer/*_junction_reads.txt` 非空（144KB-409KB）
@@ -57,6 +66,7 @@
 - [x] `results/test_local/multiqc/multiqc_report.html` 存在（2.4MB）
 
 ### test_local_gdna 产出
+
 - [x] `results/test_local_gdna/eccsplorer/*_candidates.bed` 非空（78/102/119 行）
 - [x] `results/test_local_gdna/eccsplorer/*_blast.m6` 非空（55/78、68/102、66/119 个非空文件）
 - [x] `results/test_local_gdna/eccsplorer/*_junction_reads.txt` 非空（144KB-408KB）

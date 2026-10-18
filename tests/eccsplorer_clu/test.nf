@@ -11,13 +11,13 @@ workflow {
 
     ch_treatment = channel.of(
         [ [id: 'circdna_1', pair: 'p1'],
-          file("${data_dir}/circdna_1_R1.fastq.gz"),
-          file("${data_dir}/circdna_1_R2.fastq.gz") ]
+            file("${data_dir}/circdna_1_R1.fastq.gz"),
+            file("${data_dir}/circdna_1_R2.fastq.gz") ]
     )
     ch_control = channel.of(
         [ [id: 'gdna_1', pair: 'p1'],
-          file("${data_dir}/gdna_1_R1.fastq.gz"),
-          file("${data_dir}/gdna_1_R2.fastq.gz") ]
+            file("${data_dir}/gdna_1_R1.fastq.gz"),
+            file("${data_dir}/gdna_1_R2.fastq.gz") ]
     )
     taxon = 'vir'
 

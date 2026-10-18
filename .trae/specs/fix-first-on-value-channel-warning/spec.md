@@ -44,11 +44,11 @@ subworkflows/local/eccdna_mode/main.nf 第 50 行:
 
 ### 为什么其他 `.first()` 不触发警告
 
-| 位置 | 代码 | 输入类型 | `.first()` 是否冗余 |
-|------|------|----------|-------------------|
-| `workflows/circdna.nf:50` | `ch_fasta.map{...}.first()` | queue（fromPath） | 否 |
-| `workflows/circdna.nf:81` | `channel.fromPath(...).map{...}.first()` | queue（fromPath） | 否（且 test_local 不执行） |
-| `bam_preprocessing/main.nf:39` | `fasta_meta.join(queue).map{...}.first()` | queue（value.join(queue)=queue） | 否 |
+| 位置                           | 代码                                      | 输入类型                         | `.first()` 是否冗余        |
+| ------------------------------ | ----------------------------------------- | -------------------------------- | -------------------------- |
+| `workflows/circdna.nf:50`      | `ch_fasta.map{...}.first()`               | queue（fromPath）                | 否                         |
+| `workflows/circdna.nf:81`      | `channel.fromPath(...).map{...}.first()`  | queue（fromPath）                | 否（且 test_local 不执行） |
+| `bam_preprocessing/main.nf:39` | `fasta_meta.join(queue).map{...}.first()` | queue（value.join(queue)=queue） | 否                         |
 
 ### 修改安全性分析
 

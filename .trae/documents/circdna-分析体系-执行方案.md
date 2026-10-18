@@ -22,10 +22,10 @@
 
 ### 1.3 双分支策略
 
-| 改动类型 | 目标分支 | 版本号变更 |
-|---------|---------|-----------|
+| 改动类型                                                                   | 目标分支    | 版本号变更      |
+| -------------------------------------------------------------------------- | ----------- | --------------- |
 | 三代相关（NanoPlot、ecc_finder、SV、CIDER-seq、长读 annotation、统一输出） | `circdnalr` | v3.1.0 → v3.2.0 |
-| 二代相关（fastp、二代统一输出） | `master` | v3.2.0 → v3.2.1 |
+| 二代相关（fastp、二代统一输出）                                            | `master`    | v3.2.0 → v3.2.1 |
 
 ## 二、当前状态分析
 
@@ -42,20 +42,20 @@
 
 **缺失项与实际进度（2026-07-24 代码库验证，circdnalr 分支未提交改动）**：
 
-| 功能 | 计划要求 | 实际状态 | 说明 |
-|------|----------|----------|------|
-| 长读 QC (NanoPlot) | 集成到 LONG_READ_PREPROCESSING | ✅ 已实现 | `modules/nf-core/nanoplot/` 已安装；`long_read_preprocessing/main.nf` 已含 NANOPLOT 调用 + `skip_long_read_qc` 开关；`conf/modules.config` 已有 publishDir |
-| 第四引擎 ecc_finder | map + asm 子流程 | ✅ 已实现 | `modules/local/ecc_finder/{map_ont,map_sr,asm_ont,asm_sr}/` 已从 bio.nf 迁移；`subworkflows/local/eccfinder_pipeline/main.nf` 已创建；`eccfinder_mode` 参数已加入 nextflow.config |
-| ecc_finder 集成主流程 | workflows/circdna.nf 调用 | ✅ 已实现 | `long_read_identifier` 默认值已含 `eccfinder` |
-| SV 检测 | Sniffles2/cuteSV/SVIM | ❌ 待实现 | Phase 3 |
-| CIDER-seq 处理 | DeConcat → TideHunter → CircleSeeker | ❌ 待实现 | Phase 4 |
-| eccDNA annotation | Gene/TE/Repeat/CDS/Intergenic | ❌ 待实现 | Phase 5 |
-| 统一输出 | Unified eccDNA BED/TSV/FASTA | ❌ 待实现 | Phase 5 |
-| Metadata 分层系统 | Level A-E + 按物种 TSV | ❌ 待实现 | Phase 7 |
-| 二代 fastp 替代 | 可选 fastp 替代 TrimGalore | ❌ 待实现 | Phase 8（master 分支） |
-| Stub 测试验证 | test_pacbio_lr / test_nanopore_lr | ❌ 待验证 | 配置文件已建，需跑 stub 测试 |
-| CHANGELOG + 版本号 | v3.2.0 | ⚠️ 部分 | `manifest.version` 已改为 3.2.0，但 CHANGELOG.md 未更新 |
-| 临时文件清理 | 删除 genome.txt/program.txt/scripts/err 等 | ❌ 待清理 | 工作目录残留临时文件 |
+| 功能                  | 计划要求                                   | 实际状态  | 说明                                                                                                                                                                              |
+| --------------------- | ------------------------------------------ | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 长读 QC (NanoPlot)    | 集成到 LONG_READ_PREPROCESSING             | ✅ 已实现 | `modules/nf-core/nanoplot/` 已安装；`long_read_preprocessing/main.nf` 已含 NANOPLOT 调用 + `skip_long_read_qc` 开关；`conf/modules.config` 已有 publishDir                        |
+| 第四引擎 ecc_finder   | map + asm 子流程                           | ✅ 已实现 | `modules/local/ecc_finder/{map_ont,map_sr,asm_ont,asm_sr}/` 已从 bio.nf 迁移；`subworkflows/local/eccfinder_pipeline/main.nf` 已创建；`eccfinder_mode` 参数已加入 nextflow.config |
+| ecc_finder 集成主流程 | workflows/circdna.nf 调用                  | ✅ 已实现 | `long_read_identifier` 默认值已含 `eccfinder`                                                                                                                                     |
+| SV 检测               | Sniffles2/cuteSV/SVIM                      | ❌ 待实现 | Phase 3                                                                                                                                                                           |
+| CIDER-seq 处理        | DeConcat → TideHunter → CircleSeeker       | ❌ 待实现 | Phase 4                                                                                                                                                                           |
+| eccDNA annotation     | Gene/TE/Repeat/CDS/Intergenic              | ❌ 待实现 | Phase 5                                                                                                                                                                           |
+| 统一输出              | Unified eccDNA BED/TSV/FASTA               | ❌ 待实现 | Phase 5                                                                                                                                                                           |
+| Metadata 分层系统     | Level A-E + 按物种 TSV                     | ❌ 待实现 | Phase 7                                                                                                                                                                           |
+| 二代 fastp 替代       | 可选 fastp 替代 TrimGalore                 | ❌ 待实现 | Phase 8（master 分支）                                                                                                                                                            |
+| Stub 测试验证         | test_pacbio_lr / test_nanopore_lr          | ❌ 待验证 | 配置文件已建，需跑 stub 测试                                                                                                                                                      |
+| CHANGELOG + 版本号    | v3.2.0                                     | ⚠️ 部分   | `manifest.version` 已改为 3.2.0，但 CHANGELOG.md 未更新                                                                                                                           |
+| 临时文件清理          | 删除 genome.txt/program.txt/scripts/err 等 | ❌ 待清理 | 工作目录残留临时文件                                                                                                                                                              |
 
 > **结论**：Phase 0（Bug 修复）、Phase 1（资产迁移）、Phase 2（ecc_finder 引擎）、Phase 6（NanoPlot QC）的核心代码**均已实现**（未提交）。剩余工作集中在 Phase 3-5（SV/CIDER-seq/Annotation/Unified Output）、Phase 7（Metadata）、Phase 8（二代 master）、以及收尾工作（stub 测试、CHANGELOG、circdnalr.nf 删除、临时文件清理）。
 
@@ -73,15 +73,15 @@
 
 **可保留资产**（迁入 `circdna.nf` 的 `circdnalr` 分支）：
 
-| 资产 | 路径 | 保留理由 | 迁入目标 |
-|------|------|----------|----------|
-| **NanoPlot 模块** | `circdnalr.nf/modules/nf-core/nanoplot/` | 长读 QC 必需，circdna.nf 缺失 | `circdna.nf/modules/nf-core/nanoplot/`（通过 `nf-core modules install nanoplot` 安装最新版） |
-| **平台自动切换设计** | `circdnalr.nf/conf/modules.config` 中 `MINIMAP2_ALIGN.ext.args = { meta.platform == 'pacbio' ? '-ax map-hifi' : '-ax map-ont' }` | **核心设计**：通过 meta.platform 驱动 minimap2 preset 自动切换。circdna.nf 已采纳此设计（`-x map-hifi`/`-x map-ont`），仅参考 publishDir 模式 | ✅ 已整合到 circdna.nf 的 `conf/modules.config`，保持 `meta.platform` 驱动 |
-| **多识别器并行机制** | `circdnalr.nf/workflows/circdna_lr.nf` 中 `circle_identifier.tokenize(',').collect { it.trim().toLowerCase() }` | 优雅的逗号分隔多选设计，可同时跑 CReSIL+ecc_finder_map+ecc_finder_asm | 参考，circdna.nf 已有类似机制（`long_read_identifier`），确保一致性 |
-| **test_pacbio.config 思路** | `circdnalr.nf/conf/test_pacbio.config` | 测试样本来源（PRJNA896947 CHO-K1, ~33MB 20k reads）、资源限制（2 CPU/6GB/6h） | `circdna.nf/conf/test_pacbio_lr.config`，需将 GitHub URL 数据本地化 |
-| **test_nanopore.config 思路** | `circdnalr.nf/conf/test_nanopore.config` | 测试样本来源（PRJNA1251131, ~9MB 1.5k reads）、资源限制 | `circdna.nf/conf/test_nanopore_lr.config`，需将 GitHub URL 数据本地化 |
-| **长读模块 publishDir 模式** | `circdnalr.nf/conf/modules.config` | NanoPlot/minimap2/samtools/ecc_finder 的完整输出目录结构（qc/alignment/eccdna/multiqc） | 参考，整合到 circdna.nf 的 `conf/modules.config` |
-| **WorkflowCircdnalr.groovy** | `circdnalr.nf/lib/WorkflowCircdnalr.groovy` | MultiQC summary 生成逻辑、引用文本 | 参考迁移到 circdna.nf 的 `lib/WorkflowCircdna.groovy` |
+| 资产                          | 路径                                                                                                                             | 保留理由                                                                                                                                      | 迁入目标                                                                                     |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| **NanoPlot 模块**             | `circdnalr.nf/modules/nf-core/nanoplot/`                                                                                         | 长读 QC 必需，circdna.nf 缺失                                                                                                                 | `circdna.nf/modules/nf-core/nanoplot/`（通过 `nf-core modules install nanoplot` 安装最新版） |
+| **平台自动切换设计**          | `circdnalr.nf/conf/modules.config` 中 `MINIMAP2_ALIGN.ext.args = { meta.platform == 'pacbio' ? '-ax map-hifi' : '-ax map-ont' }` | **核心设计**：通过 meta.platform 驱动 minimap2 preset 自动切换。circdna.nf 已采纳此设计（`-x map-hifi`/`-x map-ont`），仅参考 publishDir 模式 | ✅ 已整合到 circdna.nf 的 `conf/modules.config`，保持 `meta.platform` 驱动                   |
+| **多识别器并行机制**          | `circdnalr.nf/workflows/circdna_lr.nf` 中 `circle_identifier.tokenize(',').collect { it.trim().toLowerCase() }`                  | 优雅的逗号分隔多选设计，可同时跑 CReSIL+ecc_finder_map+ecc_finder_asm                                                                         | 参考，circdna.nf 已有类似机制（`long_read_identifier`），确保一致性                          |
+| **test_pacbio.config 思路**   | `circdnalr.nf/conf/test_pacbio.config`                                                                                           | 测试样本来源（PRJNA896947 CHO-K1, ~33MB 20k reads）、资源限制（2 CPU/6GB/6h）                                                                 | `circdna.nf/conf/test_pacbio_lr.config`，需将 GitHub URL 数据本地化                          |
+| **test_nanopore.config 思路** | `circdnalr.nf/conf/test_nanopore.config`                                                                                         | 测试样本来源（PRJNA1251131, ~9MB 1.5k reads）、资源限制                                                                                       | `circdna.nf/conf/test_nanopore_lr.config`，需将 GitHub URL 数据本地化                        |
+| **长读模块 publishDir 模式**  | `circdnalr.nf/conf/modules.config`                                                                                               | NanoPlot/minimap2/samtools/ecc_finder 的完整输出目录结构（qc/alignment/eccdna/multiqc）                                                       | 参考，整合到 circdna.nf 的 `conf/modules.config`                                             |
+| **WorkflowCircdnalr.groovy**  | `circdnalr.nf/lib/WorkflowCircdnalr.groovy`                                                                                      | MultiQC summary 生成逻辑、引用文本                                                                                                            | 参考迁移到 circdna.nf 的 `lib/WorkflowCircdna.groovy`                                        |
 
 > **ecc_finder 模块来源决策**：circdnalr.nf 的 `modules/local/eccfinder/{map,asm}.nf` 为简化版（单文件、无 meta.yml、用 `map-sr`/`asm-sr` 统一命令通过 `--data-type` 切换平台）。**bio.nf 已有更完整的 ecc_finder 模块**（`map_ont`/`map_sr`/`asm_ont`/`asm_sr` 四个子模块，含完整 meta.yml + environment.yml + tests + testdata），按模块来源优先级策略，**应从 bio.nf 迁移完整版**，放弃 circdnalr.nf 的简化版。
 
@@ -93,7 +93,7 @@
 
 - `main.nf`、`workflows/circdna_lr.nf`、`nextflow.config`、`nextflow_schema.json` —— 已被 circdna.nf v3.1.0 取代
 - `lib/Utils.groovy`、`conf/base.config` —— 已被 circdna.nf v3.1.0 取代
-- `samplesheets/` —— 已在 circdna.nf/samplesheets/circdnalr_*.csv 中存在，且路径写死需重新生成
+- `samplesheets/` —— 已在 circdna.nf/samplesheets/circdnalr\_\*.csv 中存在，且路径写死需重新生成
 - `CHANGE&FIX/20260701.md` —— 历史记录，无技术价值
 - `CRESIL_DETECT` 简化版（`modules/local/cresil/detect.nf`，v1.1.1）—— circdna.nf 已有更完整的 CReSIL 1.2.1（trim+identify+identify_wgls+annotate+visualize）
 - `ECCFINDER_MAP`/`ECCFINDER_ASM` 简化版（`modules/local/eccfinder/{map,asm}.nf`）—— bio.nf 有更完整的 4 子模块版本
@@ -104,19 +104,19 @@
 
 经逐文件核查，circdnalr.nf 的**所有可保留资产均已迁移**到 circdna.nf 的 circdnalr 分支：
 
-| circdnalr.nf 资产 | 迁移状态 | circdna.nf 对应位置 |
-|-------------------|----------|---------------------|
-| NanoPlot 模块 (`modules/nf-core/nanoplot/`) | ✅ 已迁移 | `circdna.nf/modules/nf-core/nanoplot/`（含 tests） |
-| 平台自动切换设计 (`conf/modules.config` MINIMAP2_ALIGN) | ✅ 已采纳 | `circdna.nf/conf/modules.config`（`-x map-hifi`/`-x map-ont`） |
-| 长读 publishDir 模式 | ✅ 已整合 | `circdna.nf/conf/modules.config`（long_read/ 目录结构） |
-| 多识别器并行机制 (`workflows/circdna_lr.nf`) | ✅ 已采纳 | `circdna.nf/workflows/circdna.nf`（`long_read_identifier` 逗号分隔） |
-| test_pacbio/test_nanopore 配置思路 | ✅ 已参考重建 | `circdna.nf/conf/test_pacbio_lr.config` + `test_nanopore_lr.config`（数据本地化） |
-| WorkflowCircdnalr.groovy | ❌ 无迁移价值 | 仅含 NanoPlot/Minimap2/Samtools/MultiQC 4 条引用，circdna.nf 已有自己的 WorkflowCircdna.groovy |
-| ecc_finder 简化版 (`modules/local/eccfinder/`) | ❌ 已放弃 | 改用 bio.nf 完整版 4 子模块 |
-| CReSIL v1.1.1 简化版 (`modules/local/cresil/detect.nf`) | ❌ 已放弃 | circdna.nf 已有 CReSIL v1.2.1 完整版 |
-| samplesheets/ (路径写死) | ❌ 无迁移价值 | circdna.nf/samplesheets/ 已重新生成 |
-| assets/、docs/、.github/ | ❌ 无迁移价值 | nf-core 通用模板，circdna.nf 已有 |
-| lib/Utils.groovy、conf/base.config | ❌ 已被取代 | circdna.nf 已有更完整版本 |
+| circdnalr.nf 资产                                       | 迁移状态      | circdna.nf 对应位置                                                                            |
+| ------------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------- |
+| NanoPlot 模块 (`modules/nf-core/nanoplot/`)             | ✅ 已迁移     | `circdna.nf/modules/nf-core/nanoplot/`（含 tests）                                             |
+| 平台自动切换设计 (`conf/modules.config` MINIMAP2_ALIGN) | ✅ 已采纳     | `circdna.nf/conf/modules.config`（`-x map-hifi`/`-x map-ont`）                                 |
+| 长读 publishDir 模式                                    | ✅ 已整合     | `circdna.nf/conf/modules.config`（long_read/ 目录结构）                                        |
+| 多识别器并行机制 (`workflows/circdna_lr.nf`)            | ✅ 已采纳     | `circdna.nf/workflows/circdna.nf`（`long_read_identifier` 逗号分隔）                           |
+| test_pacbio/test_nanopore 配置思路                      | ✅ 已参考重建 | `circdna.nf/conf/test_pacbio_lr.config` + `test_nanopore_lr.config`（数据本地化）              |
+| WorkflowCircdnalr.groovy                                | ❌ 无迁移价值 | 仅含 NanoPlot/Minimap2/Samtools/MultiQC 4 条引用，circdna.nf 已有自己的 WorkflowCircdna.groovy |
+| ecc_finder 简化版 (`modules/local/eccfinder/`)          | ❌ 已放弃     | 改用 bio.nf 完整版 4 子模块                                                                    |
+| CReSIL v1.1.1 简化版 (`modules/local/cresil/detect.nf`) | ❌ 已放弃     | circdna.nf 已有 CReSIL v1.2.1 完整版                                                           |
+| samplesheets/ (路径写死)                                | ❌ 无迁移价值 | circdna.nf/samplesheets/ 已重新生成                                                            |
+| assets/、docs/、.github/                                | ❌ 无迁移价值 | nf-core 通用模板，circdna.nf 已有                                                              |
+| lib/Utils.groovy、conf/base.config                      | ❌ 已被取代   | circdna.nf 已有更完整版本                                                                      |
 
 > **circdnalr.nf 已无任何剩余保留价值。所有有用资产均已迁移完毕。**
 >
@@ -153,12 +153,12 @@
 
 **模块与平台对应关系**：
 
-| 子模块 | 命令 | 适用平台 | 用途 |
-|--------|------|----------|------|
-| `ECC_FINDER_MAP_ONT` | `ecc_finder.py map-ont` | ONT | mapping-based eccDNA 检测 |
-| `ECC_FINDER_MAP_SR` | `ecc_finder.py map-sr` | PacBio HiFi | mapping-based eccDNA 检测 |
-| `ECC_FINDER_ASM_ONT` | `ecc_finder.py asm-ont` | ONT | assembly-based eccDNA 检测 |
-| `ECC_FINDER_ASM_SR` | `ecc_finder.py asm-sr` | PacBio HiFi | assembly-based eccDNA 检测 |
+| 子模块               | 命令                    | 适用平台    | 用途                       |
+| -------------------- | ----------------------- | ----------- | -------------------------- |
+| `ECC_FINDER_MAP_ONT` | `ecc_finder.py map-ont` | ONT         | mapping-based eccDNA 检测  |
+| `ECC_FINDER_MAP_SR`  | `ecc_finder.py map-sr`  | PacBio HiFi | mapping-based eccDNA 检测  |
+| `ECC_FINDER_ASM_ONT` | `ecc_finder.py asm-ont` | ONT         | assembly-based eccDNA 检测 |
+| `ECC_FINDER_ASM_SR`  | `ecc_finder.py asm-sr`  | PacBio HiFi | assembly-based eccDNA 检测 |
 
 **新增** `modules/local/ecc_finder/environment.yml`（所有子模块共用）：
 
@@ -180,6 +180,7 @@ dependencies:
 ##### C. 测试配置迁移（Phase 0 Bug 4 修复）
 
 > 数据来源参考 circdnalr.nf 的 `conf/test_pacbio.config` 和 `conf/test_nanopore.config`。
+>
 > - PacBio 测试数据：PRJNA896947 CHO-K1（~33MB, 20k reads），参考基因组 chr1_subset.fa
 > - Nanopore 测试数据：PRJNA1251131（~9MB, 1.5k reads），参考基因组 chr22_subset.fa
 
@@ -888,60 +889,61 @@ Phase 8: 二代完善（master 分支）❌ 待实现
 
 > metadata.csv 共 34 条记录（32 条 eccDNA + 2 条 circRNA）。按 `analysis_role` 和 `experimental_type` 分层映射到各 Phase 的验证数据：
 
-| Phase | 数据集 (run_id) | 物种 | 平台 | experimental_type | analysis_role | 用途 |
-|-------|-----------------|------|------|-------------------|---------------|------|
-| **Phase 0/1/2 收尾** | test_pacbio_lr (本地) | — | PacBio | — | — | Stub 测试验证 |
-| **Phase 0/1/2 收尾** | test_nanopore_lr (本地) | — | ONT | — | — | Stub 测试验证 |
-| **Phase 2 ecc_finder** | ERR6326020 | Arabidopsis | ONT | eccDNA_enriched | primary_eccDNA | ecc_finder benchmark 原始数据集 |
-| **Phase 2 ecc_finder** | SRR24335762 | Arabidopsis | ONT | mobilome_seq | primary_eccDNA | mobilome-seq eccDNA |
-| **Phase 3 SV (PacBio WGS)** | ERR11838731 | Oryza | PacBio HiFi | WGS_reference | reference_genome | HiFi WGS SV 验证 |
-| **Phase 3 SV (PacBio WGS)** | SRR30359583 | Amaranthus | PacBio HiFi | WGS_reference | reference_genome | HiFi WGS SV 验证 |
-| **Phase 3 SV (ONT WGS)** | ERR12723706 | Triticum | ONT | WGS_reference | reference_genome | ONT WGS SV 验证 |
-| **Phase 3 SV (ONT WGS)** | SRR24335749 | Arabidopsis | ONT | WGS_reference | reference_genome | ONT WGS SV 验证 |
-| **Phase 4 CIDER-seq** | SRR16958693 | Amaranthus | PacBio | CIDER-seq | primary_eccDNA | CIDER-seq 主测试 |
-| **Phase 4 CIDER-seq (RCA)** | SRR26069818 | Alopecurus | PacBio | eccDNA_enriched (RCA) | primary_eccDNA | RCA-PacBio 测试 |
-| **Phase 5 Annotation** | 任意 primary_eccDNA | — | — | — | — | 提供基因/TE/CDS BED 注释 |
-| **Phase 7 Metadata** | 全部 32 条 eccDNA | 10 物种 | — | — | — | 按物种生成 TSV |
-| **Phase 8 二代 (master)** | ERR11535564 | Artemisia | Illumina | eccDNA_enriched | primary_eccDNA | Illumina eccDNA 测试 |
-| **Phase 8 二代 (master)** | CRR3168890 | Cynodon | Illumina | eccDNA_enriched | primary_eccDNA | Illumina eccDNA 测试 |
-| **Phase 8 二代 (master)** | ERR6004146 | Beta | Illumina | eccDNA_enriched | primary_eccDNA | circSeq benchmark |
+| Phase                       | 数据集 (run_id)         | 物种        | 平台        | experimental_type     | analysis_role    | 用途                            |
+| --------------------------- | ----------------------- | ----------- | ----------- | --------------------- | ---------------- | ------------------------------- |
+| **Phase 0/1/2 收尾**        | test_pacbio_lr (本地)   | —           | PacBio      | —                     | —                | Stub 测试验证                   |
+| **Phase 0/1/2 收尾**        | test_nanopore_lr (本地) | —           | ONT         | —                     | —                | Stub 测试验证                   |
+| **Phase 2 ecc_finder**      | ERR6326020              | Arabidopsis | ONT         | eccDNA_enriched       | primary_eccDNA   | ecc_finder benchmark 原始数据集 |
+| **Phase 2 ecc_finder**      | SRR24335762             | Arabidopsis | ONT         | mobilome_seq          | primary_eccDNA   | mobilome-seq eccDNA             |
+| **Phase 3 SV (PacBio WGS)** | ERR11838731             | Oryza       | PacBio HiFi | WGS_reference         | reference_genome | HiFi WGS SV 验证                |
+| **Phase 3 SV (PacBio WGS)** | SRR30359583             | Amaranthus  | PacBio HiFi | WGS_reference         | reference_genome | HiFi WGS SV 验证                |
+| **Phase 3 SV (ONT WGS)**    | ERR12723706             | Triticum    | ONT         | WGS_reference         | reference_genome | ONT WGS SV 验证                 |
+| **Phase 3 SV (ONT WGS)**    | SRR24335749             | Arabidopsis | ONT         | WGS_reference         | reference_genome | ONT WGS SV 验证                 |
+| **Phase 4 CIDER-seq**       | SRR16958693             | Amaranthus  | PacBio      | CIDER-seq             | primary_eccDNA   | CIDER-seq 主测试                |
+| **Phase 4 CIDER-seq (RCA)** | SRR26069818             | Alopecurus  | PacBio      | eccDNA_enriched (RCA) | primary_eccDNA   | RCA-PacBio 测试                 |
+| **Phase 5 Annotation**      | 任意 primary_eccDNA     | —           | —           | —                     | —                | 提供基因/TE/CDS BED 注释        |
+| **Phase 7 Metadata**        | 全部 32 条 eccDNA       | 10 物种     | —           | —                     | —                | 按物种生成 TSV                  |
+| **Phase 8 二代 (master)**   | ERR11535564             | Artemisia   | Illumina    | eccDNA_enriched       | primary_eccDNA   | Illumina eccDNA 测试            |
+| **Phase 8 二代 (master)**   | CRR3168890              | Cynodon     | Illumina    | eccDNA_enriched       | primary_eccDNA   | Illumina eccDNA 测试            |
+| **Phase 8 二代 (master)**   | ERR6004146              | Beta        | Illumina    | eccDNA_enriched       | primary_eccDNA   | circSeq benchmark               |
 
 **eccDNA 数据分层（对应计划第 5 节 Level A-E）**：
 
-| Level | 条件 | 数据集数量 | 代表 run_id |
-|-------|------|-----------|-------------|
-| A | Enriched eccDNA + Illumina | 9 | ERR10889836, ERR6326000, ERR11535564, CRR3168890, CRR1082975, ERR6004146 等 |
-| B | Enriched eccDNA + PacBio | 2 | SRR16958693 (CIDER), SRR26069818 (RCA) |
-| C | Enriched eccDNA + ONT | 7 | ERR12724336, ERR6326020, SRR24335762, SRR24693334, SRR36603439, SRR28004411, SRR31773424 |
-| D | WGS / genome-skimming | 10 | ERR11838731, SRR30359583, ERR12723706, ERR11535563 等 |
-| E | RNA-seq（不进入 eccDNA 流程） | 2 | ERR10889820, ERR12724677（归 circrna.nf） |
+| Level | 条件                          | 数据集数量 | 代表 run_id                                                                              |
+| ----- | ----------------------------- | ---------- | ---------------------------------------------------------------------------------------- |
+| A     | Enriched eccDNA + Illumina    | 9          | ERR10889836, ERR6326000, ERR11535564, CRR3168890, CRR1082975, ERR6004146 等              |
+| B     | Enriched eccDNA + PacBio      | 2          | SRR16958693 (CIDER), SRR26069818 (RCA)                                                   |
+| C     | Enriched eccDNA + ONT         | 7          | ERR12724336, ERR6326020, SRR24335762, SRR24693334, SRR36603439, SRR28004411, SRR31773424 |
+| D     | WGS / genome-skimming         | 10         | ERR11838731, SRR30359583, ERR12723706, ERR11535563 等                                    |
+| E     | RNA-seq（不进入 eccDNA 流程） | 2          | ERR10889820, ERR12724677（归 circrna.nf）                                                |
 
 > **A+B+C = 18 条核心 eccDNA 数据**，是 circdna.nf 的主要处理对象。D 类 10 条作为 WGS 参考用于 SV 验证和基因组背景。
 
 ## 五、假设与决策
 
-| 决策项 | 选择 | 理由 |
-|--------|------|------|
-| 分支策略 | 三代 → circdnalr / 二代 → master | 与用户既有工作流一致，避免分支冲突 |
-| 版本策略 | 每次合并升版本号 | 遵循 Semantic Versioning，便于追踪 |
-| 容器来源 | nf-core > quay.io biocontainers > 自构建 quay.io/bioinfortools + anaconda.org/yangmingsi | 遵循用户约定，降低维护成本 |
-| 模块来源 | nf-core > bio.nf 新建后复制 > 直接 local | 符合用户 bio.nf 中转验证工作流 |
-| **ecc_finder 模块来源** | **从 bio.nf 迁移完整版（4 子模块）** | bio.nf 有 map_ont/map_sr/asm_ont/asm_sr 完整模块（含测试+testdata），优于 circdnalr.nf 的简化版（无 meta.yml、无测试） |
-| ecc_finder 引擎 | 新增为第四引擎 | ONT eccDNA-enriched 数据友好，补全三引擎不足 |
-| **Bug 修复优先级** | **Phase 0 仅剩 Bug 4（测试配置）** | v3.1.0 的 5 个已知问题中 4 个（FLED 输入、FLYE ext.args、min_read_support、minimap2 preset）已在当前代码中修复，仅需新建长读测试配置 |
-| **minimap2 preset 切换** | **改为 meta.platform 驱动** | 参考 circdnalr.nf 设计，比 params.protocol 更灵活，支持混合平台 samplesheet |
-| SV 检测工具 | Sniffles2 + cuteSV + SVIM | 三工具 consensus 提高置信度 |
-| CIDER-seq 处理 | 新建独立子流程 | 实验方法差异显著，需专门处理链路 |
-| NanoPlot 集成位置 | LONG_READ_PREPROCESSING 内 | 与既有预处理链路协同 |
-| 统一输出格式 | TSV + BED + FASTA 三件套 | 适配下游不同分析需求 |
-| Metadata 分层 | 按物种组织 TSV | 与计划第 4 节一致，便于多物种管理 |
-| circdnalr.nf 处理 | 资产迁移后删除/归档 | 避免维护两套相似流程 |
+| 决策项                   | 选择                                                                                     | 理由                                                                                                                                 |
+| ------------------------ | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 分支策略                 | 三代 → circdnalr / 二代 → master                                                         | 与用户既有工作流一致，避免分支冲突                                                                                                   |
+| 版本策略                 | 每次合并升版本号                                                                         | 遵循 Semantic Versioning，便于追踪                                                                                                   |
+| 容器来源                 | nf-core > quay.io biocontainers > 自构建 quay.io/bioinfortools + anaconda.org/yangmingsi | 遵循用户约定，降低维护成本                                                                                                           |
+| 模块来源                 | nf-core > bio.nf 新建后复制 > 直接 local                                                 | 符合用户 bio.nf 中转验证工作流                                                                                                       |
+| **ecc_finder 模块来源**  | **从 bio.nf 迁移完整版（4 子模块）**                                                     | bio.nf 有 map_ont/map_sr/asm_ont/asm_sr 完整模块（含测试+testdata），优于 circdnalr.nf 的简化版（无 meta.yml、无测试）               |
+| ecc_finder 引擎          | 新增为第四引擎                                                                           | ONT eccDNA-enriched 数据友好，补全三引擎不足                                                                                         |
+| **Bug 修复优先级**       | **Phase 0 仅剩 Bug 4（测试配置）**                                                       | v3.1.0 的 5 个已知问题中 4 个（FLED 输入、FLYE ext.args、min_read_support、minimap2 preset）已在当前代码中修复，仅需新建长读测试配置 |
+| **minimap2 preset 切换** | **改为 meta.platform 驱动**                                                              | 参考 circdnalr.nf 设计，比 params.protocol 更灵活，支持混合平台 samplesheet                                                          |
+| SV 检测工具              | Sniffles2 + cuteSV + SVIM                                                                | 三工具 consensus 提高置信度                                                                                                          |
+| CIDER-seq 处理           | 新建独立子流程                                                                           | 实验方法差异显著，需专门处理链路                                                                                                     |
+| NanoPlot 集成位置        | LONG_READ_PREPROCESSING 内                                                               | 与既有预处理链路协同                                                                                                                 |
+| 统一输出格式             | TSV + BED + FASTA 三件套                                                                 | 适配下游不同分析需求                                                                                                                 |
+| Metadata 分层            | 按物种组织 TSV                                                                           | 与计划第 4 节一致，便于多物种管理                                                                                                    |
+| circdnalr.nf 处理        | 资产迁移后删除/归档                                                                      | 避免维护两套相似流程                                                                                                                 |
 
 ## 六、验证步骤
 
 ### 6.1 circdna.nf（circdnalr 分支）
 
 0. **Bug 修复验证（Phase 0）**：
+
    - **Bug 1** ✅：已验证 `long_read_mapping/main.nf` 调用 `SAMTOOLS_INDEX` 并 emit 3 元组；`fled_pipeline/main.nf` 正确接收 3 元组
    - **Bug 2** ✅：已验证 `flye_pipeline/main.nf` 无 `.ext.args` 赋值；`conf/modules.config` 中 `withName: 'FLYE'` 正确设置 `meta.platform` 驱动的 ext.args
    - **Bug 3** ✅：已验证 `long_read_filtering/main.nf` 调用 `FILTER_ECCDNA_BY_SUPPORT` 模块；`bin/filter_by_read_support.py` 存在
@@ -949,29 +951,35 @@ Phase 8: 二代完善（master 分支）❌ 待实现
    - **Bug 5** ✅：已验证 `conf/modules.config` 中 `MINIMAP2_ALIGN` 使用 `meta.platform` 驱动
 
 1. **资产迁移验证**：
+
    - `nf-core modules list` 确认 NanoPlot 已安装
    - `ls modules/local/ecc_finder/` 确认 4 个子模块（map_ont/map_sr/asm_ont/asm_sr）存在且含 main.nf + meta.yml + environment.yml
    - `nextflow run . -entry CIRCDNA -stub -profile test_pacbio_lr` 验证加载
 
 2. **ecc_finder 验证**：
+
    - `--protocol ont --long_read_identifier eccfinder --eccfinder_mode map --entrypoint cleaned_fastq`
    - 使用 SRR24335762（Arabidopsis ONT eccDNA）小样本测试
    - `--protocol pacbio --long_read_identifier eccfinder --eccfinder_mode both --entrypoint cleaned_fastq`
    - 使用 SRR24335749（Arabidopsis PacBio WGS）小样本测试
 
 3. **SV 检测验证**：
+
    - `--protocol pacbio --run_sv_for_wgs --sv_identifier sniffles2,cutesv,svim`
    - 使用 ERR11838731（Oryza PacBio HiFi WGS）小样本测试
 
 4. **CIDER-seq 验证**：
+
    - `--protocol pacbio --ciderseq_enabled`
    - 使用 SRR16958693（Amaranthus CIDER-seq）小样本测试
 
 5. **Annotation + 统一输出验证**：
+
    - 提供 `--gene_bed --te_bed --cds_bed`
    - 检查 `unified_eccdna.tsv` 字段完整性（19 个字段）
 
 6. **NanoPlot QC 验证**：
+
    - `--protocol ont --entrypoint cleaned_fastq`
    - 检查 `qc/nanoplot/<sample>/` 目录生成
 
@@ -982,6 +990,7 @@ Phase 8: 二代完善（master 分支）❌ 待实现
 ### 6.2 circdna.nf（master 分支）
 
 1. **fastp 验证**：
+
    - `--trimmer fastp` 二代流程测试
    - `--trimmer trimgalore` 回归测试
 
@@ -1058,30 +1067,30 @@ Phase 8: 二代完善（master 分支）❌ 待实现
 
 ### 7.4 bio.nf 新建分支与模块（外部依赖）
 
-| bio.nf 分支 | 模块 | 目的 |
-|-------------|------|------|
-| `ciderseq` | `modules/deconcat/` | PacBio concatemer 去除 |
-| `ciderseq` | `modules/tidehunter/` | 串联重复检测 |
-| `ciderseq` | `modules/circleseeker/` | 环状分子识别 |
-| `annotate` | `modules/annotate_eccdna/` | eccDNA 注释整合 |
+| bio.nf 分支 | 模块                       | 目的                   |
+| ----------- | -------------------------- | ---------------------- |
+| `ciderseq`  | `modules/deconcat/`        | PacBio concatemer 去除 |
+| `ciderseq`  | `modules/tidehunter/`      | 串联重复检测           |
+| `ciderseq`  | `modules/circleseeker/`    | 环状分子识别           |
+| `annotate`  | `modules/annotate_eccdna/` | eccDNA 注释整合        |
 
 **容器构建清单**（仅在 biocontainer 缺失时）：
 
-| 工具 | quay.io 镜像 | anaconda 包 |
-|------|--------------|-------------|
-| deconcat | `quay.io/bioinfortools/deconcat:<version>` | `anaconda.org/yangmingsi/deconvert:<version>` |
-| tidehunter | `quay.io/bioinfortools/tidehunter:<version>` | `anaconda.org/yangmingsi/tidehunter:<version>` |
+| 工具         | quay.io 镜像                                   | anaconda 包                                      |
+| ------------ | ---------------------------------------------- | ------------------------------------------------ |
+| deconcat     | `quay.io/bioinfortools/deconcat:<version>`     | `anaconda.org/yangmingsi/deconvert:<version>`    |
+| tidehunter   | `quay.io/bioinfortools/tidehunter:<version>`   | `anaconda.org/yangmingsi/tidehunter:<version>`   |
 | circleseeker | `quay.io/bioinfortools/circleseeker:<version>` | `anaconda.org/yangmingsi/circleseeker:<version>` |
 
 ## 八、风险与回退
 
-| 风险 | 回退方案 |
-|------|----------|
-| ecc_finder 容器构建失败 | 第一版仅启用 map 模式，asm 后续迭代 |
-| SV 工具 nf-core 模块不存在 | 在 bio.nf 新建分支后复制 |
-| CIDER-seq 工具无 biocontainer | 自构建上传至 quay.io/bioinfortools + anaconda.org/yangmingsi |
-| 统一输出脚本字段映射错误 | 提供 `--output_unified_eccdna false` 关闭 |
-| master/circdnalr 分支合并冲突 | 优先保留 circdnalr 分支的长读改动，master 分支仅保留二代改动 |
+| 风险                                        | 回退方案                                                        |
+| ------------------------------------------- | --------------------------------------------------------------- |
+| ecc_finder 容器构建失败                     | 第一版仅启用 map 模式，asm 后续迭代                             |
+| SV 工具 nf-core 模块不存在                  | 在 bio.nf 新建分支后复制                                        |
+| CIDER-seq 工具无 biocontainer               | 自构建上传至 quay.io/bioinfortools + anaconda.org/yangmingsi    |
+| 统一输出脚本字段映射错误                    | 提供 `--output_unified_eccdna false` 关闭                       |
+| master/circdnalr 分支合并冲突               | 优先保留 circdnalr 分支的长读改动，master 分支仅保留二代改动    |
 | deconcat/tidehunter/circleseeker 工具不可用 | 第一版先交付 CReSIL+FLED+Flye+ecc_finder+SV，CIDER-seq 后续迭代 |
 
 ## 九、后续 Snakemake 整合层（Phase 7 之后）
@@ -1107,6 +1116,7 @@ integration/
 ```
 
 输入：
+
 - `circdna.nf` → `unified_eccdna.tsv` + `unified_eccdna.bed` + `unified_eccdna.fa`
 - circrna.nf 输出（由其他任务负责）
 - 基因组注释、TE 注释、表达矩阵

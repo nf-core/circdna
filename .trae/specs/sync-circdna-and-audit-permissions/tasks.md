@@ -1,6 +1,7 @@
 # Tasks
 
 - [x] Task 1: 提交 circdna.nf 的 5 个修改文件到 GitHub
+
   - [x] git add SERVER_RUN_GUIDE.md AGENTS.md conf/server.config errors.txt samplesheets/data_issues.txt
   - [x] git commit -m "fix(docker): add runOptions for user mapping and sync server paths"
   - [x] git push
@@ -17,4 +18,5 @@
   - [x] 汇总生成报告表格
 
 # Task Dependencies
+
 - Task 1 和 Task 2 互相独立，可并行执行

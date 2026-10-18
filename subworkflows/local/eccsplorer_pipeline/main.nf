@@ -133,8 +133,8 @@ workflow ECCSPLORER_PIPELINE {
         )
         ch_versions = ch_versions.mix(ECC_FINDER_PIPELINE.out.versions)
     }
- 
-     // AMPLICONSUITE: ecDNA amplicon detection
+
+    // AMPLICONSUITE: ecDNA amplicon detection
     if (run_ampliconsuite) {
         def aa_data_repo = params.aa_data_repo ? file(params.aa_data_repo) : null
         def mosek_license_dir = params.mosek_license_dir ? file(params.mosek_license_dir) : null

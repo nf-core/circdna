@@ -31,20 +31,20 @@ input:
         description: Directory (or db file) of the blastn database
 output:
   - separated:
-    - - meta:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. `[ id:'sample1' ]`
-      - "${prefix}.*.fa":
-          type: file
-          description: Per-genome binned reads (including 'nohit')
-          pattern: "*.fa"
+      - - meta:
+            type: map
+            description: |
+              Groovy Map containing sample information
+              e.g. `[ id:'sample1' ]`
+        - "${prefix}.*.fa":
+            type: file
+            description: Per-genome binned reads (including 'nohit')
+            pattern: "*.fa"
   - versions:
-    - "versions.yml":
-        type: file
-        description: File containing software versions
-        pattern: "versions.yml"
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
 authors:
   - "@siyangming"
 maintainers:

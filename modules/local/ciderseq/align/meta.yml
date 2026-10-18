@@ -34,20 +34,20 @@ input:
         description: Target genome name (key of align.targets)
 output:
   - aligned:
-    - - meta:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. `[ id:'sample1' ]`
-      - "${prefix}.fa":
-          type: file
-          description: Trimmed reads for the target genome
-          pattern: "*.fa"
+      - - meta:
+            type: map
+            description: |
+              Groovy Map containing sample information
+              e.g. `[ id:'sample1' ]`
+        - "${prefix}.fa":
+            type: file
+            description: Trimmed reads for the target genome
+            pattern: "*.fa"
   - versions:
-    - "versions.yml":
-        type: file
-        description: File containing software versions
-        pattern: "versions.yml"
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
 authors:
   - "@siyangming"
 maintainers:

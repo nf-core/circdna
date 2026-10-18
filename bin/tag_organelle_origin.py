@@ -6,13 +6,13 @@ Annotate eccDNA candidate BED entries with an origin column:
     origin = nuclear | pt | mt | ambiguous
 
 Inputs:
-  --candidates  unified eccDNA BED (chr start end name score strand [read_count ...])
-  --organelle   BED of organelle-origin regions in the SAME coordinate system as the
+    --candidates  unified eccDNA BED (chr start end name score strand [read_count ...])
+    --organelle   BED of organelle-origin regions in the SAME coordinate system as the
                 candidates (e.g. produced by mapping the organelle genome to the
                 nuclear reference). Optional column 4 may label the type: mt / pt /
                 ambiguous (defaults to 'ambiguous').
-  --out         output BED = candidate rows + '\t' + origin
-  --min-overlap fraction of the candidate that must overlap organelle regions to be
+    --out         output BED = candidate rows + '\t' + origin
+    --min-overlap fraction of the candidate that must overlap organelle regions to be
                 tagged (default 0.5)
 
 Defaults to NOT dropping organelle candidates; the caller decides whether to

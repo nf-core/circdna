@@ -12,11 +12,11 @@
 
 ### 三个版本对比
 
-| 版本 | 空结果处理方式 | "无 eccDNA" 时输出 |
-|------|---------------|-------------------|
-| **原版** (`pk7zuva/Circle_finder`) | 无任何检查，awk/grep 静默产生空文件 | 空 `microDNA-JT.txt`（无报错） |
-| **改进版** (`suda-huanglab/circlehunter`) | 早期检查 `split_count > 0`，否则 `touch` 空文件 | 空 `microDNA-JT.txt`（无报错） |
-| **circdna.nf 当前版本** | 多处 `file_exists` 检查 → 写 "ERROR" 日志 → `exit` | **仅** `circle_finder_exit_log.txt`（误导性报错） |
+| 版本                                      | 空结果处理方式                                     | "无 eccDNA" 时输出                                |
+| ----------------------------------------- | -------------------------------------------------- | ------------------------------------------------- |
+| **原版** (`pk7zuva/Circle_finder`)        | 无任何检查，awk/grep 静默产生空文件                | 空 `microDNA-JT.txt`（无报错）                    |
+| **改进版** (`suda-huanglab/circlehunter`) | 早期检查 `split_count > 0`，否则 `touch` 空文件    | 空 `microDNA-JT.txt`（无报错）                    |
+| **circdna.nf 当前版本**                   | 多处 `file_exists` 检查 → 写 "ERROR" 日志 → `exit` | **仅** `circle_finder_exit_log.txt`（误导性报错） |
 
 ### 关键发现
 
@@ -43,6 +43,7 @@ file_exists () {
 ```
 
 **问题**：
+
 1. 把"未检测到 eccDNA"误标为 "ERROR"，实际是有效科学结果
 2. `exit` 后不产生 `microDNA-JT.txt`，下游通道收不到该样本的输出文件
 3. 共有 7 处 `file_exists` 检查（行 45、53、61、66、72、79、99），任一触发即提前退出
@@ -55,6 +56,7 @@ file_exists () {
 ### 修改文件 1：[circdna.nf/modules/local/circlefinder/main.nf](file:///Users/siyangming/nextflow_nf_core/circdna.nf/modules/local/circlefinder/main.nf)
 
 **改动要点**：
+
 1. 移除 `file_exists` 函数定义（行 22-32）
 2. 在脚本开头检查 `split` 文件是否有内容
 3. 若 `split` 为空 → `touch ${prefix}.microDNA-JT.txt` 并正常退出（exit 0）
@@ -99,17 +101,17 @@ fi
 
 **具体行级改动**：
 
-| 行号 | 当前内容 | 改为 |
-|------|---------|------|
-| 19-32 | `file_exists` 函数定义 | 替换为 split_count 早期检查（见上） |
-| 45 | `file_exists ${prefix}.concordant.id-freq3.txt` | 改为 `if [[ ! -s ... ]]; then touch ...; exit 0; fi` |
-| 53 | `file_exists ${prefix}.split_freq2.txt` | 删除（后续 awk 容忍空输入） |
-| 61 | `file_exists ${prefix}.concordant_freq3.txt` | 删除 |
-| 66 | `file_exists ${prefix}.split_freq2.oneline.txt` | 删除 |
-| 72 | `file_exists ${prefix}.split_freq2.oneline.S-R-S-CHR-S-ST.ID.txt` | 删除 |
-| 79 | `file_exists ${prefix}.concordant_freq3.2SPLIT-1M.txt` | 删除 |
-| 99 | `file_exists ${prefix}.concordant_freq3.2SPLIT-1M.inoneline.txt` | 删除 |
-| 10 | `emit: log` 保留 | 保留（INFO 日志仍有价值） |
+| 行号  | 当前内容                                                          | 改为                                                 |
+| ----- | ----------------------------------------------------------------- | ---------------------------------------------------- |
+| 19-32 | `file_exists` 函数定义                                            | 替换为 split_count 早期检查（见上）                  |
+| 45    | `file_exists ${prefix}.concordant.id-freq3.txt`                   | 改为 `if [[ ! -s ... ]]; then touch ...; exit 0; fi` |
+| 53    | `file_exists ${prefix}.split_freq2.txt`                           | 删除（后续 awk 容忍空输入）                          |
+| 61    | `file_exists ${prefix}.concordant_freq3.txt`                      | 删除                                                 |
+| 66    | `file_exists ${prefix}.split_freq2.oneline.txt`                   | 删除                                                 |
+| 72    | `file_exists ${prefix}.split_freq2.oneline.S-R-S-CHR-S-ST.ID.txt` | 删除                                                 |
+| 79    | `file_exists ${prefix}.concordant_freq3.2SPLIT-1M.txt`            | 删除                                                 |
+| 99    | `file_exists ${prefix}.concordant_freq3.2SPLIT-1M.inoneline.txt`  | 删除                                                 |
+| 10    | `emit: log` 保留                                                  | 保留（INFO 日志仍有价值）                            |
 
 ### 修改文件 2：[circdna.nf/CHANGELOG.md](file:///Users/siyangming/nextflow_nf_core/circdna.nf/CHANGELOG.md)
 
@@ -136,34 +138,39 @@ manifest {
 
 ## 假设与决策
 
-| 项 | 决策 | 理由 |
-|----|------|------|
-| 是否保留 `circle_finder_exit_log.txt` 输出 | **保留** | INFO 级别日志对用户有诊断价值（知道为何无 eccDNA） |
-| 是否取消所有 `file_exists` 检查 | **保留首个、删除中间** | 首个检查点（concordant.id-freq3.txt）有诊断价值；中间检查点冗余 |
-| 是否同时启用 `freqGr3`（频率>3）分支 | **不启用** | 原版默认不使用 freqGr3，且会改变算法行为，超出本次修复范围 |
-| 是否新增 `--circle_finder_min_freq` 参数 | **不新增** | 保持算法一致性，避免引入假阳性 |
-| 版本升级类型 | **PATCH (3.2.0 → 3.2.1)** | 行为优化+错误信息修复，无新功能、无破坏性变更 |
+| 项                                         | 决策                      | 理由                                                            |
+| ------------------------------------------ | ------------------------- | --------------------------------------------------------------- |
+| 是否保留 `circle_finder_exit_log.txt` 输出 | **保留**                  | INFO 级别日志对用户有诊断价值（知道为何无 eccDNA）              |
+| 是否取消所有 `file_exists` 检查            | **保留首个、删除中间**    | 首个检查点（concordant.id-freq3.txt）有诊断价值；中间检查点冗余 |
+| 是否同时启用 `freqGr3`（频率>3）分支       | **不启用**                | 原版默认不使用 freqGr3，且会改变算法行为，超出本次修复范围      |
+| 是否新增 `--circle_finder_min_freq` 参数   | **不新增**                | 保持算法一致性，避免引入假阳性                                  |
+| 版本升级类型                               | **PATCH (3.2.0 → 3.2.1)** | 行为优化+错误信息修复，无新功能、无破坏性变更                   |
 
 ## 验证步骤
 
 1. **本地测试**：
+
    ```bash
    cd /Users/siyangming/nextflow_nf_core/circdna.nf
    nextflow run main.nf -profile test_local --circle_identifier circle_finder
    ```
+
    验证：CIRCLEFINDER 任务正常完成，产出 `microDNA-JT.txt`（可能为空）
 
 2. **检查下游通道完整性**：
+
    - 确认 CIRCLEFINDER 的 `circdna` emit 总是产出文件（即使是空文件）
    - 下游 `CANDIDATE_MERGE` 或结果汇总不再因缺失文件而报错
 
 3. **验证 schema**：
+
    ```bash
    conda activate nextflow
    nf-core schema build
    ```
 
 4. **Lint 检查**：
+
    ```bash
    nf-core lint
    ```

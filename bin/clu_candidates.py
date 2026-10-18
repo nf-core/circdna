@@ -15,14 +15,14 @@ Options:
     --ecc-prop   : minimum TR proportion to call a cluster eccDNA candidate (default: 0.8)
 
 Notes (fixed vs the image copy):
-  * seqclust writes COMPARATIVE_ANALYSIS_COUNTS.csv via R `write.table(col.names=TRUE)`.
+    * seqclust writes COMPARATIVE_ANALYSIS_COUNTS.csv via R `write.table(col.names=TRUE)`.
     Its header row starts with "supercluster" and the sample-count columns are the
     SQLite column names wrapped in brackets, e.g. `[TR]` / `[CO]`. The previous parser
     only looked for a row whose first cell == 'cluster' and exact-matched 'TR'/'CO',
     which never matched the real file. The parser here normalizes brackets/quotes and
     locates the cluster-id column by name, then joins counts to CLUSTER_TABLE rows by
     cluster id (not by row order).
-  * seqclust may die while generating its final HTML report (Rserve bug:
+    * seqclust may die while generating its final HTML report (Rserve bug:
     "Error in index_html(imagemap) : object 'imagemap' not found"). In that case
     CLUSTER_TABLE.csv is never written, but COMPARATIVE_ANALYSIS_COUNTS.csv already
     is. We therefore build the cluster list from the comparative table when
@@ -118,7 +118,7 @@ def main():
             co_col = i
     if tr_col is None or co_col is None:
         print(f'ERROR: comparative columns for {args.pre_a}/{args.pre_b} not found '
-              f'(header={comp_header})', file=sys.stderr)
+                f'(header={comp_header})', file=sys.stderr)
         sys.exit(1)
 
     comp_cl = np.array(comp_rows) if comp_rows else np.zeros((0, len(comp_header)), dtype=str)
@@ -137,7 +137,7 @@ def main():
         # seqclust crashed in its final HTML-report step; cluster list is taken
         # from the comparative counts table (cluster id column only).
         print(f'WARN: {cluster_tab} not found; building cluster list from '
-              f'{os.path.basename(comp_tab)}', file=sys.stderr)
+                f'{os.path.basename(comp_tab)}', file=sys.stderr)
         ids = []
         seen = set()
         for r in comp_cl:

@@ -3,6 +3,7 @@
 ## 阶段一：创建 eccdna.smk Snakemake 仓库
 
 - [x] Task 1: 创建 eccdna.smk 项目目录结构与基础文件
+
   - [x] SubTask 1.1: 在 `/Users/siyangming/nextflow_nf_core/eccdna.smk/` 创建项目结构（config/, scripts/, results/, logs/）
   - [x] SubTask 1.2: 复制 `circdna.nf/bin/merge_candidates.py` → `eccdna.smk/scripts/merge_candidates.py`
   - [x] SubTask 1.3: 复制 `circdna.nf/bin/calculate_ecc_score.py` → `eccdna.smk/scripts/calculate_ecc_score.py`
@@ -30,6 +31,7 @@
 ## 阶段三：从 circdna.nf 移除迁移模块
 
 - [x] Task 4: 删除迁移模块文件
+
   - [x] SubTask 4.1: 删除 `circdna.nf/modules/local/candidate_merge/` 目录（含 main.nf, meta.yml）
   - [x] SubTask 4.2: 删除 `circdna.nf/modules/local/ecc_score/` 目录（含 main.nf, meta.yml）
   - [x] SubTask 4.3: 删除 `circdna.nf/subworkflows/local/integrated_mode/` 目录（含 main.nf, meta.yml 如有）
@@ -37,6 +39,7 @@
   - [x] SubTask 4.5: 删除 `circdna.nf/bin/calculate_ecc_score.py`
 
 - [x] Task 5: 修改 Nextflow 工作流文件
+
   - [x] SubTask 5.1: 修改 `subworkflows/local/eccdna_mode/main.nf`：移除 `include { CANDIDATE_MERGE }` 行；移除 `ch_merge_input` 和 `CANDIDATE_MERGE(ch_merge_input)` 调用；移除 `merged_bed` emit；保留 `eccsplorer_bed` 和 `circle_map_bed` emit
   - [x] SubTask 5.2: 修改 `workflows/circdna.nf`：移除 `INTEGRATED_MODE` include（如有）；移除 `else if (params.mode == 'integrated')` 整个分支（第 295-328 行）；移除 `INTEGRATED_MODE(...)` 调用；移除 `integrated` 从 `valid_modes` 列表（第 32-35 行）；移除 integrated 相关的 ch_mosdepth_multiqc 处理
   - [x] SubTask 5.3: 检查并修改 `workflows/circdna.nf` 顶部 include 语句，移除 INTEGRATED_MODE 引用
@@ -59,6 +62,7 @@
 ## 阶段五：验证与提交 circdna.nf 至 GitHub
 
 - [x] Task 8: 本地验证 circdna.nf 修改
+
   - [x] SubTask 8.3: 确认 `nextflow run main.nf -profile test_local --mode integrated` 会因 mode 验证失败而退出（预期行为）
   - [x] SubTask 8.1: 执行 `nextflow run main.nf -profile test_local,docker --mode reference -stub-run` 验证 reference 模式（成功启动，路由正确）
   - [x] SubTask 8.2: 执行 `nextflow run main.nf -profile test_local,docker --mode eccdna -stub-run` 验证 eccdna 模式（成功启动，无 CANDIDATE_MERGE/ECC_SCORE 步骤）

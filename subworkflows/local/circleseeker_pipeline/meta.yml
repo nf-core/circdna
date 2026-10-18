@@ -1,20 +1,36 @@
-## `circleseeker_pipeline`
-Run CircleSeeker eccDNA detection on PacBio HiFi long reads and convert the
-merged CSV output to a BED6+read_count table for downstream candidate filtering.
-
-### Inputs
-
-| Name      | Type     | Description |
-|-----------|----------|-------------|
-| reads     | channel  | `[ val(meta), fastq ]` HiFi reads (FASTA/FASTQ, gz/plain) |
-| genome_fasta | channel | Reference genome FASTA file |
-
-### Outputs
-
-| Name     | Type     | Description |
-|----------|----------|-------------|
-| merged   | channel  | `[ val(meta), <prefix>_merged_output.csv ]` |
-| bed      | channel  | `[ val(meta), <prefix>.circleseeker.bed ]` |
-| summary  | channel  | `[ val(meta), <prefix>_summary.txt ]` |
-| report   | channel  | `[ val(meta), <prefix>_report.html ]` |
-| versions | channel  | Software versions |
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: circleseeker_pipeline
+description: Run CircleSeeker eccDNA detection on PacBio HiFi long reads and convert the merged CSV output to a BED6+read_count table for downstream candidate filtering.
+keywords:
+  - circleseeker
+  - eccdna
+  - long read
+  - pacbio
+input:
+  - reads:
+      type: file
+      description: |
+        [ val(meta), fastq ] HiFi reads (FASTA/FASTQ, gz/plain)
+  - genome_fasta:
+      type: file
+      description: Reference genome FASTA file
+output:
+  - merged:
+      type: file
+      description: "[ val(meta), <prefix>_merged_output.csv ]"
+  - bed:
+      type: file
+      description: "[ val(meta), <prefix>.circleseeker.bed ]"
+  - summary:
+      type: file
+      description: "[ val(meta), <prefix>_summary.txt ]"
+  - report:
+      type: file
+      description: "[ val(meta), <prefix>_report.html ]"
+  - versions:
+      type: file
+      description: Software versions
+authors:
+  - "@SiYangming"
+maintainers:
+  - "@SiYangming"

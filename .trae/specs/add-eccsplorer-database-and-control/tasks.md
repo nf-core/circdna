@@ -3,12 +3,14 @@
 ## 阶段一：注释数据库预处理与参数声明
 
 - [ ] Task 1: 创建注释数据库预处理脚本 `scripts/prepare_eccsplorer_database.sh`
+
   - [ ] SubTask 1.1: 脚本解压 Dfam RepeatMasker.lib.gz（若未解压），输出 `Dfam-RepeatMasker.lib`
   - [ ] SubTask 1.2: 脚本根据物种参数（--species，如 fungi/plant/human）从 RepBase31.07.fasta/ 选择对应 `.ref` 文件（fngrep.ref / athrep.ref / humrep.ref）
   - [ ] SubTask 1.3: 脚本合并 Dfam + RepBase 对应物种库为单一 `eccsplorer_db.fa`，输出到指定目录
   - [ ] SubTask 1.4: 脚本支持 `--out` 参数指定输出路径，默认输出到 `circdna.nf/testdatasets/eccsplorer_db/`
 
 - [ ] Task 2: 在 `circdna.nf/nextflow.config` 新增 ECCsplorer 注释数据库参数
+
   - [ ] SubTask 2.1: 新增 `eccsplorer_database = null` 参数（仅此一个命令行参数，**不新增任何 control 参数**）
 
 - [ ] Task 3: 执行 `scripts/prepare_eccsplorer_database.sh --species fungi`，生成 `circdna.nf/testdatasets/eccsplorer_db/eccsplorer_db.fa`（用于酵母测试数据）
@@ -16,12 +18,14 @@
 ## 阶段二：ECCSPLORER 模块修改
 
 - [ ] Task 4: 修改 `circdna.nf/modules/local/eccsplorer/main.nf` 支持可选 control 输入
+
   - [ ] SubTask 4.1: input 块新增可选 `path(control_r1)` 和 `path(control_r2)`（使用 `StageStrategy` 或通过 when 条件区分两套 input 签名；若 Nextflow 不支持可选 input，则使用两个 process 变体 ECCSPLORER 与 ECCSPLORER_WITH_CONTROL）
   - [ ] SubTask 4.2: script 块（BAM 模式）条件性附加 control 参数：当 control_r1/control_r2 非空时，将 `${control_r1} ${control_r2}` 作为 ECCsplorer 的位置参数 3、4 传入
   - [ ] SubTask 4.3: script 块（FASTQ 模式）同 SubTask 4.2
   - [ ] SubTask 4.4: stub 块无需修改（stub 不执行真实命令）
 
 - [ ] Task 5: 更新 `circdna.nf/conf/modules.config` 的 ECCSPLORER `ext.args`
+
   - [ ] SubTask 5.1: 将 `ext.args` 改为动态构造，条件性附加 `-d ${params.eccsplorer_database}`（当参数非 null 时）
   - [ ] SubTask 5.2: 保持现有 `--mode map` 和 `--trim_reads` 逻辑
 
@@ -32,6 +36,7 @@
 ## 阶段三：samplesheet 校验脚本与 subworkflow/workflow 修改
 
 - [ ] Task 8: 修改 `circdna.nf/bin/check_samplesheet.py` 兼容现有 `data_type` 列格式 + 新增 `group` 列
+
   - [ ] SubTask 8.1: OPTIONAL_FIELDS 同时识别 `data_type` 和 `datatype` 两种列名
   - [ ] SubTask 8.2: 值归一化为小写后校验，接受 `eccDNA`/`gDNA`/`eccdna`/`gdna` 任一写法
   - [ ] SubTask 8.3: 新增识别可选的 `group` 列（任意非空字符串值），输出 samplesheet 保留该列
@@ -39,6 +44,7 @@
   - [ ] SubTask 8.5: meta map 中以 `data_type` 键存储归一化后的小写值（`eccdna`/`gdna`），以 `group` 键存储分组值（无 group 列时为空字符串）
 
 - [ ] Task 9: 修改 `circdna.nf/subworkflows/local/eccdna_mode/main.nf`
+
   - [ ] SubTask 9.1: take 块新增 `control_reads` 通道（gDNA reads，可为 empty channel）
   - [ ] SubTask 9.2: 根据 meta.data_type 过滤出 eccDNA 样本（dataset A），将 gDNA 样本的 reads 作为 control
   - [ ] SubTask 9.3: 按 `meta.group` 列值匹配 eccDNA 与 gDNA：同一 group 下的 eccDNA 样本使用该 group 下的 gDNA 样本作为 control
@@ -59,11 +65,13 @@
 ## 阶段四：测试数据与 samplesheet
 
 - [ ] Task 11: 准备 gDNA 测试数据
+
   - [ ] SubTask 11.1: 复制 `circdna_2_R1.fastq.gz` → `gdna_2_R1.fastq.gz`，`circdna_2_R2.fastq.gz` → `gdna_2_R2.fastq.gz`
   - [ ] SubTask 11.2: 复制 `circdna_3_R1.fastq.gz` → `gdna_3_R1.fastq.gz`，`circdna_3_R2.fastq.gz` → `gdna_3_R2.fastq.gz`
   - [ ] SubTask 11.3: 确认 `gdna_1_R1/R2.fastq.gz` 已存在（无需复制）
 
 - [ ] Task 12: 修改 `samplesheets/samplesheet_local.csv`（无 gDNA 对比测试）
+
   - [ ] SubTask 12.1: 补充 `data_type` 列，3 个样本（circdna_1/2/3）均为 `eccDNA`
   - [ ] SubTask 12.2: 不包含任何 gDNA 行
   - [ ] SubTask 12.3: 不包含 `group` 列（无 gDNA 时无需分组）
@@ -77,11 +85,13 @@
 ## 阶段五：测试配置
 
 - [ ] Task 14: 修改 `conf/test_local.config`
+
   - [ ] SubTask 14.1: `input` 保持 `samplesheets/samplesheet_local.csv`（已补充 data_type 列，无 group 列）
   - [ ] SubTask 14.2: 新增 `eccsplorer_database = '/Users/siyangming/nextflow_nf_core/circdna.nf/testdatasets/eccsplorer_db/eccsplorer_db.fa'`
   - [ ] SubTask 14.3: `outdir` 改为 `results/test_local`（相对 circdna.nf/ 目录）
 
 - [ ] Task 15: 新建 `conf/test_local_gdna.config`
+
   - [ ] SubTask 15.1: `input` 设为 `samplesheets/samplesheet_local_with_gdna.csv`
   - [ ] SubTask 15.2: `eccsplorer_database` 同 test_local
   - [ ] SubTask 15.3: `outdir` 设为 `results/test_local_gdna`
@@ -101,11 +111,13 @@
 ## 阶段七：验证
 
 - [x] Task 19: stub 模式验证（无 control）
+
   - [x] SubTask 19.1: 执行 `nextflow run main.nf -profile test_local,docker -stub` 验证流程通过
   - [x] SubTask 19.2: 验证 `results/test_local/eccsplorer/` 下产出文件存在
   - [x] SubTask 19.3: 验证 ECCSPLORER 任务无 failed，命令中不含 dataset B 参数
 
 - [x] Task 20: stub 模式验证（有 control）
+
   - [x] SubTask 20.1: 执行 `nextflow run main.nf -profile test_local_gdna,docker -stub` 验证流程通过
   - [x] SubTask 20.2: 验证 `results/test_local_gdna/eccsplorer/` 下产出文件存在
   - [x] SubTask 20.3: 验证 ECCSPLORER 任务无 failed，命令中包含 gDNA control 位置参数

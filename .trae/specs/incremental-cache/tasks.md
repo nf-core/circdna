@@ -1,6 +1,7 @@
 # circDNA 增量/减量缓存实现 - 实施计划
 
 ## [x] Task 1: 修改 input_check/main.nf 实现分离验证和 Channel 创建
+
 - **Priority**: high
 - **Depends On**: None
 - **Description**:
@@ -11,6 +12,7 @@
   - 同时解决文件中存在的 merge conflict markers (<<<<<<<, =======, >>>>>>>)
   - 确保 FASTQ、BAM、long-read 三种模式均正确处理
 - **Implementation Details**:
+
   ```nextflow
   workflow INPUT_CHECK {
       take:
@@ -41,6 +43,7 @@
       versions = ch_versions
   }
   ```
+
 - **Acceptance Criteria Addressed**: AC-1, AC-2, AC-3, AC-4, AC-5
 - **Test Requirements**:
   - `programmatic` TR-1.1: 使用 test_local.config 首次运行 3 个样本成功完成
@@ -54,6 +57,7 @@
   - `file(samplesheet).splitCsv()` 中 `file()` 会确保路径存在性检查
 
 ## [x] Task 2: 创建缓存验证测试脚本
+
 - **Priority**: high
 - **Depends On**: Task 1
 - **Description**:
@@ -71,6 +75,7 @@
   - 可使用 `nextflow log -f 'CACHED|NEW'` 过滤日志
 
 ## [x] Task 3: 端到端验证测试
+
 - **Priority**: high
 - **Depends On**: Task 1, Task 2
 - **Description**:
@@ -95,6 +100,7 @@
   - 详见 checklist.md 中的缓存测试结果汇总表
 
 ## [x] Task 4: 代码审查和文档更新
+
 - **Priority**: medium
 - **Depends On**: Task 1, Task 3
 - **Description**:

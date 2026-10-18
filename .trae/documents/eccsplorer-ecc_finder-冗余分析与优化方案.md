@@ -15,64 +15,65 @@
 
 基于 [ECCsplorer.py](file:///Users/siyangming/nextflow_nf_core/ECCsplorer/ECCsplorer.py)、[eccMapper.py](file:///Users/siyangming/nextflow_nf_core/ECCsplorer/lib/eccMapper.py)、[eccPrepare.py](file:///Users/siyangming/nextflow_nf_core/ECCsplorer/lib/eccPrepare.py)、[config.py](file:///Users/siyangming/nextflow_nf_core/ECCsplorer/lib/config.py) 源码：
 
-| 步骤 | 操作 | 原工具 | slim 版替代 | 属性 |
-|------|------|--------|-------------|------|
-| 1 | FASTQ adapter trimming | Trimmomatic | 跳过（复用 BAM_PREPROCESSING 上游 QC） | **跳过** |
-| 2 | FASTQ→FASTA 格式转换 | seqtk seq -A | `nf-core seqtk/seq` ✓ | **nf-core** |
-| 3 | segemehl 索引构建 | segemehl.x -x -d | `nf-core segemehl/index` ✓ | **nf-core** |
-| 4 | segemehl split-read 比对 | segemehl.x --splits --MEOP | `nf-core segemehl/align` ✓ | **nf-core** |
-| 5 | Split-read 检测 + 区域合并 | haarz.x split + bedtools merge | `bio.nf/modules/haarz/` + `nf-core bedtools/merge` | **混合** |
-| 6 | SAM→BED 转换 | samtools→sort→bamtobed | `nf-core samtools/view` + `sort` + `bedtools/bamtobed` ✓ | **nf-core** |
-| 7 | Discordant read 提取 | samtools view -f/-G | `nf-core samtools/view` + `bedtools/bamtobed` ✓ | **nf-core** |
-| 8 | Discordant read 区域检测 | bedtools genomecov + merge | `nf-core bedtools/genomecov` + `bedtools/merge` ✓ | **nf-core** |
-| 9 | 窗口覆盖度 + **峰值检测** | bedtools coverage + **scipy find_peaks** | `nf-core bedtools/coverage` + **自定义 Python** | **专有逻辑** |
-| 10 | 候选区域提取（SR∩DR∩coverage） | bedtools intersect | `nf-core bedtools/intersect` + **自定义 Python** | **专有逻辑** |
-| 11 | 候选序列提取 | bedtools getfasta | `nf-core bedtools/getfasta` ✓ | **nf-core** |
-| 12 | BLAST 注释 | blastn | `nf-core blast/blastn` ✓ | **nf-core** |
-| 13 | 候选区 per-base 覆盖度 | bedtools coverage -d | `nf-core bedtools/coverage` ✓ | **nf-core** |
-| 14 | RPM 归一化 + Fold Enrichment | R/pyRserve | **自定义 R 脚本** | **专有逻辑** |
-| 15 | Manhattan plot + 候选可视化 | R (ggplot2) | **自定义 R 脚本** | **专有逻辑** |
-| 16 | HTML 报告生成 | eccHTML_templates.py | **自定义 Python 脚本** | **专有逻辑** |
+| 步骤 | 操作                           | 原工具                                   | slim 版替代                                              | 属性         |
+| ---- | ------------------------------ | ---------------------------------------- | -------------------------------------------------------- | ------------ |
+| 1    | FASTQ adapter trimming         | Trimmomatic                              | 跳过（复用 BAM_PREPROCESSING 上游 QC）                   | **跳过**     |
+| 2    | FASTQ→FASTA 格式转换           | seqtk seq -A                             | `nf-core seqtk/seq` ✓                                    | **nf-core**  |
+| 3    | segemehl 索引构建              | segemehl.x -x -d                         | `nf-core segemehl/index` ✓                               | **nf-core**  |
+| 4    | segemehl split-read 比对       | segemehl.x --splits --MEOP               | `nf-core segemehl/align` ✓                               | **nf-core**  |
+| 5    | Split-read 检测 + 区域合并     | haarz.x split + bedtools merge           | `bio.nf/modules/haarz/` + `nf-core bedtools/merge`       | **混合**     |
+| 6    | SAM→BED 转换                   | samtools→sort→bamtobed                   | `nf-core samtools/view` + `sort` + `bedtools/bamtobed` ✓ | **nf-core**  |
+| 7    | Discordant read 提取           | samtools view -f/-G                      | `nf-core samtools/view` + `bedtools/bamtobed` ✓          | **nf-core**  |
+| 8    | Discordant read 区域检测       | bedtools genomecov + merge               | `nf-core bedtools/genomecov` + `bedtools/merge` ✓        | **nf-core**  |
+| 9    | 窗口覆盖度 + **峰值检测**      | bedtools coverage + **scipy find_peaks** | `nf-core bedtools/coverage` + **自定义 Python**          | **专有逻辑** |
+| 10   | 候选区域提取（SR∩DR∩coverage） | bedtools intersect                       | `nf-core bedtools/intersect` + **自定义 Python**         | **专有逻辑** |
+| 11   | 候选序列提取                   | bedtools getfasta                        | `nf-core bedtools/getfasta` ✓                            | **nf-core**  |
+| 12   | BLAST 注释                     | blastn                                   | `nf-core blast/blastn` ✓                                 | **nf-core**  |
+| 13   | 候选区 per-base 覆盖度         | bedtools coverage -d                     | `nf-core bedtools/coverage` ✓                            | **nf-core**  |
+| 14   | RPM 归一化 + Fold Enrichment   | R/pyRserve                               | **自定义 R 脚本**                                        | **专有逻辑** |
+| 15   | Manhattan plot + 候选可视化    | R (ggplot2)                              | **自定义 R 脚本**                                        | **专有逻辑** |
+| 16   | HTML 报告生成                  | eccHTML_templates.py                     | **自定义 Python 脚本**                                   | **专有逻辑** |
 
 ### 1.2 ecc_finder MAP_SR_slim — 简化步骤（复用 BAM_PREPROCESSING 输出）
 
-| 步骤 | 操作 | 原工具 | slim 版替代 | 属性 |
-|------|------|--------|-------------|------|
-| 1 | Read QC | fastp | **跳过**（BAM_PREPROCESSING 上游已 QC） | **跳过** |
-| 2 | BWA mem 比对 | bwa mem | **跳过**（复用 `BAM_PREPROCESSING` 产出的 sorted BAM） | **核心优化** |
-| 3 | SAM name-sort | pysam.sort -n | `nf-core samtools/sort -n` ✓ | **nf-core** |
-| 4 | 富集位点检测 | Genrich | `bio.nf/modules/genrich/`（bioconda 现有） | **bio.nf** |
-| 5 | Split-read 检测 | tidehunter | `bio.nf/modules/tidehunter/`（bioconda 现有） | **bio.nf** |
-| 6 | 候选合并 + 边界精修 + 置信度评分 | pybedtools + 内部算法 | **自定义 Python 脚本** | **专有逻辑** |
+| 步骤 | 操作                             | 原工具                | slim 版替代                                            | 属性         |
+| ---- | -------------------------------- | --------------------- | ------------------------------------------------------ | ------------ |
+| 1    | Read QC                          | fastp                 | **跳过**（BAM_PREPROCESSING 上游已 QC）                | **跳过**     |
+| 2    | BWA mem 比对                     | bwa mem               | **跳过**（复用 `BAM_PREPROCESSING` 产出的 sorted BAM） | **核心优化** |
+| 3    | SAM name-sort                    | pysam.sort -n         | `nf-core samtools/sort -n` ✓                           | **nf-core**  |
+| 4    | 富集位点检测                     | Genrich               | `bio.nf/modules/genrich/`（bioconda 现有）             | **bio.nf**   |
+| 5    | Split-read 检测                  | tidehunter            | `bio.nf/modules/tidehunter/`（bioconda 现有）          | **bio.nf**   |
+| 6    | 候选合并 + 边界精修 + 置信度评分 | pybedtools + 内部算法 | **自定义 Python 脚本**                                 | **专有逻辑** |
 
 ### 1.3 ecc_finder ASM_SR_slim — 简化步骤
 
-| 步骤 | 操作 | 原工具 | slim 版替代 | 属性 |
-|------|------|------|-------------|------|
-| 1 | Read QC | fastp | **跳过** | **跳过** |
-| 2 | De novo 组装 | unicycler -1 -2 | `nf-core unicycler` ✓ | **nf-core** |
-| 3 | eccDNA 候选识别 | 自定义算法 | **自定义 Python 脚本** | **专有逻辑** |
+| 步骤 | 操作            | 原工具          | slim 版替代            | 属性         |
+| ---- | --------------- | --------------- | ---------------------- | ------------ |
+| 1    | Read QC         | fastp           | **跳过**               | **跳过**     |
+| 2    | De novo 组装    | unicycler -1 -2 | `nf-core unicycler` ✓  | **nf-core**  |
+| 3    | eccDNA 候选识别 | 自定义算法      | **自定义 Python 脚本** | **专有逻辑** |
 
 ---
 
 ## 2. 容器与 Conda 环境完整矩阵
 
 > **策略**：
+>
 > - 标准工具(genrich/tidehunter/haarz/segemehl/unicycler/blast) → 使用 quay.io/biocontainers 现有镜像
 > - 专有逻辑(ECCsplorer_slim/ecc_finder_slim) → **构建最小化镜像**，仅含 Python/R 脚本依赖，不含任何外部工具（bwa/segemehl/unicycler 等已由 nf-core 模块替代）
 > - Conda 包推送至 `yangmingsi` 频道，Docker 镜像推送至 `quay.io/bioinfortools`
 
 ### 2.1 标准工具模块（全部已有镜像，无需构建）
 
-| 模块 | bioconda 包 | Docker 镜像 (quay.io) | Apptainer/Singularity (galaxy depot) |
-|------|------------|----------------------|--------------------------------------|
-| `genrich` | `bioconda::genrich=0.6.1` | `quay.io/biocontainers/genrich:0.6.1--h577a1d6_5` (~6 MB) | `https://depot.galaxyproject.org/singularity/genrich:0.6.1--h577a1d6_5` |
-| `tidehunter` | `bioconda::tidehunter=1.5.6` | `quay.io/biocontainers/tidehunter:1.5.6--h7f5d12c_0` (~15 MB) | `https://depot.galaxyproject.org/singularity/tidehunter:1.5.6--h7f5d12c_0` |
-| `haarz` (segemehl) | `bioconda::segemehl=0.3.4` | `quay.io/biocontainers/segemehl:0.3.4--hc2ea5fd_5` (~50 MB) | `https://depot.galaxyproject.org/singularity/segemehl:0.3.4--hc2ea5fd_5` |
-| `segemehl/index` | `bioconda::segemehl=0.3.4` | 同上（已有 nf-core 模块） | 同上 |
-| `segemehl/align` | `bioconda::segemehl=0.3.4` | 同上（已有 nf-core 模块） | 同上 |
-| `unicycler` | `bioconda::unicycler=0.5.1` | `community.wave.seqera.io/library/unicycler:0.5.1` | seqera container registry |
-| `blast/blastn` | `bioconda::blast=2.16.0` | nf-core 标准镜像 | 同上 |
+| 模块               | bioconda 包                  | Docker 镜像 (quay.io)                                         | Apptainer/Singularity (galaxy depot)                                       |
+| ------------------ | ---------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `genrich`          | `bioconda::genrich=0.6.1`    | `quay.io/biocontainers/genrich:0.6.1--h577a1d6_5` (~6 MB)     | `https://depot.galaxyproject.org/singularity/genrich:0.6.1--h577a1d6_5`    |
+| `tidehunter`       | `bioconda::tidehunter=1.5.6` | `quay.io/biocontainers/tidehunter:1.5.6--h7f5d12c_0` (~15 MB) | `https://depot.galaxyproject.org/singularity/tidehunter:1.5.6--h7f5d12c_0` |
+| `haarz` (segemehl) | `bioconda::segemehl=0.3.4`   | `quay.io/biocontainers/segemehl:0.3.4--hc2ea5fd_5` (~50 MB)   | `https://depot.galaxyproject.org/singularity/segemehl:0.3.4--hc2ea5fd_5`   |
+| `segemehl/index`   | `bioconda::segemehl=0.3.4`   | 同上（已有 nf-core 模块）                                     | 同上                                                                       |
+| `segemehl/align`   | `bioconda::segemehl=0.3.4`   | 同上（已有 nf-core 模块）                                     | 同上                                                                       |
+| `unicycler`        | `bioconda::unicycler=0.5.1`  | `community.wave.seqera.io/library/unicycler:0.5.1`            | seqera container registry                                                  |
+| `blast/blastn`     | `bioconda::blast=2.16.0`     | nf-core 标准镜像                                              | 同上                                                                       |
 
 ### 2.2 专有逻辑模块 — 需构建最小化 Slim 镜像
 
@@ -80,12 +81,12 @@
 
 #### 2.2.1 ECCsplorer_slim 镜像
 
-| 属性 | 值 |
-|------|-----|
-| **镜像名** | `quay.io/bioinfortools/eccsplorer_slim:1.0.0` |
-| **Conda 包** | `yangmingsi::eccsplorer_slim=1.0.0` |
-| **预估大小** | ~400 MB（vs 原版 ~1.5 GB，瘦身 73%） |
-| **依赖** | Python 3.9+, numpy, scipy, biopython, R 4.x, r-ggplot2 |
+| 属性         | 值                                                     |
+| ------------ | ------------------------------------------------------ |
+| **镜像名**   | `quay.io/bioinfortools/eccsplorer_slim:1.0.0`          |
+| **Conda 包** | `yangmingsi::eccsplorer_slim=1.0.0`                    |
+| **预估大小** | ~400 MB（vs 原版 ~1.5 GB，瘦身 73%）                   |
+| **依赖**     | Python 3.9+, numpy, scipy, biopython, R 4.x, r-ggplot2 |
 
 **只含的依赖（最小化）**：
 
@@ -109,12 +110,12 @@ dependencies:
 
 #### 2.2.2 ecc_finder_slim 镜像
 
-| 属性 | 值 |
-|------|-----|
-| **镜像名** | `quay.io/bioinfortools/ecc_finder_slim:1.0.0` |
-| **Conda 包** | `yangmingsi::ecc_finder_slim=1.0.0` |
-| **预估大小** | ~250 MB（vs 原版 ~2 GB，瘦身 87%） |
-| **依赖** | Python 3.9+, numpy, pandas, matplotlib, pybedtools, bedtools |
+| 属性         | 值                                                           |
+| ------------ | ------------------------------------------------------------ |
+| **镜像名**   | `quay.io/bioinfortools/ecc_finder_slim:1.0.0`                |
+| **Conda 包** | `yangmingsi::ecc_finder_slim=1.0.0`                          |
+| **预估大小** | ~250 MB（vs 原版 ~2 GB，瘦身 87%）                           |
+| **依赖**     | Python 3.9+, numpy, pandas, matplotlib, pybedtools, bedtools |
 
 **只含的依赖（最小化）**：
 
@@ -140,15 +141,15 @@ dependencies:
 
 ### 2.3 镜像大小对比
 
-| 镜像 | 大小 | 瘦身比 | 来源 |
-|------|------|--------|------|
-| genrich | ~6 MB | — | biocontainers 现有 |
-| tidehunter | ~15 MB | — | biocontainers 现有 |
-| segemehl (haarz) | ~50 MB | — | biocontainers 现有 |
-| **eccsplorer (原版)** | ~1.5 GB | 基线 | bioinfortools 现有 |
-| **eccsplorer_slim** | **~400 MB** | **↓73%** | **需新建** |
-| **ecc_finder (原版)** | ~2 GB | 基线 | bioinfortools 现有 |
-| **ecc_finder_slim** | **~250 MB** | **↓87%** | **需新建** |
+| 镜像                  | 大小        | 瘦身比   | 来源               |
+| --------------------- | ----------- | -------- | ------------------ |
+| genrich               | ~6 MB       | —        | biocontainers 现有 |
+| tidehunter            | ~15 MB      | —        | biocontainers 现有 |
+| segemehl (haarz)      | ~50 MB      | —        | biocontainers 现有 |
+| **eccsplorer (原版)** | ~1.5 GB     | 基线     | bioinfortools 现有 |
+| **eccsplorer_slim**   | **~400 MB** | **↓73%** | **需新建**         |
+| **ecc_finder (原版)** | ~2 GB       | 基线     | bioinfortools 现有 |
+| **ecc_finder_slim**   | **~250 MB** | **↓87%** | **需新建**         |
 
 ---
 
@@ -466,23 +467,23 @@ Raw FASTQ
 
 > 在执行任何模块构建之前，需先完成两个 slim 镜像的 conda 包 + Docker 镜像构建。
 
-| 步骤 | 操作 | 详细规格 |
-|------|------|---------|
-| 0.1 | 编写 ECCsplorer_slim 专有 Python/R 脚本 | 从 [ECCsplorer 源码](file:///Users/siyangming/nextflow_nf_core/ECCsplorer/) 提取 → [§2.4.1](#241-eccsplorer_slim-conda-recipe) |
-| 0.2 | 构建 `eccsplorer_slim` conda 包 + Docker 镜像 | [§2.4.5](#245-构建与推送命令) |
-| 0.3 | 编写 ecc_finder_slim 专有 Python 脚本 | 从 [ecc_finder 源码](https://github.com/njaupan/ecc_finder) 提取 → [§2.4.3](#243-ecc_finder_slim-conda-recipe) |
-| 0.4 | 构建 `ecc_finder_slim` conda 包 + Docker 镜像 | [§2.4.5](#245-构建与推送命令) |
+| 步骤 | 操作                                          | 详细规格                                                                                                                       |
+| ---- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| 0.1  | 编写 ECCsplorer_slim 专有 Python/R 脚本       | 从 [ECCsplorer 源码](file:///Users/siyangming/nextflow_nf_core/ECCsplorer/) 提取 → [§2.4.1](#241-eccsplorer_slim-conda-recipe) |
+| 0.2  | 构建 `eccsplorer_slim` conda 包 + Docker 镜像 | [§2.4.5](#245-构建与推送命令)                                                                                                  |
+| 0.3  | 编写 ecc_finder_slim 专有 Python 脚本         | 从 [ecc_finder 源码](https://github.com/njaupan/ecc_finder) 提取 → [§2.4.3](#243-ecc_finder_slim-conda-recipe)                 |
+| 0.4  | 构建 `ecc_finder_slim` conda 包 + Docker 镜像 | [§2.4.5](#245-构建与推送命令)                                                                                                  |
 
 ### 阶段 1：bio.nf 模块构建（不涉及 circdna.nf）
 
 #### 1.1 构建标准工具模块（全部使用现有 bioconda 镜像）
 
-| 步骤 | 模块 | 位置 | environment.yml | container (3引擎支持) |
-|------|------|------|-----------------|----------------------|
-| 1.1a | `GENRICH` | `bio.nf/modules/genrich/` | `bioconda::genrich=0.6.1` | docker: `quay.io/biocontainers/genrich:0.6.1--h577a1d6_5` / apptainer: `https://depot.galaxyproject.org/singularity/genrich:0.6.1--h577a1d6_5` |
-| 1.1b | `TIDEHUNTER` | `bio.nf/modules/tidehunter/` | `bioconda::tidehunter=1.5.6` | docker: `quay.io/biocontainers/tidehunter:1.5.6--h7f5d12c_0` / apptainer: `https://depot.galaxyproject.org/singularity/tidehunter:1.5.6--h7f5d12c_0` |
-| 1.1c | `HAARZ` | `bio.nf/modules/haarz/` | `bioconda::segemehl=0.3.4`（haarz 内置） | docker: `quay.io/biocontainers/segemehl:0.3.4--hc2ea5fd_5` / apptainer: `https://depot.galaxyproject.org/singularity/segemehl:0.3.4--hc2ea5fd_5` |
-| 1.1d | `blast/blastn` | `circdna.nf/modules/nf-core/blast/blastn/` | `nf-core modules install blast/blastn` | nf-core 标准镜像 |
+| 步骤 | 模块           | 位置                                       | environment.yml                          | container (3引擎支持)                                                                                                                                |
+| ---- | -------------- | ------------------------------------------ | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.1a | `GENRICH`      | `bio.nf/modules/genrich/`                  | `bioconda::genrich=0.6.1`                | docker: `quay.io/biocontainers/genrich:0.6.1--h577a1d6_5` / apptainer: `https://depot.galaxyproject.org/singularity/genrich:0.6.1--h577a1d6_5`       |
+| 1.1b | `TIDEHUNTER`   | `bio.nf/modules/tidehunter/`               | `bioconda::tidehunter=1.5.6`             | docker: `quay.io/biocontainers/tidehunter:1.5.6--h7f5d12c_0` / apptainer: `https://depot.galaxyproject.org/singularity/tidehunter:1.5.6--h7f5d12c_0` |
+| 1.1c | `HAARZ`        | `bio.nf/modules/haarz/`                    | `bioconda::segemehl=0.3.4`（haarz 内置） | docker: `quay.io/biocontainers/segemehl:0.3.4--hc2ea5fd_5` / apptainer: `https://depot.galaxyproject.org/singularity/segemehl:0.3.4--hc2ea5fd_5`     |
+| 1.1d | `blast/blastn` | `circdna.nf/modules/nf-core/blast/blastn/` | `nf-core modules install blast/blastn`   | nf-core 标准镜像                                                                                                                                     |
 
 每个模块的标准模板（以 genrich 为例）：
 
@@ -543,21 +544,21 @@ dependencies:
 
 所有 6 个模块使用同一个容器 `quay.io/bioinfortools/eccsplorer:2022.01.1.1`：
 
-| 步骤 | Process 名 | 位置 | 输入 → 输出 | 核心逻辑来源 |
-|------|-----------|------|-------------|-------------|
-| 1.2a | `ECCSPLORER_PEAK_DETECT` | `bio.nf/modules/eccsplorer_slim/peak_detect/` | `coverage.tsv` → `peak_regions.bed` | [eccMapper.py L44-107](file:///Users/siyangming/nextflow_nf_core/ECCsplorer/lib/eccMapper.py#L44-L107) `get_rough_coverage` + `find_peaks` |
-| 1.2b | `ECCSPLORER_CANDIDATE_EXTRACT` | `bio.nf/modules/eccsplorer_slim/candidate_extract/` | `SR.bed + peak_all.bed + peak_DR.bed` → `candidates.bed` | [eccMapper.py L450-513](file:///Users/siyangming/nextflow_nf_core/ECCsplorer/lib/eccMapper.py#L450-L513) `extract_candidate_regions` |
-| 1.2c | `ECCSPLORER_COVERAGE_PROFILE` | `bio.nf/modules/eccsplorer_slim/coverage_profile/` | `candidates.bed + all.bed + ref.fa` → per-candidate coverage | [eccMapper.py L146-240](file:///Users/siyangming/nextflow_nf_core/ECCsplorer/lib/eccMapper.py#L146-L240) `analyze_candidate_region` |
-| 1.2d | `ECCSPLORER_NORMALIZE` | `bio.nf/modules/eccsplorer_slim/normalize/` | 原始覆盖度 + mapped bases → 归一化 RPM + fold enrichment | [eccDNA_Rcodes.py](file:///Users/siyangming/nextflow_nf_core/ECCsplorer/lib/eccDNA_Rcodes.py) R 函数 |
-| 1.2e | `ECCSPLORER_VISUALIZE` | `bio.nf/modules/eccsplorer_slim/visualize/` | 归一化数据 → PNG plots | [eccDNA_Rcodes.py](file:///Users/siyangming/nextflow_nf_core/ECCsplorer/lib/eccDNA_Rcodes.py) R 函数 |
-| 1.2f | `ECCSPLORER_HTML_REPORT` | `bio.nf/modules/eccsplorer_slim/html_report/` | 候选数据 → HTML report | [eccHTML_templates.py](file:///Users/siyangming/nextflow_nf_core/ECCsplorer/lib/eccHTML_templates.py) HTML 模板 |
+| 步骤 | Process 名                     | 位置                                                | 输入 → 输出                                                  | 核心逻辑来源                                                                                                                               |
+| ---- | ------------------------------ | --------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1.2a | `ECCSPLORER_PEAK_DETECT`       | `bio.nf/modules/eccsplorer_slim/peak_detect/`       | `coverage.tsv` → `peak_regions.bed`                          | [eccMapper.py L44-107](file:///Users/siyangming/nextflow_nf_core/ECCsplorer/lib/eccMapper.py#L44-L107) `get_rough_coverage` + `find_peaks` |
+| 1.2b | `ECCSPLORER_CANDIDATE_EXTRACT` | `bio.nf/modules/eccsplorer_slim/candidate_extract/` | `SR.bed + peak_all.bed + peak_DR.bed` → `candidates.bed`     | [eccMapper.py L450-513](file:///Users/siyangming/nextflow_nf_core/ECCsplorer/lib/eccMapper.py#L450-L513) `extract_candidate_regions`       |
+| 1.2c | `ECCSPLORER_COVERAGE_PROFILE`  | `bio.nf/modules/eccsplorer_slim/coverage_profile/`  | `candidates.bed + all.bed + ref.fa` → per-candidate coverage | [eccMapper.py L146-240](file:///Users/siyangming/nextflow_nf_core/ECCsplorer/lib/eccMapper.py#L146-L240) `analyze_candidate_region`        |
+| 1.2d | `ECCSPLORER_NORMALIZE`         | `bio.nf/modules/eccsplorer_slim/normalize/`         | 原始覆盖度 + mapped bases → 归一化 RPM + fold enrichment     | [eccDNA_Rcodes.py](file:///Users/siyangming/nextflow_nf_core/ECCsplorer/lib/eccDNA_Rcodes.py) R 函数                                       |
+| 1.2e | `ECCSPLORER_VISUALIZE`         | `bio.nf/modules/eccsplorer_slim/visualize/`         | 归一化数据 → PNG plots                                       | [eccDNA_Rcodes.py](file:///Users/siyangming/nextflow_nf_core/ECCsplorer/lib/eccDNA_Rcodes.py) R 函数                                       |
+| 1.2f | `ECCSPLORER_HTML_REPORT`       | `bio.nf/modules/eccsplorer_slim/html_report/`       | 候选数据 → HTML report                                       | [eccHTML_templates.py](file:///Users/siyangming/nextflow_nf_core/ECCsplorer/lib/eccHTML_templates.py) HTML 模板                            |
 
 #### 1.3 构建 ecc_finder 专有逻辑模块（bio.nf，复用 bioinfortools/ecc_finder 镜像）
 
-| 步骤 | Process 名 | 位置 | 输入 → 输出 | 核心逻辑来源 |
-|------|-----------|------|-------------|-------------|
+| 步骤 | Process 名               | 位置                                          | 输入 → 输出                                                                       | 核心逻辑来源                                                                                    |
+| ---- | ------------------------ | --------------------------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
 | 1.3a | `ECC_FINDER_MERGE_SCORE` | `bio.nf/modules/ecc_finder_slim/merge_score/` | `enrichment.bed + split_reads.bed + ref.fa` → `candidates.csv + candidates.fasta` | [ecc_finder map-sr.py](https://github.com/njaupan/ecc_finder/blob/main/map-sr.py) 合并+评分逻辑 |
-| 1.3b | `ECC_FINDER_ASM_FILTER` | `bio.nf/modules/ecc_finder_slim/asm_filter/` | `assembly.fasta` → `eccDNA_asm.fasta` | [ecc_finder asm-sr.py](https://github.com/njaupan/ecc_finder/blob/main/asm-sr.py) 过滤逻辑 |
+| 1.3b | `ECC_FINDER_ASM_FILTER`  | `bio.nf/modules/ecc_finder_slim/asm_filter/`  | `assembly.fasta` → `eccDNA_asm.fasta`                                             | [ecc_finder asm-sr.py](https://github.com/njaupan/ecc_finder/blob/main/asm-sr.py) 过滤逻辑      |
 
 ---
 
@@ -826,19 +827,19 @@ nextflow run main.nf -profile test_local \
 
 ## 6. 关键设计决策
 
-| 决策 | 结论 |
-|------|------|
-| 旧模块保留还是删除？ | **保留**，新旧并行共存 |
-| 简化版命名 | `ECCSPLORER_slim` / `ECC_FINDER_MAP_SR_slim` / `ECC_FINDER_ASM_SR_slim` |
-| 参数命名 | `circle_identifier = 'eccsplorer_map_slim,...'` |
-| 构建顺序 | **阶段0** 构建 slim 镜像 → **阶段1** bio.nf 模块 → **阶段2** circdna.nf 接入 |
-| segemehl 比对 vs BWA | **保留 segemehl**（split-read 感知） |
-| ecc_finder MAP_SR BWA 比对 | **跳过**（复用 BAM_PREPROCESSING BWA BAM） |
-| ECCsplorer_slim 镜像 | **需新建** `quay.io/bioinfortools/eccsplorer_slim:1.0.0` (~400 MB, ↓73%), conda: `yangmingsi::eccsplorer_slim` |
-| ecc_finder_slim 镜像 | **需新建** `quay.io/bioinfortools/ecc_finder_slim:1.0.0` (~250 MB, ↓87%), conda: `yangmingsi::ecc_finder_slim` |
-| genrich 镜像 | `quay.io/biocontainers/genrich:0.6.1--h577a1d6_5`（~6 MB，现有） |
-| tidehunter 镜像 | `quay.io/biocontainers/tidehunter:1.5.6--h7f5d12c_0`（~15 MB，现有） |
-| haarz 镜像 | 复用 `quay.io/biocontainers/segemehl:0.3.4--hc2ea5fd_5`（~50 MB，现有，haarz 内置） |
+| 决策                       | 结论                                                                                                           |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| 旧模块保留还是删除？       | **保留**，新旧并行共存                                                                                         |
+| 简化版命名                 | `ECCSPLORER_slim` / `ECC_FINDER_MAP_SR_slim` / `ECC_FINDER_ASM_SR_slim`                                        |
+| 参数命名                   | `circle_identifier = 'eccsplorer_map_slim,...'`                                                                |
+| 构建顺序                   | **阶段0** 构建 slim 镜像 → **阶段1** bio.nf 模块 → **阶段2** circdna.nf 接入                                   |
+| segemehl 比对 vs BWA       | **保留 segemehl**（split-read 感知）                                                                           |
+| ecc_finder MAP_SR BWA 比对 | **跳过**（复用 BAM_PREPROCESSING BWA BAM）                                                                     |
+| ECCsplorer_slim 镜像       | **需新建** `quay.io/bioinfortools/eccsplorer_slim:1.0.0` (~400 MB, ↓73%), conda: `yangmingsi::eccsplorer_slim` |
+| ecc_finder_slim 镜像       | **需新建** `quay.io/bioinfortools/ecc_finder_slim:1.0.0` (~250 MB, ↓87%), conda: `yangmingsi::ecc_finder_slim` |
+| genrich 镜像               | `quay.io/biocontainers/genrich:0.6.1--h577a1d6_5`（~6 MB，现有）                                               |
+| tidehunter 镜像            | `quay.io/biocontainers/tidehunter:1.5.6--h7f5d12c_0`（~15 MB，现有）                                           |
+| haarz 镜像                 | 复用 `quay.io/biocontainers/segemehl:0.3.4--hc2ea5fd_5`（~50 MB，现有，haarz 内置）                            |
 
 ---
 
@@ -911,4 +912,4 @@ circdna.nf/subworkflows/local/ecc_finder_pipeline/ # 原版保留
 
 ---
 
-*本计划基于 2026-08-07 对 ECCsplorer 源码、ecc_finder 源码的深度阅读，以及 bioconda/quay.io 容器可用性的实际调研。所有工具均有现有镜像，无需从头构建。*
+_本计划基于 2026-08-07 对 ECCsplorer 源码、ecc_finder 源码的深度阅读，以及 bioconda/quay.io 容器可用性的实际调研。所有工具均有现有镜像，无需从头构建。_

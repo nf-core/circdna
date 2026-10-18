@@ -12,11 +12,13 @@
 ## 阶段二：更新引用文件
 
 - [x] Task 2: 更新配置文件中的 samplesheet 引用
+
   - [x] SubTask 2.1: `conf/test_local.config` line 18: `samplesheet_local.csv` → `test_local_eccdna.csv`
   - [x] SubTask 2.2: `conf/test_local_gdna.config` line 6: 注释中 `samplesheet_local_with_gdna.csv` → `test_local_gdna.csv`
   - [x] SubTask 2.3: `conf/test_local_gdna.config` line 20: `input` 路径更新为 `test_local_gdna.csv`
 
 - [x] Task 3: 更新脚本中的 samplesheet 引用
+
   - [x] SubTask 3.1: `scripts/test_incremental_cache.py` line 18: `ORIGINAL_SAMPLESHEET` 路径更新
   - [x] SubTask 3.2: `scripts/test_incremental_cache.py` line 131: backup 文件名更新
 
@@ -34,6 +36,7 @@
 ## 阶段四：真实模式测试
 
 - [x] Task 6: 执行 `test_local` 真实模式（无 control）
+
   - [x] SubTask 6.1: 清理旧产物 `results/test_local/`（如已存在）
   - [x] SubTask 6.2: 执行 `nextflow run main.nf -profile test_local,docker`（真实模式，含注释库）
   - [x] SubTask 6.3: 记录执行结果（成功，61 tasks，1h26m58s，CPU hours 7.9）
@@ -46,6 +49,7 @@
 ## 阶段五：验证真实产出
 
 - [x] Task 8: 验证 `test_local` 产出
+
   - [x] SubTask 8.1: 验证 `results/test_local/eccsplorer/*_candidates.bed` 非空（78/102/119 行）
   - [x] SubTask 8.2: 验证 `results/test_local/eccsplorer/*_blast.m6` 非空（85-445 bytes，BLAST 注释生效）
   - [x] SubTask 8.3: 验证 `results/test_local/eccsplorer/*_junction_reads.txt` 非空（144KB-409KB）

@@ -184,7 +184,7 @@ def check_samplesheet(file_in, file_out, input_format, protocol_arg, mode="eccdn
 
                 meta = build_meta(row, protocol_arg, input_format, is_short_read=True, single_end=False, default_datatype=default_datatype)
                 sample_info = ["0", "", "", "", "", "", meta["platform"], meta["assay"], meta["datatype"],
-                               meta["pair"], meta["concatemer"], meta["read_type"], meta["enrichment"]]
+                                meta["pair"], meta["concatemer"], meta["read_type"], meta["enrichment"]]
                 sample_mapping_dict.setdefault(sample, []).append(sample_info)
                 continue
 

@@ -28,13 +28,13 @@
 
 ## Root Cause Analysis
 
-| # | 警告类型 | 根因 | 修复方式 |
-|---|---------|------|---------|
-| 1 | Variable declared but not used | `ch_qname_sorted_bai` 在 `circle_map_pipeline` 中声明后从未引用（join 操作用的是 `bam_sorted_bai` 而非 `ch_qname_sorted_bai`） | 删除该行 |
-| 2-3 | Parameter was not used | `.map { meta, fai -> fai }` / `.map { meta, fasta -> fasta }` 中 `meta` 是解构第一个元素但不需要 | 前缀 `_` |
-| 4 | `Channel` deprecated | Nextflow DSL2 推荐 `channel` 小写作为 channel factory 入口 | 替换为 `channel` |
-| 5 | Parameter was not used | `repeat_gff` 在 take 中声明但 main 中未引用（repeat annotation 功能未实现） | 前缀 `_` 保留位置 |
-| 6 | Parameter was not used | 同 #2 | 前缀 `_` |
+| #   | 警告类型                       | 根因                                                                                                                           | 修复方式          |
+| --- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ | ----------------- |
+| 1   | Variable declared but not used | `ch_qname_sorted_bai` 在 `circle_map_pipeline` 中声明后从未引用（join 操作用的是 `bam_sorted_bai` 而非 `ch_qname_sorted_bai`） | 删除该行          |
+| 2-3 | Parameter was not used         | `.map { meta, fai -> fai }` / `.map { meta, fasta -> fasta }` 中 `meta` 是解构第一个元素但不需要                               | 前缀 `_`          |
+| 4   | `Channel` deprecated           | Nextflow DSL2 推荐 `channel` 小写作为 channel factory 入口                                                                     | 替换为 `channel`  |
+| 5   | Parameter was not used         | `repeat_gff` 在 take 中声明但 main 中未引用（repeat annotation 功能未实现）                                                    | 前缀 `_` 保留位置 |
+| 6   | Parameter was not used         | 同 #2                                                                                                                          | 前缀 `_`          |
 
 ## ADDED Requirements
 

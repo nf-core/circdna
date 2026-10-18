@@ -15,9 +15,9 @@ nextflow_process {
             process {
                 """
                 input[0] = [ [ id:'test' ],
-                             [ file("\${projectDir}/modules/eccsplorer/testdata/test_reads_R1.fastq", checkIfExists: true),
-                               file("\${projectDir}/modules/eccsplorer/testdata/test_reads_R2.fastq", checkIfExists: true) ],
-                             file("\${projectDir}/modules/eccsplorer/testdata/test_ref.fa", checkIfExists: true) ]
+                            [ file("\${projectDir}/modules/eccsplorer/testdata/test_reads_R1.fastq", checkIfExists: true),
+                                file("\${projectDir}/modules/eccsplorer/testdata/test_reads_R2.fastq", checkIfExists: true) ],
+                            file("\${projectDir}/modules/eccsplorer/testdata/test_ref.fa", checkIfExists: true) ]
                 """
             }
         }
@@ -39,9 +39,9 @@ nextflow_process {
             process {
                 """
                 input[0] = [ [ id:'test' ],
-                             [ file("\${projectDir}/modules/eccsplorer/testdata/test_reads_R1.fastq", checkIfExists: true),
-                               file("\${projectDir}/modules/eccsplorer/testdata/test_reads_R2.fastq", checkIfExists: true) ],
-                             file("\${projectDir}/modules/eccsplorer/testdata/test_ref.fa", checkIfExists: true) ]
+                            [ file("\${projectDir}/modules/eccsplorer/testdata/test_reads_R1.fastq", checkIfExists: true),
+                                file("\${projectDir}/modules/eccsplorer/testdata/test_reads_R2.fastq", checkIfExists: true) ],
+                            file("\${projectDir}/modules/eccsplorer/testdata/test_ref.fa", checkIfExists: true) ]
                 """
             }
         }

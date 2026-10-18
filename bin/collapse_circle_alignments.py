@@ -9,16 +9,16 @@ emit the unified plant eccDNA BED contract:
     chr  start  end  name  score  strand  read_count  [origin]  [pair]  [engine]
 
 Rules:
-  * drop alignments with MAPQ below --min-mapq (default 20);
-  * per query: cluster blocks on the same chromosome within --max-gap into a
+    * drop alignments with MAPQ below --min-mapq (default 20);
+    * per query: cluster blocks on the same chromosome within --max-gap into a
     single locus (handles chimeric alignments / SA splits that appear as
     multiple BAM records under the same query name);
-  * merge identical loci across queries (overlapping / within --max-gap) and
+    * merge identical loci across queries (overlapping / within --max-gap) and
     sum read_count;
-  * score = mean MAPQ of supporting alignments (rounded).
+    * score = mean MAPQ of supporting alignments (rounded).
 
 Usage:
-  collapse_circle_alignments.py --bed in.bed --out out.bed [--min-mapq 20] [--max-gap 100]
+    collapse_circle_alignments.py --bed in.bed --out out.bed [--min-mapq 20] [--max-gap 100]
 """
 import argparse
 import sys
@@ -103,8 +103,8 @@ def main():
             if cur is not None:
                 out_rows.append(cur)
             cur = {"chrom": chrom, "start": s, "end": e,
-                   "read_count": info["read_count"], "mapqs": list(info["mapqs"]),
-                   "strand": info["strand"]}
+                    "read_count": info["read_count"], "mapqs": list(info["mapqs"]),
+                    "strand": info["strand"]}
         else:
             cur["end"] = max(cur["end"], e)
             cur["read_count"] += info["read_count"]

@@ -1,4 +1,5 @@
 # Checklist
+
 - [x] SEGEMEHL_ALIGN 已配置 `--splits --briefcigar --MEOP --accuracy 95`
 - [x] SEGEMEHL_ALIGN publishDir 排除 .sam
 - [x] HAARZ 包含 awk start>end 行修复

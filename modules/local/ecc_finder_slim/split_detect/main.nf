@@ -30,7 +30,7 @@ process ECC_FINDER_SPLIT_DETECT {
     from pybedtools import BedTool
 
     df = pd.read_csv('${prefix}.bam.bed', sep='\t', header=None,
-                     names=['chrom','start','end','name','score','strand'])
+                    names=['chrom','start','end','name','score','strand'])
     # name is 'read/1' or 'read/2' → split into read + pair number
     tmp = df['name'].astype(str).str.rsplit('/', n=1, expand=True)
     df['read'] = tmp[0]

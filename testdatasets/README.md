@@ -12,13 +12,13 @@ This branch contains test data to be used for automated testing with the [nf-cor
 
 ### Sample sheet files
 
-| File | Description |
-|------|-------------|
-| `test_local_eccdna.csv` | Default local test input (3 samples) |
-| `test_3.csv` | 3 samples - baseline test |
-| `test_4.csv` | 4 samples - incremental cache test (+1 sample) |
-| `test_2.csv` | 2 samples - decremental cache test (-1 sample) |
-| `test_mixed.csv` | 3 samples - mixed cache test (-1+1 sample) |
+| File                    | Description                                    |
+| ----------------------- | ---------------------------------------------- |
+| `test_local_eccdna.csv` | Default local test input (3 samples)           |
+| `test_3.csv`            | 3 samples - baseline test                      |
+| `test_4.csv`            | 4 samples - incremental cache test (+1 sample) |
+| `test_2.csv`            | 2 samples - decremental cache test (-1 sample) |
+| `test_mixed.csv`        | 3 samples - mixed cache test (-1+1 sample)     |
 
 ## Local Testing
 
@@ -85,12 +85,12 @@ done
 
 ### Expected Cache Behavior
 
-| Run | Change | Expected Cached | Expected New |
-|-----|--------|-----------------|--------------|
-| Run 1 | Initial 3 samples | - | All tasks |
-| Run 2 | +1 sample | circdna_1/2/3 tasks | circdna_4 + summary tasks |
-| Run 3 | -1 sample | circdna_1/2 tasks | Summary tasks |
-| Run 4 | -1+1 samples | circdna_1 tasks | circdna_3/4 + summary tasks |
+| Run   | Change            | Expected Cached     | Expected New                |
+| ----- | ----------------- | ------------------- | --------------------------- |
+| Run 1 | Initial 3 samples | -                   | All tasks                   |
+| Run 2 | +1 sample         | circdna_1/2/3 tasks | circdna_4 + summary tasks   |
+| Run 3 | -1 sample         | circdna_1/2 tasks   | Summary tasks               |
+| Run 4 | -1+1 samples      | circdna_1 tasks     | circdna_3/4 + summary tasks |
 
 ## Slim Mode Testing (ECCsplorer_slim + ecc_finder_slim)
 
@@ -98,13 +98,13 @@ Slim 模式将 ECCsplorer 和 ecc_finder 拆分为原子化模块（Docker 独�
 
 ### Docker 镜像
 
-| 镜像 | 大小 | 用途 |
-|------|------|------|
-| `quay.io/bioinfortools/eccsplorer_slim:1.0.0` | 1.25 GB | ECCsplorer 6 个专有分析脚本（Python+R） |
-| `quay.io/bioinfortools/ecc_finder_slim:1.0.0` | 1.06 GB | ecc_finder merge_score + asm_filter 脚本 |
-| `quay.io/biocontainers/genrich:0.6.1--h577a1d6_5` | ~6 MB | Genrich peak calling |
-| `quay.io/biocontainers/tidehunter:1.5.6--h7f5d12c_0` | ~15 MB | TideHunter split-read 检测 |
-| `quay.io/biocontainers/segemehl:0.3.4--hc2ea5fd_5` | ~50 MB | Segemehl + haarz（共用镜像） |
+| 镜像                                                 | 大小    | 用途                                     |
+| ---------------------------------------------------- | ------- | ---------------------------------------- |
+| `quay.io/bioinfortools/eccsplorer_slim:1.0.0`        | 1.25 GB | ECCsplorer 6 个专有分析脚本（Python+R）  |
+| `quay.io/bioinfortools/ecc_finder_slim:1.0.0`        | 1.06 GB | ecc_finder merge_score + asm_filter 脚本 |
+| `quay.io/biocontainers/genrich:0.6.1--h577a1d6_5`    | ~6 MB   | Genrich peak calling                     |
+| `quay.io/biocontainers/tidehunter:1.5.6--h7f5d12c_0` | ~15 MB  | TideHunter split-read 检测               |
+| `quay.io/biocontainers/segemehl:0.3.4--hc2ea5fd_5`   | ~50 MB  | Segemehl + haarz（共用镜像）             |
 
 ### Conda 包
 
@@ -114,11 +114,11 @@ conda install -c yangmingsi eccsplorer_slim=1.0.0 ecc_finder_slim=1.0.0
 
 ### circle_identifier 参数
 
-| 值 | 含义 |
-|------|------|
-| `eccsplorer_map_slim` | ECCsplorer MAP 模式（segemehl → haarz → peak_detect → 完整分析链） |
-| `ecc_finder_map_sr_slim` | ecc_finder MAP_SR 模式（Genrich → TideHunter → merge_score） |
-| `ecc_finder_asm_sr_slim` | ecc_finder ASM_SR 模式（unicycler → asm_filter） |
+| 值                       | 含义                                                               |
+| ------------------------ | ------------------------------------------------------------------ |
+| `eccsplorer_map_slim`    | ECCsplorer MAP 模式（segemehl → haarz → peak_detect → 完整分析链） |
+| `ecc_finder_map_sr_slim` | ecc_finder MAP_SR 模式（Genrich → TideHunter → merge_score）       |
+| `ecc_finder_asm_sr_slim` | ecc_finder ASM_SR 模式（unicycler → asm_filter）                   |
 
 可逗号组合，例如 `--circle_identifier 'eccsplorer_map_slim,ecc_finder_map_sr_slim,ecc_finder_asm_sr_slim'`
 
@@ -256,7 +256,6 @@ Minimap2 generates a `paf` file from the unicycler output. Here are the number o
 
 These are just guidelines and will change with the use of different software, and with any restructuring of the pipeline away from the current defaults.
 
-
 ---
 
 ## Long-Read Test Datasets (v4.1+)
@@ -265,10 +264,10 @@ These are just guidelines and will change with the use of different software, an
 
 ### 数据来源
 
-| 平台 | 样本 | 物种 | 基因组大小 | 来源 SRA | 实验类型 |
-|------|------|------|-----------|----------|----------|
-| ONT | SRR24335762 | *Arabidopsis thaliana* | ~135 Mb | PRJNA961124 | mobilome-seq eccDNA |
-| PacBio | ERR11838731 | *Oryza sativa* | ~430 Mb | PRJEB59090 | HiFi WGS (reference) |
+| 平台   | 样本        | 物种                   | 基因组大小 | 来源 SRA    | 实验类型             |
+| ------ | ----------- | ---------------------- | ---------- | ----------- | -------------------- |
+| ONT    | SRR24335762 | _Arabidopsis thaliana_ | ~135 Mb    | PRJNA961124 | mobilome-seq eccDNA  |
+| PacBio | ERR11838731 | _Oryza sativa_         | ~430 Mb    | PRJEB59090  | HiFi WGS (reference) |
 
 ONT 样本为 eccDNA 富集实验（RCA 扩增后测序）；PacBio 样本为水稻 HiFi WGS 背景数据，用于验证长读长比对/索引路径。
 
@@ -278,21 +277,21 @@ ONT 样本为 eccDNA 富集实验（RCA 扩增后测序）；PacBio 样本为水
 
 #### ONT 测试数据
 
-| 档位 | 文件名 | 提取量 | 文件大小 | 本地预计耗时 | 用途 |
-|------|--------|--------|----------|-------------|------|
-| 冒烟 | `ont/ont_eccdna_smoke.fastq.gz` | 1,500 条 | ~6.5 MB | 5-15 分钟 | 验证流水线跑通、模块接线、输出非空 |
-| 常规验证 | `ont/ont_eccdna_regular.fastq.gz` | 7,500 条 | ~32 MB | 30-90 分钟 | 验证能检出串联重复候选 |
-| 一致性对比 | `ont/ont_eccdna_consistency.fastq.gz` | 30,000 条 | ~127 MB | 2-6 小时 | 完整版产物对比（本地生成） |
+| 档位       | 文件名                                | 提取量    | 文件大小 | 本地预计耗时 | 用途                               |
+| ---------- | ------------------------------------- | --------- | -------- | ------------ | ---------------------------------- |
+| 冒烟       | `ont/ont_eccdna_smoke.fastq.gz`       | 1,500 条  | ~6.5 MB  | 5-15 分钟    | 验证流水线跑通、模块接线、输出非空 |
+| 常规验证   | `ont/ont_eccdna_regular.fastq.gz`     | 7,500 条  | ~32 MB   | 30-90 分钟   | 验证能检出串联重复候选             |
+| 一致性对比 | `ont/ont_eccdna_consistency.fastq.gz` | 30,000 条 | ~127 MB  | 2-6 小时     | 完整版产物对比（本地生成）         |
 
 源文件: 196,317 reads, avg 4,587 bp, max 115 kb
 
 #### PacBio 测试数据
 
-| 档位 | 文件名 | 提取量 | 文件大小 | 本地预计耗时 | 用途 |
-|------|--------|--------|----------|-------------|------|
-| 冒烟 | `pacbio/pacbio_eccdna_smoke.fastq.gz` | 1,500 条 | ~25 MB | 5-15 分钟 | 验证流水线跑通、模块接线、输出非空 |
-| 常规验证 | `pacbio/pacbio_eccdna_regular.fastq.gz` | 2,500 条 | ~41 MB | 30-90 分钟 | 验证长读长比对/索引路径 |
-| 一致性对比 | `pacbio/pacbio_eccdna_consistency.fastq.gz` | 15,000 条 | ~246 MB | 2-6 小时 | 完整版产物对比（本地生成） |
+| 档位       | 文件名                                      | 提取量    | 文件大小 | 本地预计耗时 | 用途                               |
+| ---------- | ------------------------------------------- | --------- | -------- | ------------ | ---------------------------------- |
+| 冒烟       | `pacbio/pacbio_eccdna_smoke.fastq.gz`       | 1,500 条  | ~25 MB   | 5-15 分钟    | 验证流水线跑通、模块接线、输出非空 |
+| 常规验证   | `pacbio/pacbio_eccdna_regular.fastq.gz`     | 2,500 条  | ~41 MB   | 30-90 分钟   | 验证长读长比对/索引路径            |
+| 一致性对比 | `pacbio/pacbio_eccdna_consistency.fastq.gz` | 15,000 条 | ~246 MB  | 2-6 小时     | 完整版产物对比（本地生成）         |
 
 源文件: ERR11838731 (6.4 GB gzipped), PacBio HiFi WGS, avg ~18.6 kb
 
@@ -309,9 +308,9 @@ bash circdna.nf/testdatasets/extract_test_data.sh
 
 ### 样本表 (Samplesheet)
 
-| 文件 | 描述 |
-|------|------|
-| `samplesheets/test_ont.csv` | ONT 三档测试样本表（单端 long_read） |
+| 文件                           | 描述                                    |
+| ------------------------------ | --------------------------------------- |
+| `samplesheets/test_ont.csv`    | ONT 三档测试样本表（单端 long_read）    |
 | `samplesheets/test_pacbio.csv` | PacBio 三档测试样本表（单端 long_read） |
 
 格式兼容 `check_samplesheet.py`，自动检测 `single_end=1`（fastq_2 为空）。
@@ -420,6 +419,7 @@ ssh 192.168.16.65 "source ~/.bashrc 2>/dev/null; conda activate nextflow; cd /da
 ```
 
 预期产物（`results/test_real_{pacbio,nanopore}/long_read/`）：
+
 - `cresil/genome/genome.eccDNA_final.txt`（候选列表 + 注释 + Circos 可视化）
 - `fled/{sample}/{sample}.fled_junctions.txt`（无候选时为空文件）
 - `flye/{sample}/{sample}.assembly.fasta.gz`（组装结果）
@@ -436,6 +436,7 @@ ssh 192.168.16.65 "cd /data1/users/siyangming/ecc_finder_orig_build && docker bu
 ```
 
 Dockerfile 对应本地文件：`.trae/build/ecc_finder_apt/Dockerfile`。当前版本 apt 安装含 `procps minimap2 bc`：
+
 - `procps`：解决 nextflow 任务 `ps` 缺失
 - `minimap2` + `bc`：map-ont / asm-ont 真实运行依赖（`FileNotFoundError: minimap2`）
 
@@ -483,6 +484,7 @@ ssh 192.168.16.65 "source /data1/users/siyangming/miniforge3/etc/profile.d/conda
 ```
 
 预期产物（`results/test_real_clu/eccsplorer_slim/`）：
+
 - `clu_prepare/{sample}_REPEATEXPLORER_READY.fa`（TR+CO 合并序列，720252 条）
 - `repeatexplorer2/seqclust/...`（seqclust 全部聚类/注释/TAREAN 产物）
 - `clu_candidates/{sample}_cluster_candidates.csv`（TR 比例 ≥ 0.8 的候选，真实测试 2661 个）
@@ -490,41 +492,40 @@ ssh 192.168.16.65 "source /data1/users/siyangming/miniforge3/etc/profile.d/conda
 
 ### 9. 已修复问题记录
 
-| 问题 | 现象 | 修复 |
-|------|------|------|
-| 黑盒镜像缺 `ps` | 所有 ecc_finder 黑盒模块（map_sr/asm_sr/map_ont/asm_ont）exit 1，报 `Command 'ps' required by nextflow` | Dockerfile apt 加 `procps`，重建推送镜像 |
-| 黑盒镜像缺 `minimap2`/`bc` | 真实运行 map-ont 报 `FileNotFoundError: minimap2` | Dockerfile apt 加 `minimap2 bc`，重建推送镜像 |
-| bwa_index meta 非 Map | `ECC_FINDER_MAP_SR` finalizing 报 `No such property: id for class: java.lang.String` | `workflows/circdna.nf` 3 处改为 `[[id: 'bwa_index'], index]` |
-| FLED 缺 stub 块 | stub 模式仍真实运行 minimap2（71s） | 补充 stub 块 |
-| FLED cat 不健壮 | 无多片段 eccDNA 时 `MulsegFullJunction.out` 不存在，`cat` exit 1 | 分两次 `cat` 加 `2>/dev/null || true`（`set -e` 下需 `|| true`） |
-| FLED output 依赖 script 局部变量 | stub 模式 `No such variable: prefix` | output 路径改内联 `task.ext.prefix ?: meta.id` |
-| map_ont/asm_ont mv 路径错误 | 真实运行 `-o .` 使输出直接写 work 根目录，`mv eccFinder_output/...` 失败 | 判断 `eccFinder_output/` 目录存在才 mv |
-| CIRCLESEEKER 无候选缺输出 | smoke 数据无候选时 summary CSV/BED/报告缺失，output 声明校验失败 | 模块脚本补空 summary/report；`circleseeker_to_bed.py` 缺输入时产出空 BED |
-| `.bashrc` 含 `cd` | 先 cd 再 source 会切走目录，`Cannot find script file` | SSH 命令先 source 再 cd |
-| repeatexplorer 镜像缺 `python` | seqclust 任务 exit 127（`python: command not found`） | patch 命令统一用 `python3` |
-| r2py.py 只读（普通用户） | docker `runOptions -u $(id -u):$(id -g)` 下普通用户无法 patch root 拥有的 `/repex_tarean/lib/r2py.py` | 禁止 containerOptions 覆盖；固化镜像（Dockerfile `RUN python3 /tmp/patch_r2py.py /repex_tarean/lib/r2py.py`，推 quay.io/bioinfortools/repeatexplorer:2.3.8），运行时 patch 失败仅告警 |
-| Nextflow 模板 `\$` 错位替换 | main.nf 注释含 `\$(id -u):\$(id -g)` 后 `${moduleDir}`→`10`、`${reads_fa}`→`VIRIDIPLANTAE3.0` 等按位置错位，静默失败 | 注释/字符串中禁用 `\$` 转义序列，改纯文字描述 |
-| SQLite `too many columns` | `--prefix_length 10` 使 comparative_counts 唯一前缀列数超 SQLite 2000 列上限 | `nextflow.config` 设 `eccsplorer_clu_prefix_length = 2`（TR/CO 前缀长度） |
-| clu_candidates 无法解析真实 seqclust 输出 | 镜像原版仅匹配 `cluster` 列 + 精确 `TR`/`CO`，真实 CSV 首列 `supercluster`、列名带 `[]` | 修正版 `bin/clu_candidates.py`：normalize `[]`/引号、按 cluster id 显式对齐 |
-| 镜像内旧版 clu_candidates.py 拦截 | `clu_candidates.py` 通过 PATH 查找，镜像内 `/opt/eccsplorer_slim/bin` 优先于 pipeline `bin/`（追加在 PATH 末尾） | `clu_candidates/main.nf` 显式调用 `python3 ${projectDir}/bin/clu_candidates.py` 绝对路径 |
-| seqclust 主报告 Rserve 崩溃 | 全部分析完成后 `create_main_reports` 报 `Error in index_html(imagemap) : object 'imagemap' not found`（exit 1），导致 `CLUSTER_TABLE.csv` 缺失 | `repeatexplorer2/main.nf` 容错：seqclust 失败但 `COMPARATIVE_ANALYSIS_COUNTS.csv` 已生成则告警继续；`clu_candidates.py` 回退到仅用 comparative 表构建 cluster 列表 |
+| 问题                                      | 现象                                                                                                                                           | 修复                                                                                                                                                                                  |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- | -------------------- | --- | ------- |
+| 黑盒镜像缺 `ps`                           | 所有 ecc_finder 黑盒模块（map_sr/asm_sr/map_ont/asm_ont）exit 1，报 `Command 'ps' required by nextflow`                                        | Dockerfile apt 加 `procps`，重建推送镜像                                                                                                                                              |
+| 黑盒镜像缺 `minimap2`/`bc`                | 真实运行 map-ont 报 `FileNotFoundError: minimap2`                                                                                              | Dockerfile apt 加 `minimap2 bc`，重建推送镜像                                                                                                                                         |
+| bwa_index meta 非 Map                     | `ECC_FINDER_MAP_SR` finalizing 报 `No such property: id for class: java.lang.String`                                                           | `workflows/circdna.nf` 3 处改为 `[[id: 'bwa_index'], index]`                                                                                                                          |
+| FLED 缺 stub 块                           | stub 模式仍真实运行 minimap2（71s）                                                                                                            | 补充 stub 块                                                                                                                                                                          |
+| FLED cat 不健壮                           | 无多片段 eccDNA 时 `MulsegFullJunction.out` 不存在，`cat` exit 1                                                                               | 分两次 `cat` 加 `2>/dev/null                                                                                                                                                          |     | true`（`set -e`下需` |     | true`） |
+| FLED output 依赖 script 局部变量          | stub 模式 `No such variable: prefix`                                                                                                           | output 路径改内联 `task.ext.prefix ?: meta.id`                                                                                                                                        |
+| map_ont/asm_ont mv 路径错误               | 真实运行 `-o .` 使输出直接写 work 根目录，`mv eccFinder_output/...` 失败                                                                       | 判断 `eccFinder_output/` 目录存在才 mv                                                                                                                                                |
+| CIRCLESEEKER 无候选缺输出                 | smoke 数据无候选时 summary CSV/BED/报告缺失，output 声明校验失败                                                                               | 模块脚本补空 summary/report；`circleseeker_to_bed.py` 缺输入时产出空 BED                                                                                                              |
+| `.bashrc` 含 `cd`                         | 先 cd 再 source 会切走目录，`Cannot find script file`                                                                                          | SSH 命令先 source 再 cd                                                                                                                                                               |
+| repeatexplorer 镜像缺 `python`            | seqclust 任务 exit 127（`python: command not found`）                                                                                          | patch 命令统一用 `python3`                                                                                                                                                            |
+| r2py.py 只读（普通用户）                  | docker `runOptions -u $(id -u):$(id -g)` 下普通用户无法 patch root 拥有的 `/repex_tarean/lib/r2py.py`                                          | 禁止 containerOptions 覆盖；固化镜像（Dockerfile `RUN python3 /tmp/patch_r2py.py /repex_tarean/lib/r2py.py`，推 quay.io/bioinfortools/repeatexplorer:2.3.8），运行时 patch 失败仅告警 |
+| Nextflow 模板 `\$` 错位替换               | main.nf 注释含 `\$(id -u):\$(id -g)` 后 `${moduleDir}`→`10`、`${reads_fa}`→`VIRIDIPLANTAE3.0` 等按位置错位，静默失败                           | 注释/字符串中禁用 `\$` 转义序列，改纯文字描述                                                                                                                                         |
+| SQLite `too many columns`                 | `--prefix_length 10` 使 comparative_counts 唯一前缀列数超 SQLite 2000 列上限                                                                   | `nextflow.config` 设 `eccsplorer_clu_prefix_length = 2`（TR/CO 前缀长度）                                                                                                             |
+| clu_candidates 无法解析真实 seqclust 输出 | 镜像原版仅匹配 `cluster` 列 + 精确 `TR`/`CO`，真实 CSV 首列 `supercluster`、列名带 `[]`                                                        | 修正版 `bin/clu_candidates.py`：normalize `[]`/引号、按 cluster id 显式对齐                                                                                                           |
+| 镜像内旧版 clu_candidates.py 拦截         | `clu_candidates.py` 通过 PATH 查找，镜像内 `/opt/eccsplorer_slim/bin` 优先于 pipeline `bin/`（追加在 PATH 末尾）                               | `clu_candidates/main.nf` 显式调用 `python3 ${projectDir}/bin/clu_candidates.py` 绝对路径                                                                                              |
+| seqclust 主报告 Rserve 崩溃               | 全部分析完成后 `create_main_reports` 报 `Error in index_html(imagemap) : object 'imagemap' not found`（exit 1），导致 `CLUSTER_TABLE.csv` 缺失 | `repeatexplorer2/main.nf` 容错：seqclust 失败但 `COMPARATIVE_ANALYSIS_COUNTS.csv` 已生成则告警继续；`clu_candidates.py` 回退到仅用 comparative 表构建 cluster 列表                    |
 
 ### 10. 测试日志位置（服务器 /tmp）
 
-| 日志 | 内容 | 结果 |
-|------|------|------|
-| `/tmp/stub_full.log` | slim stub 全量 | 68 任务成功 |
-| `/tmp/real_slim.log` | 真实 slim gdna 对照 | 62 任务成功 |
-| `/tmp/stub_blackbox.log` | 黑盒 stub（修复前） | 失败（ps 缺失） |
-| `/tmp/stub_blackbox2.log` | 黑盒 stub（修复后） | 成功 |
-| `/tmp/stub_pacbio2.log` | PacBio 长读 stub（修复后） | 成功 |
-| `/tmp/stub_nanopore2.log` | ONT 长读 stub（修复后） | 成功 |
-| `/tmp/real_pacbio.log` | PacBio 长读真实运行 | 成功（17 任务，3m14s，5 链全检出） |
-| `/tmp/real_nanopore.log` | ONT 长读真实运行 | 成功（17 任务，5m26s，5 链全检出） |
-| `/tmp/ecc_finder_build.log` / `build2.log` | 镜像构建 | 成功 |
-| `/tmp/ecc_finder_push.log` / `push2.log` | 镜像推送 | 成功 |
-| `/tmp/real_clu_run5.log` | clu 链真实运行（seqclust 全量） | seqclust 全部分析完成，最后主报告 Rserve 崩溃（已修复） |
-| `/tmp/real_clu_run6.log` | clu 链真实运行（容错修复后 -resume） | REPEATEXPLORER2 成功（容错 WARN）；CLU_CANDIDATES 失败（镜像旧版脚本拦截） |
-| `/tmp/real_clu_run7.log` | clu 链真实运行（显式调用 pipeline bin 后 -resume） | **成功**：全链闭环，2641+ 候选 |
-| `/tmp/stub_clu_v2.log` | clu 链 stub 验证（修复后） | 成功（CLU_PREPARE + CLU_CANDIDATES） |
-
+| 日志                                       | 内容                                               | 结果                                                                       |
+| ------------------------------------------ | -------------------------------------------------- | -------------------------------------------------------------------------- |
+| `/tmp/stub_full.log`                       | slim stub 全量                                     | 68 任务成功                                                                |
+| `/tmp/real_slim.log`                       | 真实 slim gdna 对照                                | 62 任务成功                                                                |
+| `/tmp/stub_blackbox.log`                   | 黑盒 stub（修复前）                                | 失败（ps 缺失）                                                            |
+| `/tmp/stub_blackbox2.log`                  | 黑盒 stub（修复后）                                | 成功                                                                       |
+| `/tmp/stub_pacbio2.log`                    | PacBio 长读 stub（修复后）                         | 成功                                                                       |
+| `/tmp/stub_nanopore2.log`                  | ONT 长读 stub（修复后）                            | 成功                                                                       |
+| `/tmp/real_pacbio.log`                     | PacBio 长读真实运行                                | 成功（17 任务，3m14s，5 链全检出）                                         |
+| `/tmp/real_nanopore.log`                   | ONT 长读真实运行                                   | 成功（17 任务，5m26s，5 链全检出）                                         |
+| `/tmp/ecc_finder_build.log` / `build2.log` | 镜像构建                                           | 成功                                                                       |
+| `/tmp/ecc_finder_push.log` / `push2.log`   | 镜像推送                                           | 成功                                                                       |
+| `/tmp/real_clu_run5.log`                   | clu 链真实运行（seqclust 全量）                    | seqclust 全部分析完成，最后主报告 Rserve 崩溃（已修复）                    |
+| `/tmp/real_clu_run6.log`                   | clu 链真实运行（容错修复后 -resume）               | REPEATEXPLORER2 成功（容错 WARN）；CLU_CANDIDATES 失败（镜像旧版脚本拦截） |
+| `/tmp/real_clu_run7.log`                   | clu 链真实运行（显式调用 pipeline bin 后 -resume） | **成功**：全链闭环，2641+ 候选                                             |
+| `/tmp/stub_clu_v2.log`                     | clu 链 stub 验证（修复后）                         | 成功（CLU_PREPARE + CLU_CANDIDATES）                                       |

@@ -40,10 +40,12 @@ circdna.nf 长读长（PacBio HiFi）eccDNA 检测目前已有 CRESIL、FLED、F
 - 输出 emit：`merged`（`<prefix>_merged_output.csv`）、`bed`（`<prefix>.circleseeker.bed`）、`summary`（`<prefix>_summary.txt`）、`report`（`<prefix>_report.html`）、`versions`
 
 #### Scenario: 模块真实运行成功
+
 - **WHEN** 以 docker 运行 nf-test 模块测试（本地 testdata：`test_reads.fa` + `test_ref.fa`）
 - **THEN** 进程成功，产出 merged CSV / BED / summary / report / versions.yml，snapshot 匹配
 
 #### Scenario: stub 模式
+
 - **WHEN** 以 `-stub` 运行 nf-test
 - **THEN** 进程成功并产出预期的空/占位输出文件
 
@@ -57,10 +59,12 @@ circdna.nf 长读长（PacBio HiFi）eccDNA 检测目前已有 CRESIL、FLED、F
 - 资源标签使用 `process_high`；测试 profile 中覆盖为 2 CPU / 6 GB
 
 #### Scenario: 长读流程接线正确
+
 - **WHEN** 在 `long_read_identifier` 中包含 `circleseeker` 运行长读分支
 - **THEN** CircleSeeker 子流程运行、BED 进入过滤流程、versions 汇入 MultiQC 汇总
 
 #### Scenario: 未启用 circleseeker
+
 - **WHEN** `long_read_identifier` 不包含 `circleseeker`
 - **THEN** 不执行 CircleSeeker，现有行为不受影响
 
@@ -74,10 +78,12 @@ circdna.nf 长读长（PacBio HiFi）eccDNA 检测目前已有 CRESIL、FLED、F
 - 版本 4.1.0 → 4.2.0，CHANGELOG 增加对应条目（新模块 + 新依赖 circleseeker 1.1.2）
 
 #### Scenario: nf-test 全通过
+
 - **WHEN** 在 `circleseeker` 分支运行 `nf-test test modules/local/circleseeker/tests/main.nf.test`
 - **THEN** 真实与 stub 用例均通过
 
 ## MODIFIED Requirements
 
 ### Requirement: 长读检测引擎集合
+
 `long_read_identifier` 支持的引擎由 `cresil,fled,flye,eccfinder` 扩展为包含 `circleseeker`。默认值 `'cresil,fled,flye,eccfinder'` 保持不变（circleseeker 为显式启用），测试 profile 中显式加入。

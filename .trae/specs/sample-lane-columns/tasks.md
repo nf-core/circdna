@@ -1,9 +1,10 @@
 # circDNA 样本级增量缓存 - The Implementation Plan (Decomposed and Prioritized Task List)
 
 ## [x] Task 1: 修改 check_samplesheet.py 支持可选 lane 列
+
 - **Priority**: high
 - **Depends On**: None
-- **Description**: 
+- **Description**:
   - 修改 `bin/check_samplesheet.py` 支持可选的 `lane` 列
   - FASTQ 模式下，header 允许 `["sample", "fastq_1", "fastq_2"]` 或 `["sample", "fastq_1", "fastq_2", "lane"]`
   - 有 `lane` 列时验证其非空
@@ -17,6 +18,7 @@
 - **Notes**: SAMPLESHEET_CHECK 的输出当前未被使用（INPUT_CHECK 直接从原始 CSV 读取），但仍需保持校验脚本正确性
 
 ## [x] Task 2: 修改 INPUT_CHECK 支持 lane 列
+
 - **Priority**: high
 - **Depends On**: Task 1
 - **Description**:
@@ -32,6 +34,7 @@
   - `programmatic` TR-2.3: BAM 模式行为不变
 
 ## [x] Task 3: 修改 circdna.nf 样本归并逻辑
+
 - **Priority**: high
 - **Depends On**: Task 2
 - **Description**:
@@ -47,6 +50,7 @@
   - `programmatic` TR-3.3: 输出文件命名以 sample 列值为前缀
 
 ## [x] Task 4: 创建带 lane 列的测试 samplesheet
+
 - **Priority**: high
 - **Depends On**: Task 1
 - **Description**:
@@ -61,6 +65,7 @@
   - `programmatic` TR-4.1: 所有 samplesheet 格式正确，可被 INPUT_CHECK 解析
 
 ## [x] Task 5: 端到端缓存验证测试
+
 - **Priority**: high
 - **Depends On**: Task 3, Task 4
 - **Description**:
@@ -79,6 +84,7 @@
   - `programmatic` TR-5.5: 参考基因组任务（BWA_INDEX, SAMTOOLS_FAIDX）始终 CACHED
 
 ## [x] Task 6: 多 lane 合并验证测试
+
 - **Priority**: medium
 - **Depends On**: Task 3, Task 4
 - **Description**:
@@ -92,6 +98,7 @@
   - `programmatic` TR-6.3: 下游任务（TRIMGALORE, BWA_MEM 等）任务数 == 样本数
 
 ## [x] Task 7: 向后兼容验证
+
 - **Priority**: medium
 - **Depends On**: Task 3, Task 4
 - **Description**:
@@ -105,6 +112,7 @@
   - `human-judgement` TR-7.3: 行为符合 nf-core 管道标准
 
 # Task Dependencies
+
 - Task 2 depends on Task 1
 - Task 3 depends on Task 2
 - Task 4 depends on Task 1

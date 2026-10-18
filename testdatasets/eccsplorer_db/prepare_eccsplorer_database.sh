@@ -40,16 +40,16 @@ usage() {
 Usage: $(basename "$0") --species <name> [--out <path>]
 
 Options:
-  --species <name>   Species name for RepBase selection.
-                     Mappings:
-                       fungi|fungus|yeast -> fngrep.ref
-                       plant|arabidopsis|ath -> athrep.ref
-                       human|hum|homo -> humrep.ref
-                       <other> -> \${species}rep.ref
-  --out <path>       Output file or directory path.
-                     If a directory, writes eccsplorer_db.fa inside it.
-                     Default: ${OUT_DIR}/eccsplorer_db.fa
-  -h, --help          Show this help message.
+    --species <name>   Species name for RepBase selection.
+                    Mappings:
+                        fungi|fungus|yeast -> fngrep.ref
+                        plant|arabidopsis|ath -> athrep.ref
+                        human|hum|homo -> humrep.ref
+                        <other> -> \${species}rep.ref
+    --out <path>       Output file or directory path.
+                    If a directory, writes eccsplorer_db.fa inside it.
+                    Default: ${OUT_DIR}/eccsplorer_db.fa
+    -h, --help          Show this help message.
 EOF
 }
 

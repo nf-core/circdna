@@ -26,13 +26,13 @@
 
 ### 1. 四模式的 Nextflow / Snakemake 归属结论
 
-| 模式 | Nextflow 归属 | Snakemake 归属 | 结论 |
-|------|---------------|----------------|------|
-| `PRExer` | reads 质控、裁剪、过滤、格式标准化、供 `map/clu` 复用的统一预处理链 | 不承担 `PRExer` 主链，仅消费标准化产物做探索性分析 | `PRExer` 不再保留黑盒入口，整体以 Nextflow 标准预处理模块链替代 |
-| `map` | 输入标准化、核心比对、候选提取、junction/序列/统计提取、可选 BLAST 注释 | 消费 `map` 标准化产物做轻量筛选、评分、统计与图形分析 | `map` 主链明确归属 Nextflow |
-| `clu` | cluster 输入准备、RepeatExplorer2/seqclust 等重型聚类执行、聚类结果标准化导出 | 消费 `clu` 标准候选与汇总字段做轻量探索性分析 | `clu` 的重计算部分归属 Nextflow，下游解释层暴露给 Snakemake |
-| `all` | 作为 DAG 编排层组合 `PRExer + map + clu + comparative`，负责并行调度与缓存复用 | 不承担总入口编排 | `all` 只保留为 Nextflow 编排层，不再调用 ECCsplorer 黑盒总入口 |
-| `comparative` | 消费 `map/clu` 标准化输出，完成规则固定、可缓存、可独立重跑的标准比较产物生成 | 对 comparative 产物继续做探索性评分、统计汇总、阈值试探和可视化 | `comparative` 采取“标准化比较在 Nextflow，探索性解释在 Snakemake”的分层 |
+| 模式          | Nextflow 归属                                                                  | Snakemake 归属                                                  | 结论                                                                    |
+| ------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `PRExer`      | reads 质控、裁剪、过滤、格式标准化、供 `map/clu` 复用的统一预处理链            | 不承担 `PRExer` 主链，仅消费标准化产物做探索性分析              | `PRExer` 不再保留黑盒入口，整体以 Nextflow 标准预处理模块链替代         |
+| `map`         | 输入标准化、核心比对、候选提取、junction/序列/统计提取、可选 BLAST 注释        | 消费 `map` 标准化产物做轻量筛选、评分、统计与图形分析           | `map` 主链明确归属 Nextflow                                             |
+| `clu`         | cluster 输入准备、RepeatExplorer2/seqclust 等重型聚类执行、聚类结果标准化导出  | 消费 `clu` 标准候选与汇总字段做轻量探索性分析                   | `clu` 的重计算部分归属 Nextflow，下游解释层暴露给 Snakemake             |
+| `all`         | 作为 DAG 编排层组合 `PRExer + map + clu + comparative`，负责并行调度与缓存复用 | 不承担总入口编排                                                | `all` 只保留为 Nextflow 编排层，不再调用 ECCsplorer 黑盒总入口          |
+| `comparative` | 消费 `map/clu` 标准化输出，完成规则固定、可缓存、可独立重跑的标准比较产物生成  | 对 comparative 产物继续做探索性评分、统计汇总、阈值试探和可视化 | `comparative` 采取“标准化比较在 Nextflow，探索性解释在 Snakemake”的分层 |
 
 ### 2. 可复用现有模块与“参数优先迁移”策略
 

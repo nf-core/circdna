@@ -10,7 +10,7 @@ tools:
       description: Fast BAM/CRAM depth calculation for WGS, exome, or targeted sequencing
       homepage: https://github.com/brentp/mosdepth
       documentation: https://github.com/brentp/mosdepth
-      licence: ['MIT']
+      licence: ["MIT"]
 input:
   - meta:
       type: map

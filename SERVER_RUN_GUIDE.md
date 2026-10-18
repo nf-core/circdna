@@ -111,7 +111,7 @@ head -5 circdna.nf/.nextflow.log
 - 向日葵（Helianthus_annuus）
 - 黑果枸杞（Lycium_ruthenicum）
 - 本氏烟草（Nicotiana_benthamiana）
-- 水稻（Oryza_sativa；IRGSP-1.0 默认；Oryza_sativa_Huazhan 仅用于 ecc-* 样本）
+- 水稻（Oryza_sativa；IRGSP-1.0 默认；Oryza_sativa_Huazhan 仅用于 ecc-\* 样本）
 - 番茄（Solanum_lycopersicum）
 - 婆罗门参（Tragopogon_porrifolius）
 - 普通小麦（Triticum_aestivum）
@@ -358,7 +358,6 @@ nextflow run ./circdna.nf/main.nf \
 
 因此，正式产出放在 `<outdir>`，`work/` 只作为临时计算目录，不用于长期保存。失败运行不会自动清理；需要手动清理旧缓存时使用 `nextflow clean -f -before <run_name>`，需要删除全部缓存时使用 `nextflow clean -f`。若某个运行仍需 `-resume`，先不要执行清理，或用临时 `cleanup=false` 覆盖 server 配置。
 
-
 ## 大基因组说明
 
 染色体超过 512 Mb 的物种（如小麦、日本柳杉、黑麦草），BAI 索引无法表示超过 2^29 ≈ 536 Mb 的坐标，会导致 `samtools index` 或 `samtools sort --write-index` 报 `Numerical result out of range`。
@@ -448,34 +447,34 @@ nextflow run main.nf \
 
 ### 数据总览（141 个长读样本，`samplesheets/circdna_tgs_clean.csv`）
 
-| 物种 | 样本数 | 平台 | assay | datatype | read_type | 自动路由 |
-|------|--------|------|-------|----------|-----------|----------|
-| Oryza_sativa | 1 | pacbio | wgs | gdna | hifi | LONG_READ_REFERENCE（背景） |
-| Triticum_aestivum | 80 | ont | rca | eccdna | ont | 检测（默认引擎） |
-| Amaranthus_palmeri | 9 | pacbio | rca | eccdna | clr | 检测（默认引擎） |
-| Amaranthus_palmeri | 1 | pacbio | ciderseq | eccdna | clr | CIDER-Seq2 |
-| Amaranthus_palmeri | 6 | pacbio | wgs | gdna | hifi | LONG_READ_REFERENCE（背景） |
-| Arabidopsis_thaliana | 13 | ont | wgs | gdna | ont | LONG_READ_REFERENCE（背景） |
-| Arabidopsis_thaliana | 15 | ont | rca | eccdna | ont | 检测（默认引擎） |
-| Alopecurus_myosuroides | 7 | pacbio | rca | eccdna | clr(1)/hifi(6) | 检测（大基因组 + CSI） |
-| Solanum_lycopersicum | 2 | ont | rca | eccdna | ont | 检测（默认引擎） |
-| Helianthus_annuus | 1 | ont | enriched | eccdna | ont | 检测（T7 富集） |
-| Helianthus_annuus | 3 | ont | wgs | gdna | ont | LONG_READ_REFERENCE（背景） |
-| Nicotiana_benthamiana | 4 | ont | rca | eccdna | ont | 检测（默认引擎） |
+| 物种                   | 样本数 | 平台   | assay    | datatype | read_type      | 自动路由                    |
+| ---------------------- | ------ | ------ | -------- | -------- | -------------- | --------------------------- |
+| Oryza_sativa           | 1      | pacbio | wgs      | gdna     | hifi           | LONG_READ_REFERENCE（背景） |
+| Triticum_aestivum      | 80     | ont    | rca      | eccdna   | ont            | 检测（默认引擎）            |
+| Amaranthus_palmeri     | 9      | pacbio | rca      | eccdna   | clr            | 检测（默认引擎）            |
+| Amaranthus_palmeri     | 1      | pacbio | ciderseq | eccdna   | clr            | CIDER-Seq2                  |
+| Amaranthus_palmeri     | 6      | pacbio | wgs      | gdna     | hifi           | LONG_READ_REFERENCE（背景） |
+| Arabidopsis_thaliana   | 13     | ont    | wgs      | gdna     | ont            | LONG_READ_REFERENCE（背景） |
+| Arabidopsis_thaliana   | 15     | ont    | rca      | eccdna   | ont            | 检测（默认引擎）            |
+| Alopecurus_myosuroides | 7      | pacbio | rca      | eccdna   | clr(1)/hifi(6) | 检测（大基因组 + CSI）      |
+| Solanum_lycopersicum   | 2      | ont    | rca      | eccdna   | ont            | 检测（默认引擎）            |
+| Helianthus_annuus      | 1      | ont    | enriched | eccdna   | ont            | 检测（T7 富集）             |
+| Helianthus_annuus      | 3      | ont    | wgs      | gdna     | ont            | LONG_READ_REFERENCE（背景） |
+| Nicotiana_benthamiana  | 4      | ont    | rca      | eccdna   | ont            | 检测（默认引擎）            |
 
 > 单张表内同时含 `wgs/gdna` 与 `rca/eccdna` 行时（如拟南芥、向日葵、长芒苋），背景行自动走 LONG_READ_REFERENCE、检测行自动走检测引擎，一次 run 并行完成，无需拆表。
 
 ### 引擎与参数速查
 
-| 参数 | 推荐值 | 说明 |
-|------|--------|------|
-| `--long_read_identifier` | `cresil,fled,flye,eccfinder` | 默认引擎（PacBio/ONT RCA、PacBio CLR 均适用） |
-| `--long_read_identifier` | 默认 + `,circleseeker` | HiFi + RCA + concatemer=true 样本（黑麦草 6 个 hifi） |
-| `--long_read_identifier` | `''`（空） | 纯 WGS 背景表，不跑任何检测引擎 |
-| `--long_read_identifier` | `ciderseq` | CIDER-Seq2（需同时提供 4 个 `ciderseq_*` 参数） |
-| `--eccfinder_mode` | `map`（默认） | `map` / `asm` / `both`；`asm` 会触发组装 + remap，耗时翻倍 |
-| `--min_read_support` | `2`（默认） | 统一 BED 的读支持数过滤阈值 |
-| `-c circdna.nf/conf/large_genome.config` | 小麦 / 黑麦草 | 染色体 >512 Mb，启用 CSI 索引 |
+| 参数                                     | 推荐值                       | 说明                                                       |
+| ---------------------------------------- | ---------------------------- | ---------------------------------------------------------- |
+| `--long_read_identifier`                 | `cresil,fled,flye,eccfinder` | 默认引擎（PacBio/ONT RCA、PacBio CLR 均适用）              |
+| `--long_read_identifier`                 | 默认 + `,circleseeker`       | HiFi + RCA + concatemer=true 样本（黑麦草 6 个 hifi）      |
+| `--long_read_identifier`                 | `''`（空）                   | 纯 WGS 背景表，不跑任何检测引擎                            |
+| `--long_read_identifier`                 | `ciderseq`                   | CIDER-Seq2（需同时提供 4 个 `ciderseq_*` 参数）            |
+| `--eccfinder_mode`                       | `map`（默认）                | `map` / `asm` / `both`；`asm` 会触发组装 + remap，耗时翻倍 |
+| `--min_read_support`                     | `2`（默认）                  | 统一 BED 的读支持数过滤阈值                                |
+| `-c circdna.nf/conf/large_genome.config` | 小麦 / 黑麦草                | 染色体 >512 Mb，启用 CSI 索引                              |
 
 ### 前置检查（每次进入 screen 后）
 

@@ -29,19 +29,19 @@ input:
         pattern: "*.json"
 output:
   - output:
-    - - meta:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. `[ id:'sample1' ]`
-      - "${prefix}*":
-          type: file
-          description: Files/directories produced by the requested command
+      - - meta:
+            type: map
+            description: |
+              Groovy Map containing sample information
+              e.g. `[ id:'sample1' ]`
+        - "${prefix}*":
+            type: file
+            description: Files/directories produced by the requested command
   - versions:
-    - "versions.yml":
-        type: file
-        description: File containing software versions
-        pattern: "versions.yml"
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
 authors:
   - "@siyangming"
 maintainers:

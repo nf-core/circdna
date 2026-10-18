@@ -160,19 +160,19 @@
 
 ### 输入
 
-| 通道 | 类型 | 说明 |
-|------|------|------|
-| meta | val(map) | 样本元数据 |
-| reads_r1 | path | eccDNA reads R1 (FASTQ/FASTA) |
-| reads_r2 | path | eccDNA reads R2 (FASTQ/FASTA) |
-| fasta | path | 参考基因组 FASTA |
-| control_r1 | path (可选) | control reads R1 |
-| control_r2 | path (可选) | control reads R2 |
+| 通道       | 类型        | 说明                          |
+| ---------- | ----------- | ----------------------------- |
+| meta       | val(map)    | 样本元数据                    |
+| reads_r1   | path        | eccDNA reads R1 (FASTQ/FASTA) |
+| reads_r2   | path        | eccDNA reads R2 (FASTQ/FASTA) |
+| fasta      | path        | 参考基因组 FASTA              |
+| control_r1 | path (可选) | control reads R1              |
+| control_r2 | path (可选) | control reads R2              |
 
 ### 输出
 
-| 通道 | 文件模式 | 说明 |
-|------|---------|------|
-| candidates_bed | `*_candidates.bed` | eccDNA 候选区域 |
+| 通道           | 文件模式               | 说明               |
+| -------------- | ---------------------- | ------------------ |
+| candidates_bed | `*_candidates.bed`     | eccDNA 候选区域    |
 | junction_reads | `*_junction_reads.txt` | junction read 信息 |
-| versions | `versions.yml` | 版本信息 |
+| versions       | `versions.yml`         | 版本信息           |

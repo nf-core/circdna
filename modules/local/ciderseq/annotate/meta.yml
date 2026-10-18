@@ -32,20 +32,20 @@ input:
         description: Directory (or db file) of the tblastn protein database
 output:
   - annotation:
-    - - meta:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. `[ id:'sample1' ]`
-      - "${prefix}.json":
-          type: file
-          description: Per-read ORF annotation (JSON)
-          pattern: "*.json"
+      - - meta:
+            type: map
+            description: |
+              Groovy Map containing sample information
+              e.g. `[ id:'sample1' ]`
+        - "${prefix}.json":
+            type: file
+            description: Per-read ORF annotation (JSON)
+            pattern: "*.json"
   - versions:
-    - "versions.yml":
-        type: file
-        description: File containing software versions
-        pattern: "versions.yml"
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
 authors:
   - "@siyangming"
 maintainers:

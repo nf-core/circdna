@@ -16,12 +16,12 @@ report_section_order:
 
 custom_data:
   mosdepth_summary:
-    file_format: 'tsv'
-    section_name: 'Mosdepth Depth Summary'
-    description: 'Sequencing depth summary from mosdepth'
+    file_format: "tsv"
+    section_name: "Mosdepth Depth Summary"
+    description: "Sequencing depth summary from mosdepth"
   eccdna_candidates:
-    file_format: 'tsv'
-    section_name: 'eccDNA Candidate Statistics'
-    description: 'Number of eccDNA candidates identified by each tool'
+    file_format: "tsv"
+    section_name: "eccDNA Candidate Statistics"
+    description: "Number of eccDNA candidates identified by each tool"
 
 export_plots: true

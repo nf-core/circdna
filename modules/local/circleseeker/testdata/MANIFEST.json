@@ -10,10 +10,7 @@
     "num_cecc": 0,
     "num_chromosomes": 1,
     "chr_length": 8000,
-    "uecc_length_range": [
-      300,
-      800
-    ],
+    "uecc_length_range": [300, 800],
     "auto_scale_genome": false,
     "tandem_copies": 3
   },

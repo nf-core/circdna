@@ -64,7 +64,7 @@ workflow CIRCDNA {
             params.fasta = genome_fasta
             ch_fasta = channel.fromPath(genome_fasta).collect()
         } else {
-            exit 1, 'Fasta reference genome not specified!' 
+            exit 1, 'Fasta reference genome not specified!'
         }
     }
     if (!(params.input_format == "FASTQ" | params.input_format == "BAM")) {

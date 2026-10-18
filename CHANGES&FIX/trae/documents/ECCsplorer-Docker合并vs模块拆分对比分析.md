@@ -10,11 +10,11 @@
 
 ### 1.1 ECCsplorer 功能模式
 
-| 模式 | 功能 | 是否需要 RepeatExplorer2 | 当前状态 |
-|------|------|--------------------------|----------|
-| `map` | segemehl 比对 + eccDNA 检测 | **不需要** | 已实现，生产可用 |
-| `clu` | RepeatExplorer2 聚类 + 候选筛选 | **需要** seqclust | 骨架占位，待实现 |
-| `all` | map + clu 全流程 | **需要** seqclust | 骨架占位，待实现 |
+| 模式  | 功能                            | 是否需要 RepeatExplorer2 | 当前状态         |
+| ----- | ------------------------------- | ------------------------ | ---------------- |
+| `map` | segemehl 比对 + eccDNA 检测     | **不需要**               | 已实现，生产可用 |
+| `clu` | RepeatExplorer2 聚类 + 候选筛选 | **需要** seqclust        | 骨架占位，待实现 |
+| `all` | map + clu 全流程                | **需要** seqclust        | 骨架占位，待实现 |
 
 ### 1.2 运行环境现状
 
@@ -32,6 +32,7 @@
 **C. RepeatExplorer2 官方 Docker 镜像**：`kavonrtep/repeatexplorer:2.3.8`
 
 > **重要更正**：此前误判为"第三方不可控镜像"。经调研确认：
+>
 > - `kavonrtep` = **Petr Novak**，RepeatExplorer2 的**主要作者**（Biology Centre CAS, Czech Republic）
 > - [GitHub repo](https://github.com/kavonrtep/repex_tarean) 是官方镜像（2023-11-30 从 Bitbucket 迁移），有 4 stars、维护活跃
 > - [Docker Hub](https://hub.docker.com/r/kavonrtep/repeatexplorer) 是开发者官方维护的镜像
@@ -87,11 +88,13 @@ RUN ln -sf /opt/repex_tarean/seqclust /opt/conda/envs/eccsplorer/bin/seqclust
 #### 合并后的完整功能验证
 
 合并后理论上能覆盖 ECCsplorer 的三个模式：
+
 - **map**：不需要 seqclust，纯 ECCsplorer.py 运行，现有镜像已支持
 - **clu**：需要 `ECCSPLORER_CLU_PREPARE`（纯 Python） + `ECCSPLORER_CLU_CORE`（调用 seqclust） + `ECCSPLORER_CLU_CANDIDATES_PLOT`（R 可视化）
 - **all**：map + clu 串联
 
 关键验证点：ECCsplorer 的 `lib/eccClusterer.py` 中通过 `subprocess.Popen` 调用 `seqclust`，需要确保：
+
 1. `seqclust` 在 PATH 中或路径正确
 2. ECCsplorer 的 `lib/config.py` 中 `CONDA_ENV` 设置正确（已通过 sed 修复）
 3. 所需的分类数据库文件（REXdb）存在
@@ -108,21 +111,22 @@ RUN ln -sf /opt/repex_tarean/seqclust /opt/conda/envs/eccsplorer/bin/seqclust
 
 通过 `file` 命令分析 `bin/` 目录的预编译二进制，精确识别了依赖状况：
 
-| 文件 | 类型 | 32/64-bit |
-|------|------|-----------|
-| `seqclust` | **Python 3** 脚本（非 Perl） | N/A |
-| `cap3` | ELF 可执行文件 | **64-bit** |
-| `runOGDFlayout` | ELF 可执行文件 | **64-bit** |
-| `formatdb` | ELF 可执行文件 | **32-bit** |
-| `mgblast` | ELF 可执行文件 | **32-bit** |
-| `blastplus_wrapper.py` | Python 脚本 | N/A |
-| `last_wrapper.py` | Python 脚本 | N/A |
-| `align_parsing.pl` | Perl 脚本 | N/A |
-| `select_and_sort_contigs.pl` | Perl 脚本 | N/A |
+| 文件                         | 类型                         | 32/64-bit  |
+| ---------------------------- | ---------------------------- | ---------- |
+| `seqclust`                   | **Python 3** 脚本（非 Perl） | N/A        |
+| `cap3`                       | ELF 可执行文件               | **64-bit** |
+| `runOGDFlayout`              | ELF 可执行文件               | **64-bit** |
+| `formatdb`                   | ELF 可执行文件               | **32-bit** |
+| `mgblast`                    | ELF 可执行文件               | **32-bit** |
+| `blastplus_wrapper.py`       | Python 脚本                  | N/A        |
+| `last_wrapper.py`            | Python 脚本                  | N/A        |
+| `align_parsing.pl`           | Perl 脚本                    | N/A        |
+| `select_and_sort_contigs.pl` | Perl 脚本                    | N/A        |
 
 > **重要更正**：此前误判 `seqclust` 为 Perl 脚本。实际是 `#!/usr/bin/env python3`，核心聚类逻辑为 Python + 编译后的 C++ Louvain 算法。
 
 此外：
+
 - `environment.yml` 中已声明 `blast-legacy` 作为 conda 依赖——该包在 conda-forge 中提供 **64-bit** 版的 `formatdb` 和 `mgblast`，可替代 `bin/` 中的 32-bit 预编译版本
 - `databases/` 目录大小 **253MB**，含预构建的 BLAST 索引和 R 分类树文件
 
@@ -136,13 +140,13 @@ RUN ln -sf /opt/repex_tarean/seqclust /opt/conda/envs/eccsplorer/bin/seqclust
 
 #### 实际障碍
 
-| 障碍 | 详情 |
-|------|------|
-| **253MB 数据库** | REXdb 分类数据库（含预构建 BLAST 索引），远超 conda 包合理体积（通常 <100MB） |
-| **编译步骤** | `make` 需编译 3 个 C++ Louvain 二进制，不能声明 `noarch`，需为 linux-64/osx-64 分别构建 |
-| **Perl 辅助脚本** | `bin/` 中 2 个 Perl 脚本依赖 BioPerl 等系统 Perl 模块 |
+| 障碍              | 详情                                                                                      |
+| ----------------- | ----------------------------------------------------------------------------------------- |
+| **253MB 数据库**  | REXdb 分类数据库（含预构建 BLAST 索引），远超 conda 包合理体积（通常 <100MB）             |
+| **编译步骤**      | `make` 需编译 3 个 C++ Louvain 二进制，不能声明 `noarch`，需为 linux-64/osx-64 分别构建   |
+| **Perl 辅助脚本** | `bin/` 中 2 个 Perl 脚本依赖 BioPerl 等系统 Perl 模块                                     |
 | **bioconda 审核** | RepeatExplorer2 涉及 Python + C++ + R + Perl 多语言混装，审核复杂度远高于普通 Python/R 包 |
-| **维护成本** | 上游更新频繁（CHANGELOG 显示活跃开发），需要持续同步 conda recipe |
+| **维护成本**      | 上游更新频繁（CHANGELOG 显示活跃开发），需要持续同步 conda recipe                         |
 
 #### 务实替代方案
 
@@ -162,13 +166,13 @@ RUN ln -sf /opt/repex_tarean/seqclust /opt/conda/envs/eccsplorer/bin/seqclust
 
 **更新后的分析**：
 
-| 维度 | 评估（修正后） |
-|------|---------------|
-| 技术可行性 | **高**。kavonrtep 是官方维护，GitHub 有完整源码，`make` 编译即可，比之前认为的更容易 |
-| 构建复杂度 | **中等**（原"高"→降低为"中"）。github clone + make，而非之前猜测的"两个陌生环境融合" |
-| 镜像体积 | 仍大（~5GB+），但不比两个独立镜像总和更差 |
-| 维护成本 | 仍需关注两方的独立更新节奏 |
-| kavonrtep 镜像可控性 | **可控**（原"不可控"→修正）。官方镜像 + GitHub 源码，有明确更新历史和许可证 |
+| 维度                 | 评估（修正后）                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------ |
+| 技术可行性           | **高**。kavonrtep 是官方维护，GitHub 有完整源码，`make` 编译即可，比之前认为的更容易 |
+| 构建复杂度           | **中等**（原"高"→降低为"中"）。github clone + make，而非之前猜测的"两个陌生环境融合" |
+| 镜像体积             | 仍大（~5GB+），但不比两个独立镜像总和更差                                            |
+| 维护成本             | 仍需关注两方的独立更新节奏                                                           |
+| kavonrtep 镜像可控性 | **可控**（原"不可控"→修正）。官方镜像 + GitHub 源码，有明确更新历史和许可证          |
 
 **核心矛盾不变**：
 
@@ -181,27 +185,27 @@ RUN ln -sf /opt/repex_tarean/seqclust /opt/conda/envs/eccsplorer/bin/seqclust
 
 **更新后的分析**：
 
-| 维度 | 评估（修正后） |
-|------|---------------|
-| clu_core 镜像来源 | 可直接使用 `kavonrtep/repeatexplorer:2.3.8` 官方镜像（`seqclust` 在 `/repex_tarean/seqclust`），无需等自建镜像 |
-| 或自建 `eccsplorer-repex` | 基于 GitHub 源码 + 现有 Dockerfile 构建，保证 `bioinfortools` 命名空间一致 |
-| map 模式零影响 | 继续用 `quay.io/bioinfortools/eccsplorer:2022.01.1.1` |
+| 维度                      | 评估（修正后）                                                                                                 |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| clu_core 镜像来源         | 可直接使用 `kavonrtep/repeatexplorer:2.3.8` 官方镜像（`seqclust` 在 `/repex_tarean/seqclust`），无需等自建镜像 |
+| 或自建 `eccsplorer-repex` | 基于 GitHub 源码 + 现有 Dockerfile 构建，保证 `bioinfortools` 命名空间一致                                     |
+| map 模式零影响            | 继续用 `quay.io/bioinfortools/eccsplorer:2022.01.1.1`                                                          |
 
 ---
 
 ## 四、更新后的核心对比
 
-| 对比维度 | 思路 1：Docker 合并 | 思路 2：模块拆分（多镜像） | 优胜方 |
-|----------|---------------------|---------------------------|--------|
-| **技术可行性** | 高（github clone + make） | 高（clu_core 可直接用官方镜像） | **平手** |
-| **map 模式镜像体积** | 大（~5GB） | 小（~2GB） | **思路 2** |
-| **clu 模式镜像来源** | 需自建合并镜像 | 可直接用 `kavonrtep/repeatexplorer:2.3.8` 官方镜像 | **思路 2** |
-| **conda 支持** | 不可行（RepeatExplorer2 无法打包） | map 支持 conda，clu-core 用 Docker | **思路 2** |
-| **符合项目规范** | 违背（最小粒度原则） | 完全符合 | **思路 2** |
-| **与现有架构兼容** | 破坏（需回退拆分） | 复用 80% | **思路 2** |
-| **维护成本** | 中（合并 = 耦合） | 低（官方镜像独立更新） | **思路 2** |
-| **更新灵活性** | 低 | 高 | **思路 2** |
-| **部署复杂度** | 单镜像 | 两镜像 | **思路 1** |
+| 对比维度             | 思路 1：Docker 合并                | 思路 2：模块拆分（多镜像）                         | 优胜方     |
+| -------------------- | ---------------------------------- | -------------------------------------------------- | ---------- |
+| **技术可行性**       | 高（github clone + make）          | 高（clu_core 可直接用官方镜像）                    | **平手**   |
+| **map 模式镜像体积** | 大（~5GB）                         | 小（~2GB）                                         | **思路 2** |
+| **clu 模式镜像来源** | 需自建合并镜像                     | 可直接用 `kavonrtep/repeatexplorer:2.3.8` 官方镜像 | **思路 2** |
+| **conda 支持**       | 不可行（RepeatExplorer2 无法打包） | map 支持 conda，clu-core 用 Docker                 | **思路 2** |
+| **符合项目规范**     | 违背（最小粒度原则）               | 完全符合                                           | **思路 2** |
+| **与现有架构兼容**   | 破坏（需回退拆分）                 | 复用 80%                                           | **思路 2** |
+| **维护成本**         | 中（合并 = 耦合）                  | 低（官方镜像独立更新）                             | **思路 2** |
+| **更新灵活性**       | 低                                 | 高                                                 | **思路 2** |
+| **部署复杂度**       | 单镜像                             | 两镜像                                             | **思路 1** |
 
 ---
 

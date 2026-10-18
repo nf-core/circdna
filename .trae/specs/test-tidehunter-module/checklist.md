@@ -1,4 +1,5 @@
 # Checklist
+
 - [x] TIDEHUNTER 模块按官方 CLI 调用（输入 reads，输出 consensus fasta）
 - [x] clu_prepare.py 提取成功并加入 slim 镜像
 - [x] REPEATEXPLORER2 模块存在于 bio.nf，使用独立 repeatexplorer:2.3.8 镜像并可调用 seqclust

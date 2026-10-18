@@ -28,30 +28,30 @@ input:
         pattern: "*.json"
 output:
   - deconcat:
-    - - meta:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. `[ id:'sample1' ]`
-      - "${prefix}.fa":
-          type: file
-          description: De-concatenated reads (FASTA)
-          pattern: "*.fa"
+      - - meta:
+            type: map
+            description: |
+              Groovy Map containing sample information
+              e.g. `[ id:'sample1' ]`
+        - "${prefix}.fa":
+            type: file
+            description: De-concatenated reads (FASTA)
+            pattern: "*.fa"
   - stat:
-    - - meta:
-          type: map
-          description: |
-            Groovy Map containing sample information
-            e.g. `[ id:'sample1' ]`
-      - "${prefix}.stat":
-          type: file
-          description: DeConcat statistics (when deconcat.statistics == 1)
-          pattern: "*.stat"
+      - - meta:
+            type: map
+            description: |
+              Groovy Map containing sample information
+              e.g. `[ id:'sample1' ]`
+        - "${prefix}.stat":
+            type: file
+            description: DeConcat statistics (when deconcat.statistics == 1)
+            pattern: "*.stat"
   - versions:
-    - "versions.yml":
-        type: file
-        description: File containing software versions
-        pattern: "versions.yml"
+      - "versions.yml":
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
 authors:
   - "@siyangming"
 maintainers:

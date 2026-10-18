@@ -1,9 +1,11 @@
 # 修正 SERVER_RUN_GUIDE 物种列表 Spec
 
 ## Why
-SERVER_RUN_GUIDE.md 中包含了 3 个不存在 NGS 短读长 samplesheet 的物种，其命令引用了不存在的 `circdna_{species}_eccDNA.csv`（实际仅存在于 long_read 目录）。命令无法执行，需根据实际 samplesheets 重新归类。
+
+SERVER*RUN_GUIDE.md 中包含了 3 个不存在 NGS 短读长 samplesheet 的物种，其命令引用了不存在的 `circdna*{species}\_eccDNA.csv`（实际仅存在于 long_read 目录）。命令无法执行，需根据实际 samplesheets 重新归类。
 
 ## What Changes
+
 - 从"按物种运行命令" NGS 短读长章节中，将 3 个仅有 long_read 数据的物种移至新增的 circdnalr 三代长读长章节（占位）：
   - 向日葵 (Helianthus_annuus) → `circdnalr_Helianthus_annuus_long_read.csv`
   - 苋 (Amaranthus_palmeri) → `circdnalr_Amaranthus_palmeri_long_read.csv`
@@ -14,5 +16,6 @@ SERVER_RUN_GUIDE.md 中包含了 3 个不存在 NGS 短读长 samplesheet 的物
 - NGS 短读长章节保留 samplesheets 中实际存在的 12 个物种
 
 ## Impact
+
 - Affected specs: 无
 - Affected code: `circdna.nf/SERVER_RUN_GUIDE.md`

@@ -13,6 +13,7 @@
 ## 仓库调研结论
 
 ### 现有架构
+
 - **主入口**: [main.nf](file:///Users/siyangming/nextflow_nf_core/circdna.nf/main.nf) → 调用 `CIRCDNA` workflow
 - **主工作流**: [workflows/circdna.nf](file:///Users/siyangming/nextflow_nf_core/circdna.nf/workflows/circdna.nf) - 包含输入检查、QC、比对、多个circDNA识别工具
 - **子工作流**: `subworkflows/local/` 下已有 input_check, bam_preprocessing, circle_map_pipeline, circle_finder_pipeline, ampliconarchitect_pipeline, unicycler_pipeline
@@ -20,11 +21,13 @@
 - **Samplesheet**: 支持 FASTQ 和 BAM 两种格式，已支持 lane 列实现增量缓存
 
 ### 可用 nf-core 模块（在 modules 仓库中）
+
 - `fastp` - 二代测序质量控制
 - `bwamem2/index` 和 `bwamem2/mem` - BWA-MEM2 快速比对
 - `mosdepth` - 快速测序深度计算
 
 ### 需要新增
+
 - `params.mode` 顶层路由控制
 - Reference Mode (gDNA背景分析): mosdepth深度分析、重复序列注释加载
 - ECCsplorer 模块
@@ -36,33 +39,35 @@
 ## 文件结构总览
 
 ### 新增文件
-| 文件路径 | 职责 |
-|---------|------|
-| `modules/nf-core/fastp/` | fastp 质控模块（从 nf-core/modules 复制） |
-| `modules/nf-core/bwamem2/` | BWA-MEM2 索引+比对模块（从 nf-core/modules 复制） |
-| `modules/nf-core/mosdepth/` | mosdepth 深度计算模块（从 nf-core/modules 复制） |
-| `modules/local/eccsplorer/` | ECCsplorer 本地模块 |
-| `modules/local/candidate_merge/` | 候选区间合并模块（Python脚本） |
-| `modules/local/ecc_score/` | ECC_SCORE 计算模块（Python脚本） |
-| `subworkflows/local/reference_mode/` | Reference Mode 子工作流 |
-| `subworkflows/local/eccdna_mode/` | eccDNA Mode 子工作流 |
-| `subworkflows/local/integrated_mode/` | Integrated Mode 子工作流 |
-| `bin/merge_candidates.py` | 候选区间合并 Python 脚本 |
-| `bin/calculate_ecc_score.py` | ECC_SCORE 计算 Python 脚本 |
-| `bin/annotate_repeats.py` | 重复序列注释脚本 |
-| `.trae/documents/phase1_illumina_plan.md` | 本计划文档 |
+
+| 文件路径                                  | 职责                                              |
+| ----------------------------------------- | ------------------------------------------------- |
+| `modules/nf-core/fastp/`                  | fastp 质控模块（从 nf-core/modules 复制）         |
+| `modules/nf-core/bwamem2/`                | BWA-MEM2 索引+比对模块（从 nf-core/modules 复制） |
+| `modules/nf-core/mosdepth/`               | mosdepth 深度计算模块（从 nf-core/modules 复制）  |
+| `modules/local/eccsplorer/`               | ECCsplorer 本地模块                               |
+| `modules/local/candidate_merge/`          | 候选区间合并模块（Python脚本）                    |
+| `modules/local/ecc_score/`                | ECC_SCORE 计算模块（Python脚本）                  |
+| `subworkflows/local/reference_mode/`      | Reference Mode 子工作流                           |
+| `subworkflows/local/eccdna_mode/`         | eccDNA Mode 子工作流                              |
+| `subworkflows/local/integrated_mode/`     | Integrated Mode 子工作流                          |
+| `bin/merge_candidates.py`                 | 候选区间合并 Python 脚本                          |
+| `bin/calculate_ecc_score.py`              | ECC_SCORE 计算 Python 脚本                        |
+| `bin/annotate_repeats.py`                 | 重复序列注释脚本                                  |
+| `.trae/documents/phase1_illumina_plan.md` | 本计划文档                                        |
 
 ### 修改文件
-| 文件路径 | 修改内容 |
-|---------|---------|
-| [workflows/circdna.nf](file:///Users/siyangming/nextflow_nf_core/circdna.nf/workflows/circdna.nf) | 新增 mode 路由控制，调用三个 mode 子工作流 |
-| [nextflow.config](file:///Users/siyangming/nextflow_nf_core/circdna.nf/nextflow.config) | 新增 mode, repeat_gff, ecc_score_weights 等参数 |
-| [conf/modules.config](file:///Users/siyangming/nextflow_nf_core/circdna.nf/conf/modules.config) | 新增 fastp, bwamem2, mosdepth, eccsplorer 等模块配置 |
-| [conf/base.config](file:///Users/siyangming/nextflow_nf_core/circdna.nf/conf/base.config) | 新增进程资源配置（如需） |
-| [conf/test_local.config](file:///Users/siyangming/nextflow_nf_core/circdna.nf/conf/test_local.config) | 新增测试参数 |
-| [bin/check_samplesheet.py](file:///Users/siyangming/nextflow_nf_core/circdna.nf/bin/check_samplesheet.py) | 新增 datatype, platform, protocol 字段支持 |
-| [subworkflows/local/input_check/main.nf](file:///Users/siyangming/nextflow_nf_core/circdna.nf/subworkflows/local/input_check/main.nf) | 支持新字段解析 |
-| [CHANGELOG.md](file:///Users/siyangming/nextflow_nf_core/circdna.nf/CHANGELOG.md) | 版本更新记录 |
+
+| 文件路径                                                                                                                              | 修改内容                                             |
+| ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| [workflows/circdna.nf](file:///Users/siyangming/nextflow_nf_core/circdna.nf/workflows/circdna.nf)                                     | 新增 mode 路由控制，调用三个 mode 子工作流           |
+| [nextflow.config](file:///Users/siyangming/nextflow_nf_core/circdna.nf/nextflow.config)                                               | 新增 mode, repeat_gff, ecc_score_weights 等参数      |
+| [conf/modules.config](file:///Users/siyangming/nextflow_nf_core/circdna.nf/conf/modules.config)                                       | 新增 fastp, bwamem2, mosdepth, eccsplorer 等模块配置 |
+| [conf/base.config](file:///Users/siyangming/nextflow_nf_core/circdna.nf/conf/base.config)                                             | 新增进程资源配置（如需）                             |
+| [conf/test_local.config](file:///Users/siyangming/nextflow_nf_core/circdna.nf/conf/test_local.config)                                 | 新增测试参数                                         |
+| [bin/check_samplesheet.py](file:///Users/siyangming/nextflow_nf_core/circdna.nf/bin/check_samplesheet.py)                             | 新增 datatype, platform, protocol 字段支持           |
+| [subworkflows/local/input_check/main.nf](file:///Users/siyangming/nextflow_nf_core/circdna.nf/subworkflows/local/input_check/main.nf) | 支持新字段解析                                       |
+| [CHANGELOG.md](file:///Users/siyangming/nextflow_nf_core/circdna.nf/CHANGELOG.md)                                                     | 版本更新记录                                         |
 
 ---
 
@@ -71,6 +76,7 @@
 ### Task 1.1: Samplesheet 扩展与多模式解析器
 
 **Files:**
+
 - Modify: `bin/check_samplesheet.py`
 - Modify: `subworkflows/local/input_check/main.nf`
 - Modify: `assets/samplesheet.csv`
@@ -92,7 +98,7 @@ def check_samplesheet(file_in, file_out, input_format):
     # 扩展 HEADER 定义，支持可选列
     HEADER_FASTQ = ["sample", "fastq_1", "fastq_2"]
     OPTIONAL_HEADERS = ["lane", "datatype", "platform", "protocol"]
-    
+
     # 检测可选列是否存在
     # 验证 datatype 取值为 gdna / eccdna
     # 验证 platform 取值为 illumina / pacbio / ont
@@ -132,10 +138,12 @@ SAMPLE_ECCDNA,eccdna_R1.fastq.gz,eccdna_R2.fastq.gz,eccdna,illumina,short_read
 - [ ] **Step 4: 验证 samplesheet 解析**
 
 运行测试验证 samplesheet 解析正确：
+
 ```bash
 cd /Users/siyangming/nextflow_nf_core/circdna.nf
 python bin/check_samplesheet.py testdatasets/samplesheet/samplesheet_local.csv /tmp/test_out.csv FASTQ
 ```
+
 Expected: 输出文件包含正确的列，缺失字段有默认值
 
 ---
@@ -143,6 +151,7 @@ Expected: 输出文件包含正确的列，缺失字段有默认值
 ### Task 1.2: 顶层路由控制结构（params.mode）
 
 **Files:**
+
 - Modify: `workflows/circdna.nf`
 - Modify: `nextflow.config`
 
@@ -207,6 +216,7 @@ if (params.mode == 'reference') {
 ### Task 1.3: fastp 替换 trimgalore
 
 **Files:**
+
 - Create: `modules/nf-core/fastp/` (从 nf-core/modules 复制)
 - Modify: `workflows/circdna.nf`
 - Modify: `conf/modules.config`
@@ -281,6 +291,7 @@ process {
 ### Task 1.4: BWA-MEM2 替换 BWA
 
 **Files:**
+
 - Create: `modules/nf-core/bwamem2/` (从 nf-core/modules 复制)
 - Modify: `subworkflows/local/bam_preprocessing/main.nf`
 - Modify: `workflows/circdna.nf`
@@ -332,6 +343,7 @@ if (run_bwa) {
 ### Task 1.5: mosdepth 深度分析模块
 
 **Files:**
+
 - Create: `modules/nf-core/mosdepth/` (从 nf-core/modules 复制)
 - Modify: `conf/modules.config`
 
@@ -366,6 +378,7 @@ process {
 ### Task 1.6: Reference Mode 子工作流
 
 **Files:**
+
 - Create: `subworkflows/local/reference_mode/main.nf`
 - Create: `subworkflows/local/reference_mode/meta.yml`
 - Modify: `workflows/circdna.nf`
@@ -469,9 +482,11 @@ if __name__ == '__main__':
 - [ ] **Step 4: 验证 Reference Mode 运行**
 
 使用测试数据运行 Reference Mode：
+
 ```bash
 nextflow run main.nf -profile test_local,docker --mode reference --input test_reference.csv
 ```
+
 Expected: 成功运行至 mosdepth 步骤，输出深度文件
 
 ---
@@ -481,6 +496,7 @@ Expected: 成功运行至 mosdepth 步骤，输出深度文件
 ### Task 2.1: ECCsplorer 模块封装
 
 **Files:**
+
 - Create: `modules/local/eccsplorer/main.nf`
 - Create: `modules/local/eccsplorer/meta.yml`
 - Create: `modules/local/eccsplorer/environment.yml`
@@ -558,7 +574,7 @@ tools:
       description: ECCsplorer detects eccDNA candidates using junction reads
       homepage: https://github.com/MWSchmid/ECCsplorer
       documentation: https://github.com/MWSchmid/ECCsplorer
-      licence: ['MIT']
+      licence: ["MIT"]
 input:
   - meta:
       type: map
@@ -601,6 +617,7 @@ process {
 ### Task 2.2: Circle-Map 结果标准化
 
 **Files:**
+
 - Modify: `subworkflows/local/circle_map_pipeline/main.nf`
 - Create: `bin/standardize_circle_map.py` (如需)
 
@@ -625,6 +642,7 @@ process {
 ### Task 2.3: eccDNA Mode 子工作流
 
 **Files:**
+
 - Create: `subworkflows/local/eccdna_mode/main.nf`
 - Create: `subworkflows/local/eccdna_mode/meta.yml`
 - Modify: `workflows/circdna.nf`
@@ -712,6 +730,7 @@ workflow ECCDNA_MODE {
 ### Task 3.1: Candidate Merge Python 脚本
 
 **Files:**
+
 - Create: `bin/merge_candidates.py`
 - Create: `modules/local/candidate_merge/main.nf`
 - Create: `modules/local/candidate_merge/meta.yml`
@@ -897,6 +916,7 @@ python bin/merge_candidates.py --help
 ### Task 3.2: 在 eccDNA Mode 中集成分并
 
 **Files:**
+
 - Modify: `subworkflows/local/eccdna_mode/main.nf`
 
 **步骤:**
@@ -924,6 +944,7 @@ ch_versions = ch_versions.mix(CANDIDATE_MERGE.out.versions)
 ### Task 4.1: 深度比计算 (Depth Ratio)
 
 **Files:**
+
 - Create: `bin/calculate_depth_ratio.py`
 - Create: `modules/local/depth_ratio/main.nf`
 
@@ -1005,11 +1026,12 @@ if __name__ == '__main__':
 ### Task 4.2: ECC_SCORE v1.0 计算模块
 
 **Files:**
+
 - Create: `bin/calculate_ecc_score.py`
 - Create: `modules/local/ecc_score/main.nf`
 
-**目标:** 实现 ECC_SCORE v1.0:
-$$\text{ECC\_SCORE}_{\text{v1}} = w_1 \cdot \text{Junction\_Reads} + w_2 \cdot \log_2\left(\frac{\text{Depth}_{\text{eccDNA}} + 1}{\text{Depth}_{\text{gDNA}} + 1}\right) - w_3 \cdot \text{TE\_Repeat\_Penalty}$$
+**目标:** 实现 ECC*SCORE v1.0:
+$$\text{ECC_SCORE}*{\text{v1}} = w*1 \cdot \text{Junction_Reads} + w_2 \cdot \log_2\left(\frac{\text{Depth}*{\text{eccDNA}} + 1}{\text{Depth}\_{\text{gDNA}} + 1}\right) - w_3 \cdot \text{TE_Repeat_Penalty}$$
 
 **步骤:**
 
@@ -1163,6 +1185,7 @@ if __name__ == '__main__':
 ### Task 4.3: Integrated Mode 子工作流
 
 **Files:**
+
 - Create: `subworkflows/local/integrated_mode/main.nf`
 - Create: `subworkflows/local/integrated_mode/meta.yml`
 - Modify: `workflows/circdna.nf`
@@ -1216,6 +1239,7 @@ workflow INTEGRATED_MODE {
 ### Task 4.4: 完整集成与测试验证
 
 **Files:**
+
 - Modify: `workflows/circdna.nf`
 - Modify: `conf/test_local.config`
 - Create: `testdatasets/samplesheet/test_integrated.csv`
@@ -1257,11 +1281,13 @@ nextflow run main.nf -profile test_local,docker --mode integrated
 ## 潜在依赖与注意事项
 
 ### 工具可用性
+
 - **ECCsplorer**: 需要确认是否有 bioconda 包或 Docker 镜像。如没有，需要自定义容器
 - **BWA-MEM2**: nf-core 已有模块，索引格式与 BWA 不同，需要注意迁移
 - **mosdepth**: nf-core 已有模块，直接可用
 
 ### 样本配对策略
+
 - Integrated Mode 需要明确 gDNA 和 eccDNA 样本的配对关系
 - 策略选项：
   1. 样本命名约定（如 `sampleA_gdna`, `sampleA_eccdna`）
@@ -1269,15 +1295,18 @@ nextflow run main.nf -profile test_local,docker --mode integrated
   3. 单样本 + `--gdna_input` 和 `--eccdna_input` 两个参数
 
 ### 向后兼容
+
 - 保留 `--circle_identifier` 参数的兼容性
 - 无 `--mode` 参数时默认行为不变（eccdna 模式）
 - 旧版 samplesheet（无新字段）应能正常运行
 
 ### 性能考虑
+
 - mosdepth 比 samtools depth 快很多，但大基因组仍需注意内存
 - ECC_SCORE 计算是单进程，候选多时可能较慢
 
 ### 风险处理
+
 - **ECCsplorer 无现成容器**: 先实现 Python 版本的简化版 junction read 检测，后续再集成完整 ECCsplorer
 - **BWA-MEM2 索引格式问题**: 保留 BWA 作为备选，通过参数切换
 - **样本配对复杂**: 第一版先支持单样本配对，多样本配对后续迭代
@@ -1286,33 +1315,37 @@ nextflow run main.nf -profile test_local,docker --mode integrated
 
 ## 风险与缓解策略
 
-| 风险 | 影响 | 概率 | 缓解策略 |
-|-----|------|------|---------|
-| ECCsplorer 无可用 bioconda 包 | 高 | 中 | 先实现简化版 junction-read 检测脚本，后续集成完整版 |
-| BWA-MEM2 索引不兼容 | 中 | 低 | 保留 BWA 模块作为 fallback，通过参数切换 |
-| 样本配对逻辑复杂 | 中 | 高 | v1.0 仅支持单样本配对，多样本后续迭代 |
-| mosdepth 内存不足 | 中 | 低 | 调整 `--fast-mode` 和窗口大小参数 |
-| 向后兼容性破坏 | 高 | 低 | 默认 mode='eccdna'，旧参数全部保留 |
+| 风险                          | 影响 | 概率 | 缓解策略                                            |
+| ----------------------------- | ---- | ---- | --------------------------------------------------- |
+| ECCsplorer 无可用 bioconda 包 | 高   | 中   | 先实现简化版 junction-read 检测脚本，后续集成完整版 |
+| BWA-MEM2 索引不兼容           | 中   | 低   | 保留 BWA 模块作为 fallback，通过参数切换            |
+| 样本配对逻辑复杂              | 中   | 高   | v1.0 仅支持单样本配对，多样本后续迭代               |
+| mosdepth 内存不足             | 中   | 低   | 调整 `--fast-mode` 和窗口大小参数                   |
+| 向后兼容性破坏                | 高   | 低   | 默认 mode='eccdna'，旧参数全部保留                  |
 
 ---
 
 ## 验证标准
 
 ### Sprint 1 完成标准
+
 - [ ] Samplesheet 支持 datatype/platform/protocol 字段
 - [ ] `--mode reference` 能运行完 fastp + bwamem2 + mosdepth
 - [ ] 旧版 samplesheet 仍能正常运行（向后兼容）
 
 ### Sprint 2 完成标准
+
 - [ ] ECCsplorer 模块可运行并输出 BED
 - [ ] Circle-Map 输出标准化 BED
 - [ ] `--mode eccdna` 能运行完所有 eccDNA 工具
 
 ### Sprint 3 完成标准
+
 - [ ] merge_candidates.py 能正确合并多个工具的结果
 - [ ] 输出包含来源工具数、junction reads 数的 BED 文件
 
 ### Sprint 4 完成标准
+
 - [ ] ECC_SCORE v1.0 计算正确
 - [ ] `--mode integrated` 能输出带评分和分级的候选 catalog
 - [ ] 三种模式均通过测试验证

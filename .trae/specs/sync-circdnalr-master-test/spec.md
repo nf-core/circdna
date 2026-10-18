@@ -26,7 +26,7 @@
   - `conf/modules.config`（长读长模块 + master 短读长模块配置）
   - `conf/test_nanopore_lr.config` / `conf/test_pacbio_lr.config`（测试配置）
   - `bin/check_samplesheet.py` / `subworkflows/local/input_check/main.nf`
-  - `samplesheets/*`（circdna_* 与 circdnalr_* 系列）
+  - `samplesheets/*`（circdna*\* 与 circdnalr*\* 系列）
   - 服务器 `/data1/users/siyangming/PlanteccDNADB/circdna.nf`（同步 + 测试执行）
 
 ## ADDED Requirements
@@ -36,6 +36,7 @@
 系统 SHALL 将 `master` 分支合并进 `circdnalr` 分支，并解决所有冲突，使合并后分支同时具备短读长与长读长能力。
 
 #### Scenario: 成功合并
+
 - **WHEN** 在 `circdnalr` 分支执行 `git merge master`
 - **THEN** 合并完成且无未解决冲突，`git status` 干净，`nextflow config` 可正常解析，Python 校验脚本语法正确
 
@@ -44,6 +45,7 @@
 系统 SHALL 提供使用内置测试数据的 ONT 与 PacBio 长读长测试配置，覆盖全部四个检测引擎（cresil、fled、flye、eccfinder）。
 
 #### Scenario: 测试配置可用
+
 - **WHEN** 加载 ONT/PacBio 长读长测试配置
 - **THEN** `protocol` 分别等于 `ont`/`pacbio`，`long_read_identifier` 包含 `cresil,fled,flye,eccfinder`，输入指向服务器上存在的内置 smoke 测试 FASTQ 与参考基因组
 
@@ -52,10 +54,12 @@
 系统 SHALL 通过 SSH 在服务器（192.168.16.65，代码与数据位于 `/data1/users/siyangming/PlanteccDNADB`）上运行长读长测试。
 
 #### Scenario: ONT 测试成功
+
 - **WHEN** 在服务器运行 ONT 长读长流程（四引擎，内置 smoke 数据）
 - **THEN** 流程以成功状态结束，四个引擎均产生对应输出文件，无致命错误
 
 #### Scenario: PacBio 测试成功
+
 - **WHEN** 在服务器运行 PacBio 长读长流程（四引擎，内置 smoke 数据）
 - **THEN** 流程以成功状态结束，四个引擎均产生对应输出文件，无致命错误
 
@@ -64,6 +68,7 @@
 系统 SHALL 记录测试执行结果（命令、成功/失败状态、输出路径、主要输出文件），便于后续比对。
 
 #### Scenario: 结果可追溯
+
 - **WHEN** 测试完成
 - **THEN** 结果记录包含运行命令、退出状态、输出目录及关键产出文件清单
 
@@ -74,6 +79,7 @@
 合并后 `circdnalr` 分支 SHALL 保持 master 的短读长能力（BWA 主链、ECC_SCORE/Snakemake 交接、samplesheet `data_type` 约定）不回退。
 
 #### Scenario: 短读长兼容
+
 - **WHEN** 在合并后分支上运行 `-profile test_local` 或 `nextflow config` 校验
 - **THEN** 短读长相关参数与模块引用完整存在，无缺失报错
 

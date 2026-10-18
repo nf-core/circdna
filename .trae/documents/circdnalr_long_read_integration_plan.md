@@ -9,24 +9,26 @@
 ### 为什么不调用完整的外部流程？
 
 **isoseq.nf（PacBio）**：
+
 - 核心设计目标是**全长转录本分析（FLNC）**，包含 `ISOSEQ_REFINE`（丢弃无 polyA 的 reads）和 `GSTAMA_POLYACLEANUP`（清理 polyA 尾巴）。
 - eccDNA 是基因组环状 DNA，**没有 polyA 尾巴**，直接套用会导致大量真实 eccDNA reads 被误删。
 - 最终输出是 `FASTA`，而 FLED/CReSIL 期望 `FASTQ` 输入。
 
 **nanoseq.nf（ONT）**：
+
 - DNA protocol 分支仅包含 `QCAT`（demultiplexing）→ `NANOLYSE`（去污染）→ `QCFASTQ`（质控）。
 - **关键缺失**：`CHOPPER`（质量过滤）和 `PYCHOPPER`（接头切除）仅在 cDNA/directRNA 分支中使用，DNA 分支完全没有 read cleaning/adapter removal。
 - eccDNA ONT RCA 扩增数据**必须切除接头和引物**，nanoseq DNA 分支无法满足。
 
 ### 方案 B 的优势
 
-| 维度 | 方案 A（外部流程） | 方案 B（内部组装） |
-|------|-------------------|-------------------|
-| 技术可行性 | ❌ polyA 过滤误伤 eccDNA | ✅ 无转录本特异性过滤 |
-| 操作复杂度 | ❌ 需管理两套样本表/流程 | ✅ 单一样本表、单一命令 |
+| 维度       | 方案 A（外部流程）       | 方案 B（内部组装）              |
+| ---------- | ------------------------ | ------------------------------- |
+| 技术可行性 | ❌ polyA 过滤误伤 eccDNA | ✅ 无转录本特异性过滤           |
+| 操作复杂度 | ❌ 需管理两套样本表/流程 | ✅ 单一样本表、单一命令         |
 | 数据兼容性 | ❌ FASTA vs FASTQ 不匹配 | ✅ 输出直接是三引擎需要的 FASTQ |
-| 维护成本 | ⚠️ 需维护格式转换脚本 | ✅ 模块来自 nf-core 标准库 |
-| 灵活性 | ❌ 无法跳过不需要的步骤 | ✅ entrypoint 参数灵活控制 |
+| 维护成本   | ⚠️ 需维护格式转换脚本    | ✅ 模块来自 nf-core 标准库      |
+| 灵活性     | ❌ 无法跳过不需要的步骤  | ✅ entrypoint 参数灵活控制      |
 
 ## 3. 当前状态分析
 
@@ -52,6 +54,7 @@
 ### 4.1 参数与 Schema
 
 **文件**: `nextflow.config`
+
 - **What**: 在 `params` 块新增：
   ```groovy
   params {
@@ -70,6 +73,7 @@
 - **How**: 追加到现有 `params` 块，默认 `short_read` 保证二代兼容。
 
 **文件**: `nextflow_schema.json`
+
 - **What**: 为新增参数添加 JSON Schema 定义：
   - `protocol`: enum `["short_read", "pacbio", "ont"]`
   - `entrypoint`: enum `["cleaned_fastq", "raw_fastq", "subreads", "hifi_bam"]`
@@ -79,6 +83,7 @@
 - **Why**: nf-schema 插件验证用户输入合法性。
 
 **文件**: `assets/schema_input.json`
+
 - **What**: 扩展样本表 schema，增加可选列：
   - `input_bam` (type string, optional): 原始 BAM 入口（subreads/hifi_bam）。
   - `entrypoint` (type string, optional): 覆盖全局 entrypoint。
@@ -87,6 +92,7 @@
 ### 4.2 样本表解析扩展
 
 **文件**: `bin/check_samplesheet.py`
+
 - **What**: 扩展脚本，支持长读样本表：
   - `protocol == 'short_read'`: 保持现有逻辑（FASTQ/BAM）。
   - `protocol == 'pacbio' 或 'ont'`:
@@ -96,6 +102,7 @@
 - **How**: 新增第4个命令行参数 `PROTOCOL`，根据 protocol 切换校验逻辑。
 
 **文件**: `modules/local/samplesheet_check/main.nf`
+
 - **What**: 修改 script 块，传入 `params.protocol`：
   ```groovy
   check_samplesheet.py \
@@ -106,6 +113,7 @@
   ```
 
 **文件**: `subworkflows/local/input_check/main.nf`
+
 - **What**: 增加长读解析逻辑：
   - `protocol == 'short_read'`: 保持现有逻辑。
   - `protocol == 'pacbio' 或 'ont'`: 解析 `fastq_1`（可选）和 `input_bam`（可选），构建 channel `[meta, fastq, input_bam, entrypoint]`。
@@ -113,6 +121,7 @@
 ### 4.3 安装/复制模块
 
 **通过 `nf-core modules install` 安装的模块**（安装后自动更新 `modules.json`）：
+
 - `pbccs` — 从 isoseq.nf 底层复用
 - `lima` — 从 isoseq.nf 底层复用
 - `chopper` — 从 nanoseq.nf 底层复用（cDNA/directRNA 分支使用）
@@ -123,27 +132,32 @@
 - `bedtools/intersect` — 假阳性过滤
 
 **从 bio.nf 复制的模块**：
+
 - `modules/local/cresil_identify/main.nf` — 复制自 `bio.nf/modules/cresil/identify/main.nf`
 - `modules/local/fled/main.nf` — 在 bio.nf 新建后复制（见 4.3.3）
 
 **复用 nf-core 已安装模块**：
+
 - `FLYE` — 已安装在 `modules/modules/nf-core/flye/main.nf`，直接 include 使用
 
 #### 4.3.1 CReSIL 模块
 
 **文件**: `modules/local/cresil_identify/main.nf`
+
 - **What**: 复制 `bio.nf/modules/cresil/identify/main.nf`，调整输入输出格式适配 circdna.nf。
 - **容器**: `quay.io/bioinfortools/cresil:1.2.1`（与 bio.nf 一致）。
 
 #### 4.3.2 Flye 模块
 
 **文件**: `modules/modules/nf-core/flye/main.nf`
+
 - **What**: 直接在主流程中 include nf-core 的 `FLYE` 模块，无需复制到 local。
 - **Why**: nf-core 版本更完善（wave 容器支持），减少维护成本。
 
 #### 4.3.3 FLED 模块（需新建）
 
 **文件**: `bio.nf/modules/fled/main.nf`（先在 bio.nf 新建）
+
 ```groovy
 process FLED {
     tag "$meta.id"
@@ -175,6 +189,7 @@ process FLED {
 ```
 
 **文件**: `bio.nf/modules/fled/environment.yml`
+
 ```yaml
 name: fled
 channels:
@@ -195,6 +210,7 @@ dependencies:
 在 `subworkflows/local/` 下新建以下子流程：
 
 #### A. `long_read_preprocessing/main.nf`
+
 **目标**: 根据 protocol + entrypoint 组装预处理链。
 
 ```groovy
@@ -247,6 +263,7 @@ workflow LONG_READ_PREPROCESSING {
 **Why**: 只保留 eccDNA 需要的步骤：PBCCS（生成 HiFi）→ LIMA（切除接头）或 CHOPPER → PYCHOPPER。**跳过 isoseq.nf 的 polyA 过滤**。
 
 #### B. `long_read_mapping/main.nf`
+
 **目标**: 长读比对，输出带 SA 标签的 BAM。
 
 ```groovy
@@ -278,6 +295,7 @@ workflow LONG_READ_MAPPING {
 **Why**: CReSIL 需要带 SA 标签的比对 BAM。
 
 #### C. `long_read_cresil/main.nf`
+
 **目标**: 封装 CReSIL 分析。
 
 ```groovy
@@ -298,6 +316,7 @@ workflow LONG_READ_CRESIL {
 ```
 
 #### D. `long_read_fled/main.nf`
+
 **目标**: 封装 FLED 分析。
 
 ```groovy
@@ -320,6 +339,7 @@ workflow LONG_READ_FLED {
 **Why**: FLED 直接从 FASTQ 进行单分子解折叠，不依赖 BAM。
 
 #### E. `long_read_flye/main.nf`
+
 **目标**: 封装 Flye 从头组装 + 环状 Contig 提取 + 回比对。
 
 ```groovy
@@ -331,9 +351,9 @@ workflow LONG_READ_FLYE {
     main:
     def flye_mode = params.protocol == 'pacbio' ? '--pacbio-hifi' : '--nano-hq'
     FLYE(ch_cleaned_fastq, Channel.value(flye_mode))
-    
+
     EXTRACT_CIRCULAR_CONTIG(FLYE.out.fasta, FLYE.out.txt)
-    
+
     MINIMAP2_ALIGN(
         EXTRACT_CIRCULAR_CONTIG.out.circular_fasta,
         ch_fasta_meta,
@@ -356,6 +376,7 @@ workflow LONG_READ_FLYE {
 **注意**: `EXTRACT_CIRCULAR_CONTIG` 是新的本地模块，解析 `assembly_info.txt` 提取环状 contig。
 
 #### F. `long_read_filtering/main.nf`
+
 **目标**: 统一三引擎结果格式并过滤假阳性。
 
 ```groovy
@@ -399,6 +420,7 @@ workflow LONG_READ_FILTERING {
 ### 4.5 集成到主流程
 
 **文件**: `workflows/circdna.nf`
+
 - **参数校验**（在现有校验之后）：
   ```groovy
   if (params.protocol != 'short_read' && params.protocol != 'pacbio' && params.protocol != 'ont') {
@@ -421,9 +443,10 @@ workflow LONG_READ_FILTERING {
   include { LONG_READ_FILTERING     } from '../subworkflows/local/long_read_filtering/main'
   ```
 - **主流程分支**（在现有二代逻辑之后，MultiQC 之前）：
+
   ```groovy
   if (params.protocol == 'pacbio' || params.protocol == 'ont') {
-      LONG_READ_PREPROCESSING(INPUT_CHECK.out.reads, 
+      LONG_READ_PREPROCESSING(INPUT_CHECK.out.reads,
           params.primers ? channel.fromPath(params.primers).map { [[id: it.baseName], it] } : channel.empty(),
           ch_fasta_meta)
       ch_cleaned_fastq = LONG_READ_PREPROCESSING.out.cleaned_fastq
@@ -460,6 +483,7 @@ workflow LONG_READ_FILTERING {
 ### 4.6 配置更新
 
 **文件**: `conf/modules.config`
+
 - 添加 publishDir 配置：
   - `PBCCS`: `reports/pbccs/`, enabled: `params.save_long_read_intermediate`
   - `LIMA`: `reports/lima/`, enabled: `params.save_long_read_intermediate`
@@ -471,6 +495,7 @@ workflow LONG_READ_FILTERING {
   - `FLYE`: `flye/`, enabled: true
 
 **文件**: `conf/base.config`
+
 - 添加资源分配：
   - `FLYE`: cpus 16, memory 64.GB, time 48.h
   - `MINIMAP2_ALIGN`: cpus 8, memory 32.GB, time 24.h
@@ -480,13 +505,14 @@ workflow LONG_READ_FILTERING {
 ### 4.7 新增本地脚本
 
 **文件**: `bin/convert_cresil_to_bed.py` — CReSIL txt → BED
-**文件**: `bin/convert_fled_to_bed.py` — FLED txt → BED  
+**文件**: `bin/convert_fled_to_bed.py` — FLED txt → BED
 **文件**: `bin/extract_circular_contig.py` — 提取 Flye 环状 contig
 **文件**: `bin/filter_min_read_support.py` — read support 过滤
 
 ### 4.8 容器与 Conda 环境
 
 **FLED 容器构建**（无现成 biocontainer）：
+
 1. 在 `bio.nf` 新建 branch `fled`，构建 `modules/fled/environment.yml`。
 2. 构建 Docker: `docker build -t quay.io/bioinfortools/fled:1.0.0 .`
 3. 推送: `docker push quay.io/bioinfortools/fled:1.0.0`
@@ -502,14 +528,14 @@ workflow LONG_READ_FILTERING {
 
 ## 5. 假设与决策
 
-| 决策项 | 选择 | 理由 |
-|--------|------|------|
-| 预处理方案 | 方案 B：内部组装 | isoseq polyA 过滤误伤 eccDNA；nanoseq DNA 分支缺少接头切除 |
-| protocol | `short_read` / `pacbio` / `ont` | 与 nanoseq.nf 模式一致，默认 short_read 保证兼容 |
-| entrypoint | `cleaned_fastq` / `raw_fastq` / `subreads` / `hifi_bam` | 参考 isoseq.nf，控制预处理深度 |
-| 模块来源 | nf-core 标准模块 > bio.nf > 新建 local | 减少维护成本，符合用户偏好 |
-| FLED 容器 | 自构建上传 | 无现成 biocontainer |
-| 结果过滤 | 统一 BED 后过滤 | 三引擎输出格式差异大，BED 是最佳通用格式 |
+| 决策项     | 选择                                                    | 理由                                                       |
+| ---------- | ------------------------------------------------------- | ---------------------------------------------------------- |
+| 预处理方案 | 方案 B：内部组装                                        | isoseq polyA 过滤误伤 eccDNA；nanoseq DNA 分支缺少接头切除 |
+| protocol   | `short_read` / `pacbio` / `ont`                         | 与 nanoseq.nf 模式一致，默认 short_read 保证兼容           |
+| entrypoint | `cleaned_fastq` / `raw_fastq` / `subreads` / `hifi_bam` | 参考 isoseq.nf，控制预处理深度                             |
+| 模块来源   | nf-core 标准模块 > bio.nf > 新建 local                  | 减少维护成本，符合用户偏好                                 |
+| FLED 容器  | 自构建上传                                              | 无现成 biocontainer                                        |
+| 结果过滤   | 统一 BED 后过滤                                         | 三引擎输出格式差异大，BED 是最佳通用格式                   |
 
 ## 6. 验证步骤
 
@@ -527,6 +553,7 @@ workflow LONG_READ_FILTERING {
 ## 7. 修改文件清单
 
 ### 新增文件
+
 - `subworkflows/local/long_read_preprocessing/main.nf`
 - `subworkflows/local/long_read_mapping/main.nf`
 - `subworkflows/local/long_read_cresil/main.nf`
@@ -547,6 +574,7 @@ workflow LONG_READ_FILTERING {
 - `bin/filter_min_read_support.py`
 
 ### 修改文件
+
 - `nextflow.config`
 - `nextflow_schema.json`
 - `assets/schema_input.json`
@@ -562,4 +590,5 @@ workflow LONG_READ_FILTERING {
 - `README.md` / `docs/usage.md`
 
 ### 外部依赖（bio.nf）
+
 - `bio.nf` 新建 branch `fled`，构建 `modules/fled/` 模块和容器。

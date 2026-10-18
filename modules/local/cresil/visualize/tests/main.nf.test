@@ -16,15 +16,15 @@ nextflow_process {
             process {
                 """
                 input[0] = [ [ id:'test' ], // meta
-                             file("\${projectDir}/modules/local/cresil/testdata/eccDNA_final.txt", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/cresil/testdata/eccDNA_final.txt", checkIfExists: true) ]
                 input[1] = [ [ id:'test' ], // meta2
-                             file("\${projectDir}/modules/local/cresil/testdata/cresil_gAnnotation/gene.annotate.txt", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/cresil/testdata/cresil_gAnnotation/gene.annotate.txt", checkIfExists: true) ]
                 input[2] = [ [ id:'test' ], // meta3
-                             file("\${projectDir}/modules/local/cresil/testdata/cresil_gAnnotation/CpG.annotate.txt", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/cresil/testdata/cresil_gAnnotation/CpG.annotate.txt", checkIfExists: true) ]
                 input[3] = [ [ id:'test' ], // meta4
-                             file("\${projectDir}/modules/local/cresil/testdata/cresil_gAnnotation/repeat.annotate.txt", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/cresil/testdata/cresil_gAnnotation/repeat.annotate.txt", checkIfExists: true) ]
                 input[4] = [ [ id:'test' ], // meta5
-                             file("\${projectDir}/modules/local/cresil/testdata/cresil_gAnnotation/variant.annotate.txt", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/cresil/testdata/cresil_gAnnotation/variant.annotate.txt", checkIfExists: true) ]
                 input[5] = 'ec1'
                 """
             }
@@ -47,15 +47,15 @@ nextflow_process {
             process {
                 """
                 input[0] = [ [ id:'test' ], // meta
-                             file("\${projectDir}/modules/local/cresil/testdata/eccDNA_final.txt", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/cresil/testdata/eccDNA_final.txt", checkIfExists: true) ]
                 input[1] = [ [ id:'test' ], // meta2
-                             file("\${projectDir}/modules/local/cresil/testdata/cresil_gAnnotation/gene.annotate.txt", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/cresil/testdata/cresil_gAnnotation/gene.annotate.txt", checkIfExists: true) ]
                 input[2] = [ [ id:'test' ], // meta3
-                             file("\${projectDir}/modules/local/cresil/testdata/cresil_gAnnotation/CpG.annotate.txt", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/cresil/testdata/cresil_gAnnotation/CpG.annotate.txt", checkIfExists: true) ]
                 input[3] = [ [ id:'test' ], // meta4
-                             file("\${projectDir}/modules/local/cresil/testdata/cresil_gAnnotation/repeat.annotate.txt", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/cresil/testdata/cresil_gAnnotation/repeat.annotate.txt", checkIfExists: true) ]
                 input[4] = [ [ id:'test' ], // meta5
-                             file("\${projectDir}/modules/local/cresil/testdata/cresil_gAnnotation/variant.annotate.txt", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/cresil/testdata/cresil_gAnnotation/variant.annotate.txt", checkIfExists: true) ]
                 input[5] = 'ec1'
                 """
             }

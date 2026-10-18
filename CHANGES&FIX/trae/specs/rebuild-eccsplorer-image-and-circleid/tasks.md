@@ -3,10 +3,12 @@
 ## Phase 1 — bio.nf 中完善 ECCsplorer 模块
 
 - [x] Task 1: 检查 kavonrtep/repeatexplorer:2.3.8 镜像结构
+
   - [x] SubTask 1.1: 拉取镜像，确认 seqclust 安装路径、Perl 依赖目录、R 包位置
   - [x] SubTask 1.2: 记录需复制的文件清单
 
 - [x] Task 2: 重写 ECCsplorer Dockerfile 为多阶段构建
+
   - [x] SubTask 2.1: 第一阶段 `FROM kavonrtep/repeatexplorer:2.3.8 AS repex`
   - [x] SubTask 2.2: 第二阶段 `condaforge/mambaforge:latest`，COPY --from=repex
   - [x] SubTask 2.3: seqclust → `/opt/conda/envs/eccsplorer/bin/seqclust`
@@ -26,6 +28,7 @@
 - [x] Task 5: 同步 bio.nf ECCsplorer 模块到 circdna.nf
 
 - [x] Task 6: 增加 samplesheet `pair` 列
+
   - [x] SubTask 6.1: `bin/check_samplesheet.py` OPTIONAL_FIELDS 添加 `pair`
   - [x] SubTask 6.2: `bin/check_samplesheet.py` 读取传递 `pair` 列
   - [x] SubTask 6.3: `subworkflows/local/input_check/main.nf` 填充 `meta.pair`
@@ -34,6 +37,7 @@
   - [x] SubTask 6.6: 更新 `samplesheets/test_local_eccdna.csv` 添加 `pair` 列
 
 - [x] Task 7: ECCsplorer 改由 circle_identifier 控制
+
   - [x] SubTask 7.1: `nextflow.config` 中 `circle_identifier` 默认值加 `eccsplorer`，移除 `eccsplorer_map_core`
   - [x] SubTask 7.2: `workflows/circdna.nf` 从 circle_identifier 解析 `eccsplorer`→`run_eccsplorer_new`
   - [x] SubTask 7.3: 更新 `conf/test_local.config`、`conf/server.config`、`conf/test.config`
@@ -43,4 +47,5 @@
   - [x] SubTask 8.2: 验证 ECCSPLORER 输出 BED/FASTA 非空、流程退出码 0
 
 # Dependencies
+
 Task 2→1, Task 4→3, Task 5→4, Task 6/7→5（可并行）, Task 8→6+7

@@ -1,62 +1,62 @@
 {
-"loglevel"		:	"DEBUG",
-"outputdir"		:	"logs",
-"separate":{
-	"outputdir"		:	"separate",
-	"blastinit"		: 	"",
-	"blastexe"		:	"blastn",
-	"blastndb"		: 	"./examples/blastdb/EACMV_RefSeq.fasta",
-	"evalue"		: 	1
-},
-"align":{
-	"outputdir"		:	"align",
-	"muscleinit"	:	"",
-	"muscleexe"		:	"/opt/bin/muscle/muscle3.8.31_i86linux64",
-	"targets"		:	{
-		"EACMV_DNA_A"	:	"./examples/blastdb/EACMV_DNA_A.fa",
-		"EACMV_DNA_B"	:	"./examples/blastdb/EACMV_DNA_B.fa"
-	},
-	"windowsize"	:	10
-},
-"deconcat":{
-	"outputdir"		:	"deconcat",
-	"muscleinit"	:	"",
-	"muscleexe"		:	"/opt/bin/muscle/muscle3.8.31_i86linux64",
-	"fragmentsize"	:	30,
-	"statistics"	:	1
-},
-"annotate":{
-	"outputdir"		:	"annotate",
-	"blastinit"		: 	"",
-	"blastexe"		:	"tblastn",
-	"tblastndb" 	:	"./examples/blastdb/ACMV_Proteins.fasta",
-	"evalue" 		:	0.01
-},
-"phase":{
-	"outputdir"		:	"phased",
-	"outputformat"	:	["genbank","fasta"],
-	"phasegenomes":{
-		"EACMV_DNA_A"	:	{
-			"proteins" 	:	{
-				"AC1"	:	{"strand"	:	-1},
-				"AC2"	:	{"strand"	:	-1},
-				"AC3"	:	{"strand"	:	-1},
-				"AC4"	:	{"strand"	:	-1},
-				"AC5"	:	{"strand"	:	-1},
-				"AV1"	:	{"strand"	:	1},
-				"AV2"	:	{"strand"	:	1}
-			},
-			"phaseto" 	: 	"AV2"
-			,"offset"	:	10
-		},
-		"EACMV_DNA_B"	: 	{ 
-			"proteins" 	: 	{
-				"BC1"	:	{"strand"	:	1},
-				"BV1"	:	{"strand"	:	-1}
-			},
-			"phaseto" 	: 	"BC1",
-			"offset"	:	10
-		}
-	}
-}
+  "loglevel": "DEBUG",
+  "outputdir": "logs",
+  "separate": {
+    "outputdir": "separate",
+    "blastinit": "",
+    "blastexe": "blastn",
+    "blastndb": "./examples/blastdb/EACMV_RefSeq.fasta",
+    "evalue": 1
+  },
+  "align": {
+    "outputdir": "align",
+    "muscleinit": "",
+    "muscleexe": "/opt/bin/muscle/muscle3.8.31_i86linux64",
+    "targets": {
+      "EACMV_DNA_A": "./examples/blastdb/EACMV_DNA_A.fa",
+      "EACMV_DNA_B": "./examples/blastdb/EACMV_DNA_B.fa"
+    },
+    "windowsize": 10
+  },
+  "deconcat": {
+    "outputdir": "deconcat",
+    "muscleinit": "",
+    "muscleexe": "/opt/bin/muscle/muscle3.8.31_i86linux64",
+    "fragmentsize": 30,
+    "statistics": 1
+  },
+  "annotate": {
+    "outputdir": "annotate",
+    "blastinit": "",
+    "blastexe": "tblastn",
+    "tblastndb": "./examples/blastdb/ACMV_Proteins.fasta",
+    "evalue": 0.01
+  },
+  "phase": {
+    "outputdir": "phased",
+    "outputformat": ["genbank", "fasta"],
+    "phasegenomes": {
+      "EACMV_DNA_A": {
+        "proteins": {
+          "AC1": { "strand": -1 },
+          "AC2": { "strand": -1 },
+          "AC3": { "strand": -1 },
+          "AC4": { "strand": -1 },
+          "AC5": { "strand": -1 },
+          "AV1": { "strand": 1 },
+          "AV2": { "strand": 1 }
+        },
+        "phaseto": "AV2",
+        "offset": 10
+      },
+      "EACMV_DNA_B": {
+        "proteins": {
+          "BC1": { "strand": 1 },
+          "BV1": { "strand": -1 }
+        },
+        "phaseto": "BC1",
+        "offset": 10
+      }
+    }
+  }
 }

@@ -30,7 +30,7 @@ process TIDEHUNTER {
     def is_tab  = args.contains('-f 2')
     def is_fq   = args.contains('-f 3')
     def out_name = is_unit ? (is_tab ? "${prefix}.unit.out" : "${prefix}.unit.fasta") :
-                   (is_tab ? "${prefix}.cons.out" : is_fq ? "${prefix}.cons.fq" : "${prefix}.fasta")
+                    (is_tab ? "${prefix}.cons.out" : is_fq ? "${prefix}.cons.fq" : "${prefix}.fasta")
     def adapter_args = (adapter5 && adapter3) ? "-5 ${adapter5} -3 ${adapter3}" : ''
     """
     # TideHunter: de novo tandem-repeat detection from long reads (no reference)

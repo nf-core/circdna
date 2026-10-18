@@ -17,7 +17,7 @@ nextflow_process {
             process {
                 """
                 input[0] = [ [ id:'test' ], // meta
-                             file("\${projectDir}/modules/local/ecc_finder/testdata/Arabi.ONT.1kReads.fasta.gz", checkIfExists: true) ]
+                            file("\${projectDir}/modules/local/ecc_finder/testdata/Arabi.ONT.1kReads.fasta.gz", checkIfExists: true) ]
                 """
             }
         }

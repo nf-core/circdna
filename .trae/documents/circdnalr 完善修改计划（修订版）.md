@@ -1,7 +1,7 @@
 # circdnalr 完整修改计划（修订版）
 
-范围：`SiYangming/circdna.nf` 分支 `circdnalr`（v4.6.1）。  
-对照：代表集 [`metadata.csv`](https://github.com/SiYangming/circdna.nf/blob/circdnalr/samplesheets/metadata.csv) 全部 32 条 `circdna` 样本 + 2 条 `circrna`（拒绝）。  
+范围：`SiYangming/circdna.nf` 分支 `circdnalr`（v4.6.1）。
+对照：代表集 [`metadata.csv`](https://github.com/SiYangming/circdna.nf/blob/circdnalr/samplesheets/metadata.csv) 全部 32 条 `circdna` 样本 + 2 条 `circrna`（拒绝）。
 原则：按样本分流；统一 BED 契约；不复活 `integrated`；不平行再造 RCA 管道。
 
 本版相对上一稿补上：长读 WGS 背景、RCA 线性化 / T7、PacBio RS vs HiFi、跨平台 `pair`、双 eccDNA pair、metadata → 流水线字段映射。
@@ -28,46 +28,46 @@
 
 ### 1.1 流水线路由字段（samplesheet 必有或可推断）
 
-| 字段         | 取值                                                         | 职责                                                     |
-| ------------ | ------------------------------------------------------------ | -------------------------------------------------------- |
-| `platform`   | `illumina` / `pacbio` / `ont`                                | 预处理链                                                 |
-| `assay`      | `wgs` / `circleseq` / `rca` / `ciderseq` / `enriched`        | 实验类型 → 引擎集合                                      |
-| `datatype`   | `gdna` / `eccdna`                                            | 背景 vs 检测                                             |
-| `pair`       | 字符串，可空                                                 | 同研究分组键，**不**等于 ECCsplorer 的 treatment/control |
-| `layout`     | 由 fastq_2 是否存在推断 `single_end`                         | SE/PE                                                    |
-| `entrypoint` | `cleaned_fastq` / `raw_fastq` / `subreads` / `hifi_bam`      | 仅长读入口                                               |
-| `concatemer` | `true` / `false`                                             | 长读 RCA 是否跑 TideHunter                               |
-| `read_type`  | `hifi` / `clr` / `ont` / `pe` / `se`                         | 比对 preset；`clr` 含 PacBio RS / 非 HiFi Sequel         |
+| 字段         | 取值                                                                     | 职责                                                     |
+| ------------ | ------------------------------------------------------------------------ | -------------------------------------------------------- |
+| `platform`   | `illumina` / `pacbio` / `ont`                                            | 预处理链                                                 |
+| `assay`      | `wgs` / `circleseq` / `rca` / `ciderseq` / `enriched`                    | 实验类型 → 引擎集合                                      |
+| `datatype`   | `gdna` / `eccdna`                                                        | 背景 vs 检测                                             |
+| `pair`       | 字符串，可空                                                             | 同研究分组键，**不**等于 ECCsplorer 的 treatment/control |
+| `layout`     | 由 fastq_2 是否存在推断 `single_end`                                     | SE/PE                                                    |
+| `entrypoint` | `cleaned_fastq` / `raw_fastq` / `subreads` / `hifi_bam`                  | 仅长读入口                                               |
+| `concatemer` | `true` / `false`                                                         | 长读 RCA 是否跑 TideHunter                               |
+| `read_type`  | `hifi` / `clr` / `ont` / `pe` / `se`                                     | 比对 preset；`clr` 含 PacBio RS / 非 HiFi Sequel         |
 | `enrichment` | `none` / `circleseq` / `mobilome` / `ciderseq` / `t7` / `exov` / `other` | 注释，不分流                                             |
 
-CLI `--protocol short_read|pacbio|ont` 保留为兼容缺省：仅当行上缺 `platform` 时回填。  
+CLI `--protocol short_read|pacbio|ont` 保留为兼容缺省：仅当行上缺 `platform` 时回填。
 旧列 `protocol=short_read|long_read`：只做兼容映射，不再当路由键。
 
 `params.mode` 仍只有 `reference|eccdna`，但**不再作为总开关**。混表时以行上 `datatype/assay` 为准；`params.mode` 仅在全表同一角色且未写 `datatype` 时回填。
 
 ### 1.2 从代表集 metadata.csv 映射到上述字段
 
-| metadata 列                                                  | 规则                                                         |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `workflow=circrna` 或 `library_source=TRANSCRIPTOMIC`        | 拒绝，不入 circdna.nf                                        |
-| `platform`                                                   | `ILLUMINA→illumina`，`PACBIO_SMRT→pacbio`，`OXFORD_NANOPORE→ont` |
-| `analysis_role=reference_genome`                             | `datatype=gdna`                                              |
-| `analysis_role=primary_eccDNA`                               | `datatype=eccdna`                                            |
-| `experimental_type=CIDER-seq`                                | `assay=ciderseq`，`enrichment=ciderseq`                      |
-| 长读 + 富集 + RCA + 非 CIDER                                 | `assay=rca`                                                  |
-| 长读 + 富集 + **无 RCA**（如 T7-only）                       | `assay=enriched`                                             |
-| 短读 + 富集（eccDNA-seq / mobilome-seq / Circle-Seq / ExoV+Phi29 / circSeq） | `assay=circleseq`                                            |
-| 未富集 WGS / genome-skimming / size fractionation 背景       | `assay=wgs`                                                  |
-| `library_strategy`                                           | **忽略**（`Beta_circSeq` 标了 WGS 但是富集样本）             |
-| `amplification_method=RCA` 且 `platform=illumina`            | 仍是 `circleseq`，**不**改成 `rca`                           |
-| notes 含 linearized / T7 debranching                         | `concatemer=false`                                           |
-| 长读 RCA 且无线性化/debranch 描述                            | `concatemer=true`                                            |
-| `assay=wgs` 或 `assay=enriched`                              | `concatemer=false`                                           |
-| PacBio HiFi / 明确 HiFi WGS                                  | `read_type=hifi`                                             |
-| PacBio RS / RS II / 非 HiFi Sequel                           | `read_type=clr`                                              |
-| ONT                                                          | `read_type=ont`                                              |
-| Illumina PE/SE                                               | `read_type=pe/se`                                            |
-| 同一 `bioproject`（或手工指定）                              | 填同一 `pair`                                                |
+| metadata 列                                                                  | 规则                                                             |
+| ---------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `workflow=circrna` 或 `library_source=TRANSCRIPTOMIC`                        | 拒绝，不入 circdna.nf                                            |
+| `platform`                                                                   | `ILLUMINA→illumina`，`PACBIO_SMRT→pacbio`，`OXFORD_NANOPORE→ont` |
+| `analysis_role=reference_genome`                                             | `datatype=gdna`                                                  |
+| `analysis_role=primary_eccDNA`                                               | `datatype=eccdna`                                                |
+| `experimental_type=CIDER-seq`                                                | `assay=ciderseq`，`enrichment=ciderseq`                          |
+| 长读 + 富集 + RCA + 非 CIDER                                                 | `assay=rca`                                                      |
+| 长读 + 富集 + **无 RCA**（如 T7-only）                                       | `assay=enriched`                                                 |
+| 短读 + 富集（eccDNA-seq / mobilome-seq / Circle-Seq / ExoV+Phi29 / circSeq） | `assay=circleseq`                                                |
+| 未富集 WGS / genome-skimming / size fractionation 背景                       | `assay=wgs`                                                      |
+| `library_strategy`                                                           | **忽略**（`Beta_circSeq` 标了 WGS 但是富集样本）                 |
+| `amplification_method=RCA` 且 `platform=illumina`                            | 仍是 `circleseq`，**不**改成 `rca`                               |
+| notes 含 linearized / T7 debranching                                         | `concatemer=false`                                               |
+| 长读 RCA 且无线性化/debranch 描述                                            | `concatemer=true`                                                |
+| `assay=wgs` 或 `assay=enriched`                                              | `concatemer=false`                                               |
+| PacBio HiFi / 明确 HiFi WGS                                                  | `read_type=hifi`                                                 |
+| PacBio RS / RS II / 非 HiFi Sequel                                           | `read_type=clr`                                                  |
+| ONT                                                                          | `read_type=ont`                                                  |
+| Illumina PE/SE                                                               | `read_type=pe/se`                                                |
+| 同一 `bioproject`（或手工指定）                                              | 填同一 `pair`                                                    |
 
 `enrichment` 别名：`mobilome-seq` / `Mobilome-seq` / `circSeq` → `mobilome` 或 `circleseq`（短读都走 circleseq 引擎）。
 
@@ -175,7 +175,7 @@ assay=rca + platform=illumina       # Illumina RCA 必须写成 circleseq
 
 ## 3. 引擎约束
 
-`--circle_identifier`：只作用于 `sr_ecc`。  
+`--circle_identifier`：只作用于 `sr_ecc`。
 `--long_read_identifier`：只作用于长读 **检测** 样本（rca / ciderseq / enriched），**绝不**作用于 `lr_gdna`。
 
 | 条件                                               | 允许的 identifier                         | 禁止                                    |
@@ -196,7 +196,7 @@ read_type=clr  → -x map-pb
 read_type=ont  → -x map-ont
 ```
 
-CircleSeeker 仅 `read_type=hifi && assay=rca && concatemer=true`。  
+CircleSeeker 仅 `read_type=hifi && assay=rca && concatemer=true`。
 CIDER-seq 样本即使 `platform=pacbio` 也不跑 CircleSeeker。
 
 ---
@@ -231,8 +231,8 @@ CircleSeeker：
 
 ### 4.3 无 RCA 富集（`assay=enriched`）
 
-不新建平行检测工具。预处理后走 CRESIL/FLED/ecc_finder **map**（由 identifier 选）。  
-跳过 TideHunter、CircleSeeker、CIDER-seq2。  
+不新建平行检测工具。预处理后走 CRESIL/FLED/ecc_finder **map**（由 identifier 选）。
+跳过 TideHunter、CircleSeeker、CIDER-seq2。
 向日葵 T7 走这条。
 
 ### 4.4 长读 WGS 背景（新）
@@ -245,14 +245,14 @@ LONG_READ_PREPROCESSING → MINIMAP2_ALIGN（preset=read_type）
   → 可选 organelle_tag
 ```
 
-禁止任何 eccDNA identifier。  
+禁止任何 eccDNA identifier。
 对应：水稻 PacBio WGS、苋菜 HiFi WGS、小麦两条 ONT WGS、拟南芥 ONT WGS。
 
 短读 gdna 继续 `REFERENCE_MODE`，不要把长读塞进 BWA。
 
 ### 4.5 无坐标组装物才 remap
 
-需要：TideHunter consensus、ecc_finder asm FASTA、Flye contig。  
+需要：TideHunter consensus、ecc_finder asm FASTA、Flye contig。
 不需要：CircleSeeker、CReSIL/FLED BED、CIDER-seq2 病毒 monomer、长读 WGS。
 
 新建 `subworkflows/local/remap_assembled_circles/main.nf`，组合已有模块：
@@ -262,7 +262,7 @@ LONG_READ_PREPROCESSING → MINIMAP2_ALIGN（preset=read_type）
 - `BEDTOOLS_BAMTOBED`
 - 薄脚本 `bin/collapse_circle_alignments.py`：按 query 折叠、丢 unmapped/低 MapQ、处理 SA、输出 BED6+`read_count`
 
-preset 跟 `meta.read_type`。  
+preset 跟 `meta.read_type`。
 Flye 输出目前没进过滤，remap 后并入 `LONG_READ_FILTERING`。
 
 不要建 `modules/local/minimap2_remap.nf`。
@@ -285,11 +285,11 @@ chr  start  end  name  score  strand  read_count  [te_overlap]  [origin]  [pair]
 
 全部检测候选 `mix` 进 [`LONG_READ_FILTERING`](https://github.com/SiYangming/circdna.nf/blob/circdnalr/subworkflows/local/long_read_filtering/main.nf)（长读）或短读现有过滤。
 
-`repeats_bed`：**改为 annotate**（`te_overlap`），禁止 `bedtools intersect` 硬删。  
+`repeats_bed`：**改为 annotate**（`te_overlap`），禁止 `bedtools intersect` 硬删。
 `blacklist_bed` 仍可硬过滤。
 
-短读契约保持：`mosdepth_bed` + `eccsplorer_bed` + `circle_map_bed`。  
-长读契约新增：`long_read_bed` + `mosdepth_bed`（gdna 长读）。  
+短读契约保持：`mosdepth_bed` + `eccsplorer_bed` + `circle_map_bed`。
+长读契约新增：`long_read_bed` + `mosdepth_bed`（gdna 长读）。
 eccdna.smk 消费这些文件做评分，不在 Nextflow 里算 ECC_SCORE。
 
 ### 4.7 细胞器：打 origin，默认不丢
@@ -358,7 +358,7 @@ assay                     = null   // 仅当 samplesheet 缺 assay 时回填，�
 
 不加：`mode=integrated`、`w_*`、`tidehunter_kmer`、`tidehunter_min_period`。
 
-`mode` 默认仍 `eccdna`。  
+`mode` 默认仍 `eccdna`。
 `long_read_identifier` 默认保持现有；CircleSeeker 不要塞进 ONT 默认列表。
 
 ### 6.2 [`nextflow_schema.json`](https://github.com/SiYangming/circdna.nf/blob/circdnalr/nextflow_schema.json)
@@ -418,13 +418,13 @@ README / usage
 
 ## 8. 顺手修的现有缺陷
 
-| 位置                                                 | 改什么                                                       |
-| ---------------------------------------------------- | ------------------------------------------------------------ |
-| `modules/local/circleseeker/main.nf`                 | 空 CSV 在 bed 转换之前补                                     |
-| `workflows/circdna.nf`                               | 接 `ciderseq_host_genome`；按 meta branch                    |
-| `subworkflows/local/flye_pipeline/main.nf`           | 用 `read_type`；组装 FASTA 送 remap                          |
+| 位置                                                 | 改什么                                                                 |
+| ---------------------------------------------------- | ---------------------------------------------------------------------- |
+| `modules/local/circleseeker/main.nf`                 | 空 CSV 在 bed 转换之前补                                               |
+| `workflows/circdna.nf`                               | 接 `ciderseq_host_genome`；按 meta branch                              |
+| `subworkflows/local/flye_pipeline/main.nf`           | 用 `read_type`；组装 FASTA 送 remap                                    |
 | `subworkflows/local/long_read_preprocessing/main.nf` | 已按 `params.protocol` 切 PacBio/ONT；改为按 `meta.platform`，以便混表 |
-| `LONG_READ_PREPROCESSING` 的 LIMA/PBCCS              | 仅 `platform=pacbio` 且 entrypoint 需要时；ONT 行不得进 PBCCS |
+| `LONG_READ_PREPROCESSING` 的 LIMA/PBCCS              | 仅 `platform=pacbio` 且 entrypoint 需要时；ONT 行不得进 PBCCS          |
 | 大基因组                                             | Cryptomeria / 小麦继续 `-c conf/large_genome.config`（已有，文档点名） |
 
 预处理混表要点：现在 `LONG_READ_PREPROCESSING` 用全局 `params.protocol == "pacbio"`。混 ONT+PacBio 时必须改成 `reads.branch { pacbio: meta.platform=='pacbio'; ont: meta.platform=='ont' }`。
@@ -463,60 +463,60 @@ samplesheet
 
 ## 10. 测试
 
-| 测试                                                         | 断言                                                         |
-| ------------------------------------------------------------ | ------------------------------------------------------------ |
-| `test_mixed_assay`                                           | 一张表：illumina circleseq + pacbio wgs + ont rca + ciderseq，四条支路都启动 |
-| 负例 `ciderseq+illumina`                                     | SAMPLESHEET_CHECK 失败                                       |
-| 负例 `rca+gdna`                                              | 失败                                                         |
-| 负例 circrna 行                                              | 失败                                                         |
-| `concatemer=false`（看麦娘/番茄 stub）                       | 无 TIDEHUNTER 进程                                           |
-| `assay=enriched`（向日葵 stub）                              | 无 TideHunter / CircleSeeker / CIDER                         |
-| `assay=wgs` 长读                                             | 只有 preprocess + minimap2 + mosdepth，无检测引擎            |
-| `read_type=clr`                                              | minimap2 `-x map-pb`，无 CircleSeeker                        |
-| 青蒿 pair                                                    | slim clu join 成功                                           |
-| 狗牙根双 eccDNA                                              | 两条都检测，clu 不 join、不丢样本                            |
-| 水稻三件套                                                   | 三条支路并行，clu 只可能 join 两条 Illumina                  |
-| CircleSeeker 空结果                                          | bed 仍产出表头                                               |
-| remap stub                                                   | FASTA → BED6+read_count                                      |
-| organelle_tag stub                                           | 打 origin，默认不丢                                          |
-| 现有 `test_pacbio_lr` / `test_nanopore_lr` / `test_ciderseq_local` | 补列后仍通                                                   |
-| nf-test                                                      | TideHunter 输出不连接 CircleSeeker 输入                      |
+| 测试                                                               | 断言                                                                         |
+| ------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| `test_mixed_assay`                                                 | 一张表：illumina circleseq + pacbio wgs + ont rca + ciderseq，四条支路都启动 |
+| 负例 `ciderseq+illumina`                                           | SAMPLESHEET_CHECK 失败                                                       |
+| 负例 `rca+gdna`                                                    | 失败                                                                         |
+| 负例 circrna 行                                                    | 失败                                                                         |
+| `concatemer=false`（看麦娘/番茄 stub）                             | 无 TIDEHUNTER 进程                                                           |
+| `assay=enriched`（向日葵 stub）                                    | 无 TideHunter / CircleSeeker / CIDER                                         |
+| `assay=wgs` 长读                                                   | 只有 preprocess + minimap2 + mosdepth，无检测引擎                            |
+| `read_type=clr`                                                    | minimap2 `-x map-pb`，无 CircleSeeker                                        |
+| 青蒿 pair                                                          | slim clu join 成功                                                           |
+| 狗牙根双 eccDNA                                                    | 两条都检测，clu 不 join、不丢样本                                            |
+| 水稻三件套                                                         | 三条支路并行，clu 只可能 join 两条 Illumina                                  |
+| CircleSeeker 空结果                                                | bed 仍产出表头                                                               |
+| remap stub                                                         | FASTA → BED6+read_count                                                      |
+| organelle_tag stub                                                 | 打 origin，默认不丢                                                          |
+| 现有 `test_pacbio_lr` / `test_nanopore_lr` / `test_ciderseq_local` | 补列后仍通                                                                   |
+| nf-test                                                            | TideHunter 输出不连接 CircleSeeker 输入                                      |
 
 ---
 
 ## 11. 文件级清单
 
-| 动作 | 文件                                                   | 做什么                                                       |
-| ---- | ------------------------------------------------------ | ------------------------------------------------------------ |
-| 改   | `bin/check_samplesheet.py`                             | assay/concatemer/read_type、组合断言、长读列透传、拒 circrna |
-| 改   | `assets/schema_input.json`                             | 新列；去掉 integrated 文案                                   |
-| 改   | `subworkflows/local/input_check/main.nf`               | 短读+长读都写齐 meta                                         |
-| 改   | `modules/local/samplesheet_check/main.nf`              | 传新缺省                                                     |
-| 改   | `workflows/circdna.nf`                                 | 按 meta 六路 branch；混表；clu 限制                          |
-| 改   | `subworkflows/local/long_read_preprocessing/main.nf`   | 按 `meta.platform` 分支                                      |
+| 动作 | 文件                                                   | 做什么                                                               |
+| ---- | ------------------------------------------------------ | -------------------------------------------------------------------- |
+| 改   | `bin/check_samplesheet.py`                             | assay/concatemer/read_type、组合断言、长读列透传、拒 circrna         |
+| 改   | `assets/schema_input.json`                             | 新列；去掉 integrated 文案                                           |
+| 改   | `subworkflows/local/input_check/main.nf`               | 短读+长读都写齐 meta                                                 |
+| 改   | `modules/local/samplesheet_check/main.nf`              | 传新缺省                                                             |
+| 改   | `workflows/circdna.nf`                                 | 按 meta 六路 branch；混表；clu 限制                                  |
+| 改   | `subworkflows/local/long_read_preprocessing/main.nf`   | 按 `meta.platform` 分支                                              |
 | 改   | `subworkflows/local/ecc_finder_ont_slim/main.nf`       | RCA 默认路径；preset=`read_type`；`concatemer=false` 跳过 TideHunter |
-| 改   | `subworkflows/local/ciderseq_pipeline/main.nf`         | 可选宿主锚定；不 mix RCA                                     |
-| 改   | `subworkflows/local/long_read_filtering/main.nf`       | repeats → annotate                                           |
-| 改   | `subworkflows/local/flye_pipeline/main.nf`             | `read_type`；FASTA → remap                                   |
-| 改   | `modules/local/circleseeker/main.nf`                   | 空文件时序；调用条件在 workflow 层限制                       |
-| 改   | `conf/modules.config`                                  | preset / Flye / publishDir                                   |
-| 改   | `nextflow.config`                                      | organelle 三开关 + 可选 `assay=null`                         |
-| 改   | `nextflow_schema.json`                                 | 同步                                                         |
-| 改   | `AGENTS.md` / `README.md` / `CHANGELOG.md`             | 路由、契约、breaking                                         |
-| 改   | 全部相关 `samplesheets/*.csv`                          | 新列；WGS 背景标对；去绝对路径                               |
-| 新建 | `subworkflows/local/long_read_reference/main.nf`       | 长读 gdna：map + mosdepth                                    |
-| 新建 | `subworkflows/local/remap_assembled_circles/main.nf`   | 组合 nf-core 模块                                            |
-| 新建 | `bin/collapse_circle_alignments.py`                    | 折叠比对 → 统一 BED                                          |
-| 新建 | `subworkflows/local/organelle_tag/main.nf`             | 候选打 origin                                                |
-| 新建 | `bin/tag_organelle_origin.py`                          | 分类                                                         |
-| 新建 | `samplesheets/circdna_representative.csv`              | 32 条已映射运行表                                            |
-| 新建 | `bin/metadata_to_samplesheet.py`                       | metadata.csv → 运行表（可选）                                |
-| 新建 | mixed-assay / 负例 samplesheet + test config + nf-test | §10                                                          |
-| 不建 | `modules/local/minimap2_remap.nf`                      | 用模块组合                                                   |
-| 不建 | `modules/local/integrated_eval.nf`                     | 留 eccdna.smk                                                |
-| 不建 | `bin/calculate_ecc_score.py`                           | 同上                                                         |
-| 不建 | `subworkflows/local/pacbio_ecc.nf`                     | 分流进现有子流程                                             |
-| 不建 | read 级 `filter_organelle.nf`                          | 用 tag 子流程                                                |
+| 改   | `subworkflows/local/ciderseq_pipeline/main.nf`         | 可选宿主锚定；不 mix RCA                                             |
+| 改   | `subworkflows/local/long_read_filtering/main.nf`       | repeats → annotate                                                   |
+| 改   | `subworkflows/local/flye_pipeline/main.nf`             | `read_type`；FASTA → remap                                           |
+| 改   | `modules/local/circleseeker/main.nf`                   | 空文件时序；调用条件在 workflow 层限制                               |
+| 改   | `conf/modules.config`                                  | preset / Flye / publishDir                                           |
+| 改   | `nextflow.config`                                      | organelle 三开关 + 可选 `assay=null`                                 |
+| 改   | `nextflow_schema.json`                                 | 同步                                                                 |
+| 改   | `AGENTS.md` / `README.md` / `CHANGELOG.md`             | 路由、契约、breaking                                                 |
+| 改   | 全部相关 `samplesheets/*.csv`                          | 新列；WGS 背景标对；去绝对路径                                       |
+| 新建 | `subworkflows/local/long_read_reference/main.nf`       | 长读 gdna：map + mosdepth                                            |
+| 新建 | `subworkflows/local/remap_assembled_circles/main.nf`   | 组合 nf-core 模块                                                    |
+| 新建 | `bin/collapse_circle_alignments.py`                    | 折叠比对 → 统一 BED                                                  |
+| 新建 | `subworkflows/local/organelle_tag/main.nf`             | 候选打 origin                                                        |
+| 新建 | `bin/tag_organelle_origin.py`                          | 分类                                                                 |
+| 新建 | `samplesheets/circdna_representative.csv`              | 32 条已映射运行表                                                    |
+| 新建 | `bin/metadata_to_samplesheet.py`                       | metadata.csv → 运行表（可选）                                        |
+| 新建 | mixed-assay / 负例 samplesheet + test config + nf-test | §10                                                                  |
+| 不建 | `modules/local/minimap2_remap.nf`                      | 用模块组合                                                           |
+| 不建 | `modules/local/integrated_eval.nf`                     | 留 eccdna.smk                                                        |
+| 不建 | `bin/calculate_ecc_score.py`                           | 同上                                                                 |
+| 不建 | `subworkflows/local/pacbio_ecc.nf`                     | 分流进现有子流程                                                     |
+| 不建 | read 级 `filter_organelle.nf`                          | 用 tag 子流程                                                        |
 
 ---
 
