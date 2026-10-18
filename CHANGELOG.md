@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **aa_cngain 参数类型不匹配**: `nextflow.config` 中 `aa_cngain = '4.5'`（字符串）与 schema 声明的 `number` 冲突，nf-schema 严格校验直接失败，改为数值 `4.5`。
 - **download_pipeline.yml 与 nf-core/tools dev 不兼容**: `nf-core pipelines download` 的 `--download-configuration` 在 tools 4.1.1.dev0 中改为必填参数（`click.Choice(["yes","no"])`），补为 `--download-configuration "yes"`。
 - **lint 任务误报失败**: 上个提交已给 `linting.yml` 的 `nf-core` job 加 `continue-on-error: true`（本 fork 与 nf-core 模板差异较大，lint 仅作参考），本次确认 job 结论恢复 success。
+- **CI 测试在 runner 上被 OOM killer 杀死（exit 137）**: `test` profile 全量跑 5 个 `circle_identifier` 链时，local executor 同时启动约 8 个容器，宿主机内存耗尽，内核 OOM killer 选中 `BWA_INDEX` 将其 SIGKILL（本地用同一 wave 容器 `bwa_htslib_samtools:83b50ff84ead50d0` 复测 bwa index 4 秒正常完成，排除容器问题）。在 `conf/test.config` / `conf/test_AA.config` 增加 `executor { cpus = 2; memory = '12.GB' }` 限制总并发（ubuntu-latest runner 为 4 vCPU / 16 GB）。
+- **master 分支陈旧工作流导致的重复失败检查**: `master` 上的 `download_pipeline.yml` 仍含 `pull_request_target` 触发器与已删除的 `nf-core download` 旧命令（tools 4.1.1.dev0 起报 `No such command 'download'`），PR 上每次都会出现一个用 base 分支工作流运行的失败检查。已将 `.github/workflows/` 从开发分支同步到 master，消除 base/head 工作流漂移。
 
 ## v4.7.6 - [2026-10-18]
 
