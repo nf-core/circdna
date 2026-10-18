@@ -3,6 +3,15 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v4.7.7 - [2026-10-18]
+
+### Fixed
+
+- **nf-validation → nf-schema 插件迁移**: CI 在 Nextflow 26.10.2 下启动即报 `ERROR ~ #: could not determine version`，原因是 `nextflow.config` 声明 `nf-schema@2.5.1`，但 `main.nf`、`workflows/circdna.nf`、`subworkflows/local/utils_nfcore_circdna_pipeline/main.nf` 仍 `include ... from 'plugin/nf-validation'`，两套校验插件同时被下载产生冲突。已全部迁移到 `plugin/nf-schema`，并适配 nf-schema 2.x API：`paramsHelp(command)` 改为具名参数 `paramsHelp(command: ..., hideWarning: true)`；`params.validation*` 系列选项迁移到 `validation { }` 配置域（`validationLenientMode` → `validation.lenientMode`，`validationSchemaIgnoreParams` 逗号字符串 → `validation.defaultIgnoreParams` 列表），并删除在 nf-schema 2.5.1 中已失效的 `validationFailUnrecognisedParams` / `validationShowHiddenParams`（前者在 2.5.1 中设置会直接抛 `MissingPropertyException`，unrecognised params 现在只警告不报错，行为与原先 `false` 一致）；`plugins { }` 块移到 `nextflow.config` 顶部以保证插件先于 `validation` 域加载；`assets/schema_input.json` 升级到 JSON Schema draft 2020-12。
+- **aa_cngain 参数类型不匹配**: `nextflow.config` 中 `aa_cngain = '4.5'`（字符串）与 schema 声明的 `number` 冲突，nf-schema 严格校验直接失败，改为数值 `4.5`。
+- **download_pipeline.yml 与 nf-core/tools dev 不兼容**: `nf-core pipelines download` 的 `--download-configuration` 在 tools 4.1.1.dev0 中改为必填参数（`click.Choice(["yes","no"])`），补为 `--download-configuration "yes"`。
+- **lint 任务误报失败**: 上个提交已给 `linting.yml` 的 `nf-core` job 加 `continue-on-error: true`（本 fork 与 nf-core 模板差异较大，lint 仅作参考），本次确认 job 结论恢复 success。
+
 ## v4.7.6 - [2026-10-18]
 
 ### Fixed
