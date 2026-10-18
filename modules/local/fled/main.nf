@@ -3,9 +3,7 @@ process FLED {
     label 'process_high'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'docker://quay.io/bioinfortools/fled:1.7.0' :
-        'quay.io/bioinfortools/fled:1.7.0' }"
+    container 'quay.io/bioinfortools/fled:1.7.0'
 
     input:
     tuple val(meta), path(fastq)

@@ -3,9 +3,7 @@ process REPEATEXPLORER2 {
     label 'process_high'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine in ['singularity', 'apptainer'] ?
-        'docker://quay.io/bioinfortools/repeatexplorer:2.3.8' :
-        'quay.io/bioinfortools/repeatexplorer:2.3.8' }"
+    container 'quay.io/bioinfortools/repeatexplorer:2.3.8'
 
     input:
     tuple val(meta), path(reads_fa)

@@ -96,4 +96,11 @@ process CIRCLEFINDER {
         else if (\$7=="-" && \$9=="second" && \$2<\$12 && \$22>=\$2 && \$23<=\$13) {printf ("%s\\t%d\\t%d\\n",\$1,\$2,\$13)} }' | \
         sort -T ./ | uniq -c | awk '{printf ("%s\\t%d\\t%d\\t%d\\n",\$2,\$3,\$4,\$1)}' > ${prefix}.microDNA-JT.txt
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch '${prefix}.microDNA-JT.txt'
+    touch '${prefix}.circle_finder_exit_log.txt'
+    """
 }

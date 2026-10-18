@@ -31,4 +31,10 @@ process SAMPLESHEET_CHECK {
         python: \$(python --version | sed 's/Python //g')
     END_VERSIONS
     """
+
+    stub:
+    """
+    touch samplesheet.valid.csv
+    touch versions.yml
+    """
 }

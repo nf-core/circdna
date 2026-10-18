@@ -3,6 +3,13 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v4.7.8 - [2026-10-18]
+
+### Fixed
+
+- **本地模块缺失 stub 块导致 stub 运行失败**: 为 `bedtools/sortedbam2bed`、`bedtools/splitbam2bed`、`circlefinder`、`getcircularreads`、`samplesheet_check` 5 个本地模块补齐 `stub:` 块，使 `nextflow run -stub`（CI 编译检查与本地快速验证）能完整跑通全部声明的输出。
+- **本地模块 container 声明简化**: `ciderseq`（align/annotate/deconcat/phase/separate）、`cseccdna`、`cstools`、`fled`、`repeatexplorer2` 的 container 三元表达式统一简化为直接镜像引用（`quay.io/bioinfortools/...`）。Singularity/Apptainer 在未指定协议时默认按 `docker://` 解析，行为不变，同时消除 `task.ext.singularity_pull_docker_container` 分支带来的配置漂移。
+
 ## v4.7.7 - [2026-10-18]
 
 ### Fixed

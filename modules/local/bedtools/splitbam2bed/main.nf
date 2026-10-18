@@ -48,4 +48,11 @@ process BEDTOOLS_SPLITBAM2BED {
         bedtools: \$(bedtools --version | sed -e "s/bedtools v//g")
     END_VERSIONS
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch '${prefix}.txt'
+    touch versions.yml
+    """
 }

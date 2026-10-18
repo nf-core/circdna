@@ -40,4 +40,11 @@ process BEDTOOLS_SORTEDBAM2BED {
         bedtools: \$(bedtools --version | sed -e "s/bedtools v//g")
     END_VERSIONS
     """
+
+    stub:
+    def prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch '${prefix}.concordant.txt'
+    touch versions.yml
+    """
 }
